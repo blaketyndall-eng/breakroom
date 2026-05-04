@@ -9,13 +9,15 @@ design/claude/html/data.js
 src/content/data/breakroom.ts
 supabase/migrations/0003_seed_v1_content.sql
 supabase/migrations/0005_seed_claude_reconciled_content.sql
+supabase/migrations/0006_seed_deeper_breakroom_world_objects.sql
+docs/OBJECT_AND_LORE_BANK.md
 ```
 
 ## Current finding
 
 `src/content/data/breakroom.ts` already carries most of the Claude data pool for frontend fallback/search behavior.
 
-The bigger gap was live Supabase seed coverage. The live database had core V1 content, but not all of the richer Claude motifs from the design file.
+The bigger gap was live Supabase seed coverage. The live database had core V1 content, but not all of the richer Claude motifs from the design file or the newer Breakroom object language.
 
 ## Added in migration 0005
 
@@ -77,9 +79,75 @@ applause-money
 motel-key-clock
 ```
 
+## Added in migration 0006
+
+Migration `0006_seed_deeper_breakroom_world_objects.sql` deepens the object language beyond direct Claude parity and into the fuller Breakroom style system.
+
+Lost objects:
+
+```txt
+Rosary With Broken Clasp
+Cracked Nokia With Voicemail Light
+Pawn Ticket From Amber Case
+Single Boxing Glove Hung Like A Relic
+Saint Card From Cash Drawer
+Motel Lamp Pull Chain
+Title Belt With Takeout Grease
+White Dog Hair Under Glass Counter
+Lowrider Air Freshener Shaped Like A Crown
+Printer-Friendly Prayer Card
+Vending Machine Quarter From 1979
+Fur Coat Claim Check
+```
+
+News/world items:
+
+```txt
+PAWN SHOP WINDOW DECLARED TEMPORARY CHAPEL
+FINANCE DENIES KNOWLEDGE OF HOT AIR BALLOON INSURANCE DIVISION
+BAR MIRROR RETURNS DIFFERENT MAN THAN ONE PROVIDED
+POOL TABLE HOLDS PRIVATE SERVICE FOR MISSING EIGHT BALL
+MOTEL OFFICE ACCUSED OF SELLING SAINTHOOD BY THE HOUR
+DELIVERY DRIVER REFUSES TO ENTER AFTER HOURS, LEAVES FOOD WITH CLOCK
+AI ANNOUNCES BYOB PETTING ZOO STILL UNDER SPIRITUAL REVIEW
+CASH DRAWER FOUND PRAYING UNDER AMBER LIGHT
+```
+
+Phone messages:
+
+```txt
+Unknown Woman At The Counter
+Pawnshop Owner
+Motel Front Desk
+Breathing Under Counter
+OmniShift AI
+Water Burger Night Window
+Radio 1:47 Station ID
+```
+
+Ventures:
+
+```txt
+OmniShift Motel Sainthood Program
+Vertical Liability Group
+Water Burger Night Window
+Glass Counter Custody
+Applause Money Clearinghouse
+```
+
+Secrets:
+
+```txt
+rosary-nokia-counter
+title-belt-takeout
+white-dog-under-glass
+motel-lamp-room-147
+printer-prayer-sleepernet
+```
+
 ## Live Supabase state
 
-The `seed_claude_reconciled_content` migration was applied to the live Supabase project:
+Both additive migrations were applied to the live Supabase project:
 
 ```txt
 Project: the-breakroom
@@ -90,7 +158,7 @@ Project ref: bfinjvvtornltgytsvai
 
 This was an additive data pass. It did not change schema.
 
-The current app still primarily uses static fallback data on many public pages. The live Supabase tables now carry more of the same world material so future work can move pages from static content toward database-backed content without losing the Claude motifs.
+The current app still primarily uses static fallback data on many public pages. The live Supabase tables now carry more of the same world material so future work can move pages from static content toward database-backed content without losing the Claude motifs or newer object mythology.
 
 ## Recommended next data work
 
