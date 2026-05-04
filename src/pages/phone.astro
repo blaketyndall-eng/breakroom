@@ -1,14 +1,41 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import TableBox from '@/components/oldweb/TableBox.astro';
+import LinkMaze from '@/components/oldweb/LinkMaze.astro';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 ---
 <OldWebLayout title="Phone Behind The Bar" section="phone">
+  <div class="status-strip"><span>company phone</span><span>carrier: unknown</span><span>missed calls: 147</span><span>battery: spiritually dead</span></div>
   <h1>Phone Behind The Bar</h1>
-  <p>Ubers, DoorDash, weird voicemails, invites, flirtatious late-night messages, and OmniShift interruptions.</p>
-  {BREAKROOM_DATA.voicemails.map((v) => (
-    <article class="memo-box" style="margin-bottom:12px;">
-      <p style="font-family:var(--type-mono);font-size:11px;text-transform:uppercase;">FROM: {v.from} / {v.time}</p>
-      <p style="font-size:18px;">{v.body}</p>
-    </article>
-  ))}
+  <p class="tagline-block">Ubers, DoorDash, weird voicemails, invites, late-night messages, and OmniShift interruptions. The phone is not yours. It keeps acting familiar.</p>
+
+  <section class="grid-2">
+    <TableBox title="Incoming / voicemail drawer">
+      {BREAKROOM_DATA.voicemails.map((v, i) => (
+        <article class="memo-box" style="margin-bottom:12px;">
+          <p style="font-family:var(--type-mono);font-size:11px;text-transform:uppercase;">MSG {String(i + 1).padStart(2, '0')} / FROM: {v.from} / {v.time}</p>
+          <p style="font-size:18px;">{v.body}</p>
+          <p><button class="old-button" type="button">Play / pretend audio</button> <button class="old-button" type="button">Save to evidence</button></p>
+        </article>
+      ))}
+    </TableBox>
+    <TableBox title="Recent calls / unclear relation">
+      <table class="table-box">
+        <tbody>
+          <tr><th>Time</th><th>Caller</th><th>Note</th></tr>
+          <tr><td>1:12 AM</td><td>Wrong rideshare</td><td>outside a bar that closed in 2009</td></tr>
+          <tr><td>1:34 AM</td><td>Food courier</td><td>left bag near a room that denies being a room</td></tr>
+          <tr><td>1:47 AM</td><td>OmniShift Dispatch</td><td>do not return to work, report to the room</td></tr>
+          <tr><td>2:08 AM</td><td>Unknown invite</td><td>pool table open, bring cash, do not bring certainty</td></tr>
+        </tbody>
+      </table>
+    </TableBox>
+  </section>
+
+  <LinkMaze title="Phone menu / buttons that still click" notice="Every option says it is temporary. None of them are." links={[
+    { href: '/idle-hands', label: 'Register for pool', note: 'caller says bracket is filling up', stamp: 'CALL BACK' },
+    { href: '/lost-found', label: 'Report found object', note: 'phone asks for item number first' },
+    { href: '/radio', label: 'Send to radio', note: 'voicemail may become a station ID', stamp: 'ON AIR' },
+    { href: '/after-hours', label: 'Return to bar', note: 'line stays open after you hang up' }
+  ]} />
 </OldWebLayout>
