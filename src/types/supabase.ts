@@ -118,6 +118,7 @@ export type Database = {
           preferred_light: string | null;
           preferred_place: string | null;
           shift_status: string;
+          clocked_out_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -134,6 +135,7 @@ export type Database = {
           preferred_light?: string | null;
           preferred_place?: string | null;
           shift_status?: string;
+          clocked_out_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
