@@ -1,5 +1,7 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import TableBox from '@/components/oldweb/TableBox.astro';
+import LinkMaze from '@/components/oldweb/LinkMaze.astro';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 import { slugify } from '@/lib/slug';
 
@@ -20,23 +22,63 @@ const getTitle = (item: NewsstandItem) => item.t ?? item.head ?? 'Untitled Notic
 const getBody = (item: NewsstandItem) => item.k ?? item.b ?? item.body ?? 'No further information was provided.';
 ---
 <OldWebLayout title="3AM Edition / Newsstand" section="newsstand">
-  <h1>3AM Edition</h1>
-  <p>An after-hours newspaper stand for true/fake stories, things taken out of context, obvious headlines, public notices, corrections, and whatever your brain found at 3AM.</p>
-  <div class="grid-3">
-    {groups.map(([group, items]) => (
-      <section class="newsprint-card">
-        <h2 style="text-transform:uppercase;">{group}</h2>
-        {items.map((item) => {
+  <div class="status-strip"><span>3AM EDITION</span><span>printer friendly</span><span>archive corrupted</span><span>weather: fluorescent</span></div>
+  <header class="masthead" style="margin:18px 0;padding:12px 0;text-align:center;">
+    <p class="meta">VOL. 1 / ISSUE 47 / PRICE: ONE BAD MEMORY</p>
+    <h1 style="font-size:clamp(54px,10vw,128px);margin:0;">3AM Edition</h1>
+    <p>An after-hours newspaper stand for true/fake stories, public notices, corrections, and whatever your brain found after midnight.</p>
+  </header>
+
+  <section class="grid-2">
+    <TableBox title="Front page / room desk">
+      <div class="news-columns">
+        {groups.flatMap(([group, items]) => items.slice(0, 2).map((item) => {
           const title = getTitle(item);
           const body = getBody(item);
           return (
-            <article style="border-top:1px solid #14110e;padding-top:10px;margin-top:10px;">
-              <h3><a href={`/newsstand/${slugify(title)}`}>{title}</a></h3>
+            <article style="break-inside:avoid;border-bottom:1px dotted #8a7c5e;margin-bottom:12px;padding-bottom:10px;">
+              <p class="meta">{group} / STAFF / 1:47 A.M.</p>
+              <h2><a href={`/newsstand/${slugify(title)}`}>{title}</a></h2>
               <p>{body}</p>
             </article>
           );
-        })}
+        }))}
+      </div>
+    </TableBox>
+    <TableBox title="Corrections / legal refused">
+      <div class="correction-box">
+        <p><b>Correction:</b> Yesterday we reported the pool table accepted responsibility. The pool table has since retained counsel.</p>
+      </div>
+      <p class="classified"><strong>CLASSIFIED:</strong> Clock stuck at 1:47 seeks witness. Must be comfortable around receipts, dogs, and old vending machines.</p>
+      <p class="classified"><strong>NOTICE:</strong> OmniShift denies the existence of this paper while continuing to advertise in it.</p>
+    </TableBox>
+  </section>
+
+  <div class="grid-3" style="margin-top:16px;">
+    {groups.map(([group, items]) => (
+      <section class="newsprint-card old-shell">
+        <div class="old-header">{group}</div>
+        <div class="old-body">
+          {items.map((item) => {
+            const title = getTitle(item);
+            const body = getBody(item);
+            return (
+              <article style="border-top:1px solid #14110e;padding-top:10px;margin-top:10px;">
+                <p class="meta">archive link / printer safe</p>
+                <h3><a href={`/newsstand/${slugify(title)}`}>{title}</a></h3>
+                <p>{body}</p>
+              </article>
+            );
+          })}
+        </div>
       </section>
     ))}
   </div>
+
+  <LinkMaze title="Archive links / public notices" notice="The newsstand sells papers, rumors, corrections, and things the room remembers as fact." links={[
+    { href: '/lost-found', label: 'Object archive', note: 'evidence from the drawer', stamp: 'SEE ALSO' },
+    { href: '/ventures', label: 'Business notices', note: 'AI ventures nobody requested' },
+    { href: '/phone', label: 'Call log tips', note: 'anonymous sources with bad service' },
+    { href: '/after-hours', label: 'Back to room', note: 'where most corrections begin' }
+  ]} />
 </OldWebLayout>
