@@ -1,160 +1,166 @@
 # Build Tasks for V1 Development
 
-This document breaks down the tasks required to deliver the public V1 of The Breakroom.  Tasks are grouped by sprint and indicate priorities, dependencies, and high‑level steps.  Use this as a roadmap for AI developers working on the project.
+This document tracks the current V1 build state and remaining work for AI developers.
 
-## Sprint 0 – Repository & Infrastructure
+## Completed foundation
 
-1. **Initialize the repo** (on `feature/base-scaffold`):
-   - Set up PNPM, Astro, TypeScript, and Tailwind.
-   - Create `.env.example` with placeholders for Supabase keys and streaming URLs.
-   - Commit `README.md`, basic project description, license, gitignore.
+```txt
+- Astro + React + TypeScript + PNPM scaffold
+- Cloudflare Pages deployment config
+- Supabase project created: bfinjvvtornltgytsvai
+- Initial schema, RLS policies, seed content, and clocked_out_at migration applied
+- Supabase auth client and env helpers added
+- Auth callback route added
+- Employee profile persistence added
+- Clock-out persistence added
+- Idle Hands registration persistence added
+- After Hours persona persistence added
+- Claude design parity audit added
+- First visual parity pass complete
+- Rack/Lost/Idle second visual parity pass complete
+```
 
-2. **Add core layouts**:
-   - `BaseLayout.astro` for global wrapper and meta tags.
-   - `OldWebLayout.astro` for old‑web look (tables, headers, links).
-   - `PortalLayout.astro` for corporate pages.
-   - `ProductLayout.astro` for individual product pages.
-   - `ArchiveLayout.astro` for listing pages (Lost & Found, Newsstand).
+## Completed routes
 
-3. **Create styles**:
-   - Global resets and typography.
-   - Old‑web CSS classes (tables, links, stamps, icons).
-   - Colour variables from style guide.
+```txt
+/
+/sleeper-net
+/breakroom
+/signup
+/auth/callback
+/portal
+/portal/after-hours-profile
+/clock-out
+/after-hours
+/rack
+/rack/[slug]
+/lost-found
+/lost-found/[slug]
+/newsstand
+/newsstand/[slug]
+/phone
+/sign-the-wall
+/ventures
+/radio
+/idle-hands
+/idle-hands/player/[slug]
+/staff-only
+/house-rules
+/404
+```
 
-4. **Set up Supabase**:
-   - Create a new Supabase project (if not already existing).
-   - Run initial schema migrations (see `/supabase/migrations`).
-   - Enable Row Level Security (RLS) on all tables.
-   - Generate service role key for server‑side functions and store securely (not in repo).
+## Sprint A — Data reconciliation
 
-## Sprint 1 – SleeperNet & Sign Up
+Next recommended branch:
 
-1. **Homepage** (`/`):
-   - Build search bar component (`SearchBox.tsx`) with placeholder rotation.
-   - Fake search results component (`SearchResults.tsx`) using local seeded data.
-   - Trending searches sidebar.
-   - Links into Newsstand, Lost & Found, Rack, Breakroom, Radio.
+```txt
+feature/claude-data-reconciliation
+```
 
-2. **Sign‑up flow**:
-   - Create signup form on `/breakroom` or use external modal.
-   - Implement Supabase Auth magic link plus email/password option.
-   - Create `user_profiles` row after successful sign‑up.
-   - Present the **Take Interview** or **I Don’t Care** choice.
-   - Generate employee assignment (department, role, object) and save to `user_profiles`.
+Tasks:
 
-3. **Employee Portal** (`/portal`):
-   - Show employee ID, department, role, assigned object, house rule, uniform recommendation.
-   - Display first phone message (static for now).  Save message data to `phone_messages` if needed.
-   - Provide **Clock Out** button linking to `/clock-out`.
+```txt
+- Compare design/claude/html/data.js against live static data.
+- Compare static data against Supabase seed migration.
+- Add missing products, objects, phone messages, headlines, player notes, ventures, and search terms.
+- Keep schema stable unless a clear additive field is needed.
+- Add a new additive seed migration if needed.
+- Update docs after the data pass.
+```
 
-## Sprint 2 – Clock Out & After Hours
+## Sprint B — Detail page visual polish
 
-1. **Clock Out** (`/clock-out`):
-   - Show short loading sequence (“Ending approved session… Supervisor connection lost… Clock discrepancy detected…”).
-   - Set `shift_status = 'clocked_out'` in `user_profiles` with the timestamp.
-   - Redirect to `/after-hours`.
+Tasks:
 
-2. **After Hours** (`/after-hours`):
-   - Build hero (dive bar collage: lowrider glow, motel key, swan feather, wall clock, receipts).  Can be static image initially.
-   - The Wall: vertical feed of news items, classifieds, public notices, and lore.  Use static seed data for now.
-   - Back Bar: show product previews (available + redacted) with call to view more in `/rack`.
-   - Phone Behind The Bar preview: show three messages; link to full log.
-   - People Still Here: list a few characters with short intros (e.g., Nun Dog, The Driver).
-   - Radio preview: show current show name and link to `/radio`.
-   - Lost & Found snippets: show three objects; link to `/lost-found`.
-   - Link to Idle Hands Invitational (visible only after Clock Out).
+```txt
+- Product file page parity: /rack/[slug]
+- Object file page parity: /lost-found/[slug]
+- News item page parity: /newsstand/[slug]
+- Player bio page parity: /idle-hands/player/[slug]
+- Ensure every detail page links back into the world.
+```
 
-3. **Phone Behind The Bar** (`/phone`):
-   - Load static messages from local seed or Supabase table.
-   - Render categories: rides, deliveries, weird voicemails, invites, OmniShift interruptions.
-   - Provide easy navigation back to After Hours.
+## Sprint C — Portal and signup visual polish
 
-## Sprint 3 – The Rack & Objects
+Tasks:
 
-1. **Rack page** (`/rack`):
-   - Build status strip (Available, Removed, etc.).  Use local seed data for product list.
-   - Render a table of products.  Each row includes thumbnail, name, status badge, price, department, related object, description, size dropdown (disabled), and a “File Request” or “Notify Me” link.
-   - Implement redacted rows with black bars and “Clock Out to view” labels.
-   - Sorting and filters: use simple dropdowns for issue type, shift, status, colour, size.
+```txt
+- Increase OmniShift portal density.
+- Add more fake HR/AI corporate language.
+- Add profile identity artifact blocks.
+- Improve signup/interview visual rhythm.
+- Improve transition from signup to portal to clock out.
+```
 
-2. **Product file** (`/rack/[slug]`):
-   - Use `ProductLayout.astro` to display product details, story, object metadata, and purchase buttons (disabled for V1 if no checkout).  Show redacted image if product is hidden.
+## Sprint D — Secrets and saved artifacts
 
-3. **Lost & Found** (`/lost-found`):
-   - Show object cards using data from `lost_objects` (local JSON or Supabase).  Each card includes image, name, item number, status, reality label, location, meaning, related product, and link.
-   - Provide filter controls (type, location, reality status, status).
-   - Users can click **Save** on objects if logged in; call a function to add `user_saved_objects` row.  Display saved state in UI.
+Tasks:
 
-4. **Object file** (`/lost-found/[slug]`):
-   - Detailed view: long description, meaning, related product, story fragment, unlock hint.  If object unlocks secrets, show requirements (“Combine with Fuzzy Dice to find Room 8”).
+```txt
+- Implement save object/product/artifact behavior.
+- Implement first secret unlock triggers.
+- Add Room 8 teaser route or hidden unlock shell.
+- Add user_secrets write/read helpers.
+- Add visible but mysterious unlock feedback.
+```
 
-## Sprint 4 – Newsstand & Ventures & Wall
+## Sprint E — Sign The Wall
 
-1. **Newsstand** (`/newsstand`):
-   - Render front page layout with multiple columns (Headlines, Public Notices, Classifieds, Corrections, Staff Memos, Product Sightings, OmniShift ventures).  Use static seed data.
-   - Provide pagination or load more.
-   - Each news item links to `/newsstand/[slug]` for full story.
+Tasks:
 
-2. **News item** (`/newsstand/[slug]`):
-   - Show headline, subhead, body text, related objects/products, image if available, and a “Return to Newsstand” link.
+```txt
+- Persist wall posts to Supabase.
+- Keep public approved posts visible.
+- Add local preview fallback.
+- Add moderation status language.
+- Preserve bathroom-wall/marker feel.
+```
 
-3. **OmniShift Ventures** (`/ventures`):
-   - Simple table listing ventures: name, category, status, AI rationale, Breakroom note.  Use local seed.
-   - Each venture can link to a news story or product if relevant.
+## Sprint F — Radio
 
-4. **Sign The Wall** (`/sign-the-wall`):
-   - Create wall posts table (`wall_posts`).  Show public approved posts.  Provide submission form with fields: alias (optional), message, marker colour, wall location (stall, tile, mirror), object icon.  On submission, insert a `pending` post; will need manual or automated approval logic later.
+Tasks:
 
-5. **Moderation**:  For V1, hide unapproved posts by default.  Later we can add a simple review UI (internal only).
+```txt
+- Add real stream provider embed when chosen.
+- Use PUBLIC_RADIO_STREAM_URL.
+- Add show schedule and station IDs.
+- Add fake ads and radio logs.
+- Link radio messages to Phone and Newsstand.
+```
 
-## Sprint 5 – Idle Hands Invitational & Personas
+## Sprint G — Cloudflare production setup
 
-1. **Tournament page** (`/idle-hands`):
-   - Build old‑web styled bracket.  Use seeded bracket for now.
-   - List players with alias and handicap.  Link to player bios.
-   - Display match schedule table.  Use fake times (e.g., 7:30 PM, 8:45 PM).  Include notes about clock disputes.
-   - Provide House Rules and Pot sections.
-   - Provide registration form with fields described in the Route Map.  Save registration to `user_tournament_registrations` and generate After Hours persona in `after_hours_profiles`.
-   - On submission, display personalised assets (player card, receipt, bracket placement, phone message).  Also update user portal with new `after_hours_profile`.
+Manual unless Cloudflare connector is enabled:
 
-2. **Player bios** (`/idle-hands/player/[slug]`):
-   - Render known fields: alias, handicap, known for, last seen, signature object, Regular’s Note, Risk, related headline.
-   - Show object icons linking to Lost & Found pages.
+```txt
+- Connect Pages project to GitHub.
+- Add PUBLIC_SUPABASE_URL.
+- Add PUBLIC_SUPABASE_ANON_KEY.
+- Add PUBLIC_SITE_URL.
+- Add PUBLIC_RADIO_STREAM_URL later.
+- Validate production build and auth callback.
+```
 
-3. **After Hours Persona Profile** (`/portal/after-hours-profile`):
-   - Show After Hours data for the user.  Mirror some Employee Profile layout but with the dive‑bar style.  Include generated assets and an **Invite** link to share the tournament page.
+## Sprint H — Supabase dashboard setup
 
-## Sprint 6 – Breakroom Radio
+Manual unless Supabase auth config tooling becomes available:
 
-1. **Radio page** (`/radio`):
-   - Use a Live365 embed or placeholder audio player.  Show Now Playing metadata, listeners count, and a schedule grid.
-   - List shows with times and hosts.  Provide sample station IDs and fake ads.  For V1, audio can be a loop of original soundscapes and station IDs if the Live365 streaming plan is not yet active.
-   - Create tables: `radio_shows`, `radio_episodes`, `radio_requests`.  Use seed data for initial shows.
+```txt
+- Add auth redirect URLs.
+- Confirm email provider settings.
+- Add Google OAuth credentials later.
+- Add branded email templates later.
+```
 
-2. **Integrate radio into other pages**:  Show now‑playing bar on After Hours, display upcoming shows in Idle Hands page, and allow requests via the Phone page or forms.
+## Product truth
 
-## Sprint 7 – Secrets & Final QA
+The Breakroom is not just a site. It is a functioning world that uses website mechanics as lore mechanics.
 
-1. **Secret system**:  Build triggers (object combinations, search queries, behaviours) using `secrets` and `user_secret_unlocks`.  Example triggers: Save Motel Key + Wall Clock → unlock Room 8 teaser; search “miss september” → swan phone message; click clock multiple times → open Clock File.
+Every build task should either:
 
-2. **404 page**:  Create custom error page with on‑brand copy (“The page left. It did not clock out.”) and helpful links back.
-
-3. **Staff Only teaser**:  Build locked page with hint text.  No content yet.
-
-4. **Performance and SEO**:  Ensure pages load quickly.  Pre‑render content where possible.  Clean up meta tags and OG tags.
-
-5. **Accessibility**:  Alt tags on images, keyboard navigation, legible fonts.  Ensure forms are labelled.
-
-6. **Final QA**:  Test sign‑up flows, Clock Out, object saving, tournament registration, radio playback, secret triggers.  Validate user sessions and data saving.
-
-## Future Sprints
-
-These tasks are for later releases:
-
-- Build Staff Only portal with deep secrets and staff files.
-- Add approved real dive bars (pending research and legal compliance).
-- Expand tournament system to allow real or virtual tournaments.
-- Build Back Booth Forum and moderated message board.
-- Add a full classifieds page with user listings.
-- Integrate real e‑commerce checkout (POD) when product designs are finalised.
-- Develop mobile app or PWA version.
+```txt
+- Make the site more useful.
+- Make the world feel more real.
+- Make the user profile/persona more persistent.
+- Make the old-web fiction more interactive.
+```
