@@ -1,6 +1,7 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
+import IdleHandsRegistration from '@/components/idle-hands/IdleHandsRegistration';
 const players = ['Nun Dog','Mugsy Late Again','The Driver','Miss September','Coffee','The Kid With The Mop','House Money','Motel 8','Gold Grill','Clock Dispute','Soft Break Steve','Applause Money'];
 ---
 <OldWebLayout title="Idle Hands Invitational" section="idlehands">
@@ -16,14 +17,7 @@ const players = ['Nun Dog','Mugsy Late Again','The Driver','Miss September','Cof
         <tr><th>Current time</th><td>1:47 AM</td></tr>
       </table>
     </TableBox>
-    <TableBox title="Register">
-      <p>Registration creates your After Hours Persona.</p>
-      <form>
-        <input placeholder="alias, or leave blank" style="width:100%;padding:10px;margin-bottom:8px;" />
-        <select style="width:100%;padding:10px;margin-bottom:8px;"><option>Take Interview</option><option>I Don't Care</option></select>
-        <button class="old-button" type="button">Generate Persona</button>
-      </form>
-    </TableBox>
+    <IdleHandsRegistration client:load />
   </div>
   <TableBox title="Roster / Long-time regular rundown">
     <div class="grid-3">
