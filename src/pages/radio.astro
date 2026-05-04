@@ -1,0 +1,19 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import RadioPlayer from '@/components/radio/RadioPlayer';
+---
+<OldWebLayout title="Breakroom Radio / Channel 1:47" section="radio">
+  <h1>Breakroom Radio</h1>
+  <p>Channel 1:47. Broadcasting from somewhere behind the bar.</p>
+  <RadioPlayer client:load />
+  <section class="old-shell" style="margin-top:16px;">
+    <div class="old-header">Schedule</div>
+    <table class="table-box">
+      <tr><th>Time</th><th>Show</th><th>Host</th></tr>
+      <tr><td>1:47</td><td>Lot Weather</td><td>The Driver</td></tr>
+      <tr><td>2:13</td><td>Phone Behind The Bar</td><td>Room Admin</td></tr>
+      <tr><td>3:00</td><td>OmniShift Compliance Hour</td><td>System Voice</td></tr>
+      <tr><td>4:11</td><td>Back Booth Mix</td><td>Coffee</td></tr>
+    </table>
+  </section>
+</OldWebLayout>

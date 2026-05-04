@@ -1,0 +1,20 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+const ventures = [
+  ['Still Open Burger','Lifestyle & Hospitality','Active','AI noticed humans eat late and got carried away.'],
+  ['Motel 8.5','Essential Services','Under review','A lodging concept between a motel and a clerical error.'],
+  ['Hot Air Balloon Insurance','Experimental','Approved somehow','The dashboard showed strong upward mobility.'],
+  ['BYOB Petting Zoo','Experimental','Paused','Too many assumptions about goats.'],
+  ['Receipt Intelligence Labs','Essential Services','Active','No total is still data.'],
+  ['Coffee Freshness Compliance','Operations','Disputed','The coffee is not fresh. It is active.'],
+  ['Swan Passenger Safety','Lifestyle & Hospitality','Active','Passenger status unresolved. Seatbelt guidance pending.']
+];
+---
+<OldWebLayout title="OmniShift Ventures" section="ventures">
+  <h1>OmniShift Ventures</h1>
+  <p>The AI is constantly investing, acquiring, inventing, and assigning businesses. Executives do not understand it, but the charts look confident.</p>
+  <table class="table-box">
+    <tr><th>Name</th><th>Category</th><th>Status</th><th>AI Rationale</th></tr>
+    {ventures.map((v) => <tr><td>{v[0]}</td><td>{v[1]}</td><td>{v[2]}</td><td>{v[3]}</td></tr>)}
+  </table>
+</OldWebLayout>

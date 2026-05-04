@@ -1,0 +1,28 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import TableBox from '@/components/oldweb/TableBox.astro';
+import { generateEmployee } from '@/lib/generators/employeeAssignment';
+const employee = generateEmployee('preview@omnishift.work');
+---
+<OldWebLayout title="OmniShift Employee Portal" section="portal">
+  <h1>OmniShift Employee File</h1>
+  <p class="red-stamp">Hired / not requested</p>
+  <div class="grid-2">
+    <TableBox title="Assigned Identity">
+      <table class="table-box">
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Employee ID</td><td>{employee.id}</td></tr>
+        <tr><td>Department</td><td>{employee.department}</td></tr>
+        <tr><td>Role</td><td>{employee.role}</td></tr>
+        <tr><td>Shift</td><td>{employee.shift}</td></tr>
+        <tr><td>Assigned Object</td><td>{employee.object}</td></tr>
+        <tr><td>Uniform Recommendation</td><td>{employee.uniform}</td></tr>
+      </table>
+    </TableBox>
+    <TableBox title="House Rule">
+      <p style="font-size:24px;font-family:var(--type-paper);">“{employee.houseRule}”</p>
+      <p><a class="old-button" href="/clock-out">Clock Out</a></p>
+      <p><a href="/portal/after-hours-profile">View After Hours Persona</a></p>
+    </TableBox>
+  </div>
+</OldWebLayout>

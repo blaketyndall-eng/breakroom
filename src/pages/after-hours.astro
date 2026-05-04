@@ -1,0 +1,32 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import TableBox from '@/components/oldweb/TableBox.astro';
+import { BREAKROOM_DATA } from '@/content/data/breakroom';
+---
+<OldWebLayout title="After Hours" section="afterhours">
+  <div class="status-strip"><span>CLOCKED OUT</span><span>1:47 AM</span><span>Supervisor connection lost</span><span>The room is active</span></div>
+  <h1>After Hours</h1>
+  <p>The lights are wrong. The clock is right. The corporate page is still functioning, but the room has taken over.</p>
+  <div class="grid-3">
+    <TableBox title="Phone Behind The Bar">
+      {BREAKROOM_DATA.voicemails.slice(0, 3).map((v) => <p><b>{v.from}</b><br/><span style="font-family:var(--type-mono);font-size:11px;">{v.time}</span><br/>{v.body}</p>)}
+      <a href="/phone">Open phone log</a>
+    </TableBox>
+    <TableBox title="Back Bar Issue">
+      {BREAKROOM_DATA.products.slice(0, 3).map((p) => <p><b>{p.name}</b><br/>{p.reason}</p>)}
+      <a href="/rack">View The Rack</a>
+    </TableBox>
+    <TableBox title="Things Found After Close">
+      {BREAKROOM_DATA.objects.slice(0, 3).map((o) => <p><b>{o.name}</b><br/>{o.meaning}</p>)}
+      <a href="/lost-found">Open archive</a>
+    </TableBox>
+  </div>
+  <TableBox title="Pages the company did not approve">
+    <ul>
+      <li><a href="/idle-hands">Idle Hands Invitational</a></li>
+      <li><a href="/sign-the-wall">Sign The Wall</a></li>
+      <li><a href="/radio">Breakroom Radio / Channel 1:47</a></li>
+      <li><a href="/ventures">OmniShift Ventures</a></li>
+    </ul>
+  </TableBox>
+</OldWebLayout>

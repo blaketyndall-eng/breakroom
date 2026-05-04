@@ -1,0 +1,14 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import { BREAKROOM_DATA } from '@/content/data/breakroom';
+---
+<OldWebLayout title="Phone Behind The Bar" section="phone">
+  <h1>Phone Behind The Bar</h1>
+  <p>Ubers, DoorDash, weird voicemails, invites, flirtatious late-night messages, and OmniShift interruptions.</p>
+  {BREAKROOM_DATA.voicemails.map((v) => (
+    <article class="memo-box" style="margin-bottom:12px;">
+      <p style="font-family:var(--type-mono);font-size:11px;text-transform:uppercase;">FROM: {v.from} / {v.time}</p>
+      <p style="font-size:18px;">{v.body}</p>
+    </article>
+  ))}
+</OldWebLayout>

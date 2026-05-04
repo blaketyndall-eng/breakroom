@@ -1,0 +1,19 @@
+---
+import ArchiveLayout from '@/layouts/ArchiveLayout.astro';
+import { BREAKROOM_DATA } from '@/content/data/breakroom';
+import { slugify } from '@/lib/slug';
+---
+<ArchiveLayout title="Lost & Found" eyebrow="Lost & Found / Object Archive">
+  <p>Real objects, culturally funny objects, digital objects, and things that keep showing up in the wrong drawer.</p>
+  <div class="grid-3">
+    {BREAKROOM_DATA.objects.map((o) => (
+      <article class="object-card" data-item={`ITEM ${o.id}`}>
+        <h2><a href={`/lost-found/${slugify(o.name)}`}>{o.name}</a></h2>
+        <p><b>Found:</b> {o.found}</p>
+        <p><b>Condition:</b> {o.cond}</p>
+        <p><b>Meaning:</b> {o.meaning}</p>
+        <p><span class="red-stamp">{o.status}</span></p>
+      </article>
+    ))}
+  </div>
+</ArchiveLayout>

@@ -1,0 +1,7 @@
+---
+const { title } = Astro.props;
+---
+<section class="old-shell" style="margin-bottom:16px;">
+  {title && <div class="old-header">{title}</div>}
+  <div class="old-body"><slot /></div>
+</section>

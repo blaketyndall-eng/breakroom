@@ -1,0 +1,52 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import { BREAKROOM_DATA } from '@/content/data/breakroom';
+import { slugify } from '@/lib/slug';
+
+type NewsstandItem = {
+  t?: string;
+  head?: string;
+  k?: string;
+  b?: string;
+  body?: string;
+  byline?: string;
+};
+
+type NewsstandEntry = {
+  group: string;
+  title: string;
+  body: string;
+  byline: string;
+};
+
+type NewsstandGroup = [string, NewsstandItem[]];
+
+const groups = Object.entries(BREAKROOM_DATA.headlines) as NewsstandGroup[];
+
+const entries: NewsstandEntry[] = groups.flatMap(([group, items]) =>
+  items.map((item) => ({
+    group,
+    title: item.t ?? item.head ?? 'Untitled Notice',
+    body: item.k ?? item.b ?? item.body ?? 'No further information was provided.',
+    byline: item.byline ?? 'STAFF / 1:47 A.M.',
+  }))
+);
+
+export function getStaticPaths() {
+  return entries.map((entry) => ({
+    params: { slug: slugify(entry.title) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props as { entry: NewsstandEntry };
+---
+<OldWebLayout title={`${entry.title} / Newsstand`} section="newsstand">
+  <a href="/newsstand">← Back to 3AM Edition</a>
+  <article class="newsprint-card" style="max-width:760px;margin:24px auto;">
+    <p style="font-family:var(--type-mono);text-transform:uppercase;">{entry.group} / {entry.byline}</p>
+    <h1 style="font-size:48px;line-height:.95;text-transform:uppercase;">{entry.title}</h1>
+    <p style="font-size:22px;line-height:1.35;">{entry.body}</p>
+    <p>The source could not be reached for comment. The room declined to answer because it was busy being a room.</p>
+  </article>
+</OldWebLayout>

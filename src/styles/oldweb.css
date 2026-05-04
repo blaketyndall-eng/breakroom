@@ -1,0 +1,94 @@
+.old-shell {
+  border: 2px solid #14110e;
+  background: #efe7d3;
+  box-shadow: 4px 4px 0 rgba(0,0,0,.25);
+}
+
+.old-header {
+  background: #1f5d3a;
+  color: #fff;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 12px;
+  letter-spacing: .12em;
+  padding: 8px 10px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #14110e;
+}
+
+.old-body {
+  padding: 14px;
+}
+
+.status-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #15120f;
+  color: #d8c9a6;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 11px;
+  padding: 7px 10px;
+  border: 1px solid #000;
+}
+
+.status-strip span {
+  border-right: 1px solid #5a513f;
+  padding-right: 8px;
+}
+
+.table-box {
+  width: 100%;
+  border-collapse: collapse;
+  background: #f6f3ec;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 12px;
+}
+
+.table-box th,
+.table-box td {
+  border: 1px solid #14110e;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.table-box th {
+  background: #d8c9a6;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.red-stamp {
+  display: inline-block;
+  border: 3px double #b00020;
+  color: #b00020;
+  padding: 4px 10px;
+  transform: rotate(-5deg);
+  font-family: var(--type-typer, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: .13em;
+}
+
+.visitor-counter {
+  display: inline-flex;
+  background: #000;
+  color: #33ff66;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  padding: 3px 7px;
+  border: 1px inset #777;
+  letter-spacing: .18em;
+}
+
+.old-button {
+  border: 2px outset #d8c9a6;
+  background: #efe7d3;
+  color: #14110e;
+  padding: 7px 12px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.old-button:hover {
+  border-style: inset;
+}
