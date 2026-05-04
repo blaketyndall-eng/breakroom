@@ -1,11 +1,20 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
+import CatalogRail from '@/components/oldweb/CatalogRail.astro';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 import { slugify } from '@/lib/slug';
+
+const catalogItems = BREAKROOM_DATA.products.map((p, i) => ({
+  sku: p.sku,
+  name: p.name,
+  note: p.reason,
+  href: `/rack/${slugify(p.name)}`,
+  status: i > 3 ? 'REMOVED' : 'ISSUED GOODS',
+}));
 ---
 <OldWebLayout title="The Rack" section="rack">
-  <div class="status-strip"><span>2003 inventory page</span><span>issue: Shift End</span><span>checkout disabled</span><span>products appear as files</span></div>
+  <div class="status-strip"><span>2003 inventory page</span><span>issue: Shift End</span><span>checkout disabled</span><span>products appear as files</span><span>last sync 1:47</span></div>
 
   <section class="hero-split">
     <div>
@@ -17,8 +26,11 @@ import { slugify } from '@/lib/slug';
       <p><b>Inventory warning:</b> Staff count and item count do not match.</p>
       <p><b>Checkout:</b> not enabled yet.</p>
       <p><b>Approved move:</b> request a file, save the object, wait under bad lights.</p>
+      <p><span class="red-stamp">NO CART / FILE ONLY</span></p>
     </aside>
   </section>
+
+  <CatalogRail title="Featured issue files / 2003 catalog rail" items={catalogItems.slice(0, 5)} />
 
   <div class="rack-tools old-shell">
     <div class="old-header">Filter inventory</div>
@@ -27,6 +39,7 @@ import { slugify } from '@/lib/slug';
       <span>Issue: Shift End</span>
       <span>Department: all</span>
       <span>Sort: last seen</span>
+      <span>Payment: not accepted</span>
     </div>
   </div>
 
@@ -61,11 +74,12 @@ import { slugify } from '@/lib/slug';
         <button class="old-button" type="button">Save Preference / Later</button>
       </form>
     </TableBox>
-    <TableBox title="Removed from rack">
+    <TableBox title="Removed from rack / staff notes">
       <ul>
         <li>White swan staff jacket — wrong department.</li>
         <li>Room 8 work shirt — key required.</li>
         <li>Applause Money cap — finance objected.</li>
+        <li>Felt-green work pants — photographed once, denied twice.</li>
       </ul>
     </TableBox>
   </section>

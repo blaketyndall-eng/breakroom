@@ -1,11 +1,24 @@
 ---
 import ArchiveLayout from '@/layouts/ArchiveLayout.astro';
+import ObjectEvidenceGrid from '@/components/oldweb/ObjectEvidenceGrid.astro';
+import LinkMaze from '@/components/oldweb/LinkMaze.astro';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 import { slugify } from '@/lib/slug';
+
+const evidenceItems = BREAKROOM_DATA.objects.slice(0, 4).map((o) => ({
+  name: o.name,
+  detail: o.meaning,
+  href: `/lost-found/${slugify(o.name)}`,
+  code: `ITEM-${o.id}`,
+}));
 ---
 <ArchiveLayout title="Lost & Found" eyebrow="Lost & Found / Object Archive">
-  <p>Real objects, culturally funny objects, digital objects, and things that keep showing up in the wrong drawer.</p>
-  <div class="grid-3">
+  <div class="status-strip"><span>object archive</span><span>drawer: unlocked</span><span>receipts without totals</span><span>cataloged after close</span></div>
+  <p class="tagline-block">Real objects, culturally funny objects, digital objects, and things that keep showing up in the wrong drawer.</p>
+
+  <ObjectEvidenceGrid title="Evidence drawer / recently handled" items={evidenceItems} />
+
+  <div class="grid-3" style="margin-top:16px;">
     {BREAKROOM_DATA.objects.map((o) => (
       <article class="object-card" data-item={`ITEM ${o.id}`}>
         <h2><a href={`/lost-found/${slugify(o.name)}`}>{o.name}</a></h2>
@@ -16,4 +29,11 @@ import { slugify } from '@/lib/slug';
       </article>
     ))}
   </div>
+
+  <LinkMaze title="Cross-referenced drawer notes" notice="Every object points somewhere. Some point back." links={[
+    { href: '/phone', label: 'Phone evidence', note: 'missed calls from objects that should not call', stamp: 'CALL' },
+    { href: '/newsstand', label: 'Public notices', note: 'objects named in corrections and rumors' },
+    { href: '/rack', label: 'Product sightings', note: 'things that became inventory by mistake' },
+    { href: '/after-hours', label: 'Return to counter', note: 'where most items are found twice', stamp: 'BACK' }
+  ]} />
 </ArchiveLayout>

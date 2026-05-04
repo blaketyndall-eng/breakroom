@@ -1,29 +1,47 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
+import BracketBoard from '@/components/oldweb/BracketBoard.astro';
+import LinkMaze from '@/components/oldweb/LinkMaze.astro';
 import IdleHandsRegistration from '@/components/idle-hands/IdleHandsRegistration';
 const players = ['Nun Dog','Mugsy Late Again','The Driver','Miss September','Coffee','The Kid With The Mop','House Money','Motel 8','Gold Grill','Clock Dispute','Soft Break Steve','Applause Money'];
 ---
 <OldWebLayout title="Idle Hands Invitational" section="idlehands">
-  <div class="status-strip"><span>poolhall.sleeper.net</span><span>Race to 7</span><span>Cash only</span><span>Clock optional</span></div>
+  <div class="status-strip"><span>poolhall.sleeper.net</span><span>Race to 7</span><span>Cash only</span><span>Clock optional</span><span>bracket disputed</span></div>
   <h1>IDLE HANDS INVITATIONAL</h1>
-  <p>Old school pool tournament page. It may be real, old, upcoming, AI-generated, recurring, or a ritual. Late registration accepted. Probably.</p>
+  <p class="tagline-block">Old school pool tournament page. It may be real, old, upcoming, AI-generated, recurring, or a ritual. Late registration accepted. Probably.</p>
+
   <div class="grid-2">
     <TableBox title="Tournament Status">
       <table class="table-box">
-        <tr><th>Status</th><td>Unresolved</td></tr>
-        <tr><th>Doors</th><td>If they exist, open at 7:30 PM</td></tr>
-        <tr><th>Pot</th><td>$20 cash / no cards / applause not accepted</td></tr>
-        <tr><th>Current time</th><td>1:47 AM</td></tr>
+        <tbody>
+          <tr><th>Status</th><td>Unresolved</td></tr>
+          <tr><th>Doors</th><td>If they exist, open at 7:30 PM</td></tr>
+          <tr><th>Pot</th><td>$20 cash / no cards / applause not accepted</td></tr>
+          <tr><th>Current time</th><td>1:47 AM</td></tr>
+          <tr><th>Dress code</th><td>Whatever you wore after the shift ended</td></tr>
+          <tr><th>Prize</th><td>Title unclear / respect unlikely</td></tr>
+        </tbody>
       </table>
     </TableBox>
     <IdleHandsRegistration client:load />
   </div>
+
+  <BracketBoard players={players} />
+
   <TableBox title="Roster / Long-time regular rundown">
     <div class="grid-3">
-      {players.map((p, i) => <article class="memo-box"><h2><a href={`/idle-hands/player/${p.toLowerCase().replaceAll(' ','-')}`}>{p}</a></h2><p>Handicap: {i % 7 + 2}. Known for showing up when the light gets bad.</p></article>)}
+      {players.map((p, i) => <article class="memo-box"><h2><a href={`/idle-hands/player/${p.toLowerCase().replaceAll(' ','-')}`}>{p}</a></h2><p><b>Handicap:</b> {i % 7 + 2}. Known for showing up when the light gets bad.</p><p><span class="red-stamp">TABLE {(i % 8) + 1}</span></p></article>)}
     </div>
   </TableBox>
+
+  <LinkMaze title="Tournament office / old pool site links" notice="The site was last updated by someone who says they never touched a computer." links={[
+    { href: '/portal/after-hours-profile', label: 'Persona file', note: 'your table assignment and regular note', stamp: 'PLAYER' },
+    { href: '/phone', label: 'Call the bar', note: 'rideshare, courier, and bad invite logs' },
+    { href: '/lost-found', label: 'Cue room objects', note: 'chalk, timing slips, keys, receipts' },
+    { href: '/after-hours', label: 'Back to After Hours', note: 'where the bracket was probably printed' }
+  ]} />
+
   <TableBox title="House Rules">
     <ol>
       <li>House rules apply.</li><li>No soft hands.</li><li>Call your own fouls.</li><li>If you argue a call, we laugh.</li><li>Tip the bartender.</li><li>Don’t be an ass.</li>

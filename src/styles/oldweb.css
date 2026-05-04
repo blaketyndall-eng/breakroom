@@ -208,16 +208,107 @@
   transform: rotate(-2deg);
 }
 
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.catalog-card {
+  border: 1px solid #14110e;
+  background: #f6f3ec;
+  padding: 8px;
+  min-height: 230px;
+  box-shadow: 2px 2px 0 rgba(20,17,14,.18);
+}
+
+.catalog-thumb {
+  min-height: 106px;
+  margin-bottom: 8px;
+}
+
+.catalog-sku,
+.bracket-round-title {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #5a513f;
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.catalog-card h3 {
+  margin: 0 0 6px;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 19px;
+  line-height: 1;
+}
+
+.bracket-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1.1fr .9fr .8fr;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.bracket-round {
+  min-width: 150px;
+}
+
+.bracket-slot {
+  border: 1px solid #14110e;
+  background: #f6f3ec;
+  padding: 8px;
+  margin-bottom: 10px;
+  min-height: 58px;
+  box-shadow: 2px 2px 0 rgba(20,17,14,.16);
+}
+
+.bracket-slot span {
+  display: block;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bracket-slot small {
+  display: block;
+  margin-top: 4px;
+  color: #5a513f;
+  font-family: var(--type-typer, 'Courier New', monospace);
+}
+
+.object-card {
+  border: 2px solid #14110e;
+  background: #f6f3ec;
+  padding: 12px;
+  position: relative;
+  box-shadow: 3px 3px 0 rgba(20,17,14,.2);
+}
+
+.object-card::before {
+  content: attr(data-item);
+  display: inline-block;
+  background: #14110e;
+  color: #efe7d3;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .16em;
+  padding: 3px 6px;
+  margin-bottom: 8px;
+}
+
 @media (max-width: 900px) {
   .link-maze-grid,
-  .evidence-grid {
+  .evidence-grid,
+  .catalog-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 560px) {
   .link-maze-grid,
-  .evidence-grid {
+  .evidence-grid,
+  .catalog-grid {
     grid-template-columns: 1fr;
   }
 }
