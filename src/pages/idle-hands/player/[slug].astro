@@ -1,0 +1,20 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+const players = ['Nun Dog','Mugsy Late Again','The Driver','Miss September','Coffee','The Kid With The Mop','House Money','Motel 8','Gold Grill','Clock Dispute','Soft Break Steve','Applause Money'];
+export function getStaticPaths() { return players.map((name) => ({ params: { slug: name.toLowerCase().replaceAll(' ','-') }, props: { name } })); }
+const { name } = Astro.props;
+---
+<OldWebLayout title={`${name} / Player Bio`} section="idlehands">
+  <a href="/idle-hands">← Back to Idle Hands</a>
+  <article class="old-shell" style="max-width:720px;margin:24px auto;">
+    <div class="old-header">Player Bio / Regular's rundown</div>
+    <div class="old-body">
+      <h1>{name}</h1>
+      <p><b>Known for:</b> Playing better after the first bad call.</p>
+      <p><b>Last seen:</b> Near the table light, refusing to explain the score.</p>
+      <p><b>Signature object:</b> Cue chalk in a jewelry box.</p>
+      <p><b>Regular's note:</b> Has a face people remember. Especially after the room gets quiet.</p>
+      <p><span class="red-stamp">RISK / UNVERIFIED</span></p>
+    </div>
+  </article>
+</OldWebLayout>

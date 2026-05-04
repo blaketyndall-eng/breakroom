@@ -1,0 +1,12 @@
+---
+import OldWebLayout from './OldWebLayout.astro';
+const { title, eyebrow = 'Archive' } = Astro.props;
+---
+<OldWebLayout title={title} section="archive">
+  <div class="old-shell">
+    <div class="old-header">{eyebrow}</div>
+    <div class="old-body">
+      <slot />
+    </div>
+  </div>
+</OldWebLayout>

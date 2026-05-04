@@ -1,0 +1,28 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import TableBox from '@/components/oldweb/TableBox.astro';
+import { BREAKROOM_DATA } from '@/content/data/breakroom';
+import { slugify } from '@/lib/slug';
+export function getStaticPaths() {
+  return BREAKROOM_DATA.products.map((product) => ({ params: { slug: slugify(product.name) }, props: { product } }));
+}
+const { product } = Astro.props as any;
+---
+<OldWebLayout title={`${product.name} / Product File`} section="rack">
+  <a href="/rack">← Return to The Rack</a>
+  <h1>{product.name}</h1>
+  <div class="grid-2">
+    <div class="stripe" style="height:360px;">[{product.name} image pending]</div>
+    <TableBox title="Product File">
+      <table class="table-box">
+        <tr><th>SKU</th><td>{product.sku}</td></tr>
+        <tr><th>Price</th><td>{product.price}</td></tr>
+        <tr><th>Department</th><td>{product.dept}</td></tr>
+        <tr><th>Related Object</th><td>{product.obj}</td></tr>
+        <tr><th>Reason</th><td>{product.reason}</td></tr>
+        <tr><th>Clipping</th><td>{product.clip}</td></tr>
+      </table>
+      <p><button class="old-button">Notify Me / File Request</button></p>
+    </TableBox>
+  </div>
+</OldWebLayout>

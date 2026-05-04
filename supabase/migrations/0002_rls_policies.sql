@@ -1,0 +1,45 @@
+alter table public.products enable row level security;
+alter table public.lost_objects enable row level security;
+alter table public.news_items enable row level security;
+alter table public.user_profiles enable row level security;
+alter table public.after_hours_profiles enable row level security;
+alter table public.user_artifacts enable row level security;
+alter table public.user_saved_objects enable row level security;
+alter table public.tournaments enable row level security;
+alter table public.tournament_players enable row level security;
+alter table public.user_tournament_registrations enable row level security;
+alter table public.phone_messages enable row level security;
+alter table public.wall_posts enable row level security;
+alter table public.ventures enable row level security;
+alter table public.radio_shows enable row level security;
+alter table public.radio_episodes enable row level security;
+alter table public.radio_requests enable row level security;
+alter table public.secrets enable row level security;
+alter table public.user_secret_unlocks enable row level security;
+alter table public.site_events enable row level security;
+
+create policy "Public products are readable" on public.products for select using (is_visible = true);
+create policy "Public objects are readable" on public.lost_objects for select using (is_public = true);
+create policy "Public news is readable" on public.news_items for select using (is_public = true);
+create policy "Public tournaments are readable" on public.tournaments for select using (is_public = true);
+create policy "Tournament players are readable" on public.tournament_players for select using (true);
+create policy "Public phone messages are readable" on public.phone_messages for select using (is_public = true);
+create policy "Approved wall posts are readable" on public.wall_posts for select using (status = 'approved');
+create policy "Public ventures are readable" on public.ventures for select using (is_public = true);
+create policy "Public radio shows are readable" on public.radio_shows for select using (is_public = true);
+create policy "Public radio episodes are readable" on public.radio_episodes for select using (is_public = true);
+
+create policy "Users can read own profile" on public.user_profiles for select using (auth.uid() = id);
+create policy "Users can update own profile" on public.user_profiles for update using (auth.uid() = id);
+create policy "Users can insert own profile" on public.user_profiles for insert with check (auth.uid() = id);
+
+create policy "Users can manage own after hours profile" on public.after_hours_profiles for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "Users can manage own artifacts" on public.user_artifacts for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "Users can manage own saved objects" on public.user_saved_objects for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "Users can manage own registrations" on public.user_tournament_registrations for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "Users can submit wall posts" on public.wall_posts for insert with check (auth.uid() = user_id or user_id is null);
+create policy "Users can submit radio requests" on public.radio_requests for insert with check (auth.uid() = user_id or user_id is null);
+create policy "Active secrets readable by authenticated users" on public.secrets for select using (is_active = true and auth.role() = 'authenticated');
+create policy "Users can read own secret unlocks" on public.user_secret_unlocks for select using (auth.uid() = user_id);
+create policy "Users can insert own secret unlocks" on public.user_secret_unlocks for insert with check (auth.uid() = user_id);
+create policy "Events can be inserted" on public.site_events for insert with check (auth.uid() = user_id or user_id is null);

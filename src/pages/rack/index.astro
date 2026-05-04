@@ -1,0 +1,21 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import { BREAKROOM_DATA } from '@/content/data/breakroom';
+import { slugify } from '@/lib/slug';
+---
+<OldWebLayout title="The Rack" section="rack">
+  <div class="status-strip"><span>2003 inventory page</span><span>issue: Shift End</span><span>checkout disabled</span><span>products appear as files</span></div>
+  <h1>The Rack</h1>
+  <p>Uniform assignments, product sightings, removed items, and things that were never fully in stock.</p>
+  <table class="table-box">
+    <thead><tr><th>SKU</th><th>Item</th><th>Status</th><th>Dept.</th><th>Object</th><th>Action</th></tr></thead>
+    <tbody>
+      {BREAKROOM_DATA.products.map((p, i) => (
+        <tr class="inventory-row" data-status={i > 3 ? 'REMOVED' : 'AVAILABLE'}>
+          <td>{p.sku}</td><td><a href={`/rack/${slugify(p.name)}`}>{p.name}</a><br/>{p.reason}</td><td>{i > 3 ? 'REMOVED FROM RACK' : 'AVAILABLE FOR ISSUE'}</td><td>{p.dept}</td><td>{p.obj}</td><td><button class="old-button">File Request</button></td>
+        </tr>
+      ))}
+      <tr class="inventory-row" data-status="CLOCK"><td>SE-██</td><td>████ ███████ ███</td><td>CLOCK OUT TO VIEW</td><td>Wrong Department</td><td>Redacted</td><td><a href="/clock-out">Clock Out</a></td></tr>
+    </tbody>
+  </table>
+</OldWebLayout>

@@ -1,0 +1,33 @@
+---
+import '../styles/global.css';
+import OldHeader from '@/components/oldweb/OldHeader.astro';
+interface Props {
+  title?: string;
+  section?: string;
+  description?: string;
+}
+const { title = 'The Breakroom', section = 'breakroom', description = 'After-hours internet hidden inside a fake company.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en" data-site-mode="3AM">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body class="scanlines grain" data-section={section}>
+    <OldHeader />
+    <main>
+      <slot />
+    </main>
+    <footer class="container" style="padding: 24px 0 48px; font-family: var(--type-mono); font-size: 11px; color: #5a513f;">
+      <div class="status-strip">
+        <span>best viewed after work</span>
+        <span>clock stuck at 1:47</span>
+        <span>visitor <b class="visitor-counter">18439</b></span>
+        <span><a href="/staff-only">staff only</a></span>
+      </div>
+    </footer>
+  </body>
+</html>

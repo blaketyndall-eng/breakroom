@@ -1,0 +1,22 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import { BREAKROOM_DATA } from '@/content/data/breakroom';
+import { slugify } from '@/lib/slug';
+const groups = BREAKROOM_DATA.headlines as any;
+---
+<OldWebLayout title="3AM Edition / Newsstand" section="newsstand">
+  <h1>3AM Edition</h1>
+  <p>An after-hours newspaper stand for true/fake stories, things taken out of context, obvious headlines, public notices, corrections, and whatever your brain found at 3AM.</p>
+  <div class="grid-3">
+    {Object.entries(groups).map(([group, items]) => (
+      <section class="newsprint-card">
+        <h2 style="text-transform:uppercase;">{group}</h2>
+        {items.map((item) => {
+          const title = item.t || item.head;
+          const body = item.k || item.b || item.body;
+          return <article style="border-top:1px solid #14110e;padding-top:10px;margin-top:10px;"><h3><a href={`/newsstand/${slugify(title)}`}>{title}</a></h3><p>{body}</p></article>;
+        })}
+      </section>
+    ))}
+  </div>
+</OldWebLayout>

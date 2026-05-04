@@ -1,0 +1,21 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import TableBox from '@/components/oldweb/TableBox.astro';
+import { generateAfterHoursPersona } from '@/lib/generators/afterHoursPersona';
+const persona = generateAfterHoursPersona('preview@afterhours.local');
+---
+<OldWebLayout title="After Hours Persona" section="afterhours">
+  <h1>After Hours Persona</h1>
+  <TableBox title="Idle Hands Registration File">
+    <table class="table-box">
+      <tr><th>Field</th><th>Value</th></tr>
+      <tr><td>Player Alias</td><td>{persona.playerAlias}</td></tr>
+      <tr><td>Fake Handicap</td><td>{persona.fakeHandicap}</td></tr>
+      <tr><td>Preferred Light</td><td>{persona.preferredLight}</td></tr>
+      <tr><td>Signature Object</td><td>{persona.signatureObject}</td></tr>
+      <tr><td>Assigned Table</td><td>{persona.assignedTable}</td></tr>
+      <tr><td>Status</td><td>{persona.afterHoursStatus}</td></tr>
+      <tr><td>Regular's Note</td><td>{persona.regularNote}</td></tr>
+    </table>
+  </TableBox>
+</OldWebLayout>
