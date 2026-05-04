@@ -16,6 +16,7 @@ export type LocalEmployeeProfile = {
   preferred_light?: string;
   preferred_place?: string;
   shift_status: LocalShiftStatus;
+  clocked_out_at?: string;
 };
 
 export function loadLocalProfile(): LocalEmployeeProfile | null {
@@ -38,8 +39,9 @@ export function saveLocalProfile(profile: LocalEmployeeProfile) {
 export function markLocalClockedOut() {
   if (typeof window === 'undefined') return;
   const profile = loadLocalProfile();
+  const clockedOutAt = new Date().toISOString();
   if (profile) {
-    saveLocalProfile({ ...profile, shift_status: 'clocked_out' });
+    saveLocalProfile({ ...profile, shift_status: 'clocked_out', clocked_out_at: clockedOutAt });
   } else {
     window.localStorage.setItem(LOCAL_SHIFT_KEY, 'clocked_out');
   }

@@ -8,7 +8,7 @@ const steps = [
   'Clock discrepancy detected: 1:47 AM',
   'Updating shift status...',
   'Breakroom override accepted...',
-  'CLOCKED OUT'
+  'CLOCKED OUT',
 ];
 
 export default function ClockOutGate() {
@@ -24,12 +24,14 @@ export default function ClockOutGate() {
   useEffect(() => {
     async function clockOut() {
       if (idx !== steps.length - 1) return;
+
       markLocalClockedOut();
       const local = loadLocalProfile();
-      if (local) saveLocalProfile({ ...local, shift_status: 'clocked_out' });
+      const clockedOutAt = local?.clocked_out_at ?? new Date().toISOString();
+      if (local) saveLocalProfile({ ...local, shift_status: 'clocked_out', clocked_out_at: clockedOutAt });
 
       if (!supabase) {
-        setStatus('Local clock-out recorded. Supabase not configured yet.');
+        setStatus('Local clock-out recorded. The company system pretends not to notice.');
         return;
       }
 
@@ -41,10 +43,10 @@ export default function ClockOutGate() {
 
       const { error } = await supabase
         .from('user_profiles')
-        .update({ shift_status: 'clocked_out', clocked_out_at: new Date().toISOString() })
+        .update({ shift_status: 'clocked_out', clocked_out_at: clockedOutAt })
         .eq('id', userData.user.id);
 
-      setStatus(error ? error.message : 'Clock-out recorded in employee file.');
+      setStatus(error ? error.message : 'Clock-out recorded in employee file. After Hours access granted.');
     }
     clockOut().catch((error) => setStatus(error instanceof Error ? error.message : 'Clock-out failed quietly.'));
   }, [idx]);
