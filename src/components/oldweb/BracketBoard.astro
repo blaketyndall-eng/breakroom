@@ -1,0 +1,30 @@
+---
+interface Props {
+  players: string[];
+}
+
+const { players } = Astro.props;
+const rounds = [
+  players.slice(0, 8),
+  ['House Money', 'Miss September', 'Clock Dispute', 'Nun Dog'],
+  ['Miss September', 'Nun Dog'],
+  ['TBD / disputed'],
+];
+---
+
+<section class="old-shell bracket-board">
+  <div class="old-header">Printable bracket / last updated badly</div>
+  <div class="old-body bracket-grid">
+    {rounds.map((round, roundIndex) => (
+      <div class="bracket-round">
+        <p class="bracket-round-title">ROUND {roundIndex + 1}</p>
+        {round.map((player, index) => (
+          <div class="bracket-slot">
+            <span>{player}</span>
+            <small>{roundIndex === 0 ? `Table ${(index % 4) + 1}` : 'pending light check'}</small>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</section>
