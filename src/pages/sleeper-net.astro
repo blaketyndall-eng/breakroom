@@ -1,0 +1,49 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SearchBox from '@/components/sleepernet/SearchBox';
+import TableBox from '@/components/oldweb/TableBox.astro';
+import LinkMaze from '@/components/oldweb/LinkMaze.astro';
+import ObjectEvidenceGrid from '@/components/oldweb/ObjectEvidenceGrid.astro';
+import { BREAKROOM_DATA } from '@/content/data/breakroom';
+---
+<BaseLayout title="SleeperNet / Link Maze" section="sleeper">
+  <section class="container page-pad sleeper-page">
+    <div class="breakroom-mark">SLEEPERNET / archived mirror / not indexed</div>
+    <h1 class="sleeper-wordmark">
+      <span class="s1">S</span><span class="s2">l</span><span class="s3">e</span><span class="s4">e</span><span class="s5 flicker">p</span><span class="s6">e</span><span class="s7">r</span><span class="s8">N</span><span class="s9">e</span><span class="s10">t</span>
+    </h1>
+    <p class="sleeper-subline">A hidden directory page for the after-hours internet. Search results may be evidence, inventory, rumor, or a bad company decision.</p>
+    <SearchBox client:load />
+
+    <LinkMaze title="SleeperNet directory / page mirror" notice="This is the old directory page. It does not rank results. It judges them quietly." links={[
+      { href: '/breakroom', label: 'Breakroom', note: 'employee resources after the edits', stamp: 'ROOT' },
+      { href: '/after-hours', label: 'After Hours', note: 'the room under the company page', stamp: 'GATED' },
+      { href: '/rack', label: 'The Rack', note: '2003 inventory, product files, blanked goods' },
+      { href: '/lost-found', label: 'Lost & Found', note: 'object archive and room evidence' },
+      { href: '/newsstand', label: '3AM Edition', note: 'newspaper archive, corrections, public notices' },
+      { href: '/phone', label: 'Phone Behind Bar', note: 'missed calls, deliveries, wrong numbers' },
+      { href: '/idle-hands', label: 'Idle Hands', note: 'pool tournament intake and persona files', stamp: 'BRACKET' },
+      { href: '/ventures', label: 'Ventures', note: 'AI business expansions no one requested' }
+    ]} />
+
+    <section class="sleeper-lower-grid">
+      <TableBox title="Trending searches / suspicious">
+        <div class="link-cloud">
+          {BREAKROOM_DATA.trendingSearches.map((term) => <a href={`/newsstand?query=${term}`}>{term}</a>)}
+        </div>
+      </TableBox>
+
+      <TableBox title="Public notice">
+        <p><b>OmniShift Notice:</b> Search results may include unverified room memory, product sightings, employee files, motel keys, tournament brackets, or things finance has refused to reimburse.</p>
+        <p><a href="/breakroom">Open employee resources</a> · <a href="/clock-out">Clock out</a></p>
+      </TableBox>
+    </section>
+
+    <ObjectEvidenceGrid title="Recently indexed objects / unreliable" items={[
+      { name: 'Swan feather in server tray', detail: 'Filed under hardware, poultry, and debt.', href: '/lost-found', code: 'IDX-SWAN' },
+      { name: 'Printer-friendly prayer card', detail: 'Loads faster than the official policy page.', href: '/newsstand', code: 'IDX-PRAY' },
+      { name: 'Pool chalk in browser cache', detail: 'Blue dust around the search history.', href: '/idle-hands', code: 'IDX-CHALK' },
+      { name: 'Company phone cookie', detail: 'Expires never. Tastes like a missed ride.', href: '/phone', code: 'IDX-CALL' }
+    ]} />
+  </section>
+</BaseLayout>
