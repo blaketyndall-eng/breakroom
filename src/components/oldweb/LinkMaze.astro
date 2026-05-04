@@ -1,0 +1,32 @@
+---
+type LinkItem = {
+  href: string;
+  label: string;
+  note?: string;
+  stamp?: string;
+};
+
+interface Props {
+  title: string;
+  links: LinkItem[];
+  notice?: string;
+}
+
+const { title, links, notice } = Astro.props;
+---
+
+<section class="old-shell link-maze">
+  <div class="old-header">{title}</div>
+  <div class="old-body">
+    {notice && <p class="memo-box">{notice}</p>}
+    <div class="link-maze-grid">
+      {links.map((item) => (
+        <a class="link-maze-card" href={item.href}>
+          {item.stamp && <span class="maze-stamp">{item.stamp}</span>}
+          <strong>{item.label}</strong>
+          {item.note && <small>{item.note}</small>}
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
