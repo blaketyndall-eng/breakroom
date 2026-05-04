@@ -33,6 +33,10 @@ function toProfile(email: string, alias = '') {
   };
 }
 
+function callbackPath(nextPath: string) {
+  return `/auth/callback?next=${encodeURIComponent(nextPath)}`;
+}
+
 export default function AuthPanel({ redirectTo = '/portal', compact = false }: AuthPanelProps) {
   const [mode, setMode] = useState<Mode>('signup');
   const [email, setEmail] = useState('');
@@ -44,8 +48,8 @@ export default function AuthPanel({ redirectTo = '/portal', compact = false }: A
   const [sessionEmail, setSessionEmail] = useState<string | null>(null);
 
   const redirectUrl = useMemo(() => {
-    if (typeof window === 'undefined') return redirectTo;
-    return `${window.location.origin}${redirectTo}`;
+    if (typeof window === 'undefined') return callbackPath(redirectTo);
+    return `${window.location.origin}${callbackPath(redirectTo)}`;
   }, [redirectTo]);
 
   useEffect(() => {
@@ -127,7 +131,6 @@ export default function AuthPanel({ redirectTo = '/portal', compact = false }: A
       }
       const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectUrl } });
       if (error) throw error;
-      await upsertProfile(email);
       setStatus('Magic link sent. If it arrives after midnight, that is normal.');
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Magic link failed.');
@@ -180,7 +183,7 @@ export default function AuthPanel({ redirectTo = '/portal', compact = false }: A
           <button className="old-button" onClick={handleMagicLink} disabled={busy} type="button">Magic Link</button>
           <button className="old-button" onClick={handleGoogle} disabled={busy} type="button">Google</button>
         </div>
-        <p style={{ fontFamily: 'var(--type-mono)', fontSize: 12 }}>{isSupabaseConfigured ? 'Supabase configured.' : 'Local preview mode. Add Supabase env keys to make this real.'}</p>
+        <p style={{ fontFamily: 'var(--type-mono)', fontSize: 12 }}>{isSupabaseConfigured ? 'Supabase configured. Redirect desk: /auth/callback.' : 'Local preview mode. Add Supabase env keys to make this real.'}</p>
         {status && <p className="memo-box">{status}</p>}
       </div>
     </section>
