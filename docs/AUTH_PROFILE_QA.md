@@ -45,14 +45,34 @@ Expected behavior:
 9. `/after-hours` allows access after Clock Out.
 10. Sign Out / Leave Badge clears local storage and Supabase session.
 
-## Magic link mode
+## Callback mode
 
 Expected behavior:
 
 1. Magic link sends to email.
-2. Link returns to `/portal`.
-3. Portal recovers Supabase session.
-4. Profile is created or loaded.
+2. Magic link returns to `/auth/callback`.
+3. OAuth returns to `/auth/callback` when provider credentials are configured.
+4. Callback validates the Supabase session.
+5. Callback loads an existing employee profile or creates one.
+6. Callback saves local profile cache.
+7. Callback redirects to `/portal` by default.
+8. Callback only accepts safe internal `next` paths.
+
+## Required Supabase redirect URLs
+
+```txt
+http://localhost:4321/auth/callback
+http://localhost:4322/auth/callback
+https://thebreakroom.pages.dev/auth/callback
+```
+
+Optional direct fallback URLs:
+
+```txt
+http://localhost:4321/portal
+http://localhost:4322/portal
+https://thebreakroom.pages.dev/portal
+```
 
 ## Regression checks
 

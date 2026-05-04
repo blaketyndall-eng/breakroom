@@ -35,16 +35,53 @@ Do not expose or commit the Supabase service role key.
 
 ## Applied migrations
 
-The live Supabase project has the following migration concepts applied:
+The live Supabase project has the following migrations/concepts applied:
 
 ```txt
 initial_breakroom_schema
 rls_policies
 seed_v1_content
 fix_set_updated_at_search_path
+add_clocked_out_at_to_user_profiles
 ```
 
 The `set_updated_at` function was patched to use a fixed `search_path = public` after the Supabase advisor flagged a mutable search path warning.
+
+## Current auth routes
+
+```txt
+/signup
+/auth/callback
+/portal
+/clock-out
+/after-hours
+/portal/after-hours-profile
+```
+
+Magic link and OAuth redirects should land on `/auth/callback`, then return users to `/portal` unless a safe `next` path is provided.
+
+## Required Supabase redirect URLs
+
+```txt
+http://localhost:4321/auth/callback
+http://localhost:4322/auth/callback
+https://thebreakroom.pages.dev/auth/callback
+```
+
+Fallback portal URLs are acceptable too:
+
+```txt
+http://localhost:4321/portal
+http://localhost:4322/portal
+https://thebreakroom.pages.dev/portal
+```
+
+When a custom domain is connected, add:
+
+```txt
+https://YOUR_CUSTOM_DOMAIN/auth/callback
+https://YOUR_CUSTOM_DOMAIN/portal
+```
 
 ## Tables
 
@@ -93,6 +130,29 @@ Public read policies exist for public/lore tables where `is_public = true` or eq
 
 User-owned tables allow users to read/write their own rows using `auth.uid()`.
 
+## Automated vs manual
+
+Automated through connectors:
+
+```txt
+- Supabase project creation
+- Schema migrations
+- RLS policy creation
+- Seed content loading
+- Security advisor check/fix for set_updated_at search_path
+- GitHub branches, commits, PRs, merges
+```
+
+Still manual unless a connector/API is added:
+
+```txt
+- Cloudflare Pages environment variables
+- Supabase Auth dashboard redirect URL configuration
+- Google OAuth provider credentials
+- Production domain configuration
+- Branded Supabase email template edits
+```
+
 ## Product truth
 
 Supabase is not just storage for accounts. It is the memory layer of the world.
@@ -110,11 +170,9 @@ For V1, the user journey is:
 ## Known next work
 
 ```txt
-- Add auth redirect/callback handling if magic links need a dedicated callback route.
-- Add sign-out behavior to the portal.
-- Persist After Hours persona from Idle Hands registration.
 - Connect Cloudflare Pages env vars.
 - Configure Supabase Auth dashboard redirect URLs.
+- Persist After Hours persona from Idle Hands registration.
 - Add branded auth email templates.
 - Add admin-only content management later.
 ```
