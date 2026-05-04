@@ -1,6 +1,8 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
+import LinkMaze from '@/components/oldweb/LinkMaze.astro';
+import ObjectEvidenceGrid from '@/components/oldweb/ObjectEvidenceGrid.astro';
 import AfterHoursGate from '@/components/auth/AfterHoursGate';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 ---
@@ -8,7 +10,15 @@ import { BREAKROOM_DATA } from '@/content/data/breakroom';
   <AfterHoursGate client:load />
   <div class="status-strip"><span>CLOCKED OUT</span><span>1:47 AM</span><span>Supervisor connection lost</span><span>The room is active</span></div>
   <h1>After Hours</h1>
-  <p>The lights are wrong. The clock is right. The corporate page is still functioning, but the room has taken over.</p>
+  <p class="tagline-block">The lights are wrong. The clock is right. The corporate page is still functioning, but the room has taken over.</p>
+
+  <ObjectEvidenceGrid title="Back bar evidence / sacred and stupid" items={[
+    { name: 'Motel key under the tip jar', detail: 'Key tag says 147. Bartender says every key says that eventually.', href: '/lost-found', code: 'KEY-147' },
+    { name: 'Title belt beside takeout', detail: 'No champion listed. Grease on the brass. Prayer card tucked under the strap.', href: '/lost-found', code: 'BELT-000' },
+    { name: 'White dog below the counter', detail: 'Asleep under amber case light. Refuses to be part of inventory.', href: '/after-hours', code: 'DOG-WHT' },
+    { name: 'Cash drawer saint card', detail: 'Tape on the corners. Somebody wrote DON’T COUNT TWICE on the back.', href: '/newsstand', code: 'SAINT-CASH' }
+  ]} />
+
   <div class="grid-3">
     <TableBox title="Phone Behind The Bar">
       {BREAKROOM_DATA.voicemails.slice(0, 3).map((v) => <p><b>{v.from}</b><br/><span style="font-family:var(--type-mono);font-size:11px;">{v.time}</span><br/>{v.body}</p>)}
@@ -23,12 +33,15 @@ import { BREAKROOM_DATA } from '@/content/data/breakroom';
       <a href="/lost-found">Open archive</a>
     </TableBox>
   </div>
-  <TableBox title="Pages the company did not approve">
-    <ul>
-      <li><a href="/idle-hands">Idle Hands Invitational</a></li>
-      <li><a href="/sign-the-wall">Sign The Wall</a></li>
-      <li><a href="/radio">Breakroom Radio / Channel 1:47</a></li>
-      <li><a href="/ventures">OmniShift Ventures</a></li>
-    </ul>
-  </TableBox>
+
+  <LinkMaze title="Pages the company did not approve" notice="After Hours is not a page. It is the room underneath the page." links={[
+    { href: '/idle-hands', label: 'Idle Hands Invitational', note: 'bracket, aliases, fake handicap, bad felt', stamp: 'RACE 7' },
+    { href: '/sign-the-wall', label: 'Sign The Wall', note: 'bathroom marker archive, not fully supervised', stamp: 'WET PAINT' },
+    { href: '/radio', label: 'Radio 1:47', note: 'stream, logs, dead air with confidence', stamp: 'ON AIR' },
+    { href: '/ventures', label: 'OmniShift Ventures', note: 'AI business ideas nobody stopped', stamp: 'FUNDED' },
+    { href: '/phone', label: 'Phone Behind Bar', note: 'rides, delivery, voicemails, invites' },
+    { href: '/newsstand', label: '3AM Edition', note: 'public notices from private rooms' },
+    { href: '/rack', label: 'The Rack', note: 'blanked-out product listings' },
+    { href: '/lost-found', label: 'Lost & Found', note: 'objects cataloged like witnesses' }
+  ]} />
 </OldWebLayout>
