@@ -1,21 +1,29 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SearchBox from '@/components/sleepernet/SearchBox';
+import TableBox from '@/components/oldweb/TableBox.astro';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 ---
 <BaseLayout title="SleeperNet" section="sleeper">
-  <section class="container page-pad" style="text-align:center; max-width: 900px;">
-    <div class="breakroom-mark" style="margin-bottom: 18px;">BRKRM / mark not approved</div>
-    <h1 class="sleeper-wordmark" style="font-size:110px;margin:0;">
+  <section class="container page-pad sleeper-page">
+    <div class="breakroom-mark">BRKRM / mark not approved</div>
+    <h1 class="sleeper-wordmark">
       <span class="s1">S</span><span class="s2">l</span><span class="s3">e</span><span class="s4">e</span><span class="s5 flicker">p</span><span class="s6">e</span><span class="s7">r</span><span class="s8">N</span><span class="s9">e</span><span class="s10">t</span>
     </h1>
-    <p style="font-family:var(--type-mono);letter-spacing:.08em;color:#5a513f;">Search the after-hours internet.</p>
+    <p class="sleeper-subline">Search the after-hours internet.</p>
     <SearchBox client:load />
-    <section style="margin-top:28px;text-align:left;" class="old-shell">
-      <div class="old-header">Trending searches / suspicious</div>
-      <div class="old-body" style="display:flex;gap:10px;flex-wrap:wrap;">
-        {BREAKROOM_DATA.trendingSearches.map((term) => <a href={`/newsstand?query=${term}`}>{term}</a>)}
-      </div>
+
+    <section class="sleeper-lower-grid">
+      <TableBox title="Trending searches / suspicious">
+        <div class="link-cloud">
+          {BREAKROOM_DATA.trendingSearches.map((term) => <a href={`/newsstand?query=${term}`}>{term}</a>)}
+        </div>
+      </TableBox>
+
+      <TableBox title="Public notice">
+        <p><b>OmniShift Notice:</b> Search results may include unverified room memory, product sightings, employee files, motel keys, tournament brackets, or things finance has refused to reimburse.</p>
+        <p><a href="/breakroom">Open employee resources</a> · <a href="/clock-out">Clock out</a></p>
+      </TableBox>
     </section>
   </section>
 </BaseLayout>

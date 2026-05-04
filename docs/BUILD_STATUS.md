@@ -1,32 +1,49 @@
 # Build Status
 
-Generated on 2026-05-04.
+Current branch: `feature/base-scaffold-real`
 
-## Completed in this scaffold
+## Verified scaffold contents
 
-- Astro + React + TypeScript + Tailwind repo structure
-- PNPM package setup
+- Astro + React islands + TypeScript + Tailwind foundation
 - Cloudflare Pages adapter config
-- Golden Docs added as source of truth
-- Claude Design ZIP preserved under `design/claude/`
+- Supabase schema, RLS policies, seed migration shell
 - Core V1 routes scaffolded
-- Local seed data imported from Claude `data.js`
-- Supabase migrations for V1 schema, RLS policies, seed secrets
-- React islands for SleeperNet search, Clock Out, Sign The Wall, Radio player
-- CI workflow scaffold
+- Claude Design files preserved under `design/claude/`
+- Golden Docs preserved under `docs/golden_docs/`
+- Seed content for SleeperNet, Newsstand, Lost & Found, Rack, Phone, employee assignment pools
 
-## Not yet wired
+## Sprint 1 polish overlay
 
-- Supabase project keys
-- Real Google login config
-- Real Live365/player stream URL
-- POD checkout links
-- Server-side Supabase writes for profile generation, secrets, registrations, wall posts
+This overlay adds:
 
-## Next build sprint
+- cleaner SleeperNet result routing through `src/lib/routes.ts`
+- richer SleeperNet search experience
+- more immersive `/breakroom` page
+- more useful `/rack` inventory page
+- additional shared CSS for hero cards, search modes, result cards, Rack filters, and recovered assets
 
-1. Connect Supabase credentials.
-2. Replace local employee preview with Auth-backed employee generation.
-3. Wire Clock Out state to `user_profiles.shift_status`.
-4. Wire Idle Hands registration to `after_hours_profiles`.
-5. Translate final Claude visual details page-by-page.
+## Next verification gates
+
+Run:
+
+```bash
+pnpm install
+pnpm check
+pnpm build
+```
+
+First pages to QA in browser:
+
+- `/`
+- `/breakroom`
+- `/rack`
+- `/lost-found`
+- `/newsstand`
+- `/idle-hands`
+
+## Known cleanup after build passes
+
+- Pin dependencies instead of using `latest`
+- Merge or point `docs/PROJECT_SOURCE_OF_TRUTH.md` to `docs/golden_docs/PROJECT_SOURCE_OF_TRUTH.md`
+- Delete empty branches: `feature/base-scaffold`, `feature/base-scaffold-v2`
+- Add Supabase project credentials to local `.env` and Cloudflare Pages environment variables
