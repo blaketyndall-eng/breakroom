@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import './oldweb.css';
 @import './breakroom.css';
+@import './auth.css';
 @import './claude-design.css';
 
 :root {

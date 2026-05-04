@@ -1,0 +1,9 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import AuthPanel from '@/components/auth/AuthPanel';
+---
+<OldWebLayout title="OmniShift Intake" section="signup">
+  <h1>Random Thing Signup</h1>
+  <p>You thought this was a newsletter. The system interpreted your interest as employment readiness.</p>
+  <AuthPanel client:load redirectTo="/portal" />
+</OldWebLayout>

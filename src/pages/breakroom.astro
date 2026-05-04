@@ -1,56 +1,34 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
-import RedStamp from '@/components/oldweb/RedStamp.astro';
+import AuthPanel from '@/components/auth/AuthPanel';
 ---
-<OldWebLayout title="Employee Resources / Breakroom" section="breakroom">
-  <div class="status-strip"><span>OMNISHIFT EMPLOYEE RESOURCES</span><span>Page modified by unknown employee</span><span>1:47 AM</span></div>
-
-  <section class="hero-split">
+<OldWebLayout title="A bunch of bull sh*t, right?" section="breakroom">
+  <section class="hero-grid">
     <div>
-      <p class="eyebrow">Internal page / poorly supervised</p>
-      <h1>A bunch of bullsh*t, right?</h1>
-      <p class="lede">This was supposed to be an employee resource page. Somebody got into the mainframe and made it honest.</p>
-      <p>Corporate still functions here. The room has simply written in the margins.</p>
+      <p class="breakroom-mark">BRKRM / employee resources / corrupted</p>
+      <h1>A bunch of bull sh*t, right?</h1>
+      <p class="lede">This is the conversation with the coworker who knows the same thing you know. The page still functions. It just stopped respecting the company.</p>
+      <div class="status-strip"><span>OmniShift Internal</span><span>rogue edits detected</span><span>clock 1:47</span><span>breakroom access pending</span></div>
+      <p><a class="old-button" href="/signup">Sign up for whatever this is</a> <a class="old-button" href="/portal">Employee file</a></p>
     </div>
-    <aside class="evidence-card">
-      <RedStamp text="ALTERED" />
-      <p><b>Current status:</b> useful and broken.</p>
-      <p><b>Clock:</b> wrong according to management, correct according to everyone still here.</p>
-      <p><b>Next approved action:</b> open your file, then clock out.</p>
-    </aside>
+    <AuthPanel client:load compact redirectTo="/portal" />
   </section>
 
-  <div class="grid-2">
-    <TableBox title="Approved Language / Actual Meaning">
-      <table class="table-box">
-        <thead><tr><th>Approved</th><th>Actual</th></tr></thead>
-        <tbody>
-          <tr><td>Culture alignment</td><td>Everybody is tired in the same direction.</td></tr>
-          <tr><td>Operational excellence</td><td>The coffee is active again.</td></tr>
-          <tr><td>Workforce optimization</td><td>You have been hired by mistake.</td></tr>
-          <tr><td>Employee engagement</td><td>Someone found a door behind the vending machine.</td></tr>
-          <tr><td>AI transformation</td><td>The executives are pretending not to be scared.</td></tr>
-        </tbody>
-      </table>
+  <div class="grid-3">
+    <TableBox title="Employee Resources">
+      <p><a href="/portal">View assigned employee file</a></p>
+      <p><a href="/clock-out">Clock Out</a></p>
+      <p><a href="/house-rules">House Rules</a></p>
     </TableBox>
-
-    <TableBox title="Entry Points">
-      <p><a class="old-button" href="/portal">Open OmniShift Employee File</a></p>
-      <p><a class="old-button" href="/clock-out">Clock Out</a></p>
-      <p><a class="old-button" href="/after-hours">After Hours</a></p>
-      <p class="small-note">If After Hours opens too easily, pretend it did not.</p>
+    <TableBox title="Unauthorized Room Links">
+      <p><a href="/after-hours">After Hours</a></p>
+      <p><a href="/lost-found">Lost & Found</a></p>
+      <p><a href="/newsstand">3AM Edition</a></p>
+    </TableBox>
+    <TableBox title="Management Notice">
+      <p>AI leadership confirms the room is aligned with business outcomes. No one knows what that means.</p>
+      <p class="red-stamp">Do not thank the room.</p>
     </TableBox>
   </div>
-
-  <TableBox title="Recovered Assets">
-    <div class="recovered-grid">
-      <a href="/lost-found"><b>Lost & Found</b><span>Object archive, evidence files, items not returned.</span></a>
-      <a href="/rack"><b>The Rack</b><span>Issued goods, redacted products, uniforms with a bad explanation.</span></a>
-      <a href="/newsstand"><b>3AM Edition</b><span>Headlines, corrections, classified ads, things taken out of context.</span></a>
-      <a href="/idle-hands"><b>Idle Hands Invitational</b><span>Old pool tournament page. Reality unresolved.</span></a>
-      <a href="/radio"><b>Channel 1:47</b><span>Radio from somewhere behind the bar.</span></a>
-      <a href="/staff-only"><b>Staff Only</b><span>You are employed, not trusted.</span></a>
-    </div>
-  </TableBox>
 </OldWebLayout>
