@@ -12,6 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.9",
     "@astrojs/cloudflare": "latest",
     "@astrojs/react": "latest",
     "@astrojs/tailwind": "latest",
@@ -25,6 +26,6 @@
     "@types/react-dom": "latest",
     "prettier": "latest",
     "tailwindcss": "latest",
-    "typescript": "latest"
+    "typescript": "^6.0.3"
   }
 }
