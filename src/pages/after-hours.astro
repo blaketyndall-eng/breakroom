@@ -1,9 +1,11 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
+import AfterHoursGate from '@/components/auth/AfterHoursGate';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 ---
 <OldWebLayout title="After Hours" section="afterhours">
+  <AfterHoursGate client:load />
   <div class="status-strip"><span>CLOCKED OUT</span><span>1:47 AM</span><span>Supervisor connection lost</span><span>The room is active</span></div>
   <h1>After Hours</h1>
   <p>The lights are wrong. The clock is right. The corporate page is still functioning, but the room has taken over.</p>

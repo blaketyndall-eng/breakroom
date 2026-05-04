@@ -1,0 +1,48 @@
+.auth-panel label,
+.auth-panel input {
+  display: block;
+  width: 100%;
+}
+
+.auth-panel input {
+  box-sizing: border-box;
+  margin: 6px 0 12px;
+  padding: 9px 10px;
+  border: 1px solid #14110e;
+  background: #fffdf4;
+  font-family: var(--type-mono);
+}
+
+.auth-tabs,
+.auth-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 10px 0 14px;
+}
+
+.old-button.active {
+  background: #14110e;
+  color: #f6f3ec;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+  gap: 18px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.lede {
+  font-size: clamp(20px, 4vw, 38px);
+  line-height: 1;
+  max-width: 760px;
+  font-family: var(--type-paper);
+}
+
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
