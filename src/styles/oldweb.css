@@ -92,3 +92,132 @@
 .old-button:hover {
   border-style: inset;
 }
+
+.link-maze {
+  margin: 16px 0;
+  position: relative;
+}
+
+.link-maze-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.link-maze-card {
+  display: block;
+  min-height: 84px;
+  border: 1px solid #14110e;
+  background: #f6f3ec;
+  padding: 10px;
+  color: #0000ee;
+  position: relative;
+  box-shadow: 2px 2px 0 rgba(20,17,14,.18);
+}
+
+.link-maze-card strong {
+  display: block;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.link-maze-card small {
+  display: block;
+  margin-top: 6px;
+  color: #5a513f;
+  font-family: var(--type-typer, 'Courier New', monospace);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.maze-stamp {
+  display: inline-block;
+  margin-bottom: 6px;
+  border: 2px double #b00020;
+  color: #b00020;
+  padding: 2px 5px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 9px;
+  letter-spacing: .14em;
+  transform: rotate(-3deg);
+}
+
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.evidence-card {
+  border: 1px solid #14110e;
+  background: #f6f3ec;
+  padding: 8px;
+  box-shadow: 2px 2px 0 rgba(20,17,14,.2);
+}
+
+.evidence-photo {
+  min-height: 92px;
+  margin-bottom: 8px;
+}
+
+.evidence-code {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #5a513f;
+  font-size: 10px;
+  letter-spacing: .14em;
+  margin: 0 0 5px;
+}
+
+.evidence-card h3 {
+  margin: 0 0 6px;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.evidence-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.news-columns {
+  columns: 3 220px;
+  column-gap: 24px;
+  column-rule: 1px solid #8a7c5e;
+}
+
+.corporate-overwrite {
+  border: 1px dashed #5a513f;
+  background: rgba(246,243,236,.07);
+  padding: 10px;
+  position: relative;
+}
+
+.corporate-overwrite::before {
+  content: "EDITED AFTER CLOCK OUT";
+  display: inline-block;
+  margin-bottom: 8px;
+  border: 2px double #b00020;
+  color: #b00020;
+  padding: 2px 6px;
+  font-family: var(--type-typer, 'Courier New', monospace);
+  font-size: 11px;
+  transform: rotate(-2deg);
+}
+
+@media (max-width: 900px) {
+  .link-maze-grid,
+  .evidence-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .link-maze-grid,
+  .evidence-grid {
+    grid-template-columns: 1fr;
+  }
+}
