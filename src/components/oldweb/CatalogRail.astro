@@ -1,0 +1,31 @@
+---
+type RailItem = {
+  sku: string;
+  name: string;
+  note: string;
+  href: string;
+  status?: string;
+};
+
+interface Props {
+  title: string;
+  items: RailItem[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<section class="old-shell catalog-rail">
+  <div class="old-header">{title}</div>
+  <div class="old-body catalog-grid">
+    {items.map((item) => (
+      <article class="catalog-card">
+        <div class="catalog-thumb stripe">NO IMAGE<br />FILED</div>
+        <p class="catalog-sku">{item.sku}</p>
+        <h3><a href={item.href}>{item.name}</a></h3>
+        <p>{item.note}</p>
+        <p><span class="red-stamp">{item.status ?? 'FILE ONLY'}</span></p>
+      </article>
+    ))}
+  </div>
+</section>
