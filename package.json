@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@9.15.4",
+  "packageManager": "pnpm@10.33.2",
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build",
@@ -12,20 +12,20 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.9",
-    "@astrojs/cloudflare": "latest",
-    "@astrojs/react": "latest",
-    "@astrojs/tailwind": "latest",
-    "@supabase/supabase-js": "latest",
-    "astro": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "@astrojs/check": "0.9.9",
+    "@astrojs/cloudflare": "13.3.1",
+    "@astrojs/react": "5.0.4",
+    "@supabase/supabase-js": "2.105.3",
+    "astro": "6.2.2",
+    "react": "19.2.5",
+    "react-dom": "19.2.5"
   },
   "devDependencies": {
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "prettier": "latest",
-    "tailwindcss": "latest",
-    "typescript": "^6.0.3"
+    "@tailwindcss/vite": "4.2.4",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "prettier": "3.8.3",
+    "tailwindcss": "4.2.4",
+    "typescript": "6.0.3"
   }
 }

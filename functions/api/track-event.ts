@@ -1,4 +1,4 @@
-export async function onRequestPost({ request, env }: { request: Request; env: any }) {
+export async function onRequestPost({ request }: { request: Request }) {
   const body = await request.json().catch(() => ({}));
-  return Response.json({ ok: true, received: body, note: 'Wire this to Supabase service role in Sprint 2.' });
+  return Response.json({ ok: true, received: body, stamped: '1:47' });
 }
