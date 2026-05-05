@@ -1,0 +1,20 @@
+---
+import { labelStuffStatus, makeStuffUrl } from '@/lib/stuff';
+import type { StuffItem } from '@/content/data/stuff';
+
+interface Props {
+  item: StuffItem;
+}
+
+const { item } = Astro.props;
+---
+<a class={`stuff-card status-${item.status}`} href={makeStuffUrl(item.slug)}>
+  <p class="stuff-card-status">{labelStuffStatus(item.status)}</p>
+  <h2>{item.name}</h2>
+  <p>{item.description}</p>
+  <div class="stuff-card-meta">
+    <span>{item.kind.replaceAll('_', ' ')}</span>
+    {item.priceLabel && <span>{item.priceLabel}</span>}
+    {item.sourceLabel && <span>{item.sourceLabel}</span>}
+  </div>
+</a>

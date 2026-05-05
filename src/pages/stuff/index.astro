@@ -1,0 +1,14 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import StuffCard from '@/components/stuff/StuffCard.astro';
+import { STUFF_ITEMS } from '@/content/data/stuff';
+---
+<OldWebLayout title="Stuff Shelf" section="stuff">
+  <div class="status-strip"><span>stuff shelf</span><span>no checkout yet</span><span>removed items</span><span>future goods maybe</span></div>
+  <h1>Stuff</h1>
+  <p class="tagline-block">Objects, fake products, printable artifacts, denied merch, future uniforms, and things removed from the rack before anyone could explain them.</p>
+
+  <section class="stuff-grid">
+    {STUFF_ITEMS.map((item) => <StuffCard item={item} />)}
+  </section>
+</OldWebLayout>

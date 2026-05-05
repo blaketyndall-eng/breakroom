@@ -35,12 +35,12 @@ const agent = component.type === 'character_comment' ? getAgentBySlug(component.
     <div class="old-body">
       <div class="stuff-shelf-grid">
         {component.items.map((item) => (
-          <div class={`stuff-shelf-item status-${item.status}`}>
+          <a class={`stuff-shelf-item status-${item.status}`} href={item.href ?? (item.slug ? `/stuff/${item.slug}` : '#')}>
             <p class="stuff-status">{item.status.replaceAll('_', ' ')}</p>
             <h3>{item.name}</h3>
             {item.priceLabel && <p class="stuff-price">{item.priceLabel}</p>}
             {item.note && <small>{item.note}</small>}
-          </div>
+          </a>
         ))}
       </div>
     </div>
@@ -151,7 +151,7 @@ const agent = component.type === 'character_comment' ? getAgentBySlug(component.
     <div class="old-body">
       <div class="collection-case-grid">
         {component.items.map((item) => (
-          <a class="collection-case-item" href={item.sourcePath ?? '#'}>
+          <a class="collection-case-item" href={item.sourcePath ?? (item.kind === 'item' ? `/stuff/${item.slug}` : '#')}>
             <p>{item.kind} / {item.status}</p>
             <h3>{item.name}</h3>
             {item.note && <small>{item.note}</small>}

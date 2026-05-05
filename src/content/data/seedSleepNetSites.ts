@@ -1,5 +1,13 @@
 import type { SleepNetComponent } from '@/lib/sleepnetComponents';
 import type { SleepNetSite } from '@/lib/sleepnetSites';
+import { createStuffShelfFromRegistry } from '@/lib/stuff';
+
+const veryGoodBurgerStuffShelf = createStuffShelfFromRegistry('Very Good Stuff Not For You Yet', [
+  'very-good-hat',
+  'legal-napkin-pack',
+  'burger-receipt-tee',
+  'good-sauce-sticker',
+]);
 
 const veryGoodBurgerComponents: SleepNetComponent[] = [
   {
@@ -17,15 +25,8 @@ const veryGoodBurgerComponents: SleepNetComponent[] = [
     sponsor: 'Very Good Promotional Department',
   },
   {
+    ...veryGoodBurgerStuffShelf,
     id: 'vgb-shelf-001',
-    type: 'stuff_shelf',
-    title: 'Very Good Stuff Not For You Yet',
-    items: [
-      { name: 'Very Good Hat', status: 'coming_soon', note: 'Uniform item. Nobody knows who approved the color.' },
-      { name: 'Legal Napkin Pack', status: 'removed', note: 'Removed by management after becoming legally useful.' },
-      { name: 'Burger Receipt Tee', status: 'not_for_you', note: 'Seen once in the back office.' },
-      { name: 'Good Sauce Sticker', status: 'fake', priceLabel: '$0.47', note: 'Sticker has not been proven to exist.' },
-    ],
   },
   {
     id: 'vgb-gallery-001',
@@ -43,10 +44,10 @@ const veryGoodBurgerComponents: SleepNetComponent[] = [
     type: 'collection_case',
     title: 'Menu Object Case',
     items: [
-      { slug: 'legal-napkin-pack', name: 'Legal Napkin Pack', kind: 'item', status: 'removed', note: 'Too legally absorbent.' },
+      { slug: 'legal-napkin-pack', name: 'Legal Napkin Pack', kind: 'item', status: 'removed', note: 'Too legally absorbent.', sourcePath: '/stuff/legal-napkin-pack' },
       { slug: 'receipt-shake', name: 'Receipt Shake', kind: 'object', status: 'rumored', note: 'Vanilla, paper, and regret.' },
       { slug: 'employee-water', name: 'Employee Water', kind: 'item', status: 'filed', note: 'Not on menu. Always there.' },
-      { slug: 'good-sauce-sticker', name: 'Good Sauce Sticker', kind: 'artifact', status: 'fake', note: 'Promotional evidence disputed.' },
+      { slug: 'good-sauce-sticker', name: 'Good Sauce Sticker', kind: 'artifact', status: 'fake', note: 'Promotional evidence disputed.', sourcePath: '/stuff/good-sauce-sticker' },
     ],
   },
   {
