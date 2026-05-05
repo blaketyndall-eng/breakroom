@@ -1,0 +1,17 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import SleepNetOwnerDashboard from '@/components/sleepnet/SleepNetOwnerDashboard';
+import LinkMaze from '@/components/oldweb/LinkMaze.astro';
+---
+<OldWebLayout title="Back Office / SleepNet" section="sleepnet">
+  <div class="status-strip"><span>back office</span><span>sleepnet owner drawer</span><span>drafts + published pages</span><span>remove from wire enabled</span></div>
+  <h1>Back Office</h1>
+  <p class="tagline-block">Manage the little websites you left on SleepNet. Publish them, hide them, remove them from the wire, or make another page before the directory forgets your name.</p>
+  <SleepNetOwnerDashboard client:load />
+  <LinkMaze title="Back Office drawers" notice="Regular Files are identity. SleepNet pages are what the identity leaves behind." links={[
+    { href: '/locker', label: 'Locker', note: 'edit your Regular File', stamp: 'ID' },
+    { href: '/sleepnet/create', label: 'Create SleepNet Page', note: 'make a faux company first', stamp: 'BUILD' },
+    { href: '/sleepnet', label: 'Search SleepNet', note: 'find public SleepNet URLs' },
+    { href: '/artifacts', label: 'Artifacts', note: 'evidence drawer for future attachments' }
+  ]} />
+</OldWebLayout>
