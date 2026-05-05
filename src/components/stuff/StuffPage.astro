@@ -1,4 +1,5 @@
 ---
+import FakeAdStrip from '@/components/ads/FakeAdStrip.astro';
 import SaveStuffButton from '@/components/stuff/SaveStuffButton';
 import { labelStuffStatus } from '@/lib/stuff';
 import type { StuffItem } from '@/content/data/stuff';
@@ -17,6 +18,8 @@ const { item } = Astro.props;
     <p>{item.description}</p>
     <SaveStuffButton client:load item={item} />
   </div>
+
+  <FakeAdStrip stuffSlug={item.slug} tags={item.tags} limit={3} label="Ads Found In Same Drawer" />
 
   <div class="stuff-detail-grid">
     <article class="old-shell stuff-module">

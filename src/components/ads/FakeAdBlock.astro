@@ -1,0 +1,18 @@
+---
+import { fakeAdDestinationLabel, normalizeFakeAdHref } from '@/lib/fakeAds';
+import type { FakeAd } from '@/content/data/fakeAds';
+
+interface Props {
+  ad: FakeAd;
+  size?: 'normal' | 'compact';
+}
+
+const { ad, size = 'normal' } = Astro.props;
+const href = normalizeFakeAdHref(ad);
+---
+<a class={`fake-ad-block style-${ad.style} destination-${ad.destinationType} size-${size}`} href={href} data-ad-slug={ad.slug}>
+  <p class="fake-ad-meta">{ad.sponsor ?? 'Sponsor not filed'} / {fakeAdDestinationLabel(ad)}</p>
+  <h3>{ad.headline}</h3>
+  <p>{ad.body}</p>
+  <span>{ad.ctaLabel ?? 'Click badly'}</span>
+</a>

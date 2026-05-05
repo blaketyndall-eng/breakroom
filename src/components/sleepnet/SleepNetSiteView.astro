@@ -1,4 +1,5 @@
 ---
+import FakeAdStrip from '@/components/ads/FakeAdStrip.astro';
 import SleepNetComponentRenderer from '@/components/sleepnet/SleepNetComponentRenderer.astro';
 import SleepNetGuestbook from '@/components/sleepnet/SleepNetGuestbook';
 import { seededGuestbookEntry } from '@/lib/sleepnetGuestbooks';
@@ -34,6 +35,8 @@ const seededEntries = guestbookComponent?.type === 'guestbook'
       <span>{site.reality_status ?? 'indexed_noise'}</span>
     </div>
   </header>
+
+  <FakeAdStrip siteType={site.site_type} factionSlug={site.faction_affinity?.[0]} tags={[site.neighborhood, site.site_type, ...(site.related_object_slugs ?? [])]} limit={3} label="Ads Related By Mistake" />
 
   <section class="old-shell sleepnet-intro">
     <div class="old-header">Page Sections / Filed Publicly</div>

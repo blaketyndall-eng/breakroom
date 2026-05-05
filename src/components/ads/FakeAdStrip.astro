@@ -1,0 +1,26 @@
+---
+import FakeAdBlock from '@/components/ads/FakeAdBlock.astro';
+import { getFakeAdsForContext, getRandomFakeAds } from '@/lib/fakeAds';
+import type { FakeAd } from '@/content/data/fakeAds';
+
+interface Props {
+  ads?: FakeAd[];
+  siteType?: string;
+  factionSlug?: string;
+  stuffSlug?: string;
+  tags?: string[];
+  limit?: number;
+  label?: string;
+}
+
+const props = Astro.props;
+const ads = props.ads ?? (props.siteType || props.factionSlug || props.stuffSlug || props.tags
+  ? getFakeAdsForContext({ siteType: props.siteType, factionSlug: props.factionSlug, stuffSlug: props.stuffSlug, tags: props.tags, limit: props.limit ?? 3 })
+  : getRandomFakeAds(props.limit ?? 3));
+---
+<section class="fake-ad-strip" aria-label={props.label ?? 'Fake ads'}>
+  <div class="fake-ad-strip-header">{props.label ?? 'Sponsored by Nobody Reliable'}</div>
+  <div class="fake-ad-strip-grid">
+    {ads.map((ad) => <FakeAdBlock ad={ad} size="compact" />)}
+  </div>
+</section>
