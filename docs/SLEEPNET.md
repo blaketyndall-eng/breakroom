@@ -9,17 +9,7 @@ Regular File = user identity
 SleepNet Page = user-created weird website
 ```
 
-SleepNet pages should feel like:
-
-```txt
-- 2003 local business pages
-- fake company websites
-- object archives
-- motel pages
-- zine pages
-- classified boards
-- small sites found after midnight
-```
+SleepNet pages should feel like old web personal pages, fake company sites, object archives, motel pages, zine pages, classified boards, and small sites found after midnight.
 
 ## Routes
 
@@ -39,21 +29,14 @@ Normal web URL: /sleepnet/[slug]
 In-world URL: sleepnet://[slug]
 ```
 
-The SleepNet homepage is searchable and indexes public published SleepNet pages by:
-
-```txt
-title
-tagline
-description
-site_type
-neighborhood
-```
+The SleepNet homepage is searchable and indexes public published SleepNet pages by title, tagline, description, site type, and neighborhood.
 
 ## Files
 
 ```txt
 src/lib/sleepnetSites.ts
 src/lib/sleepnetComponents.ts
+src/lib/sleepnetGenerators.ts
 src/components/sleepnet/SleepNetDirectory.tsx
 src/components/sleepnet/SleepNetSiteEditor.tsx
 src/components/sleepnet/SleepNetOwnerDashboard.tsx
@@ -105,7 +88,7 @@ is_public
 ## MVP behavior
 
 ```txt
-- Users can create a Faux Company draft
+- Users can create different SleepNet site types
 - Unsigned users can save a local draft
 - Signed-in users can save/publish to Supabase
 - Published public pages render at /sleepnet/[slug]
@@ -135,7 +118,7 @@ is_public
 
 ## Component registry
 
-SleepNet pages can now carry modular old-web/world components.
+SleepNet pages can carry modular old-web/world components.
 
 ```txt
 guestbook
@@ -153,7 +136,37 @@ collection_case
 jukebox
 ```
 
-The component registry is the first version of the page-object system. It lets SleepNet pages feel like small rooms instead of generated text pages.
+## Site type expansion pack
+
+SleepNet now supports:
+
+```txt
+faux_company
+personal_homepage
+classified_board
+faction_turf
+fake_restaurant
+object_archive
+```
+
+The creator also supports:
+
+```txt
+Let SleepNet Guess
+```
+
+Each site type generates distinct sections, component tone, neighborhoods, related objects, and agent hooks.
+
+## Site type purposes
+
+```txt
+faux_company = fake corporate decay and small business pages
+personal_homepage = MySpace/AIM-style identity pages
+classified_board = classifieds, bulletin boards, and missed connections
+faction_turf = crew, club, turf, and rivalry pages
+fake_restaurant = menu, coupon, legal napkin, late-night food pages
+object_archive = lost-and-found, evidence, and shrine pages
+```
 
 ## Gallery, collection, and jukebox shell
 
@@ -171,52 +184,6 @@ Current music behavior:
 - No OAuth, MusicKit, playlist syncing, or user music tokens are implemented yet.
 ```
 
-## Polish pass
-
-The polish layer adds:
-
-```txt
-- prompt scraps for faster Faux Company generation
-- edit existing page loading from /sleepnet/create?slug=[slug]
-- Back Office filters for all/draft/published/hidden
-- clearer status cards for published and hidden pages
-- neighborhood labels instead of raw enum text
-- safer owned-page lookup before editing
-- local fallback mutation fixes for unsigned users
-- clearer local-only / on-the-wire status messaging
-- Regular File share widget hydration
-```
-
-## First site type
-
-```txt
-Faux Company
-```
-
-This is the best first SleepNet template because it naturally fits:
-
-```txt
-- fake corporate decay
-- OmniShift logic
-- weird local business pages
-- humor without becoming random
-- user-generated world expansion
-```
-
-Faux Company drafts currently generate starter components:
-
-```txt
-warning notice
-fake ad
-stuff shelf
-photo gallery
-collection case
-jukebox
-guestbook
-character comment
-visitor counter
-```
-
 ## Current limitations
 
 ```txt
@@ -228,7 +195,7 @@ visitor counter
 - No real photo upload/storage yet
 - No Spotify OAuth or Apple Music MusicKit auth yet
 - Component editing is preview/regenerate only
-- Only Faux Company is implemented
+- Faction data is not fully seeded yet
 ```
 
 ## Product truth
