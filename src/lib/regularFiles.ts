@@ -11,6 +11,7 @@ export type RegularFile = {
   away_message: string | null;
   favorite_light: string | null;
   assigned_object: string | null;
+  turf: string | null;
   theme: string;
   top_links: string[];
   pinned_artifacts: string[];
@@ -45,6 +46,7 @@ export function makeDefaultRegularFile(seed = 'regular'): RegularFile {
     away_message: 'If the phone rings, do not answer it. It already knows.',
     favorite_light: 'dashboard green',
     assigned_object: 'motel key with no room number',
+    turf: null,
     theme: 'corrupted_employee_portal',
     top_links: ['/after-hours', '/phone', '/artifacts'],
     pinned_artifacts: getLocalArtifactSlugs().slice(0, 4),
