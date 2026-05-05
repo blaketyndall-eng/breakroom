@@ -24,6 +24,8 @@ src/content/data/fakeAds.ts
 src/lib/fakeAds.ts
 src/components/ads/FakeAdBlock.astro
 src/components/ads/FakeAdStrip.astro
+src/components/ads/FakeAdGrid.astro
+src/components/ads/FakeAdSidebar.astro
 src/pages/dead-link-cemetery.astro
 src/styles/fake-ads.css
 ```
@@ -77,6 +79,30 @@ dead_links
 /stuff/[slug] pages
 /dead-link-cemetery recovered fragments
 ```
+
+## Components
+
+```txt
+FakeAdBlock = single ad card
+FakeAdStrip = horizontal/small contextual strip
+FakeAdGrid = larger directory/gallery block
+FakeAdSidebar = stack for later page sidebars
+```
+
+## Selection behavior
+
+Contextual ads score from:
+
+```txt
+site type
+faction slug
+stuff slug
+tags
+seed weight
+deterministic noise
+```
+
+The noise is deterministic so rendering stays stable enough while avoiding every context feeling too perfectly sorted.
 
 ## Current boundaries
 
