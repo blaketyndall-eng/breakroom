@@ -1,6 +1,7 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
+import SecretTrigger from '@/components/breakroom/SecretTrigger';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 import { slugify } from '@/lib/slug';
 import { getPublicProductBySlug } from '@/lib/publicContent';
@@ -23,8 +24,9 @@ if (!product) {
 }
 ---
 <OldWebLayout title={`${product.name} / Product File`} section="rack">
+  <SecretTrigger client:load trigger="visit:/rack/[slug]" path={`/rack/${slug}`} label={product.name} />
   <a href="/rack">← Return to The Rack</a>
-  <div class="status-strip"><span>product file</span><span>sku: {product.sku}</span><span>status: {product.status}</span><span>source: {result.source}</span></div>
+  <div class="status-strip"><span>product file</span><span>sku: {product.sku}</span><span>status: {product.status}</span><span>source: {result.source}</span><span><a href="/artifacts">evidence drawer</a></span></div>
   <h1>{product.name}</h1>
   {result.error && <p class="memo-box">Public product detail fallback active: {result.error}</p>}
   <div class="grid-2">
