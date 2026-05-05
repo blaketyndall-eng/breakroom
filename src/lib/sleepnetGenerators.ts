@@ -1,7 +1,6 @@
 import { createFauxCompanyComponents } from '@/lib/sleepnetComponents';
 import type { SleepNetComponent } from '@/lib/sleepnetComponents';
 import type { SleepNetSection, SleepNetSite } from '@/lib/sleepnetSites';
-import { buildSearchText, normalizeSleepNetSlug } from '@/lib/sleepnetSites';
 
 export type SleepNetSiteType =
   | 'faux_company'
@@ -30,6 +29,21 @@ export const SLEEPNET_SITE_TYPE_LABELS: Record<SleepNetSiteType | 'auto', string
   object_archive: 'Object Archive',
 };
 
+function normalizeGeneratorSlug(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 48);
+}
+
+function buildGeneratorSearchText(site: Pick<SleepNetSite, 'title' | 'tagline' | 'description' | 'site_type' | 'neighborhood'>) {
+  return [site.title, site.tagline, site.description, site.site_type, site.neighborhood]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+}
+
 function titleFromPrompt(prompt: string, fallback: string) {
   return (prompt.trim() || fallback)
     .replace(/^a\s+/i, '')
@@ -42,7 +56,7 @@ function titleFromPrompt(prompt: string, fallback: string) {
 function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: string; tagline: string; neighborhood: string; sections: SleepNetSection[]; components: SleepNetComponent[]; relatedObjects?: string[]; relatedAgent?: string; }): SleepNetSite {
   const description = input.prompt.trim() || input.tagline;
   const site: SleepNetSite = {
-    slug: normalizeSleepNetSlug(input.title),
+    slug: normalizeGeneratorSlug(input.title),
     title: input.title,
     site_type: input.siteType,
     neighborhood: input.neighborhood,
@@ -65,7 +79,7 @@ function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: st
     components: input.components,
   };
 
-  return { ...site, search_text: buildSearchText(site) };
+  return { ...site, search_text: buildGeneratorSearchText(site) };
 }
 
 function cloneComponentsFor(title: string, overrides: Partial<{ comment: string; notice: string; adHeadline: string; shelfTitle: string; jukeboxTitle: string; }> = {}) {
