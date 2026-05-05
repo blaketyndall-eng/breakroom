@@ -48,6 +48,32 @@
   gap: 10px;
 }
 
+.sleepnet-prompt-examples {
+  border: 1px dashed #5a513f;
+  background: rgba(246,243,236,.64);
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+.sleepnet-example {
+  display: block;
+  width: 100%;
+  border: 1px solid #14110e;
+  background: #efe7d3;
+  color: #14110e;
+  text-align: left;
+  font-family: var(--type-typer, 'Courier New', monospace);
+  font-size: 13px;
+  line-height: 1.25;
+  padding: 8px;
+  margin-top: 6px;
+  cursor: pointer;
+}
+
+.sleepnet-example:hover {
+  background: #d8c9a6;
+}
+
 .sleepnet-results,
 .sleepnet-owner-list {
   display: grid;
@@ -68,6 +94,15 @@
   background:
     repeating-linear-gradient(0deg, rgba(20,17,14,.035) 0 1px, transparent 1px 7px),
     #f6f3ec;
+}
+
+.sleepnet-owner-card.status-published {
+  border-color: #1f5d3a;
+}
+
+.sleepnet-owner-card.status-hidden {
+  opacity: .7;
+  filter: grayscale(.5);
 }
 
 .sleepnet-url {
@@ -110,16 +145,29 @@
   text-transform: uppercase;
 }
 
+.sleepnet-owner-toolbar,
 .sleepnet-owner-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 12px;
+  margin: 12px 0;
 }
 
-.sleepnet-owner-actions .old-button {
+.sleepnet-owner-actions .old-button,
+.sleepnet-owner-toolbar .old-button {
   font-size: 10px;
   padding: 5px 8px;
+}
+
+.sleepnet-filter.active {
+  border-style: inset;
+  background: #15120f;
+  color: #d8c9a6;
+}
+
+.old-button.danger {
+  border-color: #b00020;
+  color: #b00020;
 }
 
 .sleepnet-site-header {
