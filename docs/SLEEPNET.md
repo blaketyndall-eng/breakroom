@@ -7,6 +7,7 @@ SleepNet is the user-created website layer inside The Breakroom.
 ```txt
 Regular File = user identity
 SleepNet Page = user-created weird website
+Guestbook = old-web social mark, not a feed
 ```
 
 SleepNet pages should feel like old web personal pages, fake company sites, object archives, motel pages, zine pages, classified boards, and small sites found after midnight.
@@ -47,11 +48,13 @@ src/content/data/seedSleepNetSites.ts
 src/lib/sleepnetSites.ts
 src/lib/sleepnetComponents.ts
 src/lib/sleepnetGenerators.ts
+src/lib/sleepnetGuestbooks.ts
 src/components/sleepnet/SleepNetDirectory.tsx
 src/components/sleepnet/SleepNetSiteEditor.tsx
 src/components/sleepnet/SleepNetOwnerDashboard.tsx
 src/components/sleepnet/SleepNetSiteView.astro
 src/components/sleepnet/SleepNetComponentRenderer.astro
+src/components/sleepnet/SleepNetGuestbook.tsx
 src/pages/sleepnet/index.astro
 src/pages/sleepnet/create.astro
 src/pages/sleepnet/[slug].astro
@@ -59,6 +62,7 @@ src/pages/back-office.astro
 src/styles/sleepnet.css
 supabase/migrations/0011_sleepnet_sites.sql
 supabase/migrations/0012_sleepnet_components.sql
+supabase/migrations/0013_sleepnet_guestbook_entries.sql
 ```
 
 ## Table
@@ -93,6 +97,25 @@ jukebox_enabled
 search_text
 status
 is_public
+```
+
+Guestbook table:
+
+```txt
+sleepnet_guestbook_entries
+```
+
+Important fields:
+
+```txt
+site_slug
+user_id
+alias
+message
+actor_type
+status
+metadata
+created_at
 ```
 
 ## MVP behavior
@@ -145,6 +168,64 @@ rivalry_notice
 photo_gallery
 collection_case
 jukebox
+```
+
+## Guestbook persistence
+
+Guestbooks are the old-web social layer of SleepNet.
+
+They are not comments, likes, or a feed. They should feel like:
+
+```txt
+MySpace guestbook
+pool hall sign-in sheet
+motel register
+bathroom wall mark
+classified reply
+customer complaint
+witness log
+```
+
+Actor types:
+
+```txt
+user
+anonymous_user
+agent
+seeded_npc
+system
+admin
+```
+
+Entry statuses:
+
+```txt
+local
+pending
+approved
+hidden
+removed_by_management
+```
+
+V1 behavior:
+
+```txt
+- Seeded entries from guestbook components render as agent or seeded_npc entries.
+- Unsigned users can leave local-only marks.
+- Signed-in users can submit approved Supabase entries.
+- Public reads only show approved Supabase entries.
+- Local entries remain browser-local.
+```
+
+Guestbook display modes by site type:
+
+```txt
+personal_homepage -> myspace
+faction_turf -> sign_in_sheet
+fake_restaurant -> complaints
+object_archive -> witness_log
+classified_board -> classified_replies
+faux_company -> complaints
 ```
 
 ## Site type expansion pack
@@ -214,11 +295,11 @@ Current music behavior:
 - Search is simple search_text matching
 - Local drafts are visible only in the same browser
 - Edit-existing uses a query param, not a dedicated edit route yet
-- No real guestbook persistence yet
 - No real photo upload/storage yet
 - No Spotify OAuth or Apple Music MusicKit auth yet
-- Component editing is preview/regenerate only
 - Seeded pages are code-first, not CMS-managed yet
+- Guestbook moderation UI is not implemented yet
+- Unsigned guestbook entries are local-only
 ```
 
 ## Product truth
