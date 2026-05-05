@@ -1,0 +1,51 @@
+---
+import { labelStuffStatus } from '@/lib/stuff';
+import type { StuffItem } from '@/content/data/stuff';
+
+interface Props {
+  item: StuffItem;
+}
+
+const { item } = Astro.props;
+---
+<section class={`stuff-page status-${item.status}`}>
+  <div class="stuff-hero">
+    <p class="stuff-card-status">{labelStuffStatus(item.status)}</p>
+    <h1>{item.name}</h1>
+    <p class="stuff-kind">{item.kind.replaceAll('_', ' ')}</p>
+    <p>{item.description}</p>
+  </div>
+
+  <div class="stuff-detail-grid">
+    <article class="old-shell stuff-module">
+      <div class="old-header">Status</div>
+      <div class="old-body">
+        <p><span class="red-stamp">{labelStuffStatus(item.status)}</span></p>
+        {item.note && <p>{item.note}</p>}
+      </div>
+    </article>
+
+    <article class="old-shell stuff-module">
+      <div class="old-header">Source</div>
+      <div class="old-body">
+        <p>{item.sourceLabel ?? 'No source filed.'}</p>
+        {item.relatedSleepNetSlug && <p><a href={`/sleepnet/${item.relatedSleepNetSlug}`}>sleepnet://{item.relatedSleepNetSlug}</a></p>}
+      </div>
+    </article>
+
+    <article class="old-shell stuff-module">
+      <div class="old-header">Commerce State</div>
+      <div class="old-body">
+        <p>{item.status === 'available' ? 'This item may become purchasable.' : 'No checkout is available for this item.'}</p>
+        <p>{item.priceLabel ?? 'Price not filed.'}</p>
+      </div>
+    </article>
+
+    <article class="old-shell stuff-module span-2">
+      <div class="old-header">Tags</div>
+      <div class="old-body stuff-tag-list">
+        {item.tags.map((tag) => <span>{tag}</span>)}
+      </div>
+    </article>
+  </div>
+</section>
