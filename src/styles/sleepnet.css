@@ -48,7 +48,8 @@
   gap: 10px;
 }
 
-.sleepnet-prompt-examples {
+.sleepnet-prompt-examples,
+.sleepnet-component-preview {
   border: 1px dashed #5a513f;
   background: rgba(246,243,236,.64);
   padding: 10px;
@@ -72,6 +73,27 @@
 
 .sleepnet-example:hover {
   background: #d8c9a6;
+}
+
+.sleepnet-component-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.component-preview-chip {
+  border: 1px solid #14110e;
+  background: #efe7d3;
+  padding: 6px 8px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.component-preview-chip small {
+  display: block;
+  color: #5a513f;
+  margin-top: 3px;
 }
 
 .sleepnet-results,
@@ -196,7 +218,8 @@
   margin-top: 14px;
 }
 
-.sleepnet-section-grid {
+.sleepnet-section-grid,
+.sleepnet-component-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
@@ -208,15 +231,130 @@
   line-height: 1.35;
 }
 
+.sleepnet-component {
+  min-height: 150px;
+}
+
+.fake-ad {
+  border: 3px ridge #14110e;
+  background: #ffff99;
+  color: #14110e;
+  padding: 14px;
+  box-shadow: 3px 3px 0 rgba(20,17,14,.28);
+}
+
+.fake-ad-sponsor,
+.stuff-status,
+.stuff-price,
+.agent-slug {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #5a513f;
+}
+
+.fake-ad h2,
+.object-file-mini h2,
+.rivalry-notice h2,
+.jukebox-module h2 {
+  margin: 0 0 8px;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 28px;
+  line-height: .95;
+}
+
+.stuff-shelf-grid,
+.photo-gallery-grid,
+.collection-case-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stuff-shelf-item,
+.collection-case-item,
+.photo-tile {
+  border: 1px solid #14110e;
+  background: #efe7d3;
+  padding: 8px;
+  color: #14110e;
+  text-decoration: none;
+}
+
+.stuff-shelf-item h3,
+.collection-case-item h3 {
+  margin: 0 0 5px;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.photo-tile {
+  margin: 0;
+}
+
+.photo-tile img,
+.photo-placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid #14110e;
+  background:
+    repeating-linear-gradient(45deg, rgba(20,17,14,.08) 0 8px, transparent 8px 16px),
+    #d8c9a6;
+}
+
+.photo-placeholder {
+  display: grid;
+  place-items: center;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-align: center;
+}
+
+.photo-tile figcaption {
+  margin-top: 6px;
+  font-family: var(--type-typer, 'Courier New', monospace);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.jukebox-embed {
+  width: 100%;
+  min-height: 152px;
+  border: 0;
+  margin-top: 10px;
+}
+
+.warning-notice,
+.rivalry-notice {
+  background: #efe7d3;
+}
+
+.character-comment {
+  background: linear-gradient(135deg, rgba(20,17,14,.06), transparent), #f6f3ec;
+}
+
 @media (max-width: 900px) {
   .sleepnet-results,
   .sleepnet-owner-list,
   .sleepnet-section-grid,
+  .sleepnet-component-grid,
   .sleepnet-editor-grid {
     grid-template-columns: 1fr;
   }
 
   .sleepnet-search {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .stuff-shelf-grid,
+  .photo-gallery-grid,
+  .collection-case-grid {
     grid-template-columns: 1fr;
   }
 }
