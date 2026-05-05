@@ -1,5 +1,7 @@
 ---
 import SleepNetComponentRenderer from '@/components/sleepnet/SleepNetComponentRenderer.astro';
+import SleepNetGuestbook from '@/components/sleepnet/SleepNetGuestbook';
+import { seededGuestbookEntry } from '@/lib/sleepnetGuestbooks';
 import type { SleepNetSite } from '@/lib/sleepnetSites';
 
 interface Props {
@@ -7,6 +9,18 @@ interface Props {
 }
 
 const { site } = Astro.props;
+const guestbookComponent = site.components?.find((component) => component.type === 'guestbook');
+const seededEntries = guestbookComponent?.type === 'guestbook'
+  ? guestbookComponent.entries.map((entry) => seededGuestbookEntry({
+      siteSlug: site.slug,
+      alias: entry.name,
+      message: entry.body,
+      timestampLabel: entry.timestampLabel,
+      actorType: entry.name.toLowerCase().includes('clerk') || entry.name.toLowerCase().includes('manager') || entry.name.toLowerCase().includes('employee') ? 'agent' : 'seeded_npc',
+      agentSlug: entry.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
+      pageType: site.site_type,
+    }))
+  : [];
 ---
 <section class="sleepnet-site-view">
   <header class="sleepnet-site-header">
@@ -35,15 +49,9 @@ const { site } = Astro.props;
 
   {site.components?.length ? (
     <section class="sleepnet-component-grid">
-      {site.components.map((component) => <SleepNetComponentRenderer component={component} siteSlug={site.slug} />)}
+      {site.components.filter((component) => component.type !== 'guestbook').map((component) => <SleepNetComponentRenderer component={component} siteSlug={site.slug} />)}
     </section>
   ) : null}
 
-  <section class="old-shell sleepnet-guestbook-shell">
-    <div class="old-header">Guestbook / Not Yet Moderated</div>
-    <div class="old-body">
-      <p>This page can be remembered later. For now, the counter is watching quietly.</p>
-      <p class="sleepnet-url">guestbook://{site.slug}/pending</p>
-    </div>
-  </section>
+  {site.guestbook_enabled !== false && <SleepNetGuestbook client:load siteSlug={site.slug} siteType={site.site_type} seededEntries={seededEntries} />}
 </section>
