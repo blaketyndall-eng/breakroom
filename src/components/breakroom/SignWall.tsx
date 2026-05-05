@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
+import { unlockByTrigger } from '@/lib/secrets';
 import { supabase } from '@/lib/supabaseClient';
 
 type WallPost = {
@@ -51,6 +52,8 @@ export default function SignWall() {
     let ignore = false;
 
     async function loadWall() {
+      await unlockByTrigger('visit:/sign-the-wall', '/sign-the-wall', { surface: 'bathroom_wall' });
+
       if (!supabase) return;
 
       const { data, error } = await supabase
@@ -101,6 +104,7 @@ export default function SignWall() {
     setPosts((current) => [localPost, ...current]);
     setMsg('');
     setAlias('');
+    await unlockByTrigger('submit:wall_post', '/sign-the-wall', { marker_color: markerColor });
 
     if (!supabase) {
       setStatus('Local mark added. Supabase is not configured in this room.');
