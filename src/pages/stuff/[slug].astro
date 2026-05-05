@@ -1,0 +1,14 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import StuffPage from '@/components/stuff/StuffPage.astro';
+import { getStuffItemBySlug } from '@/content/data/stuff';
+
+export const prerender = false;
+
+const slug = Astro.params.slug ?? '';
+const item = getStuffItemBySlug(slug);
+---
+<OldWebLayout title={`${item?.name ?? 'Missing Stuff'} / Stuff`} section="stuff">
+  <div class="status-strip"><span>stuff file</span><span>{item ? item.slug : 'not found'}</span><span>{item ? item.status : 'missing'}</span><span><a href="/stuff">stuff shelf</a></span></div>
+  {item ? <StuffPage item={item} /> : <p class="memo-box">No Stuff file was found for {slug}. It may have been removed from the rack before the page loaded.</p>}
+</OldWebLayout>
