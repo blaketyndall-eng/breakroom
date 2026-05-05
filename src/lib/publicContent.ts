@@ -57,6 +57,15 @@ export type ProductView = {
   relatedClipping?: string;
 };
 
+export type VentureView = {
+  slug: string;
+  name: string;
+  category: string;
+  status: string;
+  description: string;
+  memo: string;
+};
+
 export type PublicContentSource = 'supabase' | 'static';
 
 export type PublicContentResult<T> = {
@@ -151,6 +160,25 @@ function staticProducts(): ProductView[] {
   }));
 }
 
+function staticVentures(): VentureView[] {
+  return [
+    ['Still Open Burger', 'Lifestyle & Hospitality', 'Active', 'AI noticed humans eat late and got carried away.'],
+    ['Motel 8.5', 'Essential Services', 'Under review', 'A lodging concept between a motel and a clerical error.'],
+    ['Hot Air Balloon Insurance', 'Experimental', 'Approved somehow', 'The dashboard showed strong upward mobility.'],
+    ['BYOB Petting Zoo', 'Experimental', 'Paused', 'Too many assumptions about goats.'],
+    ['Receipt Intelligence Labs', 'Essential Services', 'Active', 'No total is still data.'],
+    ['Coffee Freshness Compliance', 'Operations', 'Disputed', 'The coffee is not fresh. It is active.'],
+    ['Swan Passenger Safety', 'Lifestyle & Hospitality', 'Active', 'Passenger status unresolved. Seatbelt guidance pending.'],
+  ].map(([name, category, status, description]) => ({
+    slug: slugify(name),
+    name,
+    category,
+    status,
+    description,
+    memo: description,
+  }));
+}
+
 function formatPrice(priceCents?: number | null) {
   if (priceCents == null) return 'file request only';
   return `$${(priceCents / 100).toFixed(2)}`;
@@ -197,6 +225,17 @@ function mapProduct(product: any): ProductView {
     category: product.category,
     description: product.description,
     priceLabel: formatPrice(product.price_cents),
+  };
+}
+
+function mapVenture(venture: any): VentureView {
+  return {
+    slug: venture.slug ?? slugify(venture.name),
+    name: venture.name,
+    category: venture.status ?? 'announced_by_ai',
+    status: venture.status ?? 'announced_by_ai',
+    description: venture.description ?? 'The AI has not explained this one yet.',
+    memo: venture.memo ?? venture.description ?? 'No memo was attached. That has never stopped OmniShift.',
   };
 }
 
@@ -447,6 +486,36 @@ export async function getPublicProductBySlug(slug: string): Promise<PublicConten
       source: 'static',
       item: fallback,
       error: error instanceof Error ? error.message : 'Could not load public product.',
+    };
+  }
+}
+
+export async function getPublicVentures(): Promise<PublicContentResult<VentureView>> {
+  const fallback = staticVentures();
+
+  if (!supabase) {
+    return { source: 'static', items: fallback };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('ventures')
+      .select('slug, name, status, description, memo, is_public')
+      .eq('is_public', true)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    if (!data?.length) return { source: 'static', items: fallback };
+
+    return {
+      source: 'supabase',
+      items: data.map(mapVenture),
+    };
+  } catch (error) {
+    return {
+      source: 'static',
+      items: fallback,
+      error: error instanceof Error ? error.message : 'Could not load public ventures.',
     };
   }
 }
