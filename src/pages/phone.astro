@@ -2,18 +2,21 @@
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
 import LinkMaze from '@/components/oldweb/LinkMaze.astro';
-import { BREAKROOM_DATA } from '@/content/data/breakroom';
+import { getPublicPhoneMessages } from '@/lib/publicContent';
+
+const phoneMessages = await getPublicPhoneMessages();
 ---
 <OldWebLayout title="Phone Behind The Bar" section="phone">
-  <div class="status-strip"><span>company phone</span><span>carrier: unknown</span><span>missed calls: 147</span><span>battery: spiritually dead</span></div>
+  <div class="status-strip"><span>company phone</span><span>carrier: unknown</span><span>missed calls: 147</span><span>battery: spiritually dead</span><span>source: {phoneMessages.source}</span></div>
   <h1>Phone Behind The Bar</h1>
   <p class="tagline-block">Ubers, DoorDash, weird voicemails, invites, late-night messages, and OmniShift interruptions. The phone is not yours. It keeps acting familiar.</p>
+  {phoneMessages.error && <p class="memo-box">Public phone fallback active: {phoneMessages.error}</p>}
 
   <section class="grid-2">
     <TableBox title="Incoming / voicemail drawer">
-      {BREAKROOM_DATA.voicemails.map((v, i) => (
+      {phoneMessages.items.map((v, i) => (
         <article class="memo-box" style="margin-bottom:12px;">
-          <p style="font-family:var(--type-mono);font-size:11px;text-transform:uppercase;">MSG {String(i + 1).padStart(2, '0')} / FROM: {v.from} / {v.time}</p>
+          <p style="font-family:var(--type-mono);font-size:11px;text-transform:uppercase;">MSG {String(i + 1).padStart(2, '0')} / FROM: {v.from} / {v.time} / {v.messageType}</p>
           <p style="font-size:18px;">{v.body}</p>
           <p><button class="old-button" type="button">Play / pretend audio</button> <button class="old-button" type="button">Save to evidence</button></p>
         </article>
