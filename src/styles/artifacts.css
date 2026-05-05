@@ -12,7 +12,56 @@
   letter-spacing: .08em;
   padding: 5px 7px;
   text-transform: uppercase;
-  opacity: .72;
+  opacity: .55;
+}
+
+.artifact-toast {
+  position: fixed;
+  right: 18px;
+  bottom: 48px;
+  z-index: 40;
+  width: min(340px, calc(100vw - 36px));
+  border: 2px solid #14110e;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.04) 0 1px, transparent 1px 6px),
+    #f6f3ec;
+  color: #14110e;
+  padding: 14px;
+  box-shadow: 5px 5px 0 rgba(20,17,14,.3);
+  font-family: var(--type-typer, 'Courier New', monospace);
+  animation: artifact-print .32s steps(4, end);
+}
+
+.artifact-toast::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: -7px;
+  height: 10px;
+  background: repeating-linear-gradient(90deg, transparent 0 9px, #14110e 9px 11px);
+}
+
+.artifact-toast-kicker,
+.artifact-toast-meta {
+  margin: 0 0 7px;
+  color: #5a513f;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.artifact-toast h2 {
+  margin: 0 0 8px;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 28px;
+  line-height: .95;
+}
+
+.artifact-toast p {
+  margin: 0 0 9px;
+  line-height: 1.25;
 }
 
 .artifact-shell {
@@ -34,9 +83,26 @@
   position: relative;
 }
 
+.artifact-card::before {
+  content: 'SLOT ' attr(data-slot);
+  display: inline-block;
+  margin-bottom: 8px;
+  background: #14110e;
+  color: #efe7d3;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .14em;
+  padding: 3px 6px;
+}
+
 .artifact-card.locked {
   filter: grayscale(.8);
-  opacity: .68;
+  opacity: .64;
+  background: repeating-linear-gradient(-45deg, #f6f3ec 0 10px, #ece2ca 10px 20px);
+}
+
+.artifact-card.unlocked {
+  transform: rotate(-.4deg);
 }
 
 .artifact-card.unlocked::after {
@@ -62,6 +128,7 @@
   font-family: var(--type-mono, 'Courier New', monospace);
   font-size: 12px;
   letter-spacing: .12em;
+  text-align: center;
 }
 
 .artifact-type {
@@ -78,6 +145,17 @@
   font-family: var(--type-paper, Georgia, serif);
   font-size: 22px;
   line-height: 1;
+}
+
+@keyframes artifact-print {
+  from {
+    transform: translateY(16px) skewY(2deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) skewY(0);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 900px) {
