@@ -1,4 +1,5 @@
 ---
+import SleepNetComponentRenderer from '@/components/sleepnet/SleepNetComponentRenderer.astro';
 import type { SleepNetSite } from '@/lib/sleepnetSites';
 
 interface Props {
@@ -6,6 +7,7 @@ interface Props {
 }
 
 const { site } = Astro.props;
+const hasGuestbookComponent = site.components?.some((component) => component.type === 'guestbook');
 ---
 <section class={`sleepnet-site sleepnet-theme-${site.theme}`}>
   <div class="sleepnet-site-header">
@@ -16,6 +18,7 @@ const { site } = Astro.props;
       <span>{site.site_type.replaceAll('_', ' ')}</span>
       <span>{site.neighborhood.replaceAll('_', ' ')}</span>
       <span>{site.status}</span>
+      <span>{site.reality_status?.replaceAll('_', ' ') ?? 'indexed noise'}</span>
     </div>
   </div>
 
@@ -38,11 +41,19 @@ const { site } = Astro.props;
     ))}
   </div>
 
-  <article class="old-shell sleepnet-guestbook-shell">
-    <div class="old-header">Guestbook / Coming Soon</div>
-    <div class="old-body">
-      <p><b>Directory Clerk:</b> This URL has been indexed and may appear in SleepNet search.</p>
-      <p><b>Anonymous:</b> I found this through a search term I refuse to repeat.</p>
+  {site.components?.length ? (
+    <div class="sleepnet-component-grid">
+      {site.components.map((component) => <SleepNetComponentRenderer component={component} />)}
     </div>
-  </article>
+  ) : null}
+
+  {!hasGuestbookComponent && (
+    <article class="old-shell sleepnet-guestbook-shell">
+      <div class="old-header">Guestbook / Coming Soon</div>
+      <div class="old-body">
+        <p><b>Directory Clerk:</b> This URL has been indexed and may appear in SleepNet search.</p>
+        <p><b>Anonymous:</b> I found this through a search term I refuse to repeat.</p>
+      </div>
+    </article>
+  )}
 </section>
