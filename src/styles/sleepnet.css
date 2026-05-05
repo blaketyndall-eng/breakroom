@@ -1,0 +1,150 @@
+.sleepnet-directory,
+.sleepnet-editor {
+  margin-top: 18px;
+}
+
+.sleepnet-search {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sleepnet-search input,
+.sleepnet-editor input,
+.sleepnet-editor select,
+.sleepnet-editor textarea {
+  border: 2px inset #d8c9a6;
+  background: #f6f3ec;
+  color: #14110e;
+  padding: 10px;
+  font-family: var(--type-typer, 'Courier New', monospace);
+  font-size: 14px;
+}
+
+.sleepnet-editor label {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 12px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.sleepnet-editor textarea {
+  min-height: 106px;
+  resize: vertical;
+}
+
+.sleepnet-editor label:last-of-type textarea {
+  min-height: 230px;
+}
+
+.sleepnet-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sleepnet-results {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sleepnet-card {
+  border: 2px solid #14110e;
+  background: #f6f3ec;
+  padding: 12px;
+  box-shadow: 3px 3px 0 rgba(20,17,14,.22);
+  min-height: 220px;
+}
+
+.sleepnet-url {
+  margin: 0 0 8px;
+  color: #0000ee;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: lowercase;
+  word-break: break-word;
+}
+
+.sleepnet-card h2,
+.sleepnet-site-header h1 {
+  margin: 0 0 8px;
+  font-family: var(--type-paper, Georgia, serif);
+  line-height: .95;
+}
+
+.sleepnet-card h2 {
+  font-size: 26px;
+}
+
+.sleepnet-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.sleepnet-meta span {
+  border: 1px solid #14110e;
+  background: #efe7d3;
+  padding: 4px 6px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.sleepnet-site-header {
+  border: 3px double #14110e;
+  background:
+    linear-gradient(135deg, rgba(0,0,238,.12), rgba(31,93,58,.12)),
+    #f6f3ec;
+  padding: 18px;
+  box-shadow: 4px 4px 0 rgba(20,17,14,.25);
+}
+
+.sleepnet-site-header h1 {
+  font-size: clamp(48px, 9vw, 96px);
+  text-transform: uppercase;
+}
+
+.sleepnet-tagline {
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: clamp(22px, 4vw, 42px);
+  line-height: 1;
+  margin: 0 0 12px;
+}
+
+.sleepnet-intro,
+.sleepnet-guestbook-shell {
+  margin-top: 14px;
+}
+
+.sleepnet-section-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.sleepnet-section p {
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .sleepnet-results,
+  .sleepnet-section-grid,
+  .sleepnet-editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sleepnet-search {
+    grid-template-columns: 1fr;
+  }
+}
