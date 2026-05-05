@@ -3,7 +3,8 @@ import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import SignWall from '@/components/breakroom/SignWall';
 ---
 <OldWebLayout title="Sign The Wall" section="afterhours">
+  <div class="status-strip"><span>bathroom wall</span><span>marker layer active</span><span>approved scrawls only</span><span>wood panel memory</span></div>
   <h1>Sign The Wall</h1>
-  <p>Bathroom wall sharpie simulator. Community layer, not chaos board.</p>
+  <p class="tagline-block">A wood-paneled bathroom wall with bad markers, red ceiling paint, old names, pool-room threats, peace signs, legal warnings, and messages nobody admits writing.</p>
   <SignWall client:load />
 </OldWebLayout>
