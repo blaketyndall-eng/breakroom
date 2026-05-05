@@ -10,6 +10,13 @@ export type SecretUnlockDefinition = {
   notes: string;
 };
 
+export type UnlockResult = {
+  artifact: ReturnType<typeof getArtifactBySlug>;
+  alreadyUnlocked: boolean;
+  artifactCount: number;
+  comboArtifact?: ReturnType<typeof getArtifactBySlug>;
+};
+
 export const SECRET_UNLOCKS: SecretUnlockDefinition[] = [
   {
     slug: 'clocked-out-room-entry',
@@ -67,10 +74,20 @@ export const SECRET_UNLOCKS: SecretUnlockDefinition[] = [
     title: 'Issued Goods Request',
     notes: 'Not a cart. Not a sale. A file request.',
   },
+  {
+    slug: 'double-shift-seen',
+    trigger: 'combo:double-shift',
+    artifactSlug: 'double-shift-receipt',
+    artifactType: 'combo_receipt',
+    title: 'Double Shift Receipt',
+    notes: 'The room saw After Hours, Phone, and Radio in the same drawer.',
+  },
 ];
 
 const LOCAL_ARTIFACT_KEY = 'breakroom.artifacts.v1';
 const LOCAL_SECRET_KEY = 'breakroom.secrets.v1';
+const LOCAL_VISIT_KEY = 'breakroom.visits.v1';
+const DOUBLE_SHIFT_REQUIRED = ['visit:/after-hours', 'visit:/phone', 'visit:/radio'];
 
 function readLocalList(key: string) {
   if (typeof window === 'undefined') return [] as string[];
@@ -95,12 +112,29 @@ export function getLocalSecretSlugs() {
   return readLocalList(LOCAL_SECRET_KEY);
 }
 
+export function getLocalVisitTriggers() {
+  return readLocalList(LOCAL_VISIT_KEY);
+}
+
 export function saveLocalArtifact(slug: string) {
   writeLocalList(LOCAL_ARTIFACT_KEY, [...getLocalArtifactSlugs(), slug]);
 }
 
 export function saveLocalSecret(slug: string) {
   writeLocalList(LOCAL_SECRET_KEY, [...getLocalSecretSlugs(), slug]);
+}
+
+export function saveLocalVisitTrigger(trigger: string) {
+  writeLocalList(LOCAL_VISIT_KEY, [...getLocalVisitTriggers(), trigger]);
+}
+
+export function getArtifactCount() {
+  return getLocalArtifactSlugs().length;
+}
+
+export function dispatchArtifactEvent(detail: UnlockResult) {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent('breakroom:artifact', { detail }));
 }
 
 export async function trackSiteEvent(eventName: string, path: string, payload: Record<string, unknown> = {}) {
@@ -124,6 +158,15 @@ async function persistArtifact(definition: SecretUnlockDefinition) {
   const userId = sessionData.session?.user?.id;
   if (!userId) return;
 
+  const { data: existing } = await supabase
+    .from('saved_artifacts')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('artifact_slug', definition.artifactSlug)
+    .maybeSingle();
+
+  if (existing?.id) return;
+
   await supabase.from('saved_artifacts').insert({
     user_id: userId,
     artifact_type: definition.artifactType,
@@ -132,16 +175,13 @@ async function persistArtifact(definition: SecretUnlockDefinition) {
   });
 }
 
-export async function unlockByTrigger(trigger: string, path: string, payload: Record<string, unknown> = {}) {
-  const definition = SECRET_UNLOCKS.find((secret) => secret.trigger === trigger);
-  if (!definition) return null;
-
+async function unlockDefinition(definition: SecretUnlockDefinition, path: string, payload: Record<string, unknown> = {}): Promise<UnlockResult> {
   const alreadyUnlocked = getLocalSecretSlugs().includes(definition.slug);
   saveLocalSecret(definition.slug);
   saveLocalArtifact(definition.artifactSlug);
 
   await trackSiteEvent('secret_triggered', path, {
-    trigger,
+    trigger: definition.trigger,
     secret_slug: definition.slug,
     artifact_slug: definition.artifactSlug,
     already_unlocked: alreadyUnlocked,
@@ -152,5 +192,44 @@ export async function unlockByTrigger(trigger: string, path: string, payload: Re
     await persistArtifact(definition);
   }
 
-  return getArtifactBySlug(definition.artifactSlug);
+  const result: UnlockResult = {
+    artifact: getArtifactBySlug(definition.artifactSlug),
+    alreadyUnlocked,
+    artifactCount: getArtifactCount(),
+  };
+
+  dispatchArtifactEvent(result);
+  return result;
+}
+
+async function maybeUnlockDoubleShift(path: string) {
+  const visits = getLocalVisitTriggers();
+  const hasAll = DOUBLE_SHIFT_REQUIRED.every((trigger) => visits.includes(trigger));
+  const alreadyUnlocked = getLocalSecretSlugs().includes('double-shift-seen');
+  if (!hasAll || alreadyUnlocked) return null;
+
+  const definition = SECRET_UNLOCKS.find((secret) => secret.trigger === 'combo:double-shift');
+  if (!definition) return null;
+
+  return unlockDefinition(definition, path, { combo: DOUBLE_SHIFT_REQUIRED });
+}
+
+export async function unlockByTrigger(trigger: string, path: string, payload: Record<string, unknown> = {}) {
+  const definition = SECRET_UNLOCKS.find((secret) => secret.trigger === trigger);
+  if (!definition) return null;
+
+  if (trigger.startsWith('visit:')) {
+    saveLocalVisitTrigger(trigger);
+  }
+
+  const result = await unlockDefinition(definition, path, payload);
+  const combo = await maybeUnlockDoubleShift(path);
+
+  if (combo?.artifact) {
+    result.comboArtifact = combo.artifact;
+    result.artifactCount = getArtifactCount();
+    dispatchArtifactEvent(result);
+  }
+
+  return result;
 }

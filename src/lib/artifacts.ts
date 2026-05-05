@@ -64,6 +64,14 @@ export const ARTIFACTS: ArtifactDefinition[] = [
     stamp: 'FILE ONLY',
     source: '/rack',
   },
+  {
+    slug: 'double-shift-receipt',
+    title: 'Double Shift Receipt',
+    artifactType: 'combo_receipt',
+    description: 'Filed after the room saw you clock out, check the phone, and hear the station. Nobody scheduled this shift.',
+    stamp: 'DOUBLE SHIFT',
+    source: '/artifacts',
+  },
 ];
 
 export function getArtifactBySlug(slug: string) {
