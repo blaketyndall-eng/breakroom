@@ -3,7 +3,6 @@ import type { FormEvent } from 'react';
 import {
   SLEEPNET_NEIGHBORHOODS,
   SLEEPNET_PROMPT_EXAMPLES,
-  generateFauxCompanyDraft,
   getMySleepNetSiteBySlug,
   labelSleepNetValue,
   loadLocalSleepNetDraft,
@@ -14,6 +13,8 @@ import {
 } from '@/lib/sleepnetSites';
 import type { SleepNetSection, SleepNetSite } from '@/lib/sleepnetSites';
 import { createFauxCompanyComponents } from '@/lib/sleepnetComponents';
+import { SLEEPNET_SITE_TYPE_LABELS, SLEEPNET_SITE_TYPES, generateSleepNetDraft } from '@/lib/sleepnetGenerators';
+import type { SleepNetSiteType } from '@/lib/sleepnetGenerators';
 
 function sectionText(sections: SleepNetSection[]) {
   return sections.map((section) => `${section.title}\n${section.body}`).join('\n\n---\n\n');
@@ -37,7 +38,8 @@ function getQuerySlug() {
 
 export default function SleepNetSiteEditor() {
   const [prompt, setPrompt] = useState(SLEEPNET_PROMPT_EXAMPLES[0]);
-  const [site, setSite] = useState<SleepNetSite>(() => generateFauxCompanyDraft(SLEEPNET_PROMPT_EXAMPLES[0]));
+  const [siteType, setSiteType] = useState<SleepNetSiteType | 'auto'>('auto');
+  const [site, setSite] = useState<SleepNetSite>(() => generateSleepNetDraft({ prompt: SLEEPNET_PROMPT_EXAMPLES[0], siteType: 'auto' }));
   const [sections, setSections] = useState(sectionText(site.sections));
   const [status, setStatus] = useState('Describe something badly. The directory will make it worse in a useful way.');
   const [isSaving, setIsSaving] = useState(false);
@@ -48,6 +50,7 @@ export default function SleepNetSiteEditor() {
       const existing = querySlug ? await getMySleepNetSiteBySlug(querySlug) : loadLocalSleepNetDraft();
       if (existing) {
         setSite(existing);
+        setSiteType((existing.site_type as SleepNetSiteType) ?? 'auto');
         setPrompt(existing.description ?? SLEEPNET_PROMPT_EXAMPLES[0]);
         setSections(sectionText(existing.sections));
         setStatus(querySlug ? `Loaded ${makeSleepNetProtocolUrl(existing.slug)} for editing.` : 'Loaded local unfinished SleepNet page.');
@@ -65,11 +68,11 @@ export default function SleepNetSiteEditor() {
     });
   }
 
-  function generateDraft(seed = prompt) {
-    const next = generateFauxCompanyDraft(seed);
+  function generateDraft(seed = prompt, nextSiteType = siteType) {
+    const next = generateSleepNetDraft({ prompt: seed, siteType: nextSiteType });
     setSite(next);
     setSections(sectionText(next.sections));
-    setStatus('Draft generated with sections and page components. Edit before putting it on the wire.');
+    setStatus(`${SLEEPNET_SITE_TYPE_LABELS[next.site_type as SleepNetSiteType]} draft generated with sections and page components.`);
   }
 
   function regenerateComponents() {
@@ -109,7 +112,7 @@ export default function SleepNetSiteEditor() {
 
   return (
     <form className="old-shell sleepnet-editor" onSubmit={handleSubmit}>
-      <div className="old-header">SleepNet Create / Faux Company / Put It On The Wire</div>
+      <div className="old-header">SleepNet Create / Site Type Expansion / Put It On The Wire</div>
       <div className="old-body">
         <p className="memo-box">{status}</p>
         <div className="sleepnet-prompt-examples">
@@ -120,10 +123,16 @@ export default function SleepNetSiteEditor() {
             </button>
           ))}
         </div>
+        <label>What kind of page should this become?
+          <select value={siteType} onChange={(event) => setSiteType(event.target.value as SleepNetSiteType | 'auto')}>
+            <option value="auto">{SLEEPNET_SITE_TYPE_LABELS.auto}</option>
+            {SLEEPNET_SITE_TYPES.map((item) => <option key={item} value={item}>{SLEEPNET_SITE_TYPE_LABELS[item]}</option>)}
+          </select>
+        </label>
         <label>Describe it badly
           <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} />
         </label>
-        <p><button type="button" className="old-button" onClick={() => generateDraft()}>Generate Faux Company Draft</button></p>
+        <p><button type="button" className="old-button" onClick={() => generateDraft()}>Generate From This Type</button></p>
 
         <div className="sleepnet-editor-grid">
           <label>Title
