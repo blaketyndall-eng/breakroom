@@ -1,19 +1,48 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import RadioPlayer from '@/components/radio/RadioPlayer';
+import TableBox from '@/components/oldweb/TableBox.astro';
+import LinkMaze from '@/components/oldweb/LinkMaze.astro';
+import { getPublicRadioLogs } from '@/lib/publicContent';
+
+const radioLogs = await getPublicRadioLogs();
 ---
 <OldWebLayout title="Breakroom Radio / Channel 1:47" section="radio">
+  <div class="status-strip"><span>CHANNEL 1:47</span><span>broadcast origin: behind the bar</span><span>dead air: approved</span><span>source: {radioLogs.source}</span></div>
   <h1>Breakroom Radio</h1>
-  <p>Channel 1:47. Broadcasting from somewhere behind the bar.</p>
+  <p class="tagline-block">Channel 1:47. Broadcasting from somewhere behind the bar. Music, station IDs, lot weather, fake ads, and messages that probably came through the phone first.</p>
+  {radioLogs.error && <p class="memo-box">Public radio fallback active: {radioLogs.error}</p>}
+
   <RadioPlayer client:load />
-  <section class="old-shell" style="margin-top:16px;">
-    <div class="old-header">Schedule</div>
-    <table class="table-box">
-      <tr><th>Time</th><th>Show</th><th>Host</th></tr>
-      <tr><td>1:47</td><td>Lot Weather</td><td>The Driver</td></tr>
-      <tr><td>2:13</td><td>Phone Behind The Bar</td><td>Room Admin</td></tr>
-      <tr><td>3:00</td><td>OmniShift Compliance Hour</td><td>System Voice</td></tr>
-      <tr><td>4:11</td><td>Back Booth Mix</td><td>Coffee</td></tr>
-    </table>
+
+  <section class="grid-2" style="margin-top:16px;">
+    <TableBox title="Transmission log / recently aired">
+      {radioLogs.items.map((log, index) => (
+        <article class="memo-box" style="margin-bottom:12px;">
+          <p style="font-family:var(--type-mono);font-size:11px;text-transform:uppercase;">TAPE {String(index + 1).padStart(2, '0')} / {log.airedAt}</p>
+          <h2>{log.title}</h2>
+          <p>{log.body}</p>
+        </article>
+      ))}
+    </TableBox>
+
+    <TableBox title="Schedule">
+      <table class="table-box">
+        <tbody>
+          <tr><th>Time</th><th>Show</th><th>Host</th></tr>
+          <tr><td>1:47</td><td>Lot Weather</td><td>The Driver</td></tr>
+          <tr><td>2:13</td><td>Phone Behind The Bar</td><td>Room Admin</td></tr>
+          <tr><td>3:00</td><td>OmniShift Compliance Hour</td><td>System Voice</td></tr>
+          <tr><td>4:11</td><td>Back Booth Mix</td><td>Coffee</td></tr>
+        </tbody>
+      </table>
+    </TableBox>
   </section>
+
+  <LinkMaze title="Radio switchboard" notice="The station does not take requests. It takes evidence and calls it programming." links={[
+    { href: '/phone', label: 'Phone logs', note: 'where most transmissions begin', stamp: 'SOURCE' },
+    { href: '/newsstand', label: 'Station notices', note: 'misreported after airing' },
+    { href: '/idle-hands', label: 'Bracket break', note: 'pool reports, table disputes, late players', stamp: 'SPORTS' },
+    { href: '/after-hours', label: 'Back to room', note: 'the booth is probably behind the bar' }
+  ]} />
 </OldWebLayout>
