@@ -1,3 +1,4 @@
+import { replaceOrAppendAgentComment } from '@/lib/agents';
 import { createFauxCompanyComponents } from '@/lib/sleepnetComponents';
 import type { SleepNetComponent } from '@/lib/sleepnetComponents';
 import type { SleepNetSection, SleepNetSite } from '@/lib/sleepnetSites';
@@ -53,7 +54,7 @@ function titleFromPrompt(prompt: string, fallback: string) {
     .join(' ') || fallback;
 }
 
-function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: string; tagline: string; neighborhood: string; sections: SleepNetSection[]; components: SleepNetComponent[]; relatedObjects?: string[]; relatedAgent?: string; }): SleepNetSite {
+function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: string; tagline: string; neighborhood: string; sections: SleepNetSection[]; components: SleepNetComponent[]; relatedObjects?: string[]; relatedAgent?: string; factionAffinity?: string[]; }): SleepNetSite {
   const description = input.prompt.trim() || input.tagline;
   const site: SleepNetSite = {
     slug: normalizeGeneratorSlug(input.title),
@@ -67,7 +68,7 @@ function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: st
     is_public: false,
     related_object_slugs: input.relatedObjects ?? [],
     related_agent_slug: input.relatedAgent ?? 'directory-clerk',
-    faction_affinity: input.siteType === 'faction_turf' ? ['the-players'] : [],
+    faction_affinity: input.factionAffinity ?? (input.siteType === 'faction_turf' ? ['the-players'] : []),
     weirdness_level: 3,
     reality_status: 'indexed_noise',
     canonical_weight: 0,
@@ -79,12 +80,11 @@ function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: st
     components: input.components,
   };
 
-  return { ...site, search_text: buildGeneratorSearchText(site) };
+  return replaceOrAppendAgentComment({ ...site, search_text: buildGeneratorSearchText(site) });
 }
 
-function cloneComponentsFor(title: string, overrides: Partial<{ comment: string; notice: string; adHeadline: string; shelfTitle: string; jukeboxTitle: string; }> = {}) {
-  return createFauxCompanyComponents(title).map((component) => {
-    if (component.type === 'character_comment' && overrides.comment) return { ...component, body: overrides.comment };
+function cloneComponentsFor(title: string, overrides: Partial<{ notice: string; adHeadline: string; shelfTitle: string; jukeboxTitle: string; }> = {}) {
+  return createFauxCompanyComponents(title).filter((component) => component.type !== 'character_comment').map((component) => {
     if (component.type === 'warning_notice' && overrides.notice) return { ...component, body: overrides.notice };
     if (component.type === 'fake_ad' && overrides.adHeadline) return { ...component, headline: overrides.adHeadline };
     if (component.type === 'stuff_shelf' && overrides.shelfTitle) return { ...component, title: overrides.shelfTitle };
@@ -122,7 +122,7 @@ export function generatePersonalHomepageDraft(prompt: string) {
     tagline: 'Current mood: still buffering.',
     neighborhood: 'classified_alley',
     relatedAgent: 'random-friend',
-    components: cloneComponentsFor(title, { comment: 'I think I know the person who made this. Bad sign.', shelfTitle: 'Things On The Desk', jukeboxTitle: 'Song The Page Claims Is Playing' }),
+    components: cloneComponentsFor(title, { shelfTitle: 'Things On The Desk', jukeboxTitle: 'Song The Page Claims Is Playing' }),
     sections: [
       { title: 'About Me, Unfortunately', body: 'This page was made instead of calling someone back.' },
       { title: 'Current Mood', body: 'A blinking cursor, a burnt CD, and a window open to a room nobody remembers renting.' },
@@ -161,7 +161,8 @@ export function generateFactionTurfDraft(prompt: string) {
     neighborhood: 'pool_hall_county',
     relatedObjects: ['cue-chalk', 'initialed-quarter', 'eight-ball'],
     relatedAgent: 'pool-table-oracle',
-    components: cloneComponentsFor(title, { comment: 'The eight ball saw this coming and still scratched.', shelfTitle: 'Known Objects Near The Table', adHeadline: 'CALL YOUR OWN FOULS' }),
+    factionAffinity: ['the-players'],
+    components: cloneComponentsFor(title, { shelfTitle: 'Known Objects Near The Table', adHeadline: 'CALL YOUR OWN FOULS' }),
     sections: [
       { title: 'Home Turf', body: 'The table, the bad light above it, and the chair nobody moves.' },
       { title: 'Known Objects', body: 'Cue chalk, initialed quarters, folded scorecards, and a lighter that belongs to everyone.' },
@@ -181,7 +182,7 @@ export function generateFakeRestaurantDraft(prompt: string) {
     neighborhood: 'the_food_court_that_closed',
     relatedObjects: ['legal-napkin-pack', 'receipt-shake', 'employee-water'],
     relatedAgent: 'seven-eleven-clerk',
-    components: cloneComponentsFor(title, { comment: 'I’ve seen worse. That is not praise.', shelfTitle: 'Menu Objects And Denied Merch', adHeadline: 'COUPON PRINTED BADLY' }),
+    components: cloneComponentsFor(title, { shelfTitle: 'Menu Objects And Denied Merch', adHeadline: 'COUPON PRINTED BADLY' }),
     sections: [
       { title: 'Menu', body: 'Very Good Burger. Good Burger No. 2. Night Burger. Legal Fries. Cup of Sauce. Receipt Shake. Employee Water.' },
       { title: 'Hours', body: 'Open until the grill forgets. Closed when management remembers us.' },
@@ -201,7 +202,7 @@ export function generateObjectArchiveDraft(prompt: string) {
     neighborhood: 'object_district',
     relatedObjects: ['motel-key-no-room', 'wrong-employee-badge', 'receipt-with-no-total'],
     relatedAgent: 'room-admin',
-    components: cloneComponentsFor(title, { comment: 'The object remembers more than the person who brought it in.', shelfTitle: 'Evidence Case', adHeadline: 'CLAIM WINDOW CLOSED' }),
+    components: cloneComponentsFor(title, { shelfTitle: 'Evidence Case', adHeadline: 'CLAIM WINDOW CLOSED' }),
     sections: [
       { title: 'Item Description', body: 'Small enough to lose. Important enough to lie about.' },
       { title: 'Found Location', body: 'Between the counter, the lot, and the part of the room cameras never catch.' },
