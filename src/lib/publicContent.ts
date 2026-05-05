@@ -1,5 +1,6 @@
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 import { supabase } from '@/lib/supabaseClient';
+import { slugify } from '@/lib/slug';
 
 export type PhoneMessageView = {
   slug: string;
@@ -8,6 +9,16 @@ export type PhoneMessageView = {
   body: string;
   messageType: string;
   unlockLevel: number;
+};
+
+export type NewsItemView = {
+  slug: string;
+  title: string;
+  body: string;
+  category: string;
+  byline: string;
+  publishedAt?: string;
+  isTrue?: boolean | null;
 };
 
 export type PublicContentSource = 'supabase' | 'static';
@@ -27,6 +38,32 @@ function staticPhoneMessages(): PhoneMessageView[] {
     messageType: 'voicemail',
     unlockLevel: 0,
   }));
+}
+
+function staticNewsItems(): NewsItemView[] {
+  return Object.entries(BREAKROOM_DATA.headlines).flatMap(([category, items]) =>
+    items.map((item: any) => {
+      const title = item.t ?? item.head ?? 'Untitled Notice';
+      const body = item.k ?? item.b ?? item.body ?? 'No further information was provided.';
+      return {
+        slug: slugify(title),
+        title,
+        body,
+        category,
+        byline: item.byline ?? 'STAFF / 1:47 A.M.',
+        isTrue: null,
+      };
+    }),
+  );
+}
+
+export function groupNewsItems(items: NewsItemView[]) {
+  return items.reduce<Record<string, NewsItemView[]>>((groups, item) => {
+    const key = item.category || 'notices';
+    groups[key] ??= [];
+    groups[key].push(item);
+    return groups;
+  }, {});
 }
 
 export async function getPublicPhoneMessages(): Promise<PublicContentResult<PhoneMessageView>> {
@@ -63,6 +100,44 @@ export async function getPublicPhoneMessages(): Promise<PublicContentResult<Phon
       source: 'static',
       items: fallback,
       error: error instanceof Error ? error.message : 'Could not load public phone messages.',
+    };
+  }
+}
+
+export async function getPublicNewsItems(): Promise<PublicContentResult<NewsItemView>> {
+  const fallback = staticNewsItems();
+
+  if (!supabase) {
+    return { source: 'static', items: fallback };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('news_items')
+      .select('slug, title, body, category, byline, is_true, published_at')
+      .eq('is_public', true)
+      .order('published_at', { ascending: false });
+
+    if (error) throw error;
+    if (!data?.length) return { source: 'static', items: fallback };
+
+    return {
+      source: 'supabase',
+      items: data.map((item: any) => ({
+        slug: item.slug,
+        title: item.title,
+        body: item.body ?? 'No further information was provided.',
+        category: item.category ?? 'notices',
+        byline: item.byline ?? 'STAFF / 1:47 A.M.',
+        publishedAt: item.published_at,
+        isTrue: item.is_true,
+      })),
+    };
+  } catch (error) {
+    return {
+      source: 'static',
+      items: fallback,
+      error: error instanceof Error ? error.message : 'Could not load public news items.',
     };
   }
 }
