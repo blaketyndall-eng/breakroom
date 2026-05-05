@@ -13,6 +13,7 @@ This doc tracks the move from static fallback data to Supabase-backed public con
 /radio
 /rack
 /rack/[slug]
+/ventures
 ```
 
 ## Shared helper
@@ -33,6 +34,7 @@ getPublicLostObjectBySlug()
 getPublicRadioLogs()
 getPublicProducts()
 getPublicProductBySlug()
+getPublicVentures()
 ```
 
 ## Phone behavior
@@ -133,6 +135,25 @@ When Supabase is not configured, unreachable, or returns no matching row:
 - Keep the page functional in local preview mode
 ```
 
+## Ventures behavior
+
+When Supabase is configured and reachable:
+
+```txt
+- Load public rows from ventures
+- Filter to is_public = true
+- Order by created_at
+- Render the AI venture desk from database content
+```
+
+When Supabase is not configured, unreachable, or returns no rows:
+
+```txt
+- Fall back to static OmniShift venture rows
+- Preserve the fake business portfolio feel
+- Keep the page functional in local preview mode
+```
+
 ## Detail page note
 
 Dynamic detail pages use Supabase by slug when possible while keeping the existing static route behavior stable.
@@ -153,7 +174,6 @@ New Supabase-only slugs may not have build-time routes until dynamic route gener
 ## Next candidates
 
 ```txt
-/ventures
 /sign-the-wall
 saved artifacts / secret unlock helpers
 ```
