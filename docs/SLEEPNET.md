@@ -27,6 +27,7 @@ SleepNet pages should feel like:
 /sleepnet
 /sleepnet/create
 /sleepnet/[slug]
+/back-office
 ```
 
 ## SleepNet URLs
@@ -54,10 +55,12 @@ neighborhood
 src/lib/sleepnetSites.ts
 src/components/sleepnet/SleepNetDirectory.tsx
 src/components/sleepnet/SleepNetSiteEditor.tsx
+src/components/sleepnet/SleepNetOwnerDashboard.tsx
 src/components/sleepnet/SleepNetSiteView.astro
 src/pages/sleepnet/index.astro
 src/pages/sleepnet/create.astro
 src/pages/sleepnet/[slug].astro
+src/pages/back-office.astro
 src/styles/sleepnet.css
 supabase/migrations/0011_sleepnet_sites.sql
 ```
@@ -96,6 +99,16 @@ is_public
 - Search shows normal links and in-world sleepnet:// URLs
 ```
 
+## Back Office behavior
+
+```txt
+- /back-office lists the current user's SleepNet pages
+- Shows drafts, published pages, and hidden pages
+- Shows normal URLs and sleepnet:// URLs
+- Allows publish, hide, and remove-from-wire actions
+- Falls back to the local draft when unsigned or Supabase is unavailable
+```
+
 ## First site type
 
 ```txt
@@ -118,7 +131,7 @@ This is the best first SleepNet template because it naturally fits:
 - Draft generation is deterministic, not AI yet
 - Search is simple search_text matching
 - Local drafts are visible only in the same browser
-- No owner dashboard list yet
+- No true edit-existing route yet; create page can start from local draft
 - No guestbook persistence yet
 - Only Faux Company is implemented
 ```

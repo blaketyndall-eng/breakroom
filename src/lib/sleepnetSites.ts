@@ -19,6 +19,8 @@ export type SleepNetSite = {
   search_text?: string | null;
   status: 'draft' | 'published' | 'hidden';
   is_public: boolean;
+  created_at?: string;
+  updated_at?: string;
 };
 
 export const LOCAL_SLEEPNET_DRAFT_KEY = 'breakroom.sleepnet-draft.v1';
@@ -44,6 +46,10 @@ export function normalizeSleepNetSlug(value: string) {
 
 export function makeSleepNetUrl(slug: string) {
   return `/sleepnet/${normalizeSleepNetSlug(slug)}`;
+}
+
+export function makeSleepNetProtocolUrl(slug: string) {
+  return `sleepnet://${normalizeSleepNetSlug(slug)}`;
 }
 
 export function buildSearchText(site: Pick<SleepNetSite, 'title' | 'tagline' | 'description' | 'site_type' | 'neighborhood'>) {
@@ -111,6 +117,11 @@ export function saveLocalSleepNetDraft(site: SleepNetSite) {
   window.localStorage.setItem(LOCAL_SLEEPNET_DRAFT_KEY, JSON.stringify(site));
 }
 
+export function clearLocalSleepNetDraft() {
+  if (typeof window === 'undefined') return;
+  window.localStorage.removeItem(LOCAL_SLEEPNET_DRAFT_KEY);
+}
+
 export async function saveMySleepNetSite(site: SleepNetSite) {
   const normalized = {
     ...site,
@@ -139,6 +150,75 @@ export async function saveMySleepNetSite(site: SleepNetSite) {
 
   if (error) throw error;
   return { source: 'supabase' as const, site: data as SleepNetSite };
+}
+
+export async function getMySleepNetSites() {
+  const local = loadLocalSleepNetDraft();
+
+  if (!supabase) return local ? [local] : [];
+
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+  if (!user) return local ? [local] : [];
+
+  const { data, error } = await supabase
+    .from('sleepnet_sites')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('updated_at', { ascending: false });
+
+  if (error || !data?.length) return local ? [local] : [];
+  return data as SleepNetSite[];
+}
+
+export async function updateMySleepNetSiteStatus(slug: string, status: 'draft' | 'published' | 'hidden') {
+  const normalized = normalizeSleepNetSlug(slug);
+
+  if (!supabase) {
+    const local = loadLocalSleepNetDraft();
+    if (!local || local.slug !== normalized) return null;
+    const next = { ...local, status, is_public: status === 'published' };
+    saveLocalSleepNetDraft(next);
+    return next;
+  }
+
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from('sleepnet_sites')
+    .update({ status, is_public: status === 'published' })
+    .eq('user_id', user.id)
+    .eq('slug', normalized)
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data as SleepNetSite;
+}
+
+export async function removeMySleepNetSite(slug: string) {
+  const normalized = normalizeSleepNetSlug(slug);
+
+  if (!supabase) {
+    const local = loadLocalSleepNetDraft();
+    if (local?.slug === normalized) clearLocalSleepNetDraft();
+    return { source: 'local' as const };
+  }
+
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+  if (!user) return { source: 'local' as const };
+
+  const { error } = await supabase
+    .from('sleepnet_sites')
+    .delete()
+    .eq('user_id', user.id)
+    .eq('slug', normalized);
+
+  if (error) throw error;
+  return { source: 'supabase' as const };
 }
 
 export async function searchSleepNetSites(query = '') {
