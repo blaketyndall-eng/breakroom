@@ -1,13 +1,15 @@
 ---
 import { getAgentBySlug } from '@/content/data/agents';
+import SaveStuffButton from '@/components/stuff/SaveStuffButton';
 import { isSpotifyEmbedUrl } from '@/lib/sleepnetComponents';
 import type { SleepNetComponent } from '@/lib/sleepnetComponents';
 
 interface Props {
   component: SleepNetComponent;
+  siteSlug?: string;
 }
 
-const { component } = Astro.props;
+const { component, siteSlug } = Astro.props;
 const agent = component.type === 'character_comment' ? getAgentBySlug(component.agentSlug) : null;
 ---
 {component.type === 'warning_notice' && (
@@ -35,12 +37,15 @@ const agent = component.type === 'character_comment' ? getAgentBySlug(component.
     <div class="old-body">
       <div class="stuff-shelf-grid">
         {component.items.map((item) => (
-          <a class={`stuff-shelf-item status-${item.status}`} href={item.href ?? (item.slug ? `/stuff/${item.slug}` : '#')}>
-            <p class="stuff-status">{item.status.replaceAll('_', ' ')}</p>
-            <h3>{item.name}</h3>
-            {item.priceLabel && <p class="stuff-price">{item.priceLabel}</p>}
-            {item.note && <small>{item.note}</small>}
-          </a>
+          <div class={`stuff-shelf-item status-${item.status}`}>
+            <a class="stuff-shelf-link" href={item.href ?? (item.slug ? `/stuff/${item.slug}` : '#')}>
+              <p class="stuff-status">{item.status.replaceAll('_', ' ')}</p>
+              <h3>{item.name}</h3>
+              {item.priceLabel && <p class="stuff-price">{item.priceLabel}</p>}
+              {item.note && <small>{item.note}</small>}
+            </a>
+            {item.slug && <SaveStuffButton client:load item={{ slug: item.slug, name: item.name, status: item.status, note: item.note, priceLabel: item.priceLabel }} sourceSiteSlug={siteSlug} compact buttonLabel="File This" />}
+          </div>
         ))}
       </div>
     </div>
