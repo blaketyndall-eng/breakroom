@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { getFactionBySlug } from '@/content/data/factions';
+import SleepNetStuffShelfEditor from '@/components/sleepnet/SleepNetStuffShelfEditor';
 import {
   SLEEPNET_NEIGHBORHOODS,
   SLEEPNET_PROMPT_EXAMPLES,
@@ -110,12 +111,17 @@ export default function SleepNetSiteEditor() {
     const next = generateSleepNetDraft({ prompt: seed, siteType: nextSiteType });
     setSite(next);
     setSections(sectionText(next.sections));
-    setStatus(`${SLEEPNET_SITE_TYPE_LABELS[next.site_type as SleepNetSiteType]} draft generated with sections and page components.`);
+    setStatus(`${SLEEPNET_SITE_TYPE_LABELS[next.site_type as SleepNetSiteType]} draft generated with sections and editable page components.`);
   }
 
   function regenerateComponents() {
     setSite((current) => ({ ...current, components: createFauxCompanyComponents(current.title) }));
     setStatus('Generated fresh page components: gallery, collection case, jukebox, warnings, ads, shelf, counter, and guestbook.');
+  }
+
+  function handleStuffShelfChange(nextSite: SleepNetSite) {
+    setSite(nextSite);
+    setStatus('Stuff shelf updated locally. Save the draft to keep it in the drawer.');
   }
 
   async function save(status: 'draft' | 'published') {
@@ -195,6 +201,8 @@ export default function SleepNetSiteEditor() {
         <label>Sections / separate with ---
           <textarea value={sections} onChange={(event) => setSections(event.target.value)} />
         </label>
+
+        <SleepNetStuffShelfEditor site={site} onChange={handleStuffShelfChange} />
 
         <section className="sleepnet-component-preview">
           <div className="regular-public-strip">
