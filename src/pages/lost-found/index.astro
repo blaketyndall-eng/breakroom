@@ -2,30 +2,32 @@
 import ArchiveLayout from '@/layouts/ArchiveLayout.astro';
 import ObjectEvidenceGrid from '@/components/oldweb/ObjectEvidenceGrid.astro';
 import LinkMaze from '@/components/oldweb/LinkMaze.astro';
-import { BREAKROOM_DATA } from '@/content/data/breakroom';
-import { slugify } from '@/lib/slug';
+import { getPublicLostObjects } from '@/lib/publicContent';
 
-const evidenceItems = BREAKROOM_DATA.objects.slice(0, 4).map((o) => ({
-  name: o.name,
-  detail: o.meaning,
-  href: `/lost-found/${slugify(o.name)}`,
-  code: `ITEM-${o.id}`,
+const lostObjects = await getPublicLostObjects();
+const evidenceItems = lostObjects.items.slice(0, 4).map((object) => ({
+  name: object.name,
+  detail: object.meaning,
+  href: `/lost-found/${object.slug}`,
+  code: `ITEM-${object.itemNumber}`,
 }));
 ---
 <ArchiveLayout title="Lost & Found" eyebrow="Lost & Found / Object Archive">
-  <div class="status-strip"><span>object archive</span><span>drawer: unlocked</span><span>receipts without totals</span><span>cataloged after close</span></div>
+  <div class="status-strip"><span>object archive</span><span>drawer: unlocked</span><span>receipts without totals</span><span>cataloged after close</span><span>source: {lostObjects.source}</span></div>
   <p class="tagline-block">Real objects, culturally funny objects, digital objects, and things that keep showing up in the wrong drawer.</p>
+  {lostObjects.error && <p class="memo-box">Public object fallback active: {lostObjects.error}</p>}
 
   <ObjectEvidenceGrid title="Evidence drawer / recently handled" items={evidenceItems} />
 
   <div class="grid-3" style="margin-top:16px;">
-    {BREAKROOM_DATA.objects.map((o) => (
-      <article class="object-card" data-item={`ITEM ${o.id}`}>
-        <h2><a href={`/lost-found/${slugify(o.name)}`}>{o.name}</a></h2>
-        <p><b>Found:</b> {o.found}</p>
-        <p><b>Condition:</b> {o.cond}</p>
-        <p><b>Meaning:</b> {o.meaning}</p>
-        <p><span class="red-stamp">{o.status}</span></p>
+    {lostObjects.items.map((object) => (
+      <article class="object-card" data-item={`ITEM ${object.itemNumber}`}>
+        <h2><a href={`/lost-found/${object.slug}`}>{object.name}</a></h2>
+        <p><b>Type:</b> {object.objectType}</p>
+        <p><b>Found:</b> {object.found}</p>
+        <p><b>Condition:</b> {object.condition}</p>
+        <p><b>Meaning:</b> {object.meaning}</p>
+        <p><span class="red-stamp">{object.status}</span></p>
       </article>
     ))}
   </div>
