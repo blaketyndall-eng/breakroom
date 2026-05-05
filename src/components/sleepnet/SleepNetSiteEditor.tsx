@@ -81,8 +81,14 @@ export default function SleepNetSiteEditor() {
         is_public: status === 'published',
       };
       const result = await saveMySleepNetSite(next);
+      if (result.source === 'none' || !result.site) {
+        setStatus(result.source === 'none' ? result.reason : 'SleepNet did not return a saved page.');
+        return;
+      }
       setSite(result.site);
-      setStatus(result.source === 'supabase' ? `Saved ${makeSleepNetProtocolUrl(result.site.slug)} as ${status}.` : `Saved locally as ${status}. Sign in to publish across rooms.`);
+      setStatus(result.source === 'supabase'
+        ? `Saved ${makeSleepNetProtocolUrl(result.site.slug)} as ${status}.`
+        : `Saved locally as ${status}. Sign in to put this page fully on the wire.`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'SleepNet rejected the page.');
     } finally {
