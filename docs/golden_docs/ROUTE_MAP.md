@@ -31,18 +31,61 @@ This document outlines the canonical routes for the Breakroom web app. Each rout
 | `/house-rules` | **House Rules** – Rules/memo page. | Public view | Implemented |
 | `/404` | **Room Not Found** – Custom error page. | Public view | Implemented |
 
+## SleepNet Portal (PR 48)
+
+The SleepNet portal (`/sleepnet`) transforms from a single search island into a full old-web portal layout with multiple widget zones.  The portal is Astro-rendered with React islands for interactive elements.
+
+| Route / Widget | Description | Real-World Connection |
+|----------------|-------------|----------------------|
+| `/sleepnet` | Full portal page: search bar, Lot Weather, Site of the Night, Recently Indexed, Directory Categories, Fake Ads, Radio Status | Multiple (see below) |
+| Lot Weather widget | Parking lot conditions in Breakroom voice | Open-Meteo (free, no key) for real temp/conditions; falls back to generated fiction |
+| Radio Status widget | Compact radio indicator; can embed real stream URL | Public Icecast/Shoutcast URLs (no key) |
+| Directory Categories | Grouped site index; categories can include `isExternal` links to real places | External links marked `isExternal: true` |
+| Fake Ads | Contextual ads; can link to real products or external pages | `destinationType: 'external_real'` or `'rack_product'` |
+| Site of the Night | Featured page from seed/user content; candidates for real-world promotion | `reality_status` on featured sites |
+
+## Hidden Doors (PR 49)
+
+Hidden Doors are secret unlocks scattered across pages.  They use a static registry (authored content) and localStorage for user unlock state.  Door rewards can include real external URLs.
+
+| Route / Component | Description | Real-World Connection |
+|-------------------|-------------|----------------------|
+| Hidden Door triggers | Embedded on existing pages; trigger on object_combination, search_phrase, or behaviour | None (trigger mechanism is internal) |
+| Door reward pages | Unlocked content: could be a page, a message, an object, or a URL | Rewards can link to real pool halls, real product pages, real external URLs |
+| `/sleepnet?door=...` | Search results that appear only after a door opens | Added results can point to real sites |
+
+## Promotion / Canon Signals (PR 50)
+
+Promotion tracks how pages gain visibility within the world.  Not likes/upvotes — signals like "Pass this around" and "The room noticed."  Promoted pages become candidates for real-world connection.
+
+| Route / Component | Description | Real-World Connection |
+|-------------------|-------------|----------------------|
+| Promotion signals | User actions: passing pages around, room notices, guestbook density, search appearances | None (internal tracking) |
+| Canon status | Pages graduate: `unknown` → `seen_around` → `locally_famous` → `canon` | `locally_famous`+ pages become candidates for real social posts, real product links |
+| `canonical_weight` field | Already exists on SleepNetSite; PR 50 adds calculation logic | Higher weight = higher placement in directory, search, and real-world consideration |
+
 ## Conditional / Hidden Pages
 
 These are planned pages that may appear once users meet certain conditions or as future releases. They are not all visible to everyone in V1:
 
 - **Back Booth Forum** (`/back-booth`) – An old forum/guestbook for deeper community discussion.
 - **Room 8** (`/room-8`) – A hidden room associated with motel keys and wall clocks.
-- **Lot Weather** (`/lot-weather`) – A fictitious weather page forecasting parking lot conditions.
-- **Classifieds** (`/classifieds`) – A dedicated classifieds page listing fake services, items, rides, and missed connections.
+- **Lot Weather** (`/lot-weather`) – A weather page forecasting parking lot conditions.  Uses real weather from Open-Meteo (free, no key) translated into Breakroom voice; falls back to deterministic fiction when offline or fetch fails.
+- **Classifieds** (`/classifieds`) – A dedicated classifieds page listing fake services, items, rides, and missed connections.  May include `isExternal` links to real services.
 - **Downloads** (`/downloads`) – Printable flyers, player cards, tournament forms, and other resources.
-- **Web Ring** (`/webring`) – Curated late-night sites within the universe.
+- **Web Ring** (`/webring`) – Curated late-night sites within the universe.  Can link to real external sites tagged `reality_status: 'real'`.
 - **Message Board** (`/message-board`) – Simple forum for extended discussion once moderation exists.
+
+## Real-World Route Principles
+
+Routes that connect to external systems follow these rules:
+
+1. **Free APIs only** — no keys required unless explicitly approved.  Open-Meteo, wttr.in, Nominatim, public streams.
+2. **Graceful fallback** — every real-data widget must work without network.  Generated fiction fills the gap.
+3. **External links marked in data** — `isExternal: true` on any href leaving The Breakroom.
+4. **Real commerce is unmistakable** — when a route involves real money, trust signals appear and the bit turns down.
+5. **Verification before publication** — real places, real products, real events must be verified (`is_verified: true`, `source_url` populated) before they appear on any route.
 
 ## Route philosophy
 
-The site should not feel like a normal ecommerce or B2C site. It should feel like a working old web directory, a corrupted employee portal, a pool hall tournament page, a newspaper archive, a product catalog, and a hidden after-hours room sharing one bad server.
+The site should not feel like a normal ecommerce or B2C site. It should feel like a working old web directory, a corrupted employee portal, a pool hall tournament page, a newspaper archive, a product catalog, and a hidden after-hours room sharing one bad server.  Where the fake world connects to the real world, the seams should be invisible — real temperature dressed as lot conditions, real bars listed as approved rooms, real links hiding among dead ones.

@@ -492,3 +492,186 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* --- SleepNet Portal Widgets (PR 48) --- */
+
+.lot-weather-widget .lot-weather-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 12px;
+}
+
+.lot-weather-widget .lot-weather-table td {
+  padding: 5px 8px;
+  border-bottom: 1px dotted #5a513f;
+}
+
+.lot-weather-widget .lot-weather-table td:first-child {
+  font-weight: bold;
+  white-space: nowrap;
+  width: 140px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.lot-weather-widget .lot-weather-meta {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-top: 8px;
+  font-family: var(--type-mono, monospace);
+}
+
+.site-of-the-night .site-tagline {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.recently-indexed-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recently-indexed-list li {
+  padding: 6px 0;
+  border-bottom: 1px dotted #5a513f;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.recently-indexed-list li:last-child {
+  border-bottom: none;
+}
+
+.recently-indexed-meta {
+  font-size: 10px;
+  font-family: var(--type-mono, monospace);
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.directory-categories-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.directory-categories-table th {
+  text-align: left;
+  font-family: var(--type-mono, monospace);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  border-bottom: 2px solid #5a513f;
+  padding: 4px 8px;
+}
+
+.directory-categories-table td {
+  padding: 5px 8px;
+  border-bottom: 1px dotted #3a3328;
+}
+
+.directory-district-name {
+  font-weight: bold;
+}
+
+.radio-status-widget .radio-status-line {
+  font-family: var(--type-mono, monospace);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.radio-status-widget .radio-status-meta {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* --- Hidden Door Reveal (PR 49) --- */
+
+.door-reveal {
+  border: 2px solid #8b6914;
+  background: #1a1708;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-family: var(--type-paper, Georgia, serif);
+}
+
+.door-reveal.door-new {
+  animation: door-flash 0.6s ease-out;
+}
+
+@keyframes door-flash {
+  0% { border-color: #ffcc00; background: #2a2508; }
+  100% { border-color: #8b6914; background: #1a1708; }
+}
+
+.door-reveal-header {
+  font-family: var(--type-mono, monospace);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: #c9a832;
+  margin-bottom: 6px;
+}
+
+.door-reveal-title {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+/* --- Promotion / Canon Signals (PR 50) --- */
+
+.pass-it-around {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.pass-button {
+  font-size: 11px;
+}
+
+.canon-badge {
+  font-family: var(--type-mono, monospace);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: 2px 8px;
+  border: 1px solid;
+}
+
+.canon-seen_around {
+  border-color: #5a513f;
+  color: #a89a7a;
+}
+
+.canon-locally_famous {
+  border-color: #8b6914;
+  color: #c9a832;
+}
+
+.canon-canon {
+  border-color: #cc3300;
+  color: #ff4422;
+  font-weight: bold;
+}
+
+.pass-feedback {
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 12px;
+  font-style: italic;
+  opacity: 0.8;
+  animation: pass-fade 4s ease-out forwards;
+}
+
+@keyframes pass-fade {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}

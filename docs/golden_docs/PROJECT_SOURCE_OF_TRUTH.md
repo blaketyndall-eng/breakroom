@@ -95,4 +95,57 @@ These rules are part of the mythology and must not change without in‑world cau
 * **Room 147** – Another potential secret based on the stuck clock.
 * **OmniShift Ventures** – Many of the AI’s absurd companies can be spun off into full pages or events.
 
+## 8. Real-World Connections
+
+The Breakroom is not a permanently fictional world.  It is a fictional world that gradually becomes real.  The end goal is for fake things to have real counterparts — real products, real places, real links, real events — without breaking the tone or destroying the ambiguity that makes the world interesting.
+
+### Philosophy
+
+The fake/real boundary is the product's entire tension.  The Breakroom should feel like:
+
+> "Wait — is this real?"
+
+And the answer should sometimes be yes.
+
+### How real things enter the world
+
+1. **Weather** — Lot Weather starts as generated fiction, then connects to real weather APIs (Open-Meteo, wttr.in — free, no keys).  Real temperature and conditions are translated into Breakroom voice.  The user gets actual weather dressed as a strange report.
+
+2. **Places** — `approved_rooms` already exists in the data model.  Real bars, real pool halls, real motels — verified and tagged `reality_status: 'real'`.  They appear in directory listings, faction turf pages, and radio mentions.  Real places use OpenStreetMap/Nominatim (free, no key) for basic location data.
+
+3. **Products** — The Rack already handles real products.  When a Stuff item or ad links to something purchasable, the `reality_status` flips to `'real'` and the UI shows clear commerce signals.  No ambiguity about real money.
+
+4. **Links** — Fake ads, directory categories, Staff Picks, and radio mentions can all link to real external URLs.  A fake company page can link to a real company's site.  A "Dead Link" can resolve to a real page.  The system supports `isExternal: true` on any href.
+
+5. **Events** — Idle Hands Invitational may become a real event.  Radio shows may stream real audio.  Tournaments may have real brackets.  The system must support `reality_status: 'real'` on events without architectural changes.
+
+6. **People** — Real creators, real brands, real collaborators can have pages in SleepNet.  They are tagged `reality_status: 'real'` and given appropriate attribution.
+
+### Rules for real-world connections
+
+- **Free APIs only (no keys required)** unless a paid service is explicitly approved.  Open-Meteo, wttr.in, OpenStreetMap Nominatim, Wikipedia, public radio streams — these are the preferred connectors.
+- **Real things must be verified** before publication.  The `approved_rooms` pattern (verified flag + source URL) extends to all real entities.
+- **The bit turns down for real money.**  When commerce is real, copy is clear.  Trust signals appear.  The joke pauses.
+- **Real links are clearly marked in data** (`isExternal: true`) even if the UI doesn't distinguish them visually.  This enables future moderation and link-rot detection.
+- **No user PII leaves the system** to external APIs.  Location data (if used) is browser-only and never stored.
+- **Real-world data is the skeleton; Breakroom voice is the skin.**  A real temperature becomes "Bad Decision Pressure: rising."  A real bar becomes "Approved Room — Still Open."  The translation layer keeps the world intact.
+
+### Preferred free APIs (no key required)
+
+| Purpose | Service | Notes |
+|---------|---------|-------|
+| Weather | Open-Meteo (open-meteo.com) | Free, no key, JSON, lat/lon based |
+| Weather (simple) | wttr.in | Free, no key, curl-friendly |
+| Geocoding | OpenStreetMap Nominatim | Free, no key, rate-limited (1 req/sec) |
+| Time zones | Browser Intl API | No API call needed |
+| Radio streams | Public Icecast/Shoutcast URLs | No API needed |
+| Maps | OpenStreetMap tiles | Free, attribution required |
+
+### What this means for current PRs
+
+- **Portal Widgets**: Lot Weather widget should have a `realWeather` mode that fetches from Open-Meteo when available, falling back to generated fiction.  Radio widget can embed a real stream URL.  Directory categories can include `isExternal` links to real places.
+- **Hidden Doors**: Door rewards can include real external URLs.  A door might unlock a link to a real pool hall's website or a real product page.
+- **Promotion/Canon**: Promoted pages that reach "locally famous" status become candidates for real-world connection — featured in real social posts, linked to real products, etc.  The canon system tracks which pages crossed the reality bridge.
+- **Fake Ads**: Ads can link to real products or real external pages.  The `destinationType` field already supports this via `'external_real'` or `'rack_product'`.
+
 Use this document as the basis for all narrative decisions.  When making additions, update this source with new characters, objects or rules.  Consistency and continuity are critical to maintaining immersion.

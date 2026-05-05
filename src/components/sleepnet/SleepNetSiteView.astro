@@ -4,6 +4,7 @@ import MoreLikeThis from '@/components/sleepnet/MoreLikeThis.astro';
 import SleepNetComponentRenderer from '@/components/sleepnet/SleepNetComponentRenderer.astro';
 import SleepNetGuestbook from '@/components/sleepnet/SleepNetGuestbook';
 import AgentCommentBlock from '@/components/agents/AgentCommentBlock.tsx';
+import PassItAround from '@/components/sleepnet/PassItAround';
 import { seededGuestbookEntry } from '@/lib/sleepnetGuestbooks';
 import type { SleepNetSite } from '@/lib/sleepnetSites';
 
@@ -36,6 +37,7 @@ const seededEntries = guestbookComponent?.type === 'guestbook'
       <span>{site.neighborhood.replaceAll('_', ' ')}</span>
       <span>{site.reality_status ?? 'indexed_noise'}</span>
     </div>
+    <PassItAround client:idle siteSlug={site.slug} />
   </header>
 
   <FakeAdStrip siteType={site.site_type} factionSlug={site.faction_affinity?.[0]} tags={[site.neighborhood, site.site_type, ...(site.related_object_slugs ?? [])]} limit={3} label="Ads Related By Mistake" />
