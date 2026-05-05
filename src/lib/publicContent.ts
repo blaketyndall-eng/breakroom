@@ -31,6 +31,8 @@ export type LostObjectView = {
   status: string;
   found: string;
   condition: string;
+  relatedUniform?: string;
+  relatedClipping?: string;
 };
 
 export type RadioLogView = {
@@ -44,6 +46,12 @@ export type PublicContentSource = 'supabase' | 'static';
 export type PublicContentResult<T> = {
   source: PublicContentSource;
   items: T[];
+  error?: string;
+};
+
+export type PublicContentSingleResult<T> = {
+  source: PublicContentSource;
+  item: T | null;
   error?: string;
 };
 
@@ -86,6 +94,8 @@ function staticLostObjects(): LostObjectView[] {
     status: object.status,
     found: object.found,
     condition: object.cond,
+    relatedUniform: object.uniform,
+    relatedClipping: object.clip,
   }));
 }
 
@@ -107,6 +117,32 @@ function staticRadioLogs(): RadioLogView[] {
       airedAt: '4:11 AM',
     },
   ];
+}
+
+function mapNewsItem(item: any): NewsItemView {
+  return {
+    slug: item.slug,
+    title: item.title,
+    body: item.body ?? 'No further information was provided.',
+    category: item.category ?? 'notices',
+    byline: item.byline ?? 'STAFF / 1:47 A.M.',
+    publishedAt: item.published_at,
+    isTrue: item.is_true,
+  };
+}
+
+function mapLostObject(object: any, index = 0): LostObjectView {
+  return {
+    slug: object.slug,
+    name: object.name,
+    itemNumber: `DB-${String(index + 1).padStart(3, '0')}`,
+    objectType: object.object_type ?? 'physical',
+    description: object.description ?? 'Filed without a clean description.',
+    meaning: object.meaning ?? 'Meaning pending. The drawer knows more than it says.',
+    status: object.status ?? 'cataloged',
+    found: object.description ?? 'Found in the wrong drawer.',
+    condition: object.status ?? 'cataloged',
+  };
 }
 
 export function groupNewsItems(items: NewsItemView[]) {
@@ -175,21 +211,40 @@ export async function getPublicNewsItems(): Promise<PublicContentResult<NewsItem
 
     return {
       source: 'supabase',
-      items: data.map((item: any) => ({
-        slug: item.slug,
-        title: item.title,
-        body: item.body ?? 'No further information was provided.',
-        category: item.category ?? 'notices',
-        byline: item.byline ?? 'STAFF / 1:47 A.M.',
-        publishedAt: item.published_at,
-        isTrue: item.is_true,
-      })),
+      items: data.map(mapNewsItem),
     };
   } catch (error) {
     return {
       source: 'static',
       items: fallback,
       error: error instanceof Error ? error.message : 'Could not load public news items.',
+    };
+  }
+}
+
+export async function getPublicNewsItemBySlug(slug: string): Promise<PublicContentSingleResult<NewsItemView>> {
+  const fallback = staticNewsItems().find((item) => item.slug === slug) ?? null;
+
+  if (!supabase) {
+    return { source: 'static', item: fallback };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('news_items')
+      .select('slug, title, body, category, byline, is_true, published_at')
+      .eq('is_public', true)
+      .eq('slug', slug)
+      .single();
+
+    if (error || !data) return { source: fallback ? 'static' : 'supabase', item: fallback };
+
+    return { source: 'supabase', item: mapNewsItem(data) };
+  } catch (error) {
+    return {
+      source: 'static',
+      item: fallback,
+      error: error instanceof Error ? error.message : 'Could not load public news item.',
     };
   }
 }
@@ -213,23 +268,40 @@ export async function getPublicLostObjects(): Promise<PublicContentResult<LostOb
 
     return {
       source: 'supabase',
-      items: data.map((object: any, index: number) => ({
-        slug: object.slug,
-        name: object.name,
-        itemNumber: `DB-${String(index + 1).padStart(3, '0')}`,
-        objectType: object.object_type ?? 'physical',
-        description: object.description ?? 'Filed without a clean description.',
-        meaning: object.meaning ?? 'Meaning pending. The drawer knows more than it says.',
-        status: object.status ?? 'cataloged',
-        found: object.description ?? 'Found in the wrong drawer.',
-        condition: object.status ?? 'cataloged',
-      })),
+      items: data.map(mapLostObject),
     };
   } catch (error) {
     return {
       source: 'static',
       items: fallback,
       error: error instanceof Error ? error.message : 'Could not load public lost objects.',
+    };
+  }
+}
+
+export async function getPublicLostObjectBySlug(slug: string): Promise<PublicContentSingleResult<LostObjectView>> {
+  const fallback = staticLostObjects().find((object) => object.slug === slug) ?? null;
+
+  if (!supabase) {
+    return { source: 'static', item: fallback };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('lost_objects')
+      .select('slug, name, object_type, description, meaning, status, is_public, created_at')
+      .eq('is_public', true)
+      .eq('slug', slug)
+      .single();
+
+    if (error || !data) return { source: fallback ? 'static' : 'supabase', item: fallback };
+
+    return { source: 'supabase', item: mapLostObject(data) };
+  } catch (error) {
+    return {
+      source: 'static',
+      item: fallback,
+      error: error instanceof Error ? error.message : 'Could not load public lost object.',
     };
   }
 }
