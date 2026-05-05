@@ -1,19 +1,14 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import SleepNetDirectory from '@/components/sleepnet/SleepNetDirectory';
-import LinkMaze from '@/components/oldweb/LinkMaze.astro';
+import FakeAdStrip from '@/components/ads/FakeAdStrip.astro';
 ---
-<OldWebLayout title="SleepNet Directory" section="sleepnet">
-  <div class="status-strip"><span>sleepnet directory</span><span>searchable URLs</span><span>not a feed</span><span>pages after the internet closes</span></div>
+<OldWebLayout title="SleepNet" section="sleepnet">
+  <div class="status-strip"><span>sleepnet</span><span>search bad pages</span><span>old web portal</span><span>sleepnet:// URLs</span></div>
   <h1>SleepNet</h1>
-  <p class="tagline-block">Search the hidden internet inside The Breakroom. Faux companies, object archives, motel pages, personal shrines, and small websites that should have stayed in the drawer.</p>
+  <p class="tagline-block">The hidden internet under the internet. Search fake companies, strange pages, public files, food court ventures, object archives, and whatever the directory failed to remove.</p>
+
+  <FakeAdStrip limit={4} label="Printer-Friendly Sponsors / Do Not Trust" />
 
   <SleepNetDirectory client:load />
-
-  <LinkMaze title="SleepNet entry points" notice="Every published page gets a normal URL and an in-world SleepNet URL." links={[
-    { href: '/sleepnet/create', label: 'Create SleepNet Page', note: 'start with a faux company', stamp: 'BUILD' },
-    { href: '/locker', label: 'Locker', note: 'your Regular File owns the weird pages' },
-    { href: '/regulars/regular', label: 'Regular Files', note: 'identity before creation' },
-    { href: '/artifacts', label: 'Artifacts', note: 'evidence you can attach later', stamp: 'FILED' }
-  ]} />
 </OldWebLayout>
