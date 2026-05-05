@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { FormEvent } from 'react';
 import { ARTIFACTS } from '@/lib/artifacts';
 import { getLocalArtifactSlugs } from '@/lib/secrets';
 import {
