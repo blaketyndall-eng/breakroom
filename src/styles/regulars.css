@@ -15,6 +15,22 @@
   box-shadow: 4px 4px 0 rgba(20,17,14,.25);
 }
 
+.regular-theme-pool_hall_personal_page .regular-header {
+  background: linear-gradient(135deg, rgba(31,93,58,.26), transparent), #e5d9bd;
+}
+
+.regular-theme-motel_shrine .regular-header {
+  background: linear-gradient(135deg, rgba(34,77,103,.22), rgba(176,0,32,.12)), #efe7d3;
+}
+
+.regular-theme-bathroom_wall_lite .regular-header {
+  background: linear-gradient(135deg, rgba(155,32,28,.18), transparent), #d8c9a6;
+}
+
+.regular-theme-two_thousand_three_local_webpage .regular-header {
+  background: linear-gradient(135deg, rgba(0,0,238,.11), rgba(51,255,102,.09)), #f6f3ec;
+}
+
 .regular-header h1 {
   margin: 0;
   font-size: clamp(42px, 8vw, 84px);
@@ -100,6 +116,63 @@
   line-height: 1;
 }
 
+.regular-share-box {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: end;
+  margin-top: 14px;
+  border-top: 1px dashed #8a7c5e;
+  padding-top: 10px;
+}
+
+.regular-share-box .regular-kicker {
+  grid-column: 1 / -1;
+}
+
+.regular-share-box input {
+  border: 2px inset #d8c9a6;
+  background: #f6f3ec;
+  padding: 8px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 12px;
+}
+
+.regular-top8-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.regular-top8-grid span {
+  border: 1px solid #14110e;
+  background: #efe7d3;
+  padding: 6px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.regular-public-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #14110e;
+  background: #15120f;
+  color: #d8c9a6;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 11px;
+  letter-spacing: .1em;
+  margin-bottom: 14px;
+  padding: 8px;
+  text-transform: uppercase;
+}
+
+.regular-public-strip a {
+  color: #33ff66;
+}
+
 .regular-editor label {
   display: grid;
   gap: 5px;
@@ -177,11 +250,13 @@
 }
 
 @media (max-width: 560px) {
-  .regular-header {
+  .regular-header,
+  .regular-share-box {
     grid-template-columns: 1fr;
   }
 
-  .regular-pinned-grid {
+  .regular-pinned-grid,
+  .regular-top8-grid {
     grid-template-columns: 1fr;
   }
 }

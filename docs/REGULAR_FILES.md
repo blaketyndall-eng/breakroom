@@ -32,6 +32,7 @@ This is not a normal social profile. It should feel like:
 src/lib/regularFiles.ts
 src/components/regulars/RegularFileEditor.tsx
 src/components/regulars/RegularFileView.tsx
+src/components/regulars/RegularFileShare.tsx
 src/pages/locker.astro
 src/pages/regulars/[handle].astro
 src/styles/regulars.css
@@ -72,14 +73,39 @@ is_public
 - pinned artifacts can come from the local artifact drawer
 ```
 
+## Polish layer
+
+The polish pass adds:
+
+```txt
+- public/private clarity strip in the Locker
+- share/copy block on public Regular Files
+- stronger theme visual differences
+- visitor counter shell
+- Top 8 Regulars placeholder
+- guestbook shell
+- Create SleepNet Page teaser
+- stronger pinned evidence presentation
+```
+
+## Theme presets
+
+```txt
+corrupted_employee_portal
+pool_hall_personal_page
+motel_shrine
+bathroom_wall_lite
+two_thousand_three_local_webpage
+```
+
 ## Next layer
 
 ```txt
-- guestbook shell
-- theme presets with stronger visual differences
-- public/private clarity
-- Top 8 Regulars
+- real guestbook persistence
+- real Top 8 Regulars relationships
+- richer theme modules
 - SleepNet pages owned by this Regular
+- artifact pinning from remote saved_artifacts, not only local artifacts
 ```
 
 ## Product truth

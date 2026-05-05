@@ -1,4 +1,5 @@
 import { ARTIFACTS } from '@/lib/artifacts';
+import RegularFileShare from '@/components/regulars/RegularFileShare';
 import type { RegularFile } from '@/lib/regularFiles';
 
 function themeLabel(theme: string) {
@@ -7,6 +8,7 @@ function themeLabel(theme: string) {
 
 export default function RegularFileView({ file }: { file: RegularFile }) {
   const pinned = ARTIFACTS.filter((artifact) => file.pinned_artifacts?.includes(artifact.slug));
+  const handle = file.handle;
 
   return (
     <section className={`regular-file regular-theme-${file.theme}`}>
@@ -25,6 +27,15 @@ export default function RegularFileView({ file }: { file: RegularFile }) {
           <div className="old-body">
             <p className="regular-away">{file.away_message}</p>
             <p>{file.bio}</p>
+            <RegularFileShare handle={handle} />
+          </div>
+        </article>
+
+        <article className="old-shell regular-module">
+          <div className="old-header">Visitor Counter</div>
+          <div className="old-body">
+            <p className="visitor-counter">000{String(handle.length * 47).padStart(3, '0')}</p>
+            <p>Count is approximate. The counter lies when watched.</p>
           </div>
         </article>
 
@@ -67,10 +78,36 @@ export default function RegularFileView({ file }: { file: RegularFile }) {
         </article>
 
         <article className="old-shell regular-module">
+          <div className="old-header">Top 8 Regulars</div>
+          <div className="old-body regular-top8-grid">
+            {['Rudy 44', 'Eddy Pool', 'Unknown', 'Room Hand', 'Reg 3', 'No Eddy', 'Lot Arms', 'You?'].map((name) => (
+              <span key={name}>{name}</span>
+            ))}
+          </div>
+        </article>
+
+        <article className="old-shell regular-module">
+          <div className="old-header">Guestbook</div>
+          <div className="old-body">
+            <p><b>Room Hand:</b> nice file. bad lighting. correct.</p>
+            <p><b>Unknown:</b> sign mine after midnight.</p>
+            <button className="old-button" type="button">Guestbook soon</button>
+          </div>
+        </article>
+
+        <article className="old-shell regular-module">
           <div className="old-header">SleepNet Pages</div>
           <div className="old-body">
             <p>Nothing published yet. The internet underneath the internet is waiting.</p>
             <a href="/sleepnet">Visit SleepNet</a>
+          </div>
+        </article>
+
+        <article className="old-shell regular-module">
+          <div className="old-header">Create Page</div>
+          <div className="old-body">
+            <p>Next: build a fake company, object archive, motel page, or other small website from the Locker.</p>
+            <a className="old-button" href="/sleepnet/create">Create SleepNet Page</a>
           </div>
         </article>
       </div>
