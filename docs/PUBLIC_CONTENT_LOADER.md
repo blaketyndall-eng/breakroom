@@ -7,7 +7,9 @@ This doc tracks the move from static fallback data to Supabase-backed public con
 ```txt
 /phone
 /newsstand
+/newsstand/[slug]
 /lost-found
+/lost-found/[slug]
 /radio
 ```
 
@@ -22,8 +24,10 @@ Current helpers:
 ```txt
 getPublicPhoneMessages()
 getPublicNewsItems()
+getPublicNewsItemBySlug()
 groupNewsItems()
 getPublicLostObjects()
+getPublicLostObjectBySlug()
 getPublicRadioLogs()
 ```
 
@@ -56,9 +60,10 @@ When Supabase is configured and reachable:
 - Order by published_at
 - Group by category
 - Render the database-backed 3AM Edition index
+- Detail pages load news_items by slug
 ```
 
-When Supabase is not configured, unreachable, or returns no rows:
+When Supabase is not configured, unreachable, or returns no matching row:
 
 ```txt
 - Fall back to BREAKROOM_DATA.headlines
@@ -75,9 +80,10 @@ When Supabase is configured and reachable:
 - Filter to is_public = true
 - Order by created_at
 - Render the database-backed evidence drawer and object cards
+- Detail pages load lost_objects by slug
 ```
 
-When Supabase is not configured, unreachable, or returns no rows:
+When Supabase is not configured, unreachable, or returns no matching row:
 
 ```txt
 - Fall back to BREAKROOM_DATA.objects
@@ -103,53 +109,28 @@ When Supabase is not configured, unreachable, or returns no rows:
 - Keep the page functional in local preview mode
 ```
 
-## Why Phone first
+## Detail page note
 
-Phone was the safest first public content migration because:
+Dynamic detail pages now use Supabase by slug when possible while keeping the existing static route behavior stable.
 
 ```txt
-- It already had a simple static data shape
-- Supabase had enough seeded phone_messages rows
-- It did not require route generation or slug-level static paths
-- It proved the pattern without touching auth/profile logic
+/newsstand/[slug]
+/lost-found/[slug]
 ```
 
-## Why Newsstand second
-
-Newsstand is a high-value second migration because:
+Important limitation:
 
 ```txt
-- It benefits from the deeper Supabase seed content
-- New lore/headlines can go live without static code changes later
-- It is still an index page, so no dynamic route generation is required yet
-```
-
-## Why Lost & Found third
-
-Lost & Found is core to the Breakroom world because objects are the memory layer.
-
-```txt
-- Supabase now has a deeper lost_objects seed bank
-- Object cards can expand without static code changes later
-- It proves the same loader pattern across a different content shape
-```
-
-## Why Radio fourth
-
-Radio connects Phone, Newsstand, Idle Hands, and After Hours.
-
-```txt
-- Supabase now has radio_logs seed content
-- The player can stay environment-driven while logs become database-backed
-- It deepens the broadcast layer without adding schema yet
+Static paths are still generated from BREAKROOM_DATA.
+New Supabase-only slugs may not have build-time routes until dynamic route generation is revisited.
 ```
 
 ## Next candidates
 
 ```txt
-/newsstand/[slug]
-/lost-found/[slug]
 /rack
+/rack/[slug]
+/ventures
 ```
 
 Move one page at a time.
