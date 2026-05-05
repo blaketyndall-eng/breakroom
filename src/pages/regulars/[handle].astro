@@ -1,0 +1,16 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import RegularFileView from '@/components/regulars/RegularFileView';
+import { getRegularFileByHandle, makeDefaultRegularFile, normalizeHandle } from '@/lib/regularFiles';
+
+export const prerender = false;
+
+const handle = normalizeHandle(Astro.params.handle ?? 'regular');
+const file = await getRegularFileByHandle(handle);
+const previewFile = file ?? makeDefaultRegularFile(handle);
+---
+<OldWebLayout title={`${previewFile.display_name} / Regular File`} section="regulars">
+  <div class="status-strip"><span>regular file</span><span>handle: @{previewFile.handle}</span><span>{file ? 'public ledger found' : 'preview / no public ledger'}</span><span><a href="/locker">edit locker</a></span></div>
+  {!file && <p class="memo-box">No public Regular File was found for @{handle}. Showing a local-style preview so the wall does not look empty.</p>}
+  <RegularFileView file={previewFile} />
+</OldWebLayout>
