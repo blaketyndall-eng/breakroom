@@ -1,4 +1,5 @@
 ---
+import SaveStuffButton from '@/components/stuff/SaveStuffButton';
 import { labelStuffStatus } from '@/lib/stuff';
 import type { StuffItem } from '@/content/data/stuff';
 
@@ -14,6 +15,7 @@ const { item } = Astro.props;
     <h1>{item.name}</h1>
     <p class="stuff-kind">{item.kind.replaceAll('_', ' ')}</p>
     <p>{item.description}</p>
+    <SaveStuffButton client:load item={item} />
   </div>
 
   <div class="stuff-detail-grid">
@@ -36,7 +38,7 @@ const { item } = Astro.props;
     <article class="old-shell stuff-module">
       <div class="old-header">Commerce State</div>
       <div class="old-body">
-        <p>{item.status === 'available' ? 'This item may become purchasable.' : 'No checkout is available for this item.'}</p>
+        <p>{item.status === 'available' ? 'This item may become purchasable later.' : 'No checkout is available for this item.'}</p>
         <p>{item.priceLabel ?? 'Price not filed.'}</p>
       </div>
     </article>
