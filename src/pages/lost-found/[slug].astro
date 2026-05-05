@@ -1,5 +1,6 @@
 ---
 import ArchiveLayout from '@/layouts/ArchiveLayout.astro';
+import SecretTrigger from '@/components/breakroom/SecretTrigger';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 import { slugify } from '@/lib/slug';
 import { getPublicLostObjectBySlug } from '@/lib/publicContent';
@@ -22,6 +23,7 @@ if (!object) {
 }
 ---
 <ArchiveLayout title={`${object.name} / Object File`} eyebrow={`Object File / Item ${object.itemNumber} / source: ${result.source}`}>
+  <SecretTrigger client:load trigger="visit:/lost-found/[slug]" path={`/lost-found/${slug}`} label={object.name} />
   <a href="/lost-found">← Return to Lost & Found</a>
   <h1>{object.name}</h1>
   {result.error && <p class="memo-box">Public object detail fallback active: {result.error}</p>}
@@ -37,6 +39,7 @@ if (!object) {
         {object.relatedUniform && <tr><th>Related Uniform</th><td>{object.relatedUniform}</td></tr>}
         {object.relatedClipping && <tr><th>Related Clipping</th><td>{object.relatedClipping}</td></tr>}
         <tr><th>Status</th><td>{object.status}</td></tr>
+        <tr><th>Artifact</th><td><a href="/artifacts">Open evidence drawer</a></td></tr>
       </tbody>
     </table>
   </div>

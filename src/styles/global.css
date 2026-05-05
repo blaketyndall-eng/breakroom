@@ -3,6 +3,7 @@
 @import './oldweb.css';
 @import './breakroom.css';
 @import './auth.css';
+@import './artifacts.css';
 @import './claude-design.css';
 
 :root {

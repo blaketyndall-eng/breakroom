@@ -4,11 +4,13 @@ import TableBox from '@/components/oldweb/TableBox.astro';
 import LinkMaze from '@/components/oldweb/LinkMaze.astro';
 import ObjectEvidenceGrid from '@/components/oldweb/ObjectEvidenceGrid.astro';
 import AfterHoursGate from '@/components/auth/AfterHoursGate';
+import SecretTrigger from '@/components/breakroom/SecretTrigger';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 ---
 <OldWebLayout title="After Hours" section="afterhours">
   <AfterHoursGate client:load />
-  <div class="status-strip"><span>CLOCKED OUT</span><span>1:47 AM</span><span>Supervisor connection lost</span><span>The room is active</span></div>
+  <SecretTrigger client:load trigger="visit:/after-hours" path="/after-hours" label="after hours entry" />
+  <div class="status-strip"><span>CLOCKED OUT</span><span>1:47 AM</span><span>Supervisor connection lost</span><span>The room is active</span><span><a href="/artifacts">evidence drawer</a></span></div>
   <h1>After Hours</h1>
   <p class="tagline-block">The lights are wrong. The clock is right. The corporate page is still functioning, but the room has taken over.</p>
 

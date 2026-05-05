@@ -2,12 +2,14 @@
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
 import LinkMaze from '@/components/oldweb/LinkMaze.astro';
+import SecretTrigger from '@/components/breakroom/SecretTrigger';
 import { getPublicPhoneMessages } from '@/lib/publicContent';
 
 const phoneMessages = await getPublicPhoneMessages();
 ---
 <OldWebLayout title="Phone Behind The Bar" section="phone">
-  <div class="status-strip"><span>company phone</span><span>carrier: unknown</span><span>missed calls: 147</span><span>battery: spiritually dead</span><span>source: {phoneMessages.source}</span></div>
+  <SecretTrigger client:load trigger="visit:/phone" path="/phone" label="phone behind the bar" />
+  <div class="status-strip"><span>company phone</span><span>carrier: unknown</span><span>missed calls: 147</span><span>battery: spiritually dead</span><span>source: {phoneMessages.source}</span><span><a href="/artifacts">evidence drawer</a></span></div>
   <h1>Phone Behind The Bar</h1>
   <p class="tagline-block">Ubers, DoorDash, weird voicemails, invites, late-night messages, and OmniShift interruptions. The phone is not yours. It keeps acting familiar.</p>
   {phoneMessages.error && <p class="memo-box">Public phone fallback active: {phoneMessages.error}</p>}
