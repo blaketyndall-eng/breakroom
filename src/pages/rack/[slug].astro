@@ -3,24 +3,44 @@ import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 import { slugify } from '@/lib/slug';
+import { getPublicProductBySlug } from '@/lib/publicContent';
+
+const staticProducts = BREAKROOM_DATA.products.map((product) => ({
+  slug: slugify(product.name),
+  product,
+}));
+
 export function getStaticPaths() {
-  return BREAKROOM_DATA.products.map((product) => ({ params: { slug: slugify(product.name) }, props: { product } }));
+  return staticProducts.map(({ slug }) => ({ params: { slug } }));
 }
-const { product } = Astro.props as any;
+
+const { slug } = Astro.params;
+const result = await getPublicProductBySlug(slug ?? '');
+const product = result.item;
+
+if (!product) {
+  return Astro.redirect('/rack');
+}
 ---
 <OldWebLayout title={`${product.name} / Product File`} section="rack">
   <a href="/rack">← Return to The Rack</a>
+  <div class="status-strip"><span>product file</span><span>sku: {product.sku}</span><span>status: {product.status}</span><span>source: {result.source}</span></div>
   <h1>{product.name}</h1>
+  {result.error && <p class="memo-box">Public product detail fallback active: {result.error}</p>}
   <div class="grid-2">
     <div class="stripe" style="height:360px;">[{product.name} image pending]</div>
     <TableBox title="Product File">
       <table class="table-box">
-        <tr><th>SKU</th><td>{product.sku}</td></tr>
-        <tr><th>Price</th><td>{product.price}</td></tr>
-        <tr><th>Department</th><td>{product.dept}</td></tr>
-        <tr><th>Related Object</th><td>{product.obj}</td></tr>
-        <tr><th>Reason</th><td>{product.reason}</td></tr>
-        <tr><th>Clipping</th><td>{product.clip}</td></tr>
+        <tbody>
+          <tr><th>SKU</th><td>{product.sku}</td></tr>
+          <tr><th>Price</th><td>{product.priceLabel ?? 'file request only'}</td></tr>
+          <tr><th>Status</th><td>{product.status}</td></tr>
+          <tr><th>Department</th><td>{product.department}</td></tr>
+          <tr><th>Related Object</th><td>{product.object}</td></tr>
+          <tr><th>Reason</th><td>{product.note}</td></tr>
+          {product.description && <tr><th>Description</th><td>{product.description}</td></tr>}
+          {product.relatedClipping && <tr><th>Clipping</th><td>{product.relatedClipping}</td></tr>}
+        </tbody>
       </table>
       <p><button class="old-button">Notify Me / File Request</button></p>
     </TableBox>

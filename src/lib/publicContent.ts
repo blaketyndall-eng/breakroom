@@ -53,6 +53,8 @@ export type ProductView = {
   priceCents?: number | null;
   category?: string | null;
   description?: string | null;
+  priceLabel?: string;
+  relatedClipping?: string;
 };
 
 export type PublicContentSource = 'supabase' | 'static';
@@ -144,7 +146,14 @@ function staticProducts(): ProductView[] {
     department: product.dept,
     object: product.obj,
     description: product.reason,
+    priceLabel: product.price,
+    relatedClipping: product.clip,
   }));
+}
+
+function formatPrice(priceCents?: number | null) {
+  if (priceCents == null) return 'file request only';
+  return `$${(priceCents / 100).toFixed(2)}`;
 }
 
 function mapNewsItem(item: any): NewsItemView {
@@ -187,6 +196,7 @@ function mapProduct(product: any): ProductView {
     priceCents: product.price_cents,
     category: product.category,
     description: product.description,
+    priceLabel: formatPrice(product.price_cents),
   };
 }
 
@@ -410,6 +420,33 @@ export async function getPublicProducts(): Promise<PublicContentResult<ProductVi
       source: 'static',
       items: fallback,
       error: error instanceof Error ? error.message : 'Could not load public products.',
+    };
+  }
+}
+
+export async function getPublicProductBySlug(slug: string): Promise<PublicContentSingleResult<ProductView>> {
+  const fallback = staticProducts().find((product) => product.slug === slug) ?? null;
+
+  if (!supabase) {
+    return { source: 'static', item: fallback };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('slug, name, sku, status, price_cents, category, description, reason, sort_order, is_public')
+      .eq('is_public', true)
+      .eq('slug', slug)
+      .single();
+
+    if (error || !data) return { source: fallback ? 'static' : 'supabase', item: fallback };
+
+    return { source: 'supabase', item: mapProduct(data) };
+  } catch (error) {
+    return {
+      source: 'static',
+      item: fallback,
+      error: error instanceof Error ? error.message : 'Could not load public product.',
     };
   }
 }
