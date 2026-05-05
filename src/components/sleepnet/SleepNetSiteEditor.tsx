@@ -2,8 +2,12 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import {
   SLEEPNET_NEIGHBORHOODS,
+  SLEEPNET_PROMPT_EXAMPLES,
   generateFauxCompanyDraft,
+  getMySleepNetSiteBySlug,
+  labelSleepNetValue,
   loadLocalSleepNetDraft,
+  makeSleepNetProtocolUrl,
   makeSleepNetUrl,
   normalizeSleepNetSlug,
   saveMySleepNetSite,
@@ -25,20 +29,31 @@ function parseSections(value: string): SleepNetSection[] {
     .slice(0, 8);
 }
 
+function getQuerySlug() {
+  if (typeof window === 'undefined') return '';
+  return normalizeSleepNetSlug(new URLSearchParams(window.location.search).get('slug') ?? '');
+}
+
 export default function SleepNetSiteEditor() {
-  const [prompt, setPrompt] = useState('A burger place that only opens after 1 AM and seems run by an AI that thinks burgers are legal documents.');
-  const [site, setSite] = useState<SleepNetSite>(() => generateFauxCompanyDraft(prompt));
+  const [prompt, setPrompt] = useState(SLEEPNET_PROMPT_EXAMPLES[0]);
+  const [site, setSite] = useState<SleepNetSite>(() => generateFauxCompanyDraft(SLEEPNET_PROMPT_EXAMPLES[0]));
   const [sections, setSections] = useState(sectionText(site.sections));
   const [status, setStatus] = useState('Describe something badly. The directory will make it worse in a useful way.');
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const existing = loadLocalSleepNetDraft();
-    if (existing) {
-      setSite(existing);
-      setSections(sectionText(existing.sections));
-      setStatus('Loaded local unfinished SleepNet page.');
+    async function load() {
+      const querySlug = getQuerySlug();
+      const existing = querySlug ? await getMySleepNetSiteBySlug(querySlug) : loadLocalSleepNetDraft();
+      if (existing) {
+        setSite(existing);
+        setPrompt(existing.description ?? SLEEPNET_PROMPT_EXAMPLES[0]);
+        setSections(sectionText(existing.sections));
+        setStatus(querySlug ? `Loaded ${makeSleepNetProtocolUrl(existing.slug)} for editing.` : 'Loaded local unfinished SleepNet page.');
+      }
     }
+
+    load().catch(() => setStatus('Could not load that SleepNet page. Starting from a blank drawer.'));
   }, []);
 
   function update<K extends keyof SleepNetSite>(key: K, value: SleepNetSite[K]) {
@@ -49,8 +64,8 @@ export default function SleepNetSiteEditor() {
     });
   }
 
-  function generateDraft() {
-    const next = generateFauxCompanyDraft(prompt);
+  function generateDraft(seed = prompt) {
+    const next = generateFauxCompanyDraft(seed);
     setSite(next);
     setSections(sectionText(next.sections));
     setStatus('Draft generated. Edit before putting it on the wire.');
@@ -67,7 +82,7 @@ export default function SleepNetSiteEditor() {
       };
       const result = await saveMySleepNetSite(next);
       setSite(result.site);
-      setStatus(result.source === 'supabase' ? `Saved to SleepNet as ${status}.` : `Saved locally as ${status}. Sign in to publish across rooms.`);
+      setStatus(result.source === 'supabase' ? `Saved ${makeSleepNetProtocolUrl(result.site.slug)} as ${status}.` : `Saved locally as ${status}. Sign in to publish across rooms.`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'SleepNet rejected the page.');
     } finally {
@@ -85,10 +100,18 @@ export default function SleepNetSiteEditor() {
       <div className="old-header">SleepNet Create / Faux Company / Put It On The Wire</div>
       <div className="old-body">
         <p className="memo-box">{status}</p>
+        <div className="sleepnet-prompt-examples">
+          <p className="regular-kicker">Prompt scraps</p>
+          {SLEEPNET_PROMPT_EXAMPLES.map((example) => (
+            <button key={example} type="button" className="sleepnet-example" onClick={() => { setPrompt(example); generateDraft(example); }}>
+              {example}
+            </button>
+          ))}
+        </div>
         <label>Describe it badly
           <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} />
         </label>
-        <p><button type="button" className="old-button" onClick={generateDraft}>Generate Faux Company Draft</button></p>
+        <p><button type="button" className="old-button" onClick={() => generateDraft()}>Generate Faux Company Draft</button></p>
 
         <div className="sleepnet-editor-grid">
           <label>Title
@@ -99,7 +122,7 @@ export default function SleepNetSiteEditor() {
           </label>
           <label>Neighborhood
             <select value={site.neighborhood} onChange={(event) => update('neighborhood', event.target.value)}>
-              {SLEEPNET_NEIGHBORHOODS.map((item) => <option key={item} value={item}>{item.replaceAll('_', ' ')}</option>)}
+              {SLEEPNET_NEIGHBORHOODS.map((item) => <option key={item} value={item}>{labelSleepNetValue(item)}</option>)}
             </select>
           </label>
         </div>
@@ -115,7 +138,7 @@ export default function SleepNetSiteEditor() {
         </label>
 
         <div className="regular-public-strip">
-          <span>SleepNet URL: sleepnet://{site.slug}</span>
+          <span>SleepNet URL: {makeSleepNetProtocolUrl(site.slug)}</span>
           <a href={makeSleepNetUrl(site.slug)}>Preview {makeSleepNetUrl(site.slug)}</a>
         </div>
 
