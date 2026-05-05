@@ -1,0 +1,79 @@
+---
+import { factionStatusLabel } from '@/lib/factions';
+import type { BreakroomFaction } from '@/content/data/factions';
+
+interface Props {
+  faction: BreakroomFaction;
+}
+
+const { faction } = Astro.props;
+---
+<section class={`faction-page status-${faction.status}`} style={`--faction-primary: ${faction.colors.primary}; --faction-secondary: ${faction.colors.secondary}; --faction-accent: ${faction.colors.accent ?? faction.colors.primary};`}>
+  <div class="faction-hero">
+    <p class="faction-status">{factionStatusLabel(faction)}</p>
+    <h1>{faction.name}</h1>
+    <p class="faction-motto">{faction.motto}</p>
+    <p>{faction.description}</p>
+  </div>
+
+  <div class="faction-detail-grid">
+    <article class="old-shell faction-module">
+      <div class="old-header">Turf</div>
+      <div class="old-body">
+        <p>{faction.turf.replaceAll('_', ' ')}</p>
+        <p><span class="red-stamp">{faction.joinLanguage}</span></p>
+      </div>
+    </article>
+
+    <article class="old-shell faction-module">
+      <div class="old-header">Symbols</div>
+      <div class="old-body faction-chip-list">
+        {faction.symbols.map((symbol) => <span>{symbol}</span>)}
+      </div>
+    </article>
+
+    <article class="old-shell faction-module">
+      <div class="old-header">Known Objects</div>
+      <div class="old-body faction-chip-list">
+        {faction.objects.map((object) => <span>{object.replaceAll('-', ' ')}</span>)}
+      </div>
+    </article>
+
+    <article class="old-shell faction-module">
+      <div class="old-header">Rivals</div>
+      <div class="old-body faction-chip-list">
+        {faction.rivals.length ? faction.rivals.map((rival) => <a href={`/factions/${rival}`}>{rival.replaceAll('-', ' ')}</a>) : <span>No formal rivals filed.</span>}
+      </div>
+    </article>
+
+    <article class="old-shell faction-module">
+      <div class="old-header">Related SleepNet Types</div>
+      <div class="old-body faction-chip-list">
+        {faction.preferredSiteTypes.map((type) => <span>{type.replaceAll('_', ' ')}</span>)}
+      </div>
+    </article>
+
+    <article class="old-shell faction-module">
+      <div class="old-header">Agents</div>
+      <div class="old-body faction-chip-list">
+        {faction.agents.map((agent) => <span>{agent.replaceAll('-', ' ')}</span>)}
+      </div>
+    </article>
+
+    <article class="old-shell faction-module span-2">
+      <div class="old-header">Product Style</div>
+      <div class="old-body">
+        <p>{faction.productStyle}</p>
+        {faction.warning && <p>{faction.warning}</p>}
+      </div>
+    </article>
+
+    <article class="old-shell faction-module">
+      <div class="old-header">Be Seen</div>
+      <div class="old-body">
+        <p>{faction.noticedLanguage}</p>
+        <a class="old-button" href={`/sleepnet/create?type=faction_turf&faction=${faction.slug}`}>Create Turf Page</a>
+      </div>
+    </article>
+  </div>
+</section>
