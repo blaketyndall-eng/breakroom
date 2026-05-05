@@ -7,6 +7,7 @@ This doc tracks the move from static fallback data to Supabase-backed public con
 ```txt
 /phone
 /newsstand
+/lost-found
 ```
 
 ## Shared helper
@@ -21,6 +22,7 @@ Current helpers:
 getPublicPhoneMessages()
 getPublicNewsItems()
 groupNewsItems()
+getPublicLostObjects()
 ```
 
 ## Phone behavior
@@ -62,6 +64,25 @@ When Supabase is not configured, unreachable, or returns no rows:
 - Keep the page functional in local preview mode
 ```
 
+## Lost & Found behavior
+
+When Supabase is configured and reachable:
+
+```txt
+- Load public rows from lost_objects
+- Filter to is_public = true
+- Order by created_at
+- Render the database-backed evidence drawer and object cards
+```
+
+When Supabase is not configured, unreachable, or returns no rows:
+
+```txt
+- Fall back to BREAKROOM_DATA.objects
+- Preserve the object archive and evidence drawer feel
+- Keep the page functional in local preview mode
+```
+
 ## Why Phone first
 
 Phone was the safest first public content migration because:
@@ -83,12 +104,22 @@ Newsstand is a high-value second migration because:
 - It is still an index page, so no dynamic route generation is required yet
 ```
 
+## Why Lost & Found third
+
+Lost & Found is core to the Breakroom world because objects are the memory layer.
+
+```txt
+- Supabase now has a deeper lost_objects seed bank
+- Object cards can expand without static code changes later
+- It proves the same loader pattern across a different content shape
+```
+
 ## Next candidates
 
 ```txt
-/lost-found
 /radio
 /newsstand/[slug]
+/lost-found/[slug]
 ```
 
 Move one page at a time.

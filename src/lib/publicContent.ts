@@ -21,6 +21,18 @@ export type NewsItemView = {
   isTrue?: boolean | null;
 };
 
+export type LostObjectView = {
+  slug: string;
+  name: string;
+  itemNumber: string;
+  objectType: string;
+  description: string;
+  meaning: string;
+  status: string;
+  found: string;
+  condition: string;
+};
+
 export type PublicContentSource = 'supabase' | 'static';
 
 export type PublicContentResult<T> = {
@@ -55,6 +67,20 @@ function staticNewsItems(): NewsItemView[] {
       };
     }),
   );
+}
+
+function staticLostObjects(): LostObjectView[] {
+  return BREAKROOM_DATA.objects.map((object) => ({
+    slug: slugify(object.name),
+    name: object.name,
+    itemNumber: object.id,
+    objectType: 'physical',
+    description: `${object.found} Condition: ${object.cond}`,
+    meaning: object.meaning,
+    status: object.status,
+    found: object.found,
+    condition: object.cond,
+  }));
 }
 
 export function groupNewsItems(items: NewsItemView[]) {
@@ -138,6 +164,46 @@ export async function getPublicNewsItems(): Promise<PublicContentResult<NewsItem
       source: 'static',
       items: fallback,
       error: error instanceof Error ? error.message : 'Could not load public news items.',
+    };
+  }
+}
+
+export async function getPublicLostObjects(): Promise<PublicContentResult<LostObjectView>> {
+  const fallback = staticLostObjects();
+
+  if (!supabase) {
+    return { source: 'static', items: fallback };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('lost_objects')
+      .select('slug, name, object_type, description, meaning, status, is_public, created_at')
+      .eq('is_public', true)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    if (!data?.length) return { source: 'static', items: fallback };
+
+    return {
+      source: 'supabase',
+      items: data.map((object: any, index: number) => ({
+        slug: object.slug,
+        name: object.name,
+        itemNumber: `DB-${String(index + 1).padStart(3, '0')}`,
+        objectType: object.object_type ?? 'physical',
+        description: object.description ?? 'Filed without a clean description.',
+        meaning: object.meaning ?? 'Meaning pending. The drawer knows more than it says.',
+        status: object.status ?? 'cataloged',
+        found: object.description ?? 'Found in the wrong drawer.',
+        condition: object.status ?? 'cataloged',
+      })),
+    };
+  } catch (error) {
+    return {
+      source: 'static',
+      items: fallback,
+      error: error instanceof Error ? error.message : 'Could not load public lost objects.',
     };
   }
 }
