@@ -1,0 +1,16 @@
+---
+import FactionDriftPanel from '@/components/factions/FactionDriftPanel';
+import FactionDriftTracker from '@/components/factions/FactionDriftTracker';
+
+interface Props {
+  factionSlug: string;
+  factionName?: string;
+  source?: 'visit_faction_page' | 'visit_turf_page';
+}
+
+const { factionSlug, factionName, source = 'visit_faction_page' } = Astro.props;
+---
+<div class="faction-drift-page-marker">
+  <FactionDriftTracker client:load factionSlug={factionSlug} source={source} metadata={{ factionName, surface: 'faction_page' }} />
+  <FactionDriftPanel client:load factionSlug={factionSlug} compact />
+</div>
