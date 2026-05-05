@@ -1,4 +1,5 @@
 ---
+import { getAgentBySlug } from '@/content/data/agents';
 import { isSpotifyEmbedUrl } from '@/lib/sleepnetComponents';
 import type { SleepNetComponent } from '@/lib/sleepnetComponents';
 
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const { component } = Astro.props;
+const agent = component.type === 'character_comment' ? getAgentBySlug(component.agentSlug) : null;
 ---
 {component.type === 'warning_notice' && (
   <article class="old-shell sleepnet-component warning-notice">
@@ -58,11 +60,16 @@ const { component } = Astro.props;
 )}
 
 {component.type === 'character_comment' && (
-  <article class="old-shell sleepnet-component character-comment">
-    <div class="old-header">Character Comment / {component.agentName}</div>
+  <article class={`old-shell sleepnet-component character-comment agent-${component.agentSlug}`}>
+    <div class="old-header">Agent Comment / {component.agentName}</div>
     <div class="old-body">
-      <p class="agent-slug">@{component.agentSlug}</p>
-      <p>{component.body}</p>
+      <div class="agent-comment-topline">
+        <p class="agent-slug">@{component.agentSlug}</p>
+        {agent && <p class="agent-level">Level {agent.level} / {agent.role}</p>}
+      </div>
+      {agent && <p class="agent-voice">{agent.voice}</p>}
+      <p class="agent-comment-body">{component.body}</p>
+      {agent?.contradictionStyle && agent.contradictionStyle !== 'none' && <p><span class="red-stamp">{agent.contradictionStyle}</span></p>}
     </div>
   </article>
 )}
