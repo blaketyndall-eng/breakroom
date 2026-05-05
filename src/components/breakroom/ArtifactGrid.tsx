@@ -48,25 +48,32 @@ export default function ArtifactGrid() {
       setStatus(remoteSlugs.length ? 'Loaded local and saved artifacts.' : 'No saved artifacts yet. The drawer is waiting.');
     }
 
+    function syncFromLocal() {
+      setArtifactSlugs(getLocalArtifactSlugs());
+    }
+
     loadArtifacts();
+    window.addEventListener('breakroom:artifact', syncFromLocal);
 
     return () => {
       ignore = true;
+      window.removeEventListener('breakroom:artifact', syncFromLocal);
     };
   }, []);
 
   const unlocked = useMemo(() => new Set(artifactSlugs), [artifactSlugs]);
+  const unlockedCount = artifactSlugs.length;
 
   return (
     <div className="old-shell artifact-shell">
-      <div className="old-header">Evidence Drawer / Saved Artifacts / Room Memory</div>
+      <div className="old-header">Evidence Drawer / Saved Artifacts / Room Memory / {unlockedCount} filed</div>
       <div className="old-body">
         <p className="memo-box">{status}</p>
         <div className="artifact-grid">
-          {ARTIFACTS.map((artifact) => {
+          {ARTIFACTS.map((artifact, index) => {
             const isUnlocked = unlocked.has(artifact.slug);
             return (
-              <article key={artifact.slug} className={`artifact-card ${isUnlocked ? 'unlocked' : 'locked'}`}>
+              <article key={artifact.slug} className={`artifact-card ${isUnlocked ? 'unlocked' : 'locked'}`} data-slot={String(index + 1).padStart(2, '0')}>
                 <div className="artifact-photo stripe">
                   <span>{isUnlocked ? artifact.stamp : '██████'}</span>
                 </div>
