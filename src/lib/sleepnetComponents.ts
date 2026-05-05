@@ -40,7 +40,10 @@ export type SleepNetStuffShelfStatus =
   | 'removed_by_management'
   | 'official_later'
   | 'not_for_you_yet'
-  | 'printable';
+  | 'printable'
+  | 'under_review'
+  | 'ask_at_counter'
+  | 'discontinued_before_release';
 
 export type SleepNetStuffShelfComponent = {
   id: string;
@@ -48,11 +51,17 @@ export type SleepNetStuffShelfComponent = {
   title: string;
   items: {
     slug?: string;
+    source?: 'registry' | 'custom';
     name: string;
     status: SleepNetStuffShelfStatus;
     note?: string;
     priceLabel?: string;
     href?: string;
+    imageState?: string;
+    buttonLabel?: string;
+    relatedFactionSlug?: string;
+    relatedObjectSlug?: string;
+    officialStatus?: 'fake_listing' | 'registry_item';
   }[];
 };
 
@@ -213,9 +222,9 @@ export function createFauxCompanyComponents(title: string): SleepNetComponent[] 
       type: 'stuff_shelf',
       title: 'Stuff Management Denies',
       items: [
-        { slug: 'very-good-hat', name: 'Employee Burger Hat', status: 'removed', note: 'Removed by management before photos could be developed.', href: '/stuff/very-good-hat' },
-        { slug: 'legal-napkin-pack', name: 'Legal Napkin Pack', status: 'coming_soon', note: 'For provisional meals and table arguments.', href: '/stuff/legal-napkin-pack' },
-        { slug: 'receipt-with-no-total', name: 'Receipt With No Total', status: 'found', priceLabel: '$?.??', href: '/stuff/receipt-with-no-total' },
+        { slug: 'very-good-hat', source: 'registry', name: 'Employee Burger Hat', status: 'removed', note: 'Removed by management before photos could be developed.', href: '/stuff/very-good-hat', officialStatus: 'registry_item' },
+        { slug: 'legal-napkin-pack', source: 'registry', name: 'Legal Napkin Pack', status: 'coming_soon', note: 'For provisional meals and table arguments.', href: '/stuff/legal-napkin-pack', officialStatus: 'registry_item' },
+        { slug: 'receipt-with-no-total', source: 'registry', name: 'Receipt With No Total', status: 'found', priceLabel: '$?.??', href: '/stuff/receipt-with-no-total', officialStatus: 'registry_item' },
       ],
     },
     {
