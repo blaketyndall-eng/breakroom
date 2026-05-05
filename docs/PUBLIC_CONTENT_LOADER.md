@@ -8,6 +8,7 @@ This doc tracks the move from static fallback data to Supabase-backed public con
 /phone
 /newsstand
 /lost-found
+/radio
 ```
 
 ## Shared helper
@@ -23,6 +24,7 @@ getPublicPhoneMessages()
 getPublicNewsItems()
 groupNewsItems()
 getPublicLostObjects()
+getPublicRadioLogs()
 ```
 
 ## Phone behavior
@@ -83,6 +85,24 @@ When Supabase is not configured, unreachable, or returns no rows:
 - Keep the page functional in local preview mode
 ```
 
+## Radio behavior
+
+When Supabase is configured and reachable:
+
+```txt
+- Load rows from radio_logs
+- Order by aired_at
+- Render transmission log entries beside the player and schedule
+```
+
+When Supabase is not configured, unreachable, or returns no rows:
+
+```txt
+- Fall back to static Channel 1:47 transmission logs
+- Keep PUBLIC_RADIO_STREAM_URL support through RadioPlayer
+- Keep the page functional in local preview mode
+```
+
 ## Why Phone first
 
 Phone was the safest first public content migration because:
@@ -114,12 +134,22 @@ Lost & Found is core to the Breakroom world because objects are the memory layer
 - It proves the same loader pattern across a different content shape
 ```
 
+## Why Radio fourth
+
+Radio connects Phone, Newsstand, Idle Hands, and After Hours.
+
+```txt
+- Supabase now has radio_logs seed content
+- The player can stay environment-driven while logs become database-backed
+- It deepens the broadcast layer without adding schema yet
+```
+
 ## Next candidates
 
 ```txt
-/radio
 /newsstand/[slug]
 /lost-found/[slug]
+/rack
 ```
 
 Move one page at a time.

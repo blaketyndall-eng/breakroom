@@ -33,6 +33,12 @@ export type LostObjectView = {
   condition: string;
 };
 
+export type RadioLogView = {
+  title: string;
+  body: string;
+  airedAt: string;
+};
+
 export type PublicContentSource = 'supabase' | 'static';
 
 export type PublicContentResult<T> = {
@@ -81,6 +87,26 @@ function staticLostObjects(): LostObjectView[] {
     found: object.found,
     condition: object.cond,
   }));
+}
+
+function staticRadioLogs(): RadioLogView[] {
+  return [
+    {
+      title: 'Channel 1:47 Station ID',
+      body: 'Broadcasting from somewhere behind the bar. If you hear yourself, lower the volume and apologize to nobody.',
+      airedAt: '1:47 AM',
+    },
+    {
+      title: 'Lot Weather',
+      body: 'Sodium-vapor glow, cold pavement, and a chance of someone idling too long near the vacancy sign.',
+      airedAt: '2:13 AM',
+    },
+    {
+      title: 'Back Booth Mix',
+      body: 'Coffee, cue chalk, and a song the jukebox denies owning.',
+      airedAt: '4:11 AM',
+    },
+  ];
 }
 
 export function groupNewsItems(items: NewsItemView[]) {
@@ -204,6 +230,39 @@ export async function getPublicLostObjects(): Promise<PublicContentResult<LostOb
       source: 'static',
       items: fallback,
       error: error instanceof Error ? error.message : 'Could not load public lost objects.',
+    };
+  }
+}
+
+export async function getPublicRadioLogs(): Promise<PublicContentResult<RadioLogView>> {
+  const fallback = staticRadioLogs();
+
+  if (!supabase) {
+    return { source: 'static', items: fallback };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('radio_logs')
+      .select('title, body, aired_at')
+      .order('aired_at', { ascending: false });
+
+    if (error) throw error;
+    if (!data?.length) return { source: 'static', items: fallback };
+
+    return {
+      source: 'supabase',
+      items: data.map((log: any) => ({
+        title: log.title,
+        body: log.body ?? 'Dead air with confidence.',
+        airedAt: log.aired_at ? new Date(log.aired_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '1:47 AM',
+      })),
+    };
+  } catch (error) {
+    return {
+      source: 'static',
+      items: fallback,
+      error: error instanceof Error ? error.message : 'Could not load public radio logs.',
     };
   }
 }
