@@ -9,6 +9,7 @@ SleepNet Page = room
 Stuff Shelf = objects and goods inside the room
 Stuff Item = fake product, found object, printable artifact, future merch, or removed rack item
 Drawer Save = the user saying I found this and the room remembered
+Editable Stuff Shelf = page owner arranging the objects on their own counter
 ```
 
 Stuff should not feel like normal ecommerce yet. It should feel like a lost-and-found drawer, product archive, fake shop, evidence shelf, and future merch system all sharing the same counter.
@@ -30,12 +31,16 @@ src/components/stuff/StuffCard.astro
 src/components/stuff/StuffPage.astro
 src/components/stuff/SaveStuffButton.tsx
 src/components/stuff/SavedStuffDrawerPreview.tsx
+src/components/sleepnet/SleepNetStuffShelfEditor.tsx
 src/pages/stuff/index.astro
 src/pages/stuff/[slug].astro
 src/styles/stuff.css
+src/styles/sleepnet-stuff-editor.css
 ```
 
 ## Statuses
+
+Registry statuses:
 
 ```txt
 fake
@@ -46,6 +51,21 @@ official_later
 not_for_you_yet
 printable
 available
+```
+
+Editable SleepNet shelf statuses:
+
+```txt
+fake
+coming_soon
+removed_by_management
+found
+official_later
+not_for_you_yet
+printable
+under_review
+ask_at_counter
+discontinued_before_release
 ```
 
 ## Item kinds
@@ -76,13 +96,28 @@ Jukebox Quarter
 
 ## SleepNet hooks
 
-Stuff shelf components link shelf items to registry routes:
+Stuff shelf components link registry-backed shelf items to registry routes:
 
 ```txt
 /stuff/[slug]
 ```
 
-Stuff shelf components can also show a local Save To Drawer action for registry-backed items.
+Page owners can also create custom fake Stuff inside the SleepNet creator. Custom Stuff is page-local in V1. It does not create a global /stuff/[slug] page.
+
+Editable shelf item fields:
+
+```txt
+name
+status
+note
+priceLabel
+imageState
+buttonLabel
+relatedFactionSlug
+relatedObjectSlug
+source: registry | custom
+officialStatus: registry_item | fake_listing
+```
 
 Very Good Burger uses the Stuff registry for its shelf:
 
@@ -172,6 +207,9 @@ not for you yet
 printable
 found
 fake
+under review
+ask at counter
+discontinued before release
 Save To Drawer
 Receipt Generated
 ```
@@ -200,6 +238,7 @@ waitlist/request action
 printable artifact downloads
 official product distinction
 inventory/commerce provider integration
+global user-created Stuff registry with moderation
 ```
 
 ## Product truth
