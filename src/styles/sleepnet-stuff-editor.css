@@ -1,0 +1,91 @@
+.sleepnet-stuff-editor {
+  border: 2px dashed #14110e;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.035) 0 1px, transparent 1px 7px),
+    #efe7d3;
+  padding: 12px;
+  margin: 14px 0;
+}
+
+.sleepnet-stuff-editor-body {
+  display: grid;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.sleepnet-stuff-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mini-editor-shell .old-body,
+.custom-stuff-form {
+  display: grid;
+  gap: 8px;
+}
+
+.sleepnet-stuff-editor select,
+.sleepnet-stuff-editor input,
+.sleepnet-stuff-editor textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px inset #d8c9a6;
+  background: #f6f3ec;
+  color: #14110e;
+  padding: 9px;
+  font-family: var(--type-typer, 'Courier New', monospace);
+  font-size: 13px;
+}
+
+.custom-stuff-form textarea {
+  min-height: 86px;
+}
+
+.sleepnet-shelf-current-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.shelf-item-chip {
+  display: grid;
+  gap: 3px;
+}
+
+.shelf-item-chip button {
+  border: 1px solid #b00020;
+  background: #f6f3ec;
+  color: #b00020;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.stuff-image-state {
+  border: 1px dashed #14110e;
+  background: rgba(246,243,236,.65);
+  padding: 5px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.stuff-shelf-item.source-custom {
+  background:
+    linear-gradient(135deg, rgba(176,0,32,.08), transparent),
+    #efe7d3;
+}
+
+.stuff-shelf-link[aria-disabled='true'] {
+  cursor: default;
+}
+
+@media (max-width: 800px) {
+  .sleepnet-stuff-editor-grid {
+    grid-template-columns: 1fr;
+  }
+}
