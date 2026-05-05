@@ -1,0 +1,33 @@
+---
+import { getMoreLikeThis } from '@/lib/sleepnetRelationships';
+import type { SleepNetRelationship } from '@/lib/sleepnetRelationships';
+import type { SleepNetSite } from '@/lib/sleepnetSites';
+
+interface Props {
+  site: SleepNetSite;
+  allSites?: SleepNetSite[];
+  relationships?: SleepNetRelationship[];
+  limit?: number;
+}
+
+const { site, allSites = [], relationships, limit = 5 } = Astro.props;
+const items = relationships ?? getMoreLikeThis(site, allSites, limit);
+---
+{items.length > 0 && (
+  <section class="old-shell more-like-this-module">
+    <div class="old-header">More Like This, Unfortunately</div>
+    <div class="old-body">
+      <div class="more-like-this-list">
+        {items.map((item) => (
+          <a class={`more-like-this-card status-${item.status} relation-${item.relationshipType}`} href={item.targetHref}>
+            <p class="sleepnet-url">{item.targetSiteSlug ? `sleepnet://${item.targetSiteSlug}` : item.targetHref}</p>
+            <h2>{item.targetTitle}</h2>
+            <p><span class="red-stamp">{item.label}</span></p>
+            {item.note && <p>{item.note}</p>}
+            <small>{item.createdBy} / {item.status}</small>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
