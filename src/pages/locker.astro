@@ -1,19 +1,15 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import RegularFileEditor from '@/components/regulars/RegularFileEditor';
-import LinkMaze from '@/components/oldweb/LinkMaze.astro';
+import SavedStuffDrawerPreview from '@/components/stuff/SavedStuffDrawerPreview';
 ---
-<OldWebLayout title="Locker / Regular File" section="locker">
-  <div class="status-strip"><span>locker</span><span>regular file editor</span><span>public page optional</span><span>not a normal profile</span></div>
+<OldWebLayout title="Locker" section="locker">
+  <div class="status-strip"><span>locker</span><span>regular file</span><span>drawer</span><span>local evidence</span></div>
   <h1>Locker</h1>
-  <p class="tagline-block">Edit your Regular File. This is the page people see when the room admits you are a person and not just another object in the drawer.</p>
+  <p class="tagline-block">Your Regular File, local drawer, saved Stuff, and anything the room has agreed to remember for now.</p>
 
-  <RegularFileEditor client:load />
-
-  <LinkMaze title="Locker drawer" notice="Your Regular File is the identity layer. SleepNet comes next." links={[
-    { href: '/artifacts', label: 'Artifacts', note: 'pin evidence from the drawer', stamp: 'FILED' },
-    { href: '/portal/after-hours-profile', label: 'After Hours Persona', note: 'older employee file still on record' },
-    { href: '/sign-the-wall', label: 'Sign The Wall', note: 'leave a mark before the janitor logs in' },
-    { href: '/after-hours', label: 'Back to room', note: 'where most files start' }
-  ]} />
+  <div class="grid-2">
+    <RegularFileEditor client:load />
+    <SavedStuffDrawerPreview client:load />
+  </div>
 </OldWebLayout>
