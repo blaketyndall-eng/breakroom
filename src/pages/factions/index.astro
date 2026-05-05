@@ -1,0 +1,24 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import FactionCard from '@/components/factions/FactionCard.astro';
+import { ACTIVE_FACTIONS, RUMORED_FACTIONS } from '@/content/data/factions';
+---
+<OldWebLayout title="Factions / Turf Map" section="factions">
+  <div class="status-strip"><span>turf map</span><span>active crews</span><span>rumored factions</span><span>stand near the bad light</span></div>
+  <h1>Factions</h1>
+  <p class="tagline-block">Crews, clubs, tribes, lineages, rumors, and people who all keep standing near the same broken light. This is not a guild system. It is a room remembering where you stood.</p>
+
+  <section class="faction-index-section">
+    <p class="regular-kicker">Active turf</p>
+    <div class="faction-card-grid">
+      {ACTIVE_FACTIONS.map((faction) => <FactionCard faction={faction} />)}
+    </div>
+  </section>
+
+  <section class="faction-index-section">
+    <p class="regular-kicker">Rumored / not fully filed</p>
+    <div class="faction-card-grid rumored-grid">
+      {RUMORED_FACTIONS.map((faction) => <FactionCard faction={faction} />)}
+    </div>
+  </section>
+</OldWebLayout>
