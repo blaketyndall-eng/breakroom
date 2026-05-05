@@ -1,0 +1,26 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import { getFakeAdBySlug } from '@/lib/fakeAds';
+
+const adSlug = Astro.url.searchParams.get('ad') ?? '';
+const ad = adSlug ? getFakeAdBySlug(adSlug) : null;
+---
+<OldWebLayout title="Dead Link Cemetery" section="sleepnet">
+  <div class="status-strip"><span>dead link</span><span>removed offer</span><span>directory failure</span><span>search what remains</span></div>
+  <section class="dead-link-cemetery">
+    <p class="sleepnet-url">dead-link://{adSlug || 'unknown'}</p>
+    <h1>This Ad Has Been Removed</h1>
+    <p class="tagline-block">Reason: the offer was too clear.</p>
+    {ad && (
+      <article class="old-shell">
+        <div class="old-header">Recovered Ad Fragment</div>
+        <div class="old-body">
+          <p><span class="red-stamp">{ad.headline}</span></p>
+          <p>{ad.body}</p>
+          <p class="sleepnet-url">sponsor: {ad.sponsor ?? 'unfiled'}</p>
+        </div>
+      </article>
+    )}
+    <p><a class="old-button" href={`/sleepnet?q=${encodeURIComponent(adSlug || 'removed ad')}`}>Search for what remains</a></p>
+  </section>
+</OldWebLayout>
