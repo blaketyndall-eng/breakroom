@@ -2,23 +2,42 @@
 import ArchiveLayout from '@/layouts/ArchiveLayout.astro';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 import { slugify } from '@/lib/slug';
+import { getPublicLostObjectBySlug } from '@/lib/publicContent';
+
+const staticObjects = BREAKROOM_DATA.objects.map((object) => ({
+  slug: slugify(object.name),
+  object,
+}));
+
 export function getStaticPaths() {
-  return BREAKROOM_DATA.objects.map((object) => ({ params: { slug: slugify(object.name) }, props: { object } }));
+  return staticObjects.map(({ slug }) => ({ params: { slug } }));
 }
-const { object } = Astro.props as any;
+
+const { slug } = Astro.params;
+const result = await getPublicLostObjectBySlug(slug ?? '');
+const object = result.item;
+
+if (!object) {
+  return Astro.redirect('/lost-found');
+}
 ---
-<ArchiveLayout title={`${object.name} / Object File`} eyebrow={`Object File / Item ${object.id}`}>
+<ArchiveLayout title={`${object.name} / Object File`} eyebrow={`Object File / Item ${object.itemNumber} / source: ${result.source}`}>
   <a href="/lost-found">← Return to Lost & Found</a>
   <h1>{object.name}</h1>
+  {result.error && <p class="memo-box">Public object detail fallback active: {result.error}</p>}
   <div class="grid-2">
     <div class="stripe" style="height:340px;">[{object.name} evidence image pending]</div>
     <table class="table-box">
-      <tr><th>Found</th><td>{object.found}</td></tr>
-      <tr><th>Condition</th><td>{object.cond}</td></tr>
-      <tr><th>Meaning</th><td>{object.meaning}</td></tr>
-      <tr><th>Related Uniform</th><td>{object.uniform}</td></tr>
-      <tr><th>Related Clipping</th><td>{object.clip}</td></tr>
-      <tr><th>Status</th><td>{object.status}</td></tr>
+      <tbody>
+        <tr><th>Type</th><td>{object.objectType}</td></tr>
+        <tr><th>Found</th><td>{object.found}</td></tr>
+        <tr><th>Condition</th><td>{object.condition}</td></tr>
+        <tr><th>Description</th><td>{object.description}</td></tr>
+        <tr><th>Meaning</th><td>{object.meaning}</td></tr>
+        {object.relatedUniform && <tr><th>Related Uniform</th><td>{object.relatedUniform}</td></tr>}
+        {object.relatedClipping && <tr><th>Related Clipping</th><td>{object.relatedClipping}</td></tr>}
+        <tr><th>Status</th><td>{object.status}</td></tr>
+      </tbody>
     </table>
   </div>
 </ArchiveLayout>
