@@ -7,53 +7,43 @@ interface Props {
 }
 
 const { site } = Astro.props;
-const hasGuestbookComponent = site.components?.some((component) => component.type === 'guestbook');
 ---
-<section class={`sleepnet-site sleepnet-theme-${site.theme}`}>
-  <div class="sleepnet-site-header">
+<section class="sleepnet-site-view">
+  <header class="sleepnet-site-header">
     <p class="sleepnet-url">sleepnet://{site.slug}</p>
     <h1>{site.title}</h1>
-    <p class="sleepnet-tagline">{site.tagline}</p>
+    {site.tagline && <p class="sleepnet-tagline">{site.tagline}</p>}
+    {site.description && <p>{site.description}</p>}
     <div class="sleepnet-meta">
       <span>{site.site_type.replaceAll('_', ' ')}</span>
       <span>{site.neighborhood.replaceAll('_', ' ')}</span>
-      <span>{site.status}</span>
-      <span>{site.reality_status?.replaceAll('_', ' ') ?? 'indexed noise'}</span>
+      <span>{site.reality_status ?? 'indexed_noise'}</span>
     </div>
-  </div>
+  </header>
 
-  <article class="old-shell sleepnet-intro">
-    <div class="old-header">Site Notice / Indexed By SleepNet</div>
-    <div class="old-body">
-      <p>{site.description}</p>
-      <p><span class="red-stamp">PUBLIC URL</span></p>
-    </div>
-  </article>
-
-  <div class="sleepnet-section-grid">
-    {site.sections.map((section) => (
-      <article class="old-shell sleepnet-section">
-        <div class="old-header">{section.title}</div>
-        <div class="old-body">
+  <section class="old-shell sleepnet-intro">
+    <div class="old-header">Page Sections / Filed Publicly</div>
+    <div class="old-body sleepnet-section-grid">
+      {site.sections.map((section) => (
+        <article class="sleepnet-section">
+          <h2>{section.title}</h2>
           <p>{section.body}</p>
-        </div>
-      </article>
-    ))}
-  </div>
+        </article>
+      ))}
+    </div>
+  </section>
 
   {site.components?.length ? (
-    <div class="sleepnet-component-grid">
-      {site.components.map((component) => <SleepNetComponentRenderer component={component} />)}
-    </div>
+    <section class="sleepnet-component-grid">
+      {site.components.map((component) => <SleepNetComponentRenderer component={component} siteSlug={site.slug} />)}
+    </section>
   ) : null}
 
-  {!hasGuestbookComponent && (
-    <article class="old-shell sleepnet-guestbook-shell">
-      <div class="old-header">Guestbook / Coming Soon</div>
-      <div class="old-body">
-        <p><b>Directory Clerk:</b> This URL has been indexed and may appear in SleepNet search.</p>
-        <p><b>Anonymous:</b> I found this through a search term I refuse to repeat.</p>
-      </div>
-    </article>
-  )}
+  <section class="old-shell sleepnet-guestbook-shell">
+    <div class="old-header">Guestbook / Not Yet Moderated</div>
+    <div class="old-body">
+      <p>This page can be remembered later. For now, the counter is watching quietly.</p>
+      <p class="sleepnet-url">guestbook://{site.slug}/pending</p>
+    </div>
+  </section>
 </section>
