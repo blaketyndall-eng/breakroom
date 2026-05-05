@@ -1,0 +1,72 @@
+.faction-drift-page-marker {
+  margin: 12px 0;
+}
+
+.faction-drift-panel {
+  border: 2px dashed #14110e;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.035) 0 1px, transparent 1px 7px),
+    #efe7d3;
+  color: #14110e;
+  padding: 10px;
+  box-shadow: 3px 3px 0 rgba(20,17,14,.18);
+}
+
+.faction-drift-panel.compact {
+  margin: 0;
+}
+
+.faction-drift-kicker {
+  display: inline-block;
+  margin: 0 0 6px;
+  border: 1px solid #14110e;
+  background: #f6f3ec;
+  padding: 4px 7px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.faction-drift-panel p {
+  margin: 0 0 6px;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.faction-drift-panel small {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.faction-drift-list {
+  display: grid;
+  gap: 7px;
+}
+
+.faction-drift-row {
+  display: grid;
+  gap: 3px;
+  border: 1px solid #14110e;
+  background: #f6f3ec;
+  color: #14110e;
+  padding: 8px;
+  text-decoration: none;
+}
+
+.faction-drift-row span {
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 22px;
+  line-height: .95;
+  text-transform: uppercase;
+}
+
+.faction-drift-row small {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
