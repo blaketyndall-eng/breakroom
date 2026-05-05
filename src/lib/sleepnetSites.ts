@@ -36,6 +36,29 @@ export const SLEEPNET_NEIGHBORHOODS = [
   'the_food_court_that_closed',
 ] as const;
 
+export const SLEEPNET_PROMPT_EXAMPLES = [
+  'A burger place that only opens after 1 AM and seems run by an AI that thinks burgers are legal documents.',
+  'A motel office that rents rooms to people who lost something in the parking lot.',
+  'A fake towing company operated by a white dog sleeping under a glass counter.',
+  'A pool hall law firm that settles disputes with trick shots and stamped receipts.',
+  'A printer repair company that only fixes haunted fax machines and employee portals.',
+];
+
+export const SLEEPNET_NEIGHBORHOOD_LABELS: Record<string, string> = {
+  corporate_ruins: 'Corporate Ruins',
+  parking_lot_west: 'Parking Lot West',
+  motel_row: 'Motel Row',
+  object_district: 'Object District',
+  pool_hall_county: 'Pool Hall County',
+  classified_alley: 'Classified Alley',
+  the_wrong_department: 'The Wrong Department',
+  the_food_court_that_closed: 'The Food Court That Closed',
+};
+
+export function labelSleepNetValue(value: string) {
+  return SLEEPNET_NEIGHBORHOOD_LABELS[value] ?? value.replaceAll('_', ' ');
+}
+
 export function normalizeSleepNetSlug(value: string) {
   return value
     .toLowerCase()
@@ -120,6 +143,27 @@ export function saveLocalSleepNetDraft(site: SleepNetSite) {
 export function clearLocalSleepNetDraft() {
   if (typeof window === 'undefined') return;
   window.localStorage.removeItem(LOCAL_SLEEPNET_DRAFT_KEY);
+}
+
+export async function getMySleepNetSiteBySlug(slug: string) {
+  const normalized = normalizeSleepNetSlug(slug);
+  const local = loadLocalSleepNetDraft();
+
+  if (!supabase) return local?.slug === normalized ? local : null;
+
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData.user;
+  if (!user) return local?.slug === normalized ? local : null;
+
+  const { data, error } = await supabase
+    .from('sleepnet_sites')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('slug', normalized)
+    .maybeSingle();
+
+  if (error || !data) return local?.slug === normalized ? local : null;
+  return data as SleepNetSite;
 }
 
 export async function saveMySleepNetSite(site: SleepNetSite) {
