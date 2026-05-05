@@ -109,6 +109,19 @@ is_public
 - Falls back to the local draft when unsigned or Supabase is unavailable
 ```
 
+## Polish pass
+
+The polish layer adds:
+
+```txt
+- prompt scraps for faster Faux Company generation
+- edit existing page loading from /sleepnet/create?slug=[slug]
+- Back Office filters for all/draft/published/hidden
+- clearer status cards for published and hidden pages
+- neighborhood labels instead of raw enum text
+- safer owned-page lookup before editing
+```
+
 ## First site type
 
 ```txt
@@ -131,7 +144,7 @@ This is the best first SleepNet template because it naturally fits:
 - Draft generation is deterministic, not AI yet
 - Search is simple search_text matching
 - Local drafts are visible only in the same browser
-- No true edit-existing route yet; create page can start from local draft
+- Edit-existing uses a query param, not a dedicated edit route yet
 - No guestbook persistence yet
 - Only Faux Company is implemented
 ```
