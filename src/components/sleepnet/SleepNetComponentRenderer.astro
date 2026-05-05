@@ -36,17 +36,23 @@ const agent = component.type === 'character_comment' ? getAgentBySlug(component.
     <div class="old-header">{component.title}</div>
     <div class="old-body">
       <div class="stuff-shelf-grid">
-        {component.items.map((item) => (
-          <div class={`stuff-shelf-item status-${item.status}`}>
-            <a class="stuff-shelf-link" href={item.href ?? (item.slug ? `/stuff/${item.slug}` : '#')}>
-              <p class="stuff-status">{item.status.replaceAll('_', ' ')}</p>
-              <h3>{item.name}</h3>
-              {item.priceLabel && <p class="stuff-price">{item.priceLabel}</p>}
-              {item.note && <small>{item.note}</small>}
-            </a>
-            {item.slug && <SaveStuffButton client:load item={{ slug: item.slug, name: item.name, status: item.status, note: item.note, priceLabel: item.priceLabel }} sourceSiteSlug={siteSlug} compact buttonLabel="File This" />}
-          </div>
-        ))}
+        {component.items.map((item) => {
+          const isRegistry = item.source !== 'custom' && (item.href || item.officialStatus === 'registry_item');
+          const href = isRegistry ? (item.href ?? (item.slug ? `/stuff/${item.slug}` : '#')) : '#';
+          return (
+            <div class={`stuff-shelf-item status-${item.status} source-${item.source ?? 'legacy'}`}>
+              <a class="stuff-shelf-link" href={href} aria-disabled={!isRegistry}>
+                <p class="stuff-status">{item.status.replaceAll('_', ' ')}</p>
+                <h3>{item.name}</h3>
+                {item.imageState && <p class="stuff-image-state">{item.imageState}</p>}
+                {item.priceLabel && <p class="stuff-price">{item.priceLabel}</p>}
+                {item.note && <small>{item.note}</small>}
+                {item.source === 'custom' && <p><span class="red-stamp">FAKE LISTING</span></p>}
+              </a>
+              {item.slug && <SaveStuffButton client:load item={{ slug: item.slug, name: item.name, status: item.status, note: item.note, priceLabel: item.priceLabel, relatedObjectSlug: item.relatedObjectSlug }} sourceSiteSlug={siteSlug} relatedFactionSlug={item.relatedFactionSlug} compact buttonLabel={item.buttonLabel ?? 'File This'} />}
+            </div>
+          );
+        })}
       </div>
     </div>
   </article>
