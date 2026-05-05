@@ -1,5 +1,6 @@
 .sleepnet-directory,
-.sleepnet-editor {
+.sleepnet-editor,
+.sleepnet-owner-dashboard {
   margin-top: 18px;
 }
 
@@ -47,18 +48,26 @@
   gap: 10px;
 }
 
-.sleepnet-results {
+.sleepnet-results,
+.sleepnet-owner-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
-.sleepnet-card {
+.sleepnet-card,
+.sleepnet-owner-card {
   border: 2px solid #14110e;
   background: #f6f3ec;
   padding: 12px;
   box-shadow: 3px 3px 0 rgba(20,17,14,.22);
   min-height: 220px;
+}
+
+.sleepnet-owner-card {
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.035) 0 1px, transparent 1px 7px),
+    #f6f3ec;
 }
 
 .sleepnet-url {
@@ -72,13 +81,15 @@
 }
 
 .sleepnet-card h2,
+.sleepnet-owner-card h2,
 .sleepnet-site-header h1 {
   margin: 0 0 8px;
   font-family: var(--type-paper, Georgia, serif);
   line-height: .95;
 }
 
-.sleepnet-card h2 {
+.sleepnet-card h2,
+.sleepnet-owner-card h2 {
   font-size: 26px;
 }
 
@@ -97,6 +108,18 @@
   font-size: 10px;
   letter-spacing: .08em;
   text-transform: uppercase;
+}
+
+.sleepnet-owner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.sleepnet-owner-actions .old-button {
+  font-size: 10px;
+  padding: 5px 8px;
 }
 
 .sleepnet-site-header {
@@ -139,6 +162,7 @@
 
 @media (max-width: 900px) {
   .sleepnet-results,
+  .sleepnet-owner-list,
   .sleepnet-section-grid,
   .sleepnet-editor-grid {
     grid-template-columns: 1fr;
