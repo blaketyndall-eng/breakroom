@@ -3,12 +3,14 @@ import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import RadioPlayer from '@/components/radio/RadioPlayer';
 import TableBox from '@/components/oldweb/TableBox.astro';
 import LinkMaze from '@/components/oldweb/LinkMaze.astro';
+import SecretTrigger from '@/components/breakroom/SecretTrigger';
 import { getPublicRadioLogs } from '@/lib/publicContent';
 
 const radioLogs = await getPublicRadioLogs();
 ---
 <OldWebLayout title="Breakroom Radio / Channel 1:47" section="radio">
-  <div class="status-strip"><span>CHANNEL 1:47</span><span>broadcast origin: behind the bar</span><span>dead air: approved</span><span>source: {radioLogs.source}</span></div>
+  <SecretTrigger client:load trigger="visit:/radio" path="/radio" label="radio 1:47" />
+  <div class="status-strip"><span>CHANNEL 1:47</span><span>broadcast origin: behind the bar</span><span>dead air: approved</span><span>source: {radioLogs.source}</span><span><a href="/artifacts">evidence drawer</a></span></div>
   <h1>Breakroom Radio</h1>
   <p class="tagline-block">Channel 1:47. Broadcasting from somewhere behind the bar. Music, station IDs, lot weather, fake ads, and messages that probably came through the phone first.</p>
   {radioLogs.error && <p class="memo-box">Public radio fallback active: {radioLogs.error}</p>}
