@@ -1,5 +1,6 @@
 import type { SleepNetComponent } from '@/lib/sleepnetComponents';
 import { createFauxCompanyComponents } from '@/lib/sleepnetComponents';
+import { generateSleepNetDraft } from '@/lib/sleepnetGenerators';
 import { supabase } from '@/lib/supabaseClient';
 
 export type SleepNetSection = {
@@ -119,57 +120,7 @@ export function ensureSleepNetComponents(site: SleepNetSite): SleepNetSite {
 }
 
 export function generateFauxCompanyDraft(seed: string): SleepNetSite {
-  const clean = seed.trim() || 'A fake company that should not have survived the night shift.';
-  const title = clean
-    .replace(/^a\s+/i, '')
-    .split(/[,.]/)[0]
-    .split(' ')
-    .slice(0, 5)
-    .join(' ') || 'Still Open Company';
-  const slug = normalizeSleepNetSlug(title || 'still-open-company');
-
-  const site: SleepNetSite = {
-    slug,
-    title,
-    site_type: 'faux_company',
-    neighborhood: 'corporate_ruins',
-    tagline: 'Serving whoever is still awake.',
-    description: clean,
-    theme: 'two_thousand_three_local_business',
-    status: 'draft',
-    is_public: false,
-    related_object_slugs: ['dial-tone-slip', 'receipt-with-no-total', 'wrong-employee-badge'],
-    related_agent_slug: 'night-manager',
-    faction_affinity: [],
-    weirdness_level: 3,
-    reality_status: 'indexed_noise',
-    canonical_weight: 0,
-    stuff_shelf_enabled: true,
-    guestbook_enabled: true,
-    gallery_enabled: true,
-    jukebox_enabled: true,
-    components: createFauxCompanyComponents(title),
-    sections: [
-      {
-        title: 'What We Claim To Do',
-        body: `${title} provides dependable after-hours services for customers who missed every normal option. We are open because nobody filed the form to close us.`,
-      },
-      {
-        title: 'What We Actually Do',
-        body: 'We answer the phone, move objects between rooms, misread receipts, and keep the lights on long enough for the page to load.',
-      },
-      {
-        title: 'Services',
-        body: 'Late counter advice. Object verification. Suspicious delivery acceptance. Emergency coffee. Documents stamped for emotional reasons.',
-      },
-      {
-        title: 'Legal Notice',
-        body: 'All claims are provisional. Any resemblance to a functioning business is a scheduling error.',
-      },
-    ],
-  };
-
-  return { ...site, search_text: buildSearchText(site) };
+  return generateSleepNetDraft({ prompt: seed, siteType: 'faux_company' });
 }
 
 export function loadLocalSleepNetDraft() {
