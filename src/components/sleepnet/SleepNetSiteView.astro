@@ -1,5 +1,6 @@
 ---
 import FakeAdStrip from '@/components/ads/FakeAdStrip.astro';
+import MoreLikeThis from '@/components/sleepnet/MoreLikeThis.astro';
 import SleepNetComponentRenderer from '@/components/sleepnet/SleepNetComponentRenderer.astro';
 import SleepNetGuestbook from '@/components/sleepnet/SleepNetGuestbook';
 import { seededGuestbookEntry } from '@/lib/sleepnetGuestbooks';
@@ -55,6 +56,8 @@ const seededEntries = guestbookComponent?.type === 'guestbook'
       {site.components.filter((component) => component.type !== 'guestbook').map((component) => <SleepNetComponentRenderer component={component} siteSlug={site.slug} />)}
     </section>
   ) : null}
+
+  <MoreLikeThis site={site} />
 
   {site.guestbook_enabled !== false && <SleepNetGuestbook client:load siteSlug={site.slug} siteType={site.site_type} seededEntries={seededEntries} />}
 </section>
