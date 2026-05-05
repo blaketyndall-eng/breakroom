@@ -7,7 +7,28 @@ import {
   removeMySleepNetSite,
   updateMySleepNetSiteStatus,
 } from '@/lib/sleepnetSites';
-import type { SleepNetSite } from '@/lib/sleepnetSites';
+import type { SleepNetMutationResult, SleepNetSite } from '@/lib/sleepnetSites';
+
+function statusLabel(site: SleepNetSite) {
+  if (!site.user_id) return 'LOCAL ONLY';
+  if (site.status === 'published' && site.is_public) return 'ON THE WIRE';
+  if (site.status === 'hidden') return 'HIDDEN';
+  return 'PRIVATE DRAFT';
+}
+
+function mutationMessage(result: SleepNetMutationResult, slug: string, action: 'published' | 'hidden' | 'removed') {
+  const url = makeSleepNetProtocolUrl(slug);
+  if (result.source === 'local') {
+    if (action === 'removed') return `Removed local SleepNet draft ${url}.`;
+    return `${action === 'published' ? 'Published' : 'Hidden'} locally. ${url} is only visible in this browser.`;
+  }
+  if (result.source === 'supabase') {
+    if (action === 'removed') return `Removed ${url} from the wire.`;
+    if (action === 'hidden') return `Hidden ${url} from public SleepNet search.`;
+    return `Published ${url} to SleepNet.`;
+  }
+  return result.reason;
+}
 
 export default function SleepNetOwnerDashboard() {
   const [sites, setSites] = useState<SleepNetSite[]>([]);
@@ -39,9 +60,9 @@ export default function SleepNetOwnerDashboard() {
   async function setSiteStatus(slug: string, nextStatus: 'draft' | 'published' | 'hidden') {
     setBusySlug(slug);
     try {
-      await updateMySleepNetSiteStatus(slug, nextStatus);
+      const result = await updateMySleepNetSiteStatus(slug, nextStatus);
       await loadSites();
-      setStatus(`Updated ${makeSleepNetProtocolUrl(slug)} to ${nextStatus}.`);
+      setStatus(mutationMessage(result, slug, nextStatus));
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Could not update SleepNet page.');
     } finally {
@@ -52,9 +73,9 @@ export default function SleepNetOwnerDashboard() {
   async function removeSite(slug: string) {
     setBusySlug(slug);
     try {
-      await removeMySleepNetSite(slug);
+      const result = await removeMySleepNetSite(slug);
       await loadSites();
-      setStatus(`${makeSleepNetProtocolUrl(slug)} was removed from the wire.`);
+      setStatus(mutationMessage(result, slug, 'removed'));
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Could not remove SleepNet page.');
     } finally {
@@ -83,6 +104,7 @@ export default function SleepNetOwnerDashboard() {
               <p>{site.tagline}</p>
               <p>{site.description}</p>
               <div className="sleepnet-meta">
+                <span>{statusLabel(site)}</span>
                 <span>{site.status}</span>
                 <span>{site.is_public ? 'public' : 'private'}</span>
                 <span>{labelSleepNetValue(site.neighborhood)}</span>
