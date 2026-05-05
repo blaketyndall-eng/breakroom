@@ -1,0 +1,10 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import SleepNetSiteEditor from '@/components/sleepnet/SleepNetSiteEditor';
+---
+<OldWebLayout title="Create SleepNet Page" section="sleepnet">
+  <div class="status-strip"><span>sleepnet create</span><span>first type: faux company</span><span>drafts allowed</span><span>publish creates searchable URL</span></div>
+  <h1>Create SleepNet Page</h1>
+  <p class="tagline-block">Describe something badly. SleepNet turns it into a small old-web page with a searchable URL. This is not a startup landing page unless the startup is haunted and badly filed.</p>
+  <SleepNetSiteEditor client:load />
+</OldWebLayout>

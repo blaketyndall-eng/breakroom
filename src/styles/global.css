@@ -5,6 +5,7 @@
 @import './auth.css';
 @import './artifacts.css';
 @import './regulars.css';
+@import './sleepnet.css';
 @import './claude-design.css';
 
 :root {

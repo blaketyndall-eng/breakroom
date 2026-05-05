@@ -1,0 +1,48 @@
+---
+import type { SleepNetSite } from '@/lib/sleepnetSites';
+
+interface Props {
+  site: SleepNetSite;
+}
+
+const { site } = Astro.props;
+---
+<section class={`sleepnet-site sleepnet-theme-${site.theme}`}>
+  <div class="sleepnet-site-header">
+    <p class="sleepnet-url">sleepnet://{site.slug}</p>
+    <h1>{site.title}</h1>
+    <p class="sleepnet-tagline">{site.tagline}</p>
+    <div class="sleepnet-meta">
+      <span>{site.site_type.replaceAll('_', ' ')}</span>
+      <span>{site.neighborhood.replaceAll('_', ' ')}</span>
+      <span>{site.status}</span>
+    </div>
+  </div>
+
+  <article class="old-shell sleepnet-intro">
+    <div class="old-header">Site Notice / Indexed By SleepNet</div>
+    <div class="old-body">
+      <p>{site.description}</p>
+      <p><span class="red-stamp">PUBLIC URL</span></p>
+    </div>
+  </article>
+
+  <div class="sleepnet-section-grid">
+    {site.sections.map((section) => (
+      <article class="old-shell sleepnet-section">
+        <div class="old-header">{section.title}</div>
+        <div class="old-body">
+          <p>{section.body}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <article class="old-shell sleepnet-guestbook-shell">
+    <div class="old-header">Guestbook / Coming Soon</div>
+    <div class="old-body">
+      <p><b>Directory Clerk:</b> This URL has been indexed and may appear in SleepNet search.</p>
+      <p><b>Anonymous:</b> I found this through a search term I refuse to repeat.</p>
+    </div>
+  </article>
+</section>
