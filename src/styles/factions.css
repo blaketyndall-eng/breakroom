@@ -1,0 +1,120 @@
+.faction-index-section {
+  margin-top: 22px;
+}
+
+.faction-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.faction-card {
+  display: block;
+  min-height: 260px;
+  border: 3px double var(--faction-primary, #14110e);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--faction-primary, #14110e) 16%, transparent), transparent),
+    var(--faction-secondary, #f6f3ec);
+  color: #14110e;
+  padding: 14px;
+  box-shadow: 4px 4px 0 rgba(20,17,14,.25);
+  text-decoration: none;
+}
+
+.faction-card.status-rumored {
+  opacity: .72;
+  filter: grayscale(.35);
+}
+
+.faction-card h2 {
+  margin: 0 0 8px;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: clamp(30px, 5vw, 54px);
+  line-height: .9;
+  text-transform: uppercase;
+}
+
+.faction-status {
+  display: inline-block;
+  margin: 0 0 10px;
+  border: 1px solid var(--faction-primary, #14110e);
+  background: #f6f3ec;
+  color: var(--faction-primary, #14110e);
+  padding: 4px 7px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.faction-motto {
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 22px;
+  line-height: 1;
+  margin: 0 0 10px;
+}
+
+.faction-symbol-row,
+.faction-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.faction-symbol-row span,
+.faction-chip-list span,
+.faction-chip-list a {
+  border: 1px solid #14110e;
+  background: #efe7d3;
+  color: #14110e;
+  padding: 5px 7px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.faction-hero {
+  border: 4px double var(--faction-primary, #14110e);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--faction-primary, #14110e) 18%, transparent), color-mix(in srgb, var(--faction-accent, #b00020) 12%, transparent)),
+    var(--faction-secondary, #f6f3ec);
+  padding: 18px;
+  box-shadow: 5px 5px 0 rgba(20,17,14,.28);
+}
+
+.faction-hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(54px, 10vw, 112px);
+  line-height: .82;
+  text-transform: uppercase;
+}
+
+.faction-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.faction-module.span-2 {
+  grid-column: span 2;
+}
+
+.faction-module .old-body p {
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .faction-card-grid,
+  .faction-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .faction-module.span-2 {
+    grid-column: span 1;
+  }
+}
