@@ -41,6 +41,20 @@ export type RadioLogView = {
   airedAt: string;
 };
 
+export type ProductView = {
+  slug: string;
+  sku: string;
+  name: string;
+  note: string;
+  href: string;
+  status: string;
+  department: string;
+  object: string;
+  priceCents?: number | null;
+  category?: string | null;
+  description?: string | null;
+};
+
 export type PublicContentSource = 'supabase' | 'static';
 
 export type PublicContentResult<T> = {
@@ -119,6 +133,20 @@ function staticRadioLogs(): RadioLogView[] {
   ];
 }
 
+function staticProducts(): ProductView[] {
+  return BREAKROOM_DATA.products.map((product, index) => ({
+    slug: slugify(product.name),
+    sku: product.sku,
+    name: product.name,
+    note: product.reason,
+    href: `/rack/${slugify(product.name)}`,
+    status: index > 3 ? 'REMOVED' : 'ISSUED GOODS',
+    department: product.dept,
+    object: product.obj,
+    description: product.reason,
+  }));
+}
+
 function mapNewsItem(item: any): NewsItemView {
   return {
     slug: item.slug,
@@ -142,6 +170,23 @@ function mapLostObject(object: any, index = 0): LostObjectView {
     status: object.status ?? 'cataloged',
     found: object.description ?? 'Found in the wrong drawer.',
     condition: object.status ?? 'cataloged',
+  };
+}
+
+function mapProduct(product: any): ProductView {
+  const slug = product.slug ?? slugify(product.name);
+  return {
+    slug,
+    sku: product.sku ?? 'SE-??',
+    name: product.name,
+    note: product.reason ?? product.description ?? 'Filed without explanation.',
+    href: `/rack/${slug}`,
+    status: product.status ?? 'file_only',
+    department: product.category ?? 'uniform_assignment',
+    object: product.category ?? 'issued_goods',
+    priceCents: product.price_cents,
+    category: product.category,
+    description: product.description,
   };
 }
 
@@ -335,6 +380,36 @@ export async function getPublicRadioLogs(): Promise<PublicContentResult<RadioLog
       source: 'static',
       items: fallback,
       error: error instanceof Error ? error.message : 'Could not load public radio logs.',
+    };
+  }
+}
+
+export async function getPublicProducts(): Promise<PublicContentResult<ProductView>> {
+  const fallback = staticProducts();
+
+  if (!supabase) {
+    return { source: 'static', items: fallback };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('slug, name, sku, status, price_cents, category, description, reason, sort_order, is_public')
+      .eq('is_public', true)
+      .order('sort_order', { ascending: true });
+
+    if (error) throw error;
+    if (!data?.length) return { source: 'static', items: fallback };
+
+    return {
+      source: 'supabase',
+      items: data.map(mapProduct),
+    };
+  } catch (error) {
+    return {
+      source: 'static',
+      items: fallback,
+      error: error instanceof Error ? error.message : 'Could not load public products.',
     };
   }
 }

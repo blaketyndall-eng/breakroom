@@ -2,25 +2,26 @@
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
 import CatalogRail from '@/components/oldweb/CatalogRail.astro';
-import { BREAKROOM_DATA } from '@/content/data/breakroom';
-import { slugify } from '@/lib/slug';
+import { getPublicProducts } from '@/lib/publicContent';
 
-const catalogItems = BREAKROOM_DATA.products.map((p, i) => ({
-  sku: p.sku,
-  name: p.name,
-  note: p.reason,
-  href: `/rack/${slugify(p.name)}`,
-  status: i > 3 ? 'REMOVED' : 'ISSUED GOODS',
+const products = await getPublicProducts();
+const catalogItems = products.items.map((product) => ({
+  sku: product.sku,
+  name: product.name,
+  note: product.note,
+  href: product.href,
+  status: product.status,
 }));
 ---
 <OldWebLayout title="The Rack" section="rack">
-  <div class="status-strip"><span>2003 inventory page</span><span>issue: Shift End</span><span>checkout disabled</span><span>products appear as files</span><span>last sync 1:47</span></div>
+  <div class="status-strip"><span>2003 inventory page</span><span>issue: Shift End</span><span>checkout disabled</span><span>products appear as files</span><span>source: {products.source}</span></div>
 
   <section class="hero-split">
     <div>
       <p class="eyebrow">Uniform archive / live-ish inventory</p>
       <h1>The Rack</h1>
       <p class="lede">Products are issued goods, product sightings, file requests, and things removed from the rack before anyone admits they were for sale.</p>
+      {products.error && <p class="memo-box">Public product fallback active: {products.error}</p>}
     </div>
     <aside class="evidence-card">
       <p><b>Inventory warning:</b> Staff count and item count do not match.</p>
@@ -46,19 +47,16 @@ const catalogItems = BREAKROOM_DATA.products.map((p, i) => ({
   <table class="table-box rack-table">
     <thead><tr><th>SKU</th><th>Item File</th><th>Status</th><th>Dept.</th><th>Object</th><th>Action</th></tr></thead>
     <tbody>
-      {BREAKROOM_DATA.products.map((p, i) => {
-        const status = i > 3 ? 'REMOVED FROM RACK' : 'AVAILABLE FOR ISSUE';
-        return (
-          <tr class="inventory-row" data-status={status}>
-            <td>{p.sku}</td>
-            <td><a href={`/rack/${slugify(p.name)}`}>{p.name}</a><br/><span>{p.reason}</span></td>
-            <td><span class="status-tag">{status}</span></td>
-            <td>{p.dept}</td>
-            <td>{p.obj}</td>
-            <td><a class="old-button" href={`/rack/${slugify(p.name)}`}>Open File</a></td>
-          </tr>
-        );
-      })}
+      {products.items.map((product) => (
+        <tr class="inventory-row" data-status={product.status}>
+          <td>{product.sku}</td>
+          <td><a href={product.href}>{product.name}</a><br/><span>{product.note}</span></td>
+          <td><span class="status-tag">{product.status}</span></td>
+          <td>{product.department}</td>
+          <td>{product.object}</td>
+          <td><a class="old-button" href={product.href}>Open File</a></td>
+        </tr>
+      ))}
       <tr class="inventory-row" data-status="CLOCK">
         <td>SE-██</td><td>████ ███████ ███<br/><span>Product visible only after the room says yes.</span></td><td>CLOCK OUT TO VIEW</td><td>Wrong Department</td><td>Redacted</td><td><a href="/clock-out">Clock Out</a></td>
       </tr>
@@ -70,7 +68,7 @@ const catalogItems = BREAKROOM_DATA.products.map((p, i) => ({
       <p>Not a cart. Not yet. Choose a uniform direction and the room will remember the preference later.</p>
       <form class="old-form">
         <label>Preferred light <select><option>dirty fluorescent</option><option>motel blue</option><option>dashboard green</option><option>beer sign red</option></select></label>
-        <label>Preferred item <select>{BREAKROOM_DATA.products.map((p) => <option>{p.name}</option>)}</select></label>
+        <label>Preferred item <select>{products.items.map((product) => <option>{product.name}</option>)}</select></label>
         <button class="old-button" type="button">Save Preference / Later</button>
       </form>
     </TableBox>

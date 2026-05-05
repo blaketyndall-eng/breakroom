@@ -11,6 +11,7 @@ This doc tracks the move from static fallback data to Supabase-backed public con
 /lost-found
 /lost-found/[slug]
 /radio
+/rack
 ```
 
 ## Shared helper
@@ -29,6 +30,7 @@ groupNewsItems()
 getPublicLostObjects()
 getPublicLostObjectBySlug()
 getPublicRadioLogs()
+getPublicProducts()
 ```
 
 ## Phone behavior
@@ -109,9 +111,28 @@ When Supabase is not configured, unreachable, or returns no rows:
 - Keep the page functional in local preview mode
 ```
 
+## Rack behavior
+
+When Supabase is configured and reachable:
+
+```txt
+- Load public rows from products
+- Filter to is_public = true
+- Order by sort_order
+- Render the database-backed catalog rail and inventory table
+```
+
+When Supabase is not configured, unreachable, or returns no rows:
+
+```txt
+- Fall back to BREAKROOM_DATA.products
+- Preserve the 2003 catalog/inventory page feel
+- Keep the page functional in local preview mode
+```
+
 ## Detail page note
 
-Dynamic detail pages now use Supabase by slug when possible while keeping the existing static route behavior stable.
+Dynamic detail pages use Supabase by slug when possible while keeping the existing static route behavior stable.
 
 ```txt
 /newsstand/[slug]
@@ -128,7 +149,6 @@ New Supabase-only slugs may not have build-time routes until dynamic route gener
 ## Next candidates
 
 ```txt
-/rack
 /rack/[slug]
 /ventures
 ```
