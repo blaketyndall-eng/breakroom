@@ -18,6 +18,7 @@ create table if not exists public.regular_pages (
 
 alter table public.regular_pages enable row level security;
 
+create unique index if not exists regular_pages_user_id_unique_idx on public.regular_pages(user_id);
 create index if not exists regular_pages_user_id_idx on public.regular_pages(user_id);
 create index if not exists regular_pages_handle_idx on public.regular_pages(handle);
 
