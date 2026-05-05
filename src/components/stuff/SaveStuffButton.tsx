@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { StuffItemStatus } from '@/content/data/stuff';
 import { isStuffSaved, removeSavedStuffItem, saveStuffItem } from '@/lib/savedStuff';
 import type { SavedStuffItem, SaveableStuffItem } from '@/lib/savedStuff';
+import { recordFactionSignal } from '@/lib/factionDrift';
 
 type SaveStuffButtonProps = {
   item: SaveableStuffItem & { status: StuffItemStatus | string };
@@ -36,6 +37,14 @@ export default function SaveStuffButton({ item, sourceSiteSlug, relatedFactionSl
         relatedFactionSlug,
         metadata: { source: sourceSiteSlug ? 'sleepnet_shelf' : 'stuff_file' },
       });
+      if (relatedFactionSlug) {
+        recordFactionSignal({
+          factionSlug: relatedFactionSlug,
+          source: 'save_faction_stuff',
+          weight: 3,
+          metadata: { stuffSlug: normalizedItem.slug, sourceSiteSlug },
+        });
+      }
       setSaved(true);
       setReceipt(next);
     } catch {
@@ -64,7 +73,7 @@ export default function SaveStuffButton({ item, sourceSiteSlug, relatedFactionSl
           <p>SKU: {receipt.sku}</p>
           <p>Status: {String(receipt.status).replaceAll('_', ' ')}</p>
           <p>Filed: Drawer</p>
-          <small>The counter saw you.</small>
+          <small>{relatedFactionSlug ? 'The turf saw you file it.' : 'The counter saw you.'}</small>
         </div>
       )}
       {error && <p className="stuff-save-error">{error}</p>}

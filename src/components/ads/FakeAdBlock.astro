@@ -10,9 +10,40 @@ interface Props {
 const { ad, size = 'normal' } = Astro.props;
 const href = normalizeFakeAdHref(ad);
 ---
-<a class={`fake-ad-block style-${ad.style} destination-${ad.destinationType} size-${size}`} href={href} data-ad-slug={ad.slug}>
+<a
+  class={`fake-ad-block style-${ad.style} destination-${ad.destinationType} size-${size}`}
+  href={href}
+  data-ad-slug={ad.slug}
+  data-faction-slug={ad.linkedFactionSlug ?? ''}
+  data-drift-source="click_faction_ad"
+>
   <p class="fake-ad-meta">{ad.sponsor ?? 'Sponsor not filed'} / {fakeAdDestinationLabel(ad)}</p>
   <h3>{ad.headline}</h3>
   <p>{ad.body}</p>
   <span>{ad.ctaLabel ?? 'Click badly'}</span>
 </a>
+
+<script>
+  document.addEventListener('click', (event) => {
+    const target = event.target instanceof Element ? event.target.closest('[data-faction-slug]') : null;
+    if (!(target instanceof HTMLElement)) return;
+    const factionSlug = target.dataset.factionSlug;
+    if (!factionSlug) return;
+
+    try {
+      const key = 'breakroom.faction-signals.v1';
+      const current = JSON.parse(window.localStorage.getItem(key) || '[]');
+      const signal = {
+        factionSlug,
+        source: target.dataset.driftSource || 'click_faction_ad',
+        weight: 2,
+        createdAt: new Date().toISOString(),
+        metadata: { adSlug: target.dataset.adSlug, surface: 'fake_ad' },
+      };
+      window.localStorage.setItem(key, JSON.stringify([signal, ...current].slice(0, 200)));
+      window.dispatchEvent(new CustomEvent('breakroom:faction-drift-updated', { detail: { signals: [signal, ...current] } }));
+    } catch {
+      // The ad still works even if the drawer refuses to remember it.
+    }
+  });
+</script>

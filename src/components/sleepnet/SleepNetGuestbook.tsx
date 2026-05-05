@@ -7,12 +7,14 @@ import {
   getGuestbookModeForSiteType,
 } from '@/lib/sleepnetGuestbooks';
 import type { SleepNetGuestbookEntry, SleepNetGuestbookMode } from '@/lib/sleepnetGuestbooks';
+import { recordFactionSignal } from '@/lib/factionDrift';
 
 type Props = {
   siteSlug: string;
   siteType: string;
   seededEntries?: SleepNetGuestbookEntry[];
   mode?: SleepNetGuestbookMode;
+  factionSlug?: string;
 };
 
 function formatDate(value: string) {
@@ -22,7 +24,7 @@ function formatDate(value: string) {
   return date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 }
 
-export default function SleepNetGuestbook({ siteSlug, siteType, seededEntries = [], mode }: Props) {
+export default function SleepNetGuestbook({ siteSlug, siteType, seededEntries = [], mode, factionSlug }: Props) {
   const resolvedMode = mode ?? getGuestbookModeForSiteType(siteType);
   const [entries, setEntries] = useState<SleepNetGuestbookEntry[]>(seededEntries);
   const [alias, setAlias] = useState('Anonymous');
@@ -61,7 +63,15 @@ export default function SleepNetGuestbook({ siteSlug, siteType, seededEntries = 
     setIsSubmitting(true);
     setStatus('Filing mark...');
     try {
-      const result = await addGuestbookEntry({ siteSlug, alias, message, pageType: siteType });
+      const result = await addGuestbookEntry({ siteSlug, alias, message, pageType: siteType, factionSlug });
+      if (factionSlug) {
+        recordFactionSignal({
+          factionSlug,
+          source: 'sign_faction_guestbook',
+          weight: 3,
+          metadata: { siteSlug, source: result.source },
+        });
+      }
       setMessage('');
       setStatus(result.source === 'supabase' ? 'Filed publicly.' : 'Filed locally. This browser remembers it.');
       await refresh();
