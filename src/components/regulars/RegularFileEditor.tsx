@@ -43,6 +43,7 @@ export default function RegularFileEditor() {
 
   const localArtifacts = useMemo(() => new Set(getLocalArtifactSlugs()), []);
   const availableArtifacts = ARTIFACTS.filter((artifact) => localArtifacts.has(artifact.slug));
+  const previewUrl = `/regulars/${file.handle || 'regular'}`;
 
   function update<K extends keyof RegularFile>(key: K, value: RegularFile[K]) {
     setFile((current) => ({ ...current, [key]: value }));
@@ -82,6 +83,10 @@ export default function RegularFileEditor() {
       <div className="old-header">Locker / Edit Regular File / Not Instagram</div>
       <div className="old-body">
         <p className="memo-box">{status}</p>
+        <div className="regular-public-strip">
+          <span>{file.is_public ? 'Public: On The Wall' : 'Private: Staff Only'}</span>
+          <a href={previewUrl}>Preview {previewUrl}</a>
+        </div>
 
         <div className="regular-editor-grid">
           <label>Handle
@@ -145,7 +150,7 @@ export default function RegularFileEditor() {
 
         <p>
           <button className="old-button" disabled={isSaving}>{isSaving ? 'Filing...' : 'Save Regular File'}</button>{' '}
-          <a className="old-button" href={`/regulars/${file.handle}`}>View Public File</a>
+          <a className="old-button" href={previewUrl}>View Public File</a>
         </p>
       </div>
     </form>
