@@ -1,0 +1,19 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import ArtifactGrid from '@/components/breakroom/ArtifactGrid';
+import LinkMaze from '@/components/oldweb/LinkMaze.astro';
+---
+<OldWebLayout title="Artifacts / Evidence Drawer" section="artifacts">
+  <div class="status-strip"><span>evidence drawer</span><span>local + saved artifacts</span><span>locked files visible</span><span>room memory unstable</span></div>
+  <h1>Artifacts</h1>
+  <p class="tagline-block">Badges, receipts, station IDs, marker slips, object cards, and other proof that the room noticed you. Some files are yours. Some are still hiding.</p>
+  <ArtifactGrid client:load />
+  <LinkMaze title="Where artifacts usually come from" notice="The drawer fills when you move through the room instead of reading it like a normal website." links={[
+    { href: '/after-hours', label: 'After Hours', note: 'first badge usually appears here', stamp: 'START' },
+    { href: '/phone', label: 'Phone Behind The Bar', note: 'dial tone evidence' },
+    { href: '/radio', label: 'Radio 1:47', note: 'station slips and dead air', stamp: 'ON AIR' },
+    { href: '/sign-the-wall', label: 'Sign The Wall', note: 'marker receipts and wall witnesses' },
+    { href: '/lost-found', label: 'Lost & Found', note: 'object evidence cards' },
+    { href: '/rack', label: 'The Rack', note: 'issued goods requests' }
+  ]} />
+</OldWebLayout>
