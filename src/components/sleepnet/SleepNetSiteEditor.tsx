@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
+import { getFactionBySlug } from '@/content/data/factions';
 import {
   SLEEPNET_NEIGHBORHOODS,
   SLEEPNET_PROMPT_EXAMPLES,
@@ -31,9 +32,18 @@ function parseSections(value: string): SleepNetSection[] {
     .slice(0, 8);
 }
 
-function getQuerySlug() {
+function getQueryParam(name: string) {
   if (typeof window === 'undefined') return '';
-  return normalizeSleepNetSlug(new URLSearchParams(window.location.search).get('slug') ?? '');
+  return new URLSearchParams(window.location.search).get(name) ?? '';
+}
+
+function getQuerySlug() {
+  return normalizeSleepNetSlug(getQueryParam('slug'));
+}
+
+function getQuerySiteType() {
+  const value = getQueryParam('type');
+  return SLEEPNET_SITE_TYPES.includes(value as SleepNetSiteType) ? value as SleepNetSiteType : null;
 }
 
 export default function SleepNetSiteEditor() {
@@ -47,13 +57,41 @@ export default function SleepNetSiteEditor() {
   useEffect(() => {
     async function load() {
       const querySlug = getQuerySlug();
+      const queryType = getQuerySiteType();
+      const faction = getFactionBySlug(getQueryParam('faction'));
       const existing = querySlug ? await getMySleepNetSiteBySlug(querySlug) : loadLocalSleepNetDraft();
+
       if (existing) {
         setSite(existing);
         setSiteType((existing.site_type as SleepNetSiteType) ?? 'auto');
         setPrompt(existing.description ?? SLEEPNET_PROMPT_EXAMPLES[0]);
         setSections(sectionText(existing.sections));
         setStatus(querySlug ? `Loaded ${makeSleepNetProtocolUrl(existing.slug)} for editing.` : 'Loaded local unfinished SleepNet page.');
+        return;
+      }
+
+      if (queryType || faction) {
+        const nextType = queryType ?? 'faction_turf';
+        const nextPrompt = faction
+          ? `${faction.name} turf page. ${faction.description}`
+          : SLEEPNET_PROMPT_EXAMPLES[0];
+        const next = generateSleepNetDraft({ prompt: nextPrompt, siteType: nextType });
+        const tuned = faction ? {
+          ...next,
+          title: `${faction.name} Turf Page`,
+          slug: normalizeSleepNetSlug(`${faction.name} Turf Page`),
+          tagline: faction.joinLanguage,
+          neighborhood: faction.turf,
+          faction_affinity: [faction.slug],
+          related_object_slugs: faction.objects,
+          related_agent_slug: faction.agents[0] ?? next.related_agent_slug,
+        } : next;
+
+        setSite(tuned);
+        setSiteType(nextType);
+        setPrompt(nextPrompt);
+        setSections(sectionText(tuned.sections));
+        setStatus(faction ? `${faction.name} turf draft staged.` : `${SLEEPNET_SITE_TYPE_LABELS[nextType]} draft staged.`);
       }
     }
 

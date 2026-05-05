@@ -1,0 +1,14 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import FactionPage from '@/components/factions/FactionPage.astro';
+import { getFactionBySlug } from '@/content/data/factions';
+
+export const prerender = false;
+
+const slug = Astro.params.slug ?? 'the-players';
+const faction = getFactionBySlug(slug);
+---
+<OldWebLayout title={`${faction?.name ?? 'Unknown Faction'} / Turf`} section="factions">
+  <div class="status-strip"><span>faction file</span><span>{faction ? faction.slug : 'not found'}</span><span>{faction ? faction.status : 'missing'}</span><span><a href="/factions">turf map</a></span></div>
+  {faction ? <FactionPage faction={faction} /> : <p class="memo-box">No faction file was found for {slug}. The wall has not admitted them yet.</p>}
+</OldWebLayout>
