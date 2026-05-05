@@ -30,15 +30,29 @@ export type SleepNetFakeAdComponent = {
   sponsor?: string;
 };
 
+export type SleepNetStuffShelfStatus =
+  | 'available'
+  | 'removed'
+  | 'coming_soon'
+  | 'not_for_you'
+  | 'found'
+  | 'fake'
+  | 'removed_by_management'
+  | 'official_later'
+  | 'not_for_you_yet'
+  | 'printable';
+
 export type SleepNetStuffShelfComponent = {
   id: string;
   type: 'stuff_shelf';
   title: string;
   items: {
+    slug?: string;
     name: string;
-    status: 'available' | 'removed' | 'coming_soon' | 'not_for_you' | 'found' | 'fake';
+    status: SleepNetStuffShelfStatus;
     note?: string;
     priceLabel?: string;
+    href?: string;
   }[];
 };
 
@@ -199,9 +213,9 @@ export function createFauxCompanyComponents(title: string): SleepNetComponent[] 
       type: 'stuff_shelf',
       title: 'Stuff Management Denies',
       items: [
-        { name: 'Employee Burger Hat', status: 'removed', note: 'Removed by management before photos could be developed.' },
-        { name: 'Legal Napkin Pack', status: 'coming_soon', note: 'For provisional meals and table arguments.' },
-        { name: 'Receipt With No Total', status: 'found', priceLabel: '$?.??' },
+        { slug: 'very-good-hat', name: 'Employee Burger Hat', status: 'removed', note: 'Removed by management before photos could be developed.', href: '/stuff/very-good-hat' },
+        { slug: 'legal-napkin-pack', name: 'Legal Napkin Pack', status: 'coming_soon', note: 'For provisional meals and table arguments.', href: '/stuff/legal-napkin-pack' },
+        { slug: 'receipt-with-no-total', name: 'Receipt With No Total', status: 'found', priceLabel: '$?.??', href: '/stuff/receipt-with-no-total' },
       ],
     },
     {
@@ -220,9 +234,9 @@ export function createFauxCompanyComponents(title: string): SleepNetComponent[] 
       type: 'collection_case',
       title: 'Object And Item Case',
       items: [
-        { slug: 'dial-tone-slip', name: 'Dial Tone Slip', kind: 'artifact', status: 'filed', sourcePath: '/artifacts' },
-        { slug: 'receipt-with-no-total', name: 'Receipt With No Total', kind: 'object', status: 'found' },
-        { slug: 'wrong-employee-badge', name: 'Wrong Employee Badge', kind: 'item', status: 'rumored' },
+        { slug: 'dial-tone-slip', name: 'Dial Tone Slip', kind: 'artifact', status: 'filed', sourcePath: '/stuff/dial-tone-slip' },
+        { slug: 'receipt-with-no-total', name: 'Receipt With No Total', kind: 'object', status: 'found', sourcePath: '/stuff/receipt-with-no-total' },
+        { slug: 'wrong-employee-badge', name: 'Wrong Employee Badge', kind: 'item', status: 'rumored', sourcePath: '/stuff/wrong-employee-badge' },
       ],
     },
     {
