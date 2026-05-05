@@ -32,6 +32,7 @@ Bathroom Wall Witness Card
 Pending Marker Receipt
 Object Evidence Card
 Issued Goods Request
+Double Shift Receipt
 ```
 
 ## Initial triggers
@@ -44,6 +45,35 @@ visit:/sign-the-wall
 submit:wall_post
 visit:/lost-found/[slug]
 visit:/rack/[slug]
+combo:double-shift
+```
+
+## Double Shift combo
+
+The first combo unlock uses local visit memory.
+
+```txt
+visit:/after-hours
+visit:/phone
+visit:/radio
+```
+
+When all three have happened in the same browser storage context, the user gets:
+
+```txt
+Double Shift Receipt
+```
+
+## Artifact feedback polish
+
+The unlock loop now includes:
+
+```txt
+- receipt-style artifact toast
+- evidence drawer count
+- live artifact drawer sync via breakroom:artifact event
+- duplicate-safe saved_artifacts lookup before insert
+- improved locked/unlocked card styling
 ```
 
 ## Persistence model
@@ -53,6 +83,7 @@ Local-first:
 ```txt
 localStorage: breakroom.secrets.v1
 localStorage: breakroom.artifacts.v1
+localStorage: breakroom.visits.v1
 ```
 
 Authenticated persistence:
@@ -73,8 +104,8 @@ Authenticated users can carry evidence between sessions when saved_artifacts wri
 ```txt
 - user_secrets table is seeded conceptually but not fully written from the client yet.
 - saved_artifacts stores artifact_slug/type/notes without a dedicated artifacts table.
-- unlocks are simple trigger matches, not a full rules engine.
-- double-shift/combo unlocks are not implemented yet.
+- unlocks are trigger matches plus one local combo, not a full rules engine.
+- toast state is client-side and intentionally ephemeral.
 ```
 
 ## Product truth
