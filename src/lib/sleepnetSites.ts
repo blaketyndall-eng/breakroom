@@ -1,3 +1,5 @@
+import type { SleepNetComponent } from '@/lib/sleepnetComponents';
+import { createFauxCompanyComponents } from '@/lib/sleepnetComponents';
 import { supabase } from '@/lib/supabaseClient';
 
 export type SleepNetSection = {
@@ -16,6 +18,17 @@ export type SleepNetSite = {
   description: string | null;
   theme: string;
   sections: SleepNetSection[];
+  components?: SleepNetComponent[];
+  related_object_slugs?: string[];
+  related_agent_slug?: string | null;
+  faction_affinity?: string[];
+  weirdness_level?: number;
+  reality_status?: string;
+  canonical_weight?: number;
+  stuff_shelf_enabled?: boolean;
+  guestbook_enabled?: boolean;
+  gallery_enabled?: boolean;
+  jukebox_enabled?: boolean;
   search_text?: string | null;
   status: 'draft' | 'published' | 'hidden';
   is_public: boolean;
@@ -87,6 +100,24 @@ export function buildSearchText(site: Pick<SleepNetSite, 'title' | 'tagline' | '
     .toLowerCase();
 }
 
+export function ensureSleepNetComponents(site: SleepNetSite): SleepNetSite {
+  if (site.components?.length) return site;
+  return {
+    ...site,
+    components: createFauxCompanyComponents(site.title),
+    related_object_slugs: site.related_object_slugs ?? ['dial-tone-slip', 'receipt-with-no-total', 'wrong-employee-badge'],
+    related_agent_slug: site.related_agent_slug ?? 'night-manager',
+    faction_affinity: site.faction_affinity ?? [],
+    weirdness_level: site.weirdness_level ?? 3,
+    reality_status: site.reality_status ?? 'indexed_noise',
+    canonical_weight: site.canonical_weight ?? 0,
+    stuff_shelf_enabled: site.stuff_shelf_enabled ?? true,
+    guestbook_enabled: site.guestbook_enabled ?? true,
+    gallery_enabled: site.gallery_enabled ?? true,
+    jukebox_enabled: site.jukebox_enabled ?? true,
+  };
+}
+
 export function generateFauxCompanyDraft(seed: string): SleepNetSite {
   const clean = seed.trim() || 'A fake company that should not have survived the night shift.';
   const title = clean
@@ -107,6 +138,17 @@ export function generateFauxCompanyDraft(seed: string): SleepNetSite {
     theme: 'two_thousand_three_local_business',
     status: 'draft',
     is_public: false,
+    related_object_slugs: ['dial-tone-slip', 'receipt-with-no-total', 'wrong-employee-badge'],
+    related_agent_slug: 'night-manager',
+    faction_affinity: [],
+    weirdness_level: 3,
+    reality_status: 'indexed_noise',
+    canonical_weight: 0,
+    stuff_shelf_enabled: true,
+    guestbook_enabled: true,
+    gallery_enabled: true,
+    jukebox_enabled: true,
+    components: createFauxCompanyComponents(title),
     sections: [
       {
         title: 'What We Claim To Do',
@@ -134,7 +176,7 @@ export function loadLocalSleepNetDraft() {
   if (typeof window === 'undefined') return null;
   try {
     const raw = window.localStorage.getItem(LOCAL_SLEEPNET_DRAFT_KEY);
-    return raw ? JSON.parse(raw) as SleepNetSite : null;
+    return raw ? ensureSleepNetComponents(JSON.parse(raw) as SleepNetSite) : null;
   } catch {
     return null;
   }
@@ -142,7 +184,7 @@ export function loadLocalSleepNetDraft() {
 
 export function saveLocalSleepNetDraft(site: SleepNetSite) {
   if (typeof window === 'undefined') return;
-  window.localStorage.setItem(LOCAL_SLEEPNET_DRAFT_KEY, JSON.stringify(site));
+  window.localStorage.setItem(LOCAL_SLEEPNET_DRAFT_KEY, JSON.stringify(ensureSleepNetComponents(site)));
 }
 
 export function clearLocalSleepNetDraft() {
@@ -155,7 +197,7 @@ function updateLocalSleepNetSiteStatus(slug: string, status: 'draft' | 'publishe
   const local = loadLocalSleepNetDraft();
   if (!local || local.slug !== normalized) return { source: 'none', reason: 'No matching local SleepNet draft found.' };
 
-  const next = { ...local, status, is_public: status === 'published' };
+  const next = ensureSleepNetComponents({ ...local, status, is_public: status === 'published' });
   saveLocalSleepNetDraft(next);
   return { source: 'local', site: next };
 }
@@ -187,15 +229,15 @@ export async function getMySleepNetSiteBySlug(slug: string) {
     .maybeSingle();
 
   if (error || !data) return local?.slug === normalized ? local : null;
-  return data as SleepNetSite;
+  return ensureSleepNetComponents(data as SleepNetSite);
 }
 
 export async function saveMySleepNetSite(site: SleepNetSite): Promise<SleepNetMutationResult> {
-  const normalized = {
+  const normalized = ensureSleepNetComponents({
     ...site,
     slug: normalizeSleepNetSlug(site.slug || site.title),
     search_text: buildSearchText(site),
-  };
+  });
 
   saveLocalSleepNetDraft(normalized);
 
@@ -217,7 +259,7 @@ export async function saveMySleepNetSite(site: SleepNetSite): Promise<SleepNetMu
     .single();
 
   if (error) throw error;
-  return { source: 'supabase', site: data as SleepNetSite };
+  return { source: 'supabase', site: ensureSleepNetComponents(data as SleepNetSite) };
 }
 
 export async function getMySleepNetSites() {
@@ -236,7 +278,7 @@ export async function getMySleepNetSites() {
     .order('updated_at', { ascending: false });
 
   if (error || !data?.length) return local ? [local] : [];
-  return data as SleepNetSite[];
+  return (data as SleepNetSite[]).map(ensureSleepNetComponents);
 }
 
 export async function updateMySleepNetSiteStatus(slug: string, status: 'draft' | 'published' | 'hidden'): Promise<SleepNetMutationResult> {
@@ -257,7 +299,7 @@ export async function updateMySleepNetSiteStatus(slug: string, status: 'draft' |
     .single();
 
   if (error) throw error;
-  return { source: 'supabase', site: data as SleepNetSite };
+  return { source: 'supabase', site: ensureSleepNetComponents(data as SleepNetSite) };
 }
 
 export async function removeMySleepNetSite(slug: string): Promise<SleepNetMutationResult> {
@@ -303,7 +345,7 @@ export async function searchSleepNetSites(query = '') {
 
   const { data, error } = await request;
   if (error || !data?.length) return [] as SleepNetSite[];
-  return data as SleepNetSite[];
+  return (data as SleepNetSite[]).map(ensureSleepNetComponents);
 }
 
 export async function getSleepNetSiteBySlug(slug: string) {
@@ -323,5 +365,5 @@ export async function getSleepNetSiteBySlug(slug: string) {
     .maybeSingle();
 
   if (error || !data) return null;
-  return data as SleepNetSite;
+  return ensureSleepNetComponents(data as SleepNetSite);
 }

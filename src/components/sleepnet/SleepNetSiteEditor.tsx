@@ -13,6 +13,7 @@ import {
   saveMySleepNetSite,
 } from '@/lib/sleepnetSites';
 import type { SleepNetSection, SleepNetSite } from '@/lib/sleepnetSites';
+import { createFauxCompanyComponents } from '@/lib/sleepnetComponents';
 
 function sectionText(sections: SleepNetSection[]) {
   return sections.map((section) => `${section.title}\n${section.body}`).join('\n\n---\n\n');
@@ -68,7 +69,12 @@ export default function SleepNetSiteEditor() {
     const next = generateFauxCompanyDraft(seed);
     setSite(next);
     setSections(sectionText(next.sections));
-    setStatus('Draft generated. Edit before putting it on the wire.');
+    setStatus('Draft generated with sections and page components. Edit before putting it on the wire.');
+  }
+
+  function regenerateComponents() {
+    setSite((current) => ({ ...current, components: createFauxCompanyComponents(current.title) }));
+    setStatus('Generated fresh page components: gallery, collection case, jukebox, warnings, ads, shelf, counter, and guestbook.');
   }
 
   async function save(status: 'draft' | 'published') {
@@ -142,6 +148,21 @@ export default function SleepNetSiteEditor() {
         <label>Sections / separate with ---
           <textarea value={sections} onChange={(event) => setSections(event.target.value)} />
         </label>
+
+        <section className="sleepnet-component-preview">
+          <div className="regular-public-strip">
+            <span>Generated Page Components / {site.components?.length ?? 0}</span>
+            <button type="button" className="old-button" onClick={regenerateComponents}>Regenerate Components</button>
+          </div>
+          <div className="sleepnet-component-preview-grid">
+            {(site.components ?? []).map((component) => (
+              <div className="component-preview-chip" key={component.id}>
+                <span>{component.type.replaceAll('_', ' ')}</span>
+                <small>{component.id}</small>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <div className="regular-public-strip">
           <span>SleepNet URL: {makeSleepNetProtocolUrl(site.slug)}</span>

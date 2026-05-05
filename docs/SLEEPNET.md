@@ -53,16 +53,19 @@ neighborhood
 
 ```txt
 src/lib/sleepnetSites.ts
+src/lib/sleepnetComponents.ts
 src/components/sleepnet/SleepNetDirectory.tsx
 src/components/sleepnet/SleepNetSiteEditor.tsx
 src/components/sleepnet/SleepNetOwnerDashboard.tsx
 src/components/sleepnet/SleepNetSiteView.astro
+src/components/sleepnet/SleepNetComponentRenderer.astro
 src/pages/sleepnet/index.astro
 src/pages/sleepnet/create.astro
 src/pages/sleepnet/[slug].astro
 src/pages/back-office.astro
 src/styles/sleepnet.css
 supabase/migrations/0011_sleepnet_sites.sql
+supabase/migrations/0012_sleepnet_components.sql
 ```
 
 ## Table
@@ -83,6 +86,17 @@ tagline
 description
 theme
 sections
+components
+related_object_slugs
+related_agent_slug
+faction_affinity
+weirdness_level
+reality_status
+canonical_weight
+stuff_shelf_enabled
+guestbook_enabled
+gallery_enabled
+jukebox_enabled
 search_text
 status
 is_public
@@ -119,6 +133,44 @@ is_public
 - Public SleepNet search only indexes Supabase-backed published public pages.
 ```
 
+## Component registry
+
+SleepNet pages can now carry modular old-web/world components.
+
+```txt
+guestbook
+fake_ad
+stuff_shelf
+object_file
+character_comment
+warning_notice
+classified_block
+visitor_counter
+weather_widget
+rivalry_notice
+photo_gallery
+collection_case
+jukebox
+```
+
+The component registry is the first version of the page-object system. It lets SleepNet pages feel like small rooms instead of generated text pages.
+
+## Gallery, collection, and jukebox shell
+
+```txt
+photo_gallery = lightweight evidence/contact-sheet module
+collection_case = artifacts, objects, items, photos, and unknown things filed together
+jukebox = MySpace/bar-jukebox style track card with future provider integration
+```
+
+Current music behavior:
+
+```txt
+- Spotify embeds render only when a valid Spotify embed URL is present.
+- Apple Music, YouTube, and external tracks render as link/static cards for now.
+- No OAuth, MusicKit, playlist syncing, or user music tokens are implemented yet.
+```
+
 ## Polish pass
 
 The polish layer adds:
@@ -151,6 +203,20 @@ This is the best first SleepNet template because it naturally fits:
 - user-generated world expansion
 ```
 
+Faux Company drafts currently generate starter components:
+
+```txt
+warning notice
+fake ad
+stuff shelf
+photo gallery
+collection case
+jukebox
+guestbook
+character comment
+visitor counter
+```
+
 ## Current limitations
 
 ```txt
@@ -158,7 +224,10 @@ This is the best first SleepNet template because it naturally fits:
 - Search is simple search_text matching
 - Local drafts are visible only in the same browser
 - Edit-existing uses a query param, not a dedicated edit route yet
-- No guestbook persistence yet
+- No real guestbook persistence yet
+- No real photo upload/storage yet
+- No Spotify OAuth or Apple Music MusicKit auth yet
+- Component editing is preview/regenerate only
 - Only Faux Company is implemented
 ```
 

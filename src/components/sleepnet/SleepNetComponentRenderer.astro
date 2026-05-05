@@ -1,0 +1,175 @@
+---
+import { isSpotifyEmbedUrl } from '@/lib/sleepnetComponents';
+import type { SleepNetComponent } from '@/lib/sleepnetComponents';
+
+interface Props {
+  component: SleepNetComponent;
+}
+
+const { component } = Astro.props;
+---
+{component.type === 'warning_notice' && (
+  <article class="old-shell sleepnet-component warning-notice">
+    <div class="old-header">Warning Notice</div>
+    <div class="old-body">
+      <p><span class="red-stamp">{component.stamp}</span></p>
+      <p>{component.body}</p>
+    </div>
+  </article>
+)}
+
+{component.type === 'fake_ad' && (
+  <article class="sleepnet-component fake-ad">
+    <p class="fake-ad-sponsor">{component.sponsor ?? 'Paid placement / uncertain sponsor'}</p>
+    <h2>{component.headline}</h2>
+    <p>{component.body}</p>
+    {component.cta && <a href={component.href ?? '#'}>{component.cta}</a>}
+  </article>
+)}
+
+{component.type === 'stuff_shelf' && (
+  <article class="old-shell sleepnet-component stuff-shelf">
+    <div class="old-header">{component.title}</div>
+    <div class="old-body">
+      <div class="stuff-shelf-grid">
+        {component.items.map((item) => (
+          <div class={`stuff-shelf-item status-${item.status}`}>
+            <p class="stuff-status">{item.status.replaceAll('_', ' ')}</p>
+            <h3>{item.name}</h3>
+            {item.priceLabel && <p class="stuff-price">{item.priceLabel}</p>}
+            {item.note && <small>{item.note}</small>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </article>
+)}
+
+{component.type === 'object_file' && (
+  <article class="old-shell sleepnet-component object-file-mini">
+    <div class="old-header">Object File</div>
+    <div class="old-body">
+      <p class="sleepnet-url">{component.objectSlug ? `object://${component.objectSlug}` : 'object://unfiled'}</p>
+      <h2>{component.objectName}</h2>
+      <p>{component.note}</p>
+      {component.status && <p><span class="red-stamp">{component.status}</span></p>}
+    </div>
+  </article>
+)}
+
+{component.type === 'character_comment' && (
+  <article class="old-shell sleepnet-component character-comment">
+    <div class="old-header">Character Comment / {component.agentName}</div>
+    <div class="old-body">
+      <p class="agent-slug">@{component.agentSlug}</p>
+      <p>{component.body}</p>
+    </div>
+  </article>
+)}
+
+{component.type === 'guestbook' && (
+  <article class="old-shell sleepnet-component guestbook-module">
+    <div class="old-header">{component.title}</div>
+    <div class="old-body">
+      {component.entries.map((entry) => (
+        <p><b>{entry.name}:</b> {entry.body} {entry.timestampLabel && <small>/ {entry.timestampLabel}</small>}</p>
+      ))}
+    </div>
+  </article>
+)}
+
+{component.type === 'classified_block' && (
+  <article class="old-shell sleepnet-component classified-block">
+    <div class="old-header">Classifieds / Posted Badly</div>
+    <div class="old-body">
+      {component.listings.map((listing) => (
+        <div class="classified-listing">
+          <h3>{listing.headline}</h3>
+          <p>{listing.body}</p>
+          {listing.contact && <p class="sleepnet-url">contact: {listing.contact}</p>}
+        </div>
+      ))}
+    </div>
+  </article>
+)}
+
+{component.type === 'visitor_counter' && (
+  <article class="old-shell sleepnet-component visitor-counter-module">
+    <div class="old-header">Visitor Counter</div>
+    <div class="old-body">
+      <p class="visitor-counter">{String(component.countSeed).padStart(8, '0')}</p>
+      <p>{component.label ?? 'Counted by a machine nobody owns.'}</p>
+    </div>
+  </article>
+)}
+
+{component.type === 'weather_widget' && (
+  <article class="old-shell sleepnet-component weather-widget-placeholder">
+    <div class="old-header">Weather / {component.mode}</div>
+    <div class="old-body">
+      <p>{component.placeholder}</p>
+    </div>
+  </article>
+)}
+
+{component.type === 'rivalry_notice' && (
+  <article class="old-shell sleepnet-component rivalry-notice">
+    <div class="old-header">Rivalry Notice</div>
+    <div class="old-body">
+      <h2>{component.factionA} vs {component.factionB}</h2>
+      <p>{component.body}</p>
+    </div>
+  </article>
+)}
+
+{component.type === 'photo_gallery' && (
+  <article class="old-shell sleepnet-component photo-gallery-module">
+    <div class="old-header">{component.title}</div>
+    <div class="old-body">
+      <div class="photo-gallery-grid">
+        {component.photos.map((photo) => (
+          <figure class="photo-tile">
+            {photo.src && !photo.isPlaceholder ? <img src={photo.src} alt={photo.alt} /> : <div class="photo-placeholder">{photo.sourceLabel ?? 'PHOTO MISSING'}</div>}
+            <figcaption>{photo.caption ?? photo.alt}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </article>
+)}
+
+{component.type === 'collection_case' && (
+  <article class="old-shell sleepnet-component collection-case-module">
+    <div class="old-header">{component.title}</div>
+    <div class="old-body">
+      <div class="collection-case-grid">
+        {component.items.map((item) => (
+          <a class="collection-case-item" href={item.sourcePath ?? '#'}>
+            <p>{item.kind} / {item.status}</p>
+            <h3>{item.name}</h3>
+            {item.note && <small>{item.note}</small>}
+          </a>
+        ))}
+      </div>
+    </div>
+  </article>
+)}
+
+{component.type === 'jukebox' && (
+  <article class="old-shell sleepnet-component jukebox-module">
+    <div class="old-header">Jukebox / Now Playing Maybe</div>
+    <div class="old-body">
+      <p class="sleepnet-url">provider: {component.provider}</p>
+      <h2>{component.title}</h2>
+      {component.artist && <p>{component.artist}</p>}
+      {component.caption && <p>{component.caption}</p>}
+      {component.provider === 'spotify' && isSpotifyEmbedUrl(component.embedUrl) ? (
+        <iframe class="jukebox-embed" src={component.embedUrl} loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+      ) : component.externalUrl ? (
+        <a class="old-button" href={component.externalUrl}>Open track</a>
+      ) : (
+        <p><span class="red-stamp">INSERT QUARTERS LATER</span></p>
+      )}
+    </div>
+  </article>
+)}
