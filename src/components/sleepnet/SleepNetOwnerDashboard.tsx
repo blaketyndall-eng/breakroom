@@ -16,15 +16,17 @@ function statusLabel(site: SleepNetSite) {
   return 'PRIVATE DRAFT';
 }
 
-function mutationMessage(result: SleepNetMutationResult, slug: string, action: 'published' | 'hidden' | 'removed') {
+function mutationMessage(result: SleepNetMutationResult, slug: string, action: 'draft' | 'published' | 'hidden' | 'removed') {
   const url = makeSleepNetProtocolUrl(slug);
   if (result.source === 'local') {
     if (action === 'removed') return `Removed local SleepNet draft ${url}.`;
+    if (action === 'draft') return `Saved locally as draft. ${url} is only visible in this browser.`;
     return `${action === 'published' ? 'Published' : 'Hidden'} locally. ${url} is only visible in this browser.`;
   }
   if (result.source === 'supabase') {
     if (action === 'removed') return `Removed ${url} from the wire.`;
     if (action === 'hidden') return `Hidden ${url} from public SleepNet search.`;
+    if (action === 'draft') return `Moved ${url} back to draft.`;
     return `Published ${url} to SleepNet.`;
   }
   return result.reason;
