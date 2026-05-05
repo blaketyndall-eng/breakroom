@@ -4,6 +4,7 @@
 @import './breakroom.css';
 @import './auth.css';
 @import './artifacts.css';
+@import './regulars.css';
 @import './claude-design.css';
 
 :root {
