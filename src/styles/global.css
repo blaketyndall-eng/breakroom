@@ -13,6 +13,7 @@
 @import './sleepnet-relationships.css';
 @import './faction-drift.css';
 @import './turf-join.css';
+@import './agent-comments.css';
 @import './claude-design.css';
 
 :root {

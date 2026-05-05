@@ -1,0 +1,71 @@
+.agent-comment-block {
+  border: 1px dashed #5a513f;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.8rem;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.02) 0 1px, transparent 1px 6px),
+    #f0ebe0;
+}
+
+.agent-comment-block__header {
+  margin: 0 0 0.5rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a7f6a;
+}
+
+.agent-comment-block__entry {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: baseline;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(90,81,63,.1);
+}
+
+.agent-comment-block__entry:last-child {
+  border-bottom: none;
+}
+
+.agent-comment-block__name {
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: #4a3f2a;
+  white-space: nowrap;
+}
+
+.agent-comment-block__body {
+  color: #2a2518;
+  flex: 1;
+  min-width: 60%;
+}
+
+.agent-comment-block__tone {
+  font-size: 0.6rem;
+  color: #8a7f6a;
+  font-style: italic;
+}
+
+/* Agent-specific color hints */
+.agent-comment-block__entry.agent-pool-table-oracle .agent-comment-block__name {
+  color: #2d5a3d;
+}
+
+.agent-comment-block__entry.agent-night-manager .agent-comment-block__name {
+  color: #5a3d2d;
+}
+
+.agent-comment-block__entry.agent-phone-behind-the-bar .agent-comment-block__name {
+  color: #3d2d5a;
+}
+
+.agent-comment-block__entry.agent-seven-eleven-clerk .agent-comment-block__name {
+  color: #5a5a2d;
+}
+
+.agent-comment-block__entry.agent-weather-voice .agent-comment-block__name {
+  color: #2d4a5a;
+}

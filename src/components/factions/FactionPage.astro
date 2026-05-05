@@ -1,6 +1,7 @@
 ---
 import { factionStatusLabel } from '@/lib/factions';
 import TurfJoinRitual from '@/components/factions/TurfJoinRitual.tsx';
+import AgentCommentBlock from '@/components/agents/AgentCommentBlock.tsx';
 import type { BreakroomFaction } from '@/content/data/factions';
 
 interface Props {
@@ -77,6 +78,14 @@ const { faction } = Astro.props;
       </div>
     </article>
   </div>
+
+  <AgentCommentBlock
+    client:idle
+    targetType="faction"
+    targetSlug={faction.slug}
+    trigger="page_visit"
+    context={{ factionSlug: faction.slug }}
+  />
 
   {faction.status === 'active' && (
     <TurfJoinRitual client:load factionSlug={faction.slug} factionName={faction.name} />

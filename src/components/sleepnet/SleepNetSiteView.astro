@@ -3,6 +3,7 @@ import FakeAdStrip from '@/components/ads/FakeAdStrip.astro';
 import MoreLikeThis from '@/components/sleepnet/MoreLikeThis.astro';
 import SleepNetComponentRenderer from '@/components/sleepnet/SleepNetComponentRenderer.astro';
 import SleepNetGuestbook from '@/components/sleepnet/SleepNetGuestbook';
+import AgentCommentBlock from '@/components/agents/AgentCommentBlock.tsx';
 import { seededGuestbookEntry } from '@/lib/sleepnetGuestbooks';
 import type { SleepNetSite } from '@/lib/sleepnetSites';
 
@@ -56,6 +57,14 @@ const seededEntries = guestbookComponent?.type === 'guestbook'
       {site.components.filter((component) => component.type !== 'guestbook').map((component) => <SleepNetComponentRenderer component={component} siteSlug={site.slug} />)}
     </section>
   ) : null}
+
+  <AgentCommentBlock
+    client:idle
+    targetType="sleepnet_site"
+    targetSlug={site.slug}
+    trigger="page_visit"
+    context={{ siteType: site.site_type, factionSlug: site.faction_affinity?.[0] }}
+  />
 
   <MoreLikeThis site={site} />
 

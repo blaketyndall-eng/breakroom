@@ -8,6 +8,7 @@ import {
 } from '@/lib/sleepnetGuestbooks';
 import type { SleepNetGuestbookEntry, SleepNetGuestbookMode } from '@/lib/sleepnetGuestbooks';
 import { recordFactionSignal } from '@/lib/factionDrift';
+import { generateAgentGuestbookEntry } from '@/lib/agentComments';
 
 type Props = {
   siteSlug: string;
@@ -75,6 +76,19 @@ export default function SleepNetGuestbook({ siteSlug, siteType, seededEntries = 
       setMessage('');
       setStatus(result.source === 'supabase' ? 'Filed publicly.' : 'Filed locally. This browser remembers it.');
       await refresh();
+
+      // Agent reply — 40% chance, delayed so it feels reactive
+      if (Math.random() < 0.4) {
+        setTimeout(async () => {
+          const agentEntry = generateAgentGuestbookEntry(siteSlug, { factionSlug });
+          if (agentEntry) {
+            try {
+              await addGuestbookEntry({ ...agentEntry, pageType: siteType });
+              await refresh();
+            } catch { /* agent reply is best-effort */ }
+          }
+        }, 1500 + Math.random() * 2000);
+      }
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Guestbook pen broke.');
     } finally {
