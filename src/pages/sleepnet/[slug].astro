@@ -1,0 +1,16 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import SleepNetSiteView from '@/components/sleepnet/SleepNetSiteView.astro';
+import { generateFauxCompanyDraft, getSleepNetSiteBySlug, normalizeSleepNetSlug } from '@/lib/sleepnetSites';
+
+export const prerender = false;
+
+const slug = normalizeSleepNetSlug(Astro.params.slug ?? 'still-open-company');
+const site = await getSleepNetSiteBySlug(slug);
+const previewSite = site ?? generateFauxCompanyDraft(slug.replaceAll('-', ' '));
+---
+<OldWebLayout title={`${previewSite.title} / SleepNet URL`} section="sleepnet">
+  <div class="status-strip"><span>sleepnet url</span><span>sleepnet://{previewSite.slug}</span><span>{site ? 'indexed public page' : 'preview / no indexed page'}</span><span><a href="/sleepnet">search SleepNet</a></span></div>
+  {!site && <p class="memo-box">No public SleepNet URL was found for sleepnet://{slug}. Showing a generated preview so the directory does not look empty.</p>}
+  <SleepNetSiteView site={previewSite} />
+</OldWebLayout>
