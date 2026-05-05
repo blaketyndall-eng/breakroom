@@ -1,3 +1,4 @@
+import { getSeedSleepNetSiteBySlug, searchSeedSleepNetSites } from '@/content/data/seedSleepNetSites';
 import type { SleepNetComponent } from '@/lib/sleepnetComponents';
 import { createFauxCompanyComponents } from '@/lib/sleepnetComponents';
 import { generateSleepNetDraft } from '@/lib/sleepnetGenerators';
@@ -274,12 +275,12 @@ export async function removeMySleepNetSite(slug: string): Promise<SleepNetMutati
 
 export async function searchSleepNetSites(query = '') {
   const normalizedQuery = query.trim().toLowerCase();
+  const seedResults = searchSeedSleepNetSites(normalizedQuery).map(ensureSleepNetComponents);
 
   if (!supabase) {
     const local = loadLocalSleepNetDraft();
-    if (!local) return [] as SleepNetSite[];
-    if (!normalizedQuery) return [local];
-    return buildSearchText(local).includes(normalizedQuery) ? [local] : [];
+    const localResults = local && (!normalizedQuery || buildSearchText(local).includes(normalizedQuery)) ? [local] : [];
+    return [...seedResults, ...localResults];
   }
 
   let request = supabase
@@ -295,12 +296,17 @@ export async function searchSleepNetSites(query = '') {
   }
 
   const { data, error } = await request;
-  if (error || !data?.length) return [] as SleepNetSite[];
-  return (data as SleepNetSite[]).map(ensureSleepNetComponents);
+  if (error || !data?.length) return seedResults;
+  const remoteResults = (data as SleepNetSite[])
+    .filter((site) => !seedResults.some((seed) => seed.slug === site.slug))
+    .map(ensureSleepNetComponents);
+  return [...seedResults, ...remoteResults];
 }
 
 export async function getSleepNetSiteBySlug(slug: string) {
   const normalized = normalizeSleepNetSlug(slug);
+  const seedSite = getSeedSleepNetSiteBySlug(normalized);
+  if (seedSite) return ensureSleepNetComponents(seedSite);
 
   if (!supabase) {
     const local = loadLocalSleepNetDraft();

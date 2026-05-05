@@ -31,9 +31,19 @@ In-world URL: sleepnet://[slug]
 
 The SleepNet homepage is searchable and indexes public published SleepNet pages by title, tagline, description, site type, and neighborhood.
 
+## Canonical seeded pages
+
+```txt
+sleepnet://very-good-burger
+/sleepnet/very-good-burger
+```
+
+Very Good Burger is the first canonical SleepNet world page. It is a fake restaurant, OmniShift-adjacent venture, recurring brand object, future merch seed, and proof-of-concept for the restaurant template, Stuff shelf, collection case, agent comments, and searchable seeded pages.
+
 ## Files
 
 ```txt
+src/content/data/seedSleepNetSites.ts
 src/lib/sleepnetSites.ts
 src/lib/sleepnetComponents.ts
 src/lib/sleepnetGenerators.ts
@@ -92,7 +102,8 @@ is_public
 - Unsigned users can save a local draft
 - Signed-in users can save/publish to Supabase
 - Published public pages render at /sleepnet/[slug]
-- Published public pages appear in /sleepnet search
+- Seeded canonical pages render at /sleepnet/[slug]
+- Published and seeded public pages appear in /sleepnet search
 - Search shows normal links and in-world sleepnet:// URLs
 ```
 
@@ -113,7 +124,7 @@ is_public
 - If Supabase is configured but the user is signed out, Back Office actions still update local drafts.
 - Local publish/hide/remove messages must say local-only and browser-only.
 - Supabase publish/hide/remove messages may say on the wire, public search, or removed from the wire.
-- Public SleepNet search only indexes Supabase-backed published public pages.
+- Public SleepNet search indexes seeded pages plus Supabase-backed published public pages.
 ```
 
 ## Component registry
@@ -157,6 +168,18 @@ Let SleepNet Guess
 
 Each site type generates distinct sections, component tone, neighborhoods, related objects, and agent hooks.
 
+## Fake restaurant presets
+
+```txt
+Very Good Burger
+Still Open Burger
+Legal Chicken
+Napkin Pizza
+Approved Taco
+```
+
+Very Good Burger has a canonical public seeded page. The rest are generator inspiration for future fake restaurants.
+
 ## Site type purposes
 
 ```txt
@@ -195,7 +218,7 @@ Current music behavior:
 - No real photo upload/storage yet
 - No Spotify OAuth or Apple Music MusicKit auth yet
 - Component editing is preview/regenerate only
-- Faction data is not fully seeded yet
+- Seeded pages are code-first, not CMS-managed yet
 ```
 
 ## Product truth

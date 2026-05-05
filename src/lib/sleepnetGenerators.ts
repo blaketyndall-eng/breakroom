@@ -1,4 +1,5 @@
 import { replaceOrAppendAgentComment } from '@/lib/agents';
+import { VERY_GOOD_BURGER_SITE } from '@/content/data/seedSleepNetSites';
 import { createFauxCompanyComponents } from '@/lib/sleepnetComponents';
 import type { SleepNetComponent } from '@/lib/sleepnetComponents';
 import type { SleepNetSection, SleepNetSite } from '@/lib/sleepnetSites';
@@ -30,6 +31,14 @@ export const SLEEPNET_SITE_TYPE_LABELS: Record<SleepNetSiteType | 'auto', string
   object_archive: 'Object Archive',
 };
 
+export const FAKE_RESTAURANT_PRESETS = [
+  'Very Good Burger',
+  'Still Open Burger',
+  'Legal Chicken',
+  'Napkin Pizza',
+  'Approved Taco',
+] as const;
+
 function normalizeGeneratorSlug(value: string) {
   return value
     .toLowerCase()
@@ -54,7 +63,7 @@ function titleFromPrompt(prompt: string, fallback: string) {
     .join(' ') || fallback;
 }
 
-function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: string; tagline: string; neighborhood: string; sections: SleepNetSection[]; components: SleepNetComponent[]; relatedObjects?: string[]; relatedAgent?: string; factionAffinity?: string[]; }): SleepNetSite {
+function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: string; tagline: string; neighborhood: string; sections: SleepNetSection[]; components: SleepNetComponent[]; relatedObjects?: string[]; relatedAgent?: string; factionAffinity?: string[]; canonicalWeight?: number; realityStatus?: string; }): SleepNetSite {
   const description = input.prompt.trim() || input.tagline;
   const site: SleepNetSite = {
     slug: normalizeGeneratorSlug(input.title),
@@ -70,8 +79,8 @@ function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: st
     related_agent_slug: input.relatedAgent ?? 'directory-clerk',
     faction_affinity: input.factionAffinity ?? (input.siteType === 'faction_turf' ? ['the-players'] : []),
     weirdness_level: 3,
-    reality_status: 'indexed_noise',
-    canonical_weight: 0,
+    reality_status: input.realityStatus ?? 'indexed_noise',
+    canonical_weight: input.canonicalWeight ?? 0,
     stuff_shelf_enabled: true,
     guestbook_enabled: true,
     gallery_enabled: true,
@@ -91,6 +100,17 @@ function cloneComponentsFor(title: string, overrides: Partial<{ notice: string; 
     if (component.type === 'jukebox' && overrides.jukeboxTitle) return { ...component, title: overrides.jukeboxTitle };
     return component;
   });
+}
+
+function cloneVeryGoodBurgerAsDraft(prompt: string) {
+  const description = prompt.trim() || VERY_GOOD_BURGER_SITE.description || VERY_GOOD_BURGER_SITE.tagline || '';
+  return {
+    ...VERY_GOOD_BURGER_SITE,
+    description,
+    status: 'draft' as const,
+    is_public: false,
+    search_text: buildGeneratorSearchText({ ...VERY_GOOD_BURGER_SITE, description }),
+  };
 }
 
 export function generateFauxCompanyDraft(prompt: string) {
@@ -174,6 +194,8 @@ export function generateFactionTurfDraft(prompt: string) {
 
 export function generateFakeRestaurantDraft(prompt: string) {
   const title = titleFromPrompt(prompt, 'Very Good Burger');
+  if (title.toLowerCase().includes('very good burger')) return cloneVeryGoodBurgerAsDraft(prompt);
+
   return baseSite({
     prompt,
     siteType: 'fake_restaurant',
@@ -184,7 +206,7 @@ export function generateFakeRestaurantDraft(prompt: string) {
     relatedAgent: 'seven-eleven-clerk',
     components: cloneComponentsFor(title, { shelfTitle: 'Menu Objects And Denied Merch', adHeadline: 'COUPON PRINTED BADLY' }),
     sections: [
-      { title: 'Menu', body: 'Very Good Burger. Good Burger No. 2. Night Burger. Legal Fries. Cup of Sauce. Receipt Shake. Employee Water.' },
+      { title: 'Menu', body: `${title}. Good Burger No. 2. Night Burger. Legal Fries. Cup of Sauce. Receipt Shake. Employee Water.` },
       { title: 'Hours', body: 'Open until the grill forgets. Closed when management remembers us.' },
       { title: 'Coupons', body: 'Bring this page to the counter. The counter will deny knowing you.' },
       { title: 'Why The Burger Is Good', body: 'The available systems agreed. No further details were provided.' },
