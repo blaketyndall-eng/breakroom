@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   getMySleepNetSites,
+  labelSleepNetValue,
   makeSleepNetProtocolUrl,
   makeSleepNetUrl,
   removeMySleepNetSite,
@@ -12,6 +13,7 @@ export default function SleepNetOwnerDashboard() {
   const [sites, setSites] = useState<SleepNetSite[]>([]);
   const [status, setStatus] = useState('Opening Back Office...');
   const [busySlug, setBusySlug] = useState<string | null>(null);
+  const [filter, setFilter] = useState<'all' | 'draft' | 'published' | 'hidden'>('all');
 
   async function loadSites() {
     const results = await getMySleepNetSites();
@@ -22,6 +24,17 @@ export default function SleepNetOwnerDashboard() {
   useEffect(() => {
     loadSites().catch(() => setStatus('Back Office could not open the SleepNet drawer.'));
   }, []);
+
+  const counts = useMemo(() => ({
+    all: sites.length,
+    draft: sites.filter((site) => site.status === 'draft').length,
+    published: sites.filter((site) => site.status === 'published').length,
+    hidden: sites.filter((site) => site.status === 'hidden').length,
+  }), [sites]);
+
+  const visibleSites = useMemo(() => (
+    filter === 'all' ? sites : sites.filter((site) => site.status === filter)
+  ), [filter, sites]);
 
   async function setSiteStatus(slug: string, nextStatus: 'draft' | 'published' | 'hidden') {
     setBusySlug(slug);
@@ -54,10 +67,17 @@ export default function SleepNetOwnerDashboard() {
       <div className="old-header">Back Office / SleepNet Pages / Owner Drawer</div>
       <div className="old-body">
         <p className="memo-box">{status}</p>
-        <p><a className="old-button" href="/sleepnet/create">Create New SleepNet Page</a></p>
+        <div className="sleepnet-owner-toolbar">
+          <a className="old-button" href="/sleepnet/create">Create New SleepNet Page</a>
+          {(['all', 'draft', 'published', 'hidden'] as const).map((item) => (
+            <button key={item} className={filter === item ? 'old-button sleepnet-filter active' : 'old-button sleepnet-filter'} type="button" onClick={() => setFilter(item)}>
+              {item} / {counts[item]}
+            </button>
+          ))}
+        </div>
         <div className="sleepnet-owner-list">
-          {sites.map((site) => (
-            <article className="sleepnet-owner-card" key={site.slug}>
+          {visibleSites.map((site) => (
+            <article className={`sleepnet-owner-card status-${site.status}`} key={site.slug}>
               <p className="sleepnet-url">{makeSleepNetProtocolUrl(site.slug)}</p>
               <h2>{site.title}</h2>
               <p>{site.tagline}</p>
@@ -65,14 +85,14 @@ export default function SleepNetOwnerDashboard() {
               <div className="sleepnet-meta">
                 <span>{site.status}</span>
                 <span>{site.is_public ? 'public' : 'private'}</span>
-                <span>{site.neighborhood.replaceAll('_', ' ')}</span>
+                <span>{labelSleepNetValue(site.neighborhood)}</span>
               </div>
               <div className="sleepnet-owner-actions">
                 <a className="old-button" href={makeSleepNetUrl(site.slug)}>View</a>
-                <a className="old-button" href={`/sleepnet/create?slug=${site.slug}`}>Edit Copy</a>
-                <button className="old-button" disabled={busySlug === site.slug} onClick={() => setSiteStatus(site.slug, 'published')}>Publish</button>
-                <button className="old-button" disabled={busySlug === site.slug} onClick={() => setSiteStatus(site.slug, 'hidden')}>Hide</button>
-                <button className="old-button" disabled={busySlug === site.slug} onClick={() => removeSite(site.slug)}>Remove</button>
+                <a className="old-button" href={`/sleepnet/create?slug=${site.slug}`}>Edit</a>
+                <button className="old-button" disabled={busySlug === site.slug || site.status === 'published'} onClick={() => setSiteStatus(site.slug, 'published')}>Publish</button>
+                <button className="old-button" disabled={busySlug === site.slug || site.status === 'hidden'} onClick={() => setSiteStatus(site.slug, 'hidden')}>Hide</button>
+                <button className="old-button danger" disabled={busySlug === site.slug} onClick={() => removeSite(site.slug)}>Remove</button>
               </div>
             </article>
           ))}
