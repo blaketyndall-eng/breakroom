@@ -49,6 +49,11 @@ export type AddGuestbookEntryInput = {
 export const LOCAL_GUESTBOOK_KEY = 'breakroom.sleepnet-guestbooks.v1';
 export const GUESTBOOK_EVENT = 'breakroom:sleepnet-guestbook-updated';
 
+// Rate limiting: max entries per site per window
+const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
+const RATE_LIMIT_KEY = 'breakroom.guestbook-rate-limits.v1';
+
 function normalizeSlug(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48);
 }
@@ -71,6 +76,75 @@ function writeLocalMap(map: Record<string, SleepNetGuestbookEntry[]>) {
   if (typeof window === 'undefined') return;
   window.localStorage.setItem(LOCAL_GUESTBOOK_KEY, JSON.stringify(map));
   window.dispatchEvent(new CustomEvent(GUESTBOOK_EVENT, { detail: { map } }));
+}
+
+// --- Rate limiting ---
+
+function readRateLimits(): Record<string, number[]> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = window.localStorage.getItem(RATE_LIMIT_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeRateLimits(map: Record<string, number[]>) {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(map));
+}
+
+function checkRateLimit(siteSlug: string): boolean {
+  const map = readRateLimits();
+  const timestamps = (map[siteSlug] ?? []).filter((ts) => Date.now() - ts < RATE_LIMIT_WINDOW_MS);
+  return timestamps.length < RATE_LIMIT_MAX;
+}
+
+function recordRateLimit(siteSlug: string) {
+  const map = readRateLimits();
+  const timestamps = (map[siteSlug] ?? []).filter((ts) => Date.now() - ts < RATE_LIMIT_WINDOW_MS);
+  timestamps.push(Date.now());
+  map[siteSlug] = timestamps;
+  writeRateLimits(map);
+}
+
+// --- Sync local entries to Supabase on auth ---
+
+/**
+ * Migrate local guestbook entries to Supabase after authentication.
+ * Should be called from AuthCallback after successful login.
+ */
+export async function syncGuestbookEntriesToSupabase(): Promise<number> {
+  if (!supabase) return 0;
+  const { data: userData } = await supabase.auth.getUser();
+  if (!userData?.user) return 0;
+
+  const map = readLocalMap();
+  let synced = 0;
+
+  for (const [slug, entries] of Object.entries(map)) {
+    const localOnly = entries.filter((e) => e.metadata?.source === 'local' && e.status === 'local');
+    for (const entry of localOnly) {
+      const { error } = await supabase.from('sleepnet_guestbook_entries').insert({
+        site_slug: slug,
+        user_id: userData.user.id,
+        alias: entry.alias,
+        message: entry.message,
+        actor_type: entry.actorType === 'anonymous_user' ? 'user' : entry.actorType,
+        status: 'approved',
+        metadata: { ...entry.metadata, source: 'synced_from_local', originalId: entry.id },
+      });
+      if (!error) {
+        entry.status = 'approved';
+        entry.metadata.source = 'supabase';
+        synced++;
+      }
+    }
+  }
+
+  if (synced > 0) writeLocalMap(map);
+  return synced;
 }
 
 export function getGuestbookModeForSiteType(siteType: string): SleepNetGuestbookMode {
@@ -170,6 +244,14 @@ export async function addGuestbookEntry(input: AddGuestbookEntryInput): Promise<
   const alias = input.alias.trim().slice(0, 32) || 'Anonymous';
   const message = input.message.trim().slice(0, 420);
   if (!message) throw new Error('Guestbook mark cannot be blank.');
+
+  // Rate limit for non-agent entries
+  if (input.actorType !== 'agent' && !checkRateLimit(normalized)) {
+    throw new Error('The pen is cooling down. Wait a few minutes.');
+  }
+  if (input.actorType !== 'agent') {
+    recordRateLimit(normalized);
+  }
 
   if (supabase) {
     const { data: userData } = await supabase.auth.getUser();
