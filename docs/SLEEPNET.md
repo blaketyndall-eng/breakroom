@@ -109,6 +109,16 @@ is_public
 - Falls back to the local draft when unsigned or Supabase is unavailable
 ```
 
+## Local fallback trust rules
+
+```txt
+- If Supabase is unavailable, Back Office actions update local drafts.
+- If Supabase is configured but the user is signed out, Back Office actions still update local drafts.
+- Local publish/hide/remove messages must say local-only and browser-only.
+- Supabase publish/hide/remove messages may say on the wire, public search, or removed from the wire.
+- Public SleepNet search only indexes Supabase-backed published public pages.
+```
+
 ## Polish pass
 
 The polish layer adds:
@@ -120,6 +130,9 @@ The polish layer adds:
 - clearer status cards for published and hidden pages
 - neighborhood labels instead of raw enum text
 - safer owned-page lookup before editing
+- local fallback mutation fixes for unsigned users
+- clearer local-only / on-the-wire status messaging
+- Regular File share widget hydration
 ```
 
 ## First site type
