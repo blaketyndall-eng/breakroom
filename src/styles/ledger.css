@@ -333,6 +333,260 @@
   color: #1f5d3a;
 }
 
+/* --- V2: Density banner --- */
+
+.ledger-density-label {
+  font-size: 0.65rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #888;
+  font-style: italic;
+}
+
+.ledger-density-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px dashed #d8c9a6;
+  background:
+    repeating-linear-gradient(45deg, rgba(20,17,14,.01) 0 4px, transparent 4px 8px),
+    #f6f3ec;
+}
+
+.ledger-density-text {
+  font-size: 0.75rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-style: italic;
+  color: #5a513f;
+}
+
+.ledger-density-count {
+  font-size: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+}
+
+/* --- V2: Tag cloud --- */
+
+.ledger-tag-cloud {
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px dotted #d8c9a6;
+}
+
+.ledger-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ledger-tag {
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border: 1px solid #d8c9a6;
+  color: #5a513f;
+  background: transparent;
+}
+
+.ledger-tag-sm {
+  font-size: 0.5rem;
+  padding: 1px 4px;
+}
+
+.ledger-tag-count {
+  color: #888;
+  margin-left: 2px;
+}
+
+/* --- V2: Day grouping (public + timeline) --- */
+
+.ledger-day-group {
+  margin-bottom: 1rem;
+}
+
+.ledger-day-divider {
+  padding: 0.4rem 0;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #d8c9a6;
+}
+
+.ledger-day-label {
+  font-size: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+}
+
+.ledger-entry-tags-inline {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.ledger-load-more {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* --- V2: Timeline day buckets --- */
+
+.ledger-day-bucket {
+  margin-bottom: 1.5rem;
+}
+
+.ledger-day-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #d8c9a6;
+}
+
+.ledger-day-count {
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #888;
+}
+
+.ledger-density-bar {
+  flex: 1;
+  height: 4px;
+  background: #ebe3d3;
+  min-width: 40px;
+}
+
+.ledger-density-fill {
+  height: 100%;
+  background: #5a513f;
+  transition: width 0.3s ease;
+}
+
+/* --- V2: District activity --- */
+
+.ledger-district-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.ledger-district-card {
+  border: 1px solid #14110e;
+  padding: 0.5rem 0.6rem;
+  background: #f6f3ec;
+}
+
+.ledger-district-name {
+  font-size: 0.75rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #14110e;
+  margin-bottom: 4px;
+}
+
+.ledger-district-count {
+  font-size: 0.65rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #5a513f;
+}
+
+.ledger-district-last {
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #888;
+  margin-top: 2px;
+}
+
+.ledger-district-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 6px;
+}
+
+.ledger-district-type {
+  font-size: 0.5rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 4px;
+  border: 1px solid #d8c9a6;
+  color: #5a513f;
+}
+
+/* --- V2: Entry expansion --- */
+
+.ledger-entry-clickable {
+  cursor: pointer;
+}
+
+.ledger-entry-clickable:hover {
+  background: rgba(20, 17, 14, 0.02);
+}
+
+.ledger-entry-expanded {
+  border-color: #5a513f;
+}
+
+.ledger-entry-expansion {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dotted #d8c9a6;
+}
+
+.ledger-entry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.ledger-entry-metadata {
+  margin-bottom: 0.5rem;
+}
+
+.ledger-metadata-pre {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.6rem;
+  padding: 0.3rem 0.5rem;
+  background: rgba(20, 17, 14, 0.03);
+  border: 1px dotted #d8c9a6;
+  overflow-x: auto;
+  margin: 0.3rem 0 0;
+  white-space: pre-wrap;
+}
+
+.ledger-correlated {
+  margin-top: 0.5rem;
+}
+
+.ledger-correlated-entry {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 0.25rem 0;
+  border-bottom: 1px dotted #ebe3d3;
+}
+
+.ledger-correlated-entry:last-child {
+  border-bottom: none;
+}
+
+.ledger-correlated-headline {
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 0.75rem;
+  flex: 1;
+  color: #555;
+}
+
 /* --- Public ledger --- */
 
 .public-ledger {
