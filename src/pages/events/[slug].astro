@@ -1,0 +1,167 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import EventSignSheet from '@/components/events/EventSignSheet';
+import AgentCommentBlock from '@/components/agents/AgentCommentBlock.tsx';
+import { BREAKROOM_EVENTS, getEventBySlug, EVENT_TYPE_LABELS, EVENT_STATUS_LABELS, getStatusClass } from '@/lib/events';
+
+export function getStaticPaths() {
+  return BREAKROOM_EVENTS.map((event) => ({
+    params: { slug: event.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const event = getEventBySlug(slug!);
+
+if (!event) {
+  return Astro.redirect('/events');
+}
+---
+<OldWebLayout title={event.title} section="events">
+  <div class="status-strip"><span>event</span><span>{EVENT_TYPE_LABELS[event.type]}</span><span>{EVENT_STATUS_LABELS[event.status]}</span></div>
+  <section class={`old-shell event-detail ${getStatusClass(event.status)}`}>
+    <div class="old-header">{event.title}</div>
+    <div class="old-body">
+      <div class="event-detail-meta">
+        <span class="event-type-badge">{EVENT_TYPE_LABELS[event.type]}</span>
+        <span class="event-status-badge">{EVENT_STATUS_LABELS[event.status]}</span>
+        {event.weatherTag && <span class="event-weather-tag">{event.weatherTag.replaceAll('_', ' ')}</span>}
+      </div>
+
+      <div class="event-detail-info">
+        <p class="event-date-line"><strong>When:</strong> {event.dateLabel}</p>
+        <p class="event-location-line"><strong>Where:</strong> {event.locationLabel}</p>
+      </div>
+
+      <div class="event-description">
+        <p>{event.description}</p>
+      </div>
+
+      {event.relatedFactionSlugs?.length ? (
+        <div class="event-related">
+          <h3>Related Turf</h3>
+          <div class="event-related-links">
+            {event.relatedFactionSlugs.map((fSlug) => (
+              <a href={`/factions/${fSlug}`} class="old-button">{fSlug.replaceAll('-', ' ')}</a>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {event.relatedStuffSlugs?.length ? (
+        <div class="event-related">
+          <h3>Related Stuff</h3>
+          <div class="event-related-links">
+            {event.relatedStuffSlugs.map((sSlug) => (
+              <a href={`/stuff/${sSlug}`} class="old-button">{sSlug.replaceAll('-', ' ')}</a>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {event.archiveCopy && (
+        <div class="event-archive">
+          <h3>Archive</h3>
+          <blockquote class="archive-copy">{event.archiveCopy}</blockquote>
+        </div>
+      )}
+
+      <div class="event-recap-placeholder">
+        <p class="recap-note">Personal recap: not filed yet.</p>
+      </div>
+
+      {event.signSheetEnabled && (
+        <EventSignSheet client:load eventSlug={event.slug} />
+      )}
+
+      {!event.signSheetEnabled && (
+        <p class="sign-sheet-closed">Sign sheet closed. The event did not ask for witnesses.</p>
+      )}
+
+      <AgentCommentBlock
+        client:idle
+        targetType="event"
+        targetSlug={event.slug}
+        trigger="page_visit"
+        context={{ eventType: event.type, factionSlug: event.relatedFactionSlugs?.[0] }}
+      />
+    </div>
+  </section>
+
+  <p class="back-link"><a href="/events">← back to events</a></p>
+</OldWebLayout>
+
+<style>
+  .event-detail-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .event-detail-info {
+    margin-bottom: 1.25rem;
+  }
+  .event-detail-info p {
+    margin: 0.25rem 0;
+    font-size: 0.85rem;
+  }
+  .event-description {
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  .event-related {
+    margin-bottom: 1.25rem;
+  }
+  .event-related h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #5a513f;
+    margin-bottom: 0.5rem;
+    font-family: var(--type-mono, 'Courier New', monospace);
+  }
+  .event-related-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .event-archive {
+    margin-bottom: 1.5rem;
+    border-top: 1px solid #14110e;
+    padding-top: 1rem;
+  }
+  .event-archive h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #5a513f;
+    margin-bottom: 0.5rem;
+    font-family: var(--type-mono, 'Courier New', monospace);
+  }
+  .archive-copy {
+    border-left: 3px solid #b00020;
+    padding-left: 1rem;
+    font-style: italic;
+    color: #333;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .event-recap-placeholder {
+    margin-bottom: 1.5rem;
+  }
+  .recap-note {
+    font-size: 0.75rem;
+    color: #888;
+    font-family: var(--type-mono, 'Courier New', monospace);
+    font-style: italic;
+  }
+  .sign-sheet-closed {
+    font-size: 0.8rem;
+    color: #888;
+    font-style: italic;
+  }
+  .back-link {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+  }
+</style>

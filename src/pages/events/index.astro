@@ -1,0 +1,50 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import EventCard from '@/components/events/EventCard.astro';
+import { getEventsGrouped } from '@/lib/events';
+
+const groups = getEventsGrouped();
+---
+<OldWebLayout title="Events" section="events">
+  <div class="status-strip"><span>events</span><span>sign sheet</span><span>possible things</span></div>
+  <section class="old-shell">
+    <div class="old-header">Events / Sign Sheet / Possible Things</div>
+    <div class="old-body">
+      <p class="memo-box">
+        Pool tournaments, lot races, grand openings that are also closings, classified meetups, and things that may or may not be happening. Sign the sheet if you want the room to know you were there.
+      </p>
+
+      {groups.map((group) => (
+        <div class="event-group">
+          <h2 class="event-group-label">{group.label}</h2>
+          <div class="event-group-list">
+            {group.events.map((event) => (
+              <EventCard event={event} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</OldWebLayout>
+
+<style>
+  .event-group {
+    margin-bottom: 2rem;
+  }
+  .event-group-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #5a513f;
+    border-bottom: 1px solid #14110e;
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.75rem;
+    font-family: var(--type-mono, 'Courier New', monospace);
+  }
+  .event-group-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+</style>
