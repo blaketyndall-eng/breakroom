@@ -1,0 +1,96 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import AgentCommentBlock from '@/components/agents/AgentCommentBlock.tsx';
+import { SEEDED_DISTRICTS, getDistrictBySlug, getAdjacentDistricts } from '@/lib/districts';
+
+export function getStaticPaths() {
+  return SEEDED_DISTRICTS.filter((d) => d.status !== 'staff_only').map((district) => ({
+    params: { slug: district.slug },
+    props: { district },
+  }));
+}
+
+const { district } = Astro.props;
+const adjacent = getAdjacentDistricts(district.slug);
+---
+<OldWebLayout title={district.name} section="districts">
+  <div class="status-strip"><span>district</span><span>{district.status.replaceAll('_', ' ')}</span><span>danger: {district.dangerLevel}/3</span></div>
+  <section class={`old-shell district-detail district-status-${district.status}`}>
+    <div class="old-header">{district.name}</div>
+    <div class="old-body">
+      <div class="district-detail-meta">
+        <span class="district-status-badge">{district.status.replaceAll('_', ' ')}</span>
+        {district.dangerLevel >= 2 && <span class="district-danger-badge">restricted access</span>}
+        {district.weather && <span class="district-weather-badge">{district.weather}</span>}
+      </div>
+
+      <blockquote class="district-tagline-block">{district.tagline}</blockquote>
+
+      <div class="district-description">
+        <p>{district.description}</p>
+      </div>
+
+      <div class="district-atmosphere">
+        <span class="district-section-label">ATMOSPHERE</span>
+        <p>{district.atmosphere}</p>
+      </div>
+
+      {district.factionPresence.length > 0 && (
+        <div class="district-factions">
+          <span class="district-section-label">FACTION PRESENCE</span>
+          <div class="district-faction-list">
+            {district.factionPresence.map((slug) => (
+              <a href={`/factions/${slug}`} class="district-faction-link">{slug.replaceAll('-', ' ')}</a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {district.agentPresence.length > 0 && (
+        <div class="district-agents">
+          <span class="district-section-label">SEEN AROUND</span>
+          <div class="district-agent-list">
+            {district.agentPresence.map((agent) => (
+              <span class="district-agent-tag">{agent.replaceAll('-', ' ')}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {district.stuffHints.length > 0 && (
+        <div class="district-stuff">
+          <span class="district-section-label">STUFF IN THE AREA</span>
+          <div class="district-stuff-list">
+            {district.stuffHints.map((item) => (
+              <a href={`/stuff/${item}`} class="district-stuff-link">{item.replaceAll('-', ' ')}</a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {adjacent.length > 0 && (
+        <div class="district-adjacent">
+          <span class="district-section-label">ADJACENT DISTRICTS</span>
+          <div class="district-adjacent-list">
+            {adjacent.map((adj) => (
+              <a href={`/districts/${adj.slug}`} class="district-adjacent-link">
+                <span class="district-adjacent-name">{adj.name}</span>
+                <span class="district-adjacent-tagline">{adj.tagline}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <AgentCommentBlock
+        client:idle
+        targetType="district"
+        targetSlug={district.slug}
+        trigger="page_visit"
+        context={{ district: district.sleepnetNeighborhood }}
+      />
+    </div>
+  </section>
+
+  <p class="back-link"><a href="/districts">&larr; back to district directory</a></p>
+</OldWebLayout>

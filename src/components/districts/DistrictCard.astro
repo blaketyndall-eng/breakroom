@@ -1,0 +1,25 @@
+---
+import type { District } from '@/lib/districts';
+
+type Props = { district: District };
+const { district } = Astro.props;
+
+const statusClass = `district-status-${district.status}`;
+const dangerClass = district.dangerLevel >= 2 ? 'district-danger-high' : '';
+---
+<div class={`district-card ${statusClass} ${dangerClass}`}>
+  <div class="district-card-meta">
+    <span class="district-status-badge">{district.status.replaceAll('_', ' ')}</span>
+    {district.dangerLevel >= 2 && <span class="district-danger-badge">restricted access</span>}
+  </div>
+  <h3 class="district-card-name">
+    <a href={`/districts/${district.slug}`}>{district.name}</a>
+  </h3>
+  <p class="district-card-tagline">{district.tagline}</p>
+  <div class="district-card-footer">
+    {district.factionPresence.length > 0 && (
+      <span>turf: {district.factionPresence.map(f => f.replaceAll('-', ' ')).join(', ')}</span>
+    )}
+    {district.weather && <span>{district.weather}</span>}
+  </div>
+</div>
