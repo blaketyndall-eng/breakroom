@@ -1,0 +1,54 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import CrewRoster from '@/components/crews/CrewRoster';
+import AgentCommentBlock from '@/components/agents/AgentCommentBlock.tsx';
+import { SEEDED_CREWS } from '@/lib/crews';
+
+export function getStaticPaths() {
+  return SEEDED_CREWS.map((crew) => ({
+    params: { slug: crew.slug },
+    props: { crew },
+  }));
+}
+
+const { crew } = Astro.props;
+---
+<OldWebLayout title={crew.name} section="crews">
+  <div class="status-strip"><span>crew</span><span>{crew.visibility.replaceAll('_', ' ')}</span><span>{crew.isOfficial ? 'recognized' : 'not official turf'}</span></div>
+  <section class={`old-shell crew-detail ${crew.isOfficial ? 'crew-official' : 'crew-unofficial'}`}>
+    <div class="old-header">{crew.name}</div>
+    <div class="old-body">
+      <div class="crew-detail-meta">
+        {!crew.isOfficial && <span class="crew-unofficial-badge">NOT OFFICIAL TURF</span>}
+        {crew.isOfficial && <span class="crew-official-badge">RECOGNIZED BY MANAGEMENT</span>}
+        <span class="crew-visibility-badge">{crew.visibility.replaceAll('_', ' ')}</span>
+      </div>
+
+      <blockquote class="crew-tagline-block">{crew.tagline}</blockquote>
+
+      <div class="crew-detail-info">
+        <p><strong>Founded by:</strong> <a href={`/regulars/${crew.foundedBy}`}>@{crew.foundedBy}</a></p>
+        {crew.district && <p><strong>District:</strong> {crew.district.replaceAll('_', ' ')}</p>}
+        {crew.factionAlignment && <p><strong>Faction alignment:</strong> <a href={`/factions/${crew.factionAlignment}`}>{crew.factionAlignment.replaceAll('-', ' ')}</a></p>}
+      </div>
+
+      {crew.tags.length > 0 && (
+        <div class="crew-tags">
+          {crew.tags.map((tag) => <span class="crew-tag">{tag}</span>)}
+        </div>
+      )}
+
+      <CrewRoster client:load crewSlug={crew.slug} />
+
+      <AgentCommentBlock
+        client:idle
+        targetType="crew"
+        targetSlug={crew.slug}
+        trigger="page_visit"
+        context={{ district: crew.district }}
+      />
+    </div>
+  </section>
+
+  <p class="back-link"><a href="/crews">&larr; back to crews</a></p>
+</OldWebLayout>
