@@ -406,7 +406,7 @@
 }
 
 /* Field Prompt, Make One Thing, and Share Card styles
-   are in PocketV1Styles.astro (bypasses Tailwind v4 tree-shaking) */
+   are in PocketV1Styles.astro (split for Tailwind v4 compatibility) */
 
 /* Prevent browser pull-to-refresh competing */
 [data-section="pocket"] {
