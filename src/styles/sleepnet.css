@@ -877,3 +877,169 @@
     flex-wrap: nowrap;
   }
 }
+
+
+/* ============================================
+   Search V2 — PR 67
+   Crew + Ledger cards, Search History, More Like This
+   ============================================ */
+
+/* --- Crew result card --- */
+
+.sv2-card-crew {
+  border-left: 5px solid #6b4c2a;
+}
+
+.sv2-badge-crew {
+  border-color: #6b4c2a;
+  color: #6b4c2a;
+}
+
+/* --- Ledger entry result card --- */
+
+.sv2-card-ledger_entry {
+  border-left: 5px solid #5a513f;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.02) 0 1px, transparent 1px 4px),
+    #f6f3ec;
+}
+
+.sv2-badge-ledger_entry {
+  border-color: #5a513f;
+  color: #5a513f;
+}
+
+/* --- Search history --- */
+
+.sv2-history {
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border: 1px dashed #ccc;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.015) 0 1px, transparent 1px 4px),
+    #faf8f4;
+}
+
+.sv2-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.sv2-history-label {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+}
+
+.sv2-history-clear {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 9px;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.sv2-history-clear:hover {
+  color: #b00020;
+}
+
+.sv2-history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.sv2-history-item {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 11px;
+  padding: 3px 8px;
+  border: 1px solid #14110e;
+  background: #f6f3ec;
+  cursor: pointer;
+  color: #14110e;
+  box-shadow: 1px 1px 0 rgba(20,17,14,.15);
+}
+
+.sv2-history-item:hover {
+  background: #efe7d3;
+  box-shadow: 2px 2px 0 rgba(20,17,14,.2);
+}
+
+.sv2-history-query {
+  color: #14110e;
+}
+
+.sv2-history-count {
+  font-size: 9px;
+  color: #999;
+}
+
+/* --- More Like This, Unfortunately --- */
+
+.mlt-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mlt-item {
+  padding: 0.4rem 0;
+  border-bottom: 1px dotted var(--color-border, #444);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.mlt-item:last-child {
+  border-bottom: none;
+}
+
+.mlt-link {
+  color: var(--color-link, #0000ee);
+  text-decoration: none;
+  font-family: var(--type-paper, Georgia, serif);
+}
+
+.mlt-link:hover {
+  text-decoration: underline;
+}
+
+.mlt-no-href {
+  color: #5a513f;
+  font-style: italic;
+  cursor: default;
+}
+
+.mlt-note {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  color: var(--color-muted, #888);
+}
+
+.mlt-source-ledger .mlt-link {
+  color: #5a513f;
+}
+
+.mlt-source-crew .mlt-link {
+  color: #6b4c2a;
+}
+
+.mlt-source-history .mlt-link {
+  color: #999;
+}
+
+.mlt-empty {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  color: #888;
+  font-style: italic;
+}
