@@ -1,0 +1,29 @@
+---
+import type { Crew } from '@/lib/crews';
+
+interface Props {
+  crew: Crew;
+}
+
+const { crew } = Astro.props;
+---
+<article class={`crew-card ${crew.isOfficial ? 'crew-official' : 'crew-unofficial'}`}>
+  <div class="crew-card-meta">
+    <span class="crew-visibility-badge">{crew.visibility === 'invite_only' ? 'INVITE ONLY' : crew.visibility.toUpperCase()}</span>
+    {!crew.isOfficial && <span class="crew-unofficial-badge">NOT OFFICIAL TURF</span>}
+    {crew.isOfficial && <span class="crew-official-badge">RECOGNIZED</span>}
+  </div>
+  <h2 class="crew-card-name">
+    <a href={`/crews/${crew.slug}`}>{crew.name}</a>
+  </h2>
+  <p class="crew-card-tagline">{crew.tagline}</p>
+  <div class="crew-card-footer">
+    <span class="crew-member-count">{crew.memberCount} {crew.memberCount === 1 ? 'member' : 'members'}</span>
+    {crew.district && <span class="crew-district">{crew.district.replaceAll('_', ' ')}</span>}
+  </div>
+  {crew.tags.length > 0 && (
+    <div class="crew-tags">
+      {crew.tags.map((tag) => <span class="crew-tag">{tag}</span>)}
+    </div>
+  )}
+</article>

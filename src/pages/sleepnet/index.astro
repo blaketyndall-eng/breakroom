@@ -1,14 +1,106 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
-import SleepNetDirectory from '@/components/sleepnet/SleepNetDirectory';
+import SleepNetSearchV2 from '@/components/sleepnet/SleepNetSearchV2';
+import LotWeatherWidget from '@/components/sleepnet/LotWeatherWidget';
+import SiteOfTheNight from '@/components/sleepnet/SiteOfTheNight';
+import RecentlyIndexed from '@/components/sleepnet/RecentlyIndexed';
+import DirectoryCategories from '@/components/sleepnet/DirectoryCategories';
+import RadioStatusWidget from '@/components/sleepnet/RadioStatusWidget';
 import FakeAdStrip from '@/components/ads/FakeAdStrip.astro';
+import { getPortalData } from '@/lib/sleepnetPortal';
+
+const portalData = await getPortalData();
 ---
 <OldWebLayout title="SleepNet" section="sleepnet">
-  <div class="status-strip"><span>sleepnet</span><span>search bad pages</span><span>old web portal</span><span>sleepnet:// URLs</span></div>
-  <h1>SleepNet</h1>
-  <p class="tagline-block">The hidden internet under the internet. Search fake companies, strange pages, public files, food court ventures, object archives, and whatever the directory failed to remove.</p>
+  <div class="status-strip"><span>sleepnet</span><span>after-hours portal</span><span>old web directory</span><span>clock reads 1:47</span></div>
 
-  <FakeAdStrip limit={4} label="Printer-Friendly Sponsors / Do Not Trust" />
+  <div class="sleepnet-portal-header">
+    <h1>SleepNet</h1>
+    <p class="tagline-block">The after-hours internet. Search fake companies, strange pages, classified boards, object archives, and whatever the directory failed to remove.</p>
+  </div>
 
-  <SleepNetDirectory client:load />
+  <!-- Search V2 — multi-source, tabbed, personalized -->
+  <SleepNetSearchV2 client:load />
+
+  <FakeAdStrip limit={3} label="Printer-Friendly Sponsors / Do Not Trust" />
+
+  <!-- Portal widget grid — mix of static (SSR) and interactive (client:idle) -->
+  <div class="sleepnet-portal-grid">
+    <div class="portal-col portal-col-main">
+      <SiteOfTheNight site={portalData.siteOfTheNight} />
+      <RecentlyIndexed sites={portalData.recentlyIndexed} />
+      <DirectoryCategories categories={portalData.directoryCategories} />
+    </div>
+    <div class="portal-col portal-col-side">
+      <LotWeatherWidget client:idle />
+      <RadioStatusWidget />
+      <section class="old-shell portal-links-widget">
+        <div class="old-header">More Like This, Unfortunately</div>
+        <div class="old-body">
+          <ul class="portal-links-list">
+            <li><a href="/sleepnet/create">Create A Page</a> — make something that should not have a website</li>
+            <li><a href="/lost-found">Lost & Found</a> — object archive, evidence locker</li>
+            <li><a href="/newsstand">3AM Edition</a> — headlines filed after hours</li>
+            <li><a href="/idle-hands">Idle Hands Invitational</a> — tournament of unclear status</li>
+            <li><a href="/ventures">OmniShift Ventures</a> — AI investments nobody asked for</li>
+            <li><a href="/radio">Radio 1:47</a> — broadcast layer, mostly static</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <FakeAdStrip limit={2} label="Bottom Sponsors / Possibly Expired" />
+
+  <footer class="sleepnet-portal-footer">
+    <p>SleepNet is an OmniShift property. Acquired during a meeting nobody remembers. All pages indexed without consent. Some pages are missing on purpose.</p>
+    <p>Visitor count: <span class="visitor-counter">00{Math.floor(Math.random() * 900 + 100)}</span></p>
+  </footer>
 </OldWebLayout>
+
+<style>
+  .sleepnet-portal-header {
+    margin-bottom: 1.5rem;
+  }
+  .sleepnet-portal-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  @media (max-width: 860px) {
+    .sleepnet-portal-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .portal-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .portal-links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .portal-links-list li {
+    padding: 0.4rem 0;
+    border-bottom: 1px dotted var(--color-border, #444);
+  }
+  .portal-links-list li:last-child {
+    border-bottom: none;
+  }
+  .sleepnet-portal-footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border, #444);
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+  .visitor-counter {
+    font-family: var(--type-mono, monospace);
+    background: var(--color-surface, #1a1a1a);
+    padding: 0.1em 0.4em;
+    border: 1px inset;
+  }
+</style>

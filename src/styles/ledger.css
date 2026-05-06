@@ -1,0 +1,350 @@
+/* World Ledger — PR 58 */
+
+/* --- Dashboard --- */
+
+.ledger-dashboard {
+  padding: 0.5rem 0;
+}
+
+.ledger-dashboard-header {
+  margin-bottom: 1rem;
+}
+
+.ledger-dashboard-title {
+  font-size: 0.7rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+}
+
+/* --- Tabs --- */
+
+.ledger-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #14110e;
+  margin-bottom: 1rem;
+}
+
+.ledger-tab {
+  font-size: 0.65rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #5a513f;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+
+.ledger-tab:hover {
+  color: #14110e;
+}
+
+.ledger-tab-active {
+  color: #14110e;
+  border-bottom-color: #14110e;
+}
+
+/* --- Panel --- */
+
+.ledger-panel {
+  padding: 0.5rem 0;
+}
+
+.ledger-section-label {
+  display: block;
+  font-size: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+  margin-bottom: 0.75rem;
+}
+
+.ledger-filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.ledger-filter-select {
+  font-size: 0.65rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #14110e;
+  background: #f6f3ec;
+}
+
+.ledger-empty {
+  font-size: 0.75rem;
+  color: #888;
+  font-style: italic;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+/* --- Stats --- */
+
+.ledger-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.ledger-stat {
+  border: 1px solid #14110e;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.ledger-stat-value {
+  display: block;
+  font-size: 1.4rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-weight: bold;
+  color: #14110e;
+}
+
+.ledger-stat-value.ledger-stat-alert {
+  color: #b00020;
+}
+
+.ledger-stat-label {
+  display: block;
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5a513f;
+  margin-top: 0.2rem;
+}
+
+/* --- Type breakdown --- */
+
+.ledger-type-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ledger-type-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px dotted #d8c9a6;
+  font-size: 0.7rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.ledger-type-name {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #5a513f;
+}
+
+.ledger-type-count {
+  font-weight: bold;
+  color: #14110e;
+}
+
+/* --- Feed entries --- */
+
+.ledger-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ledger-entry {
+  border: 1px solid #14110e;
+  padding: 0.6rem 0.75rem;
+  background: #f6f3ec;
+}
+
+.ledger-entry.ledger-vis-redacted {
+  border-style: dashed;
+  opacity: 0.75;
+  background:
+    repeating-linear-gradient(45deg, rgba(20,17,14,.02) 0 4px, transparent 4px 8px),
+    #f6f3ec;
+}
+
+.ledger-entry.ledger-vis-admin_only {
+  border-left: 3px solid #b00020;
+  background: rgba(176, 0, 32, 0.02);
+}
+
+.ledger-entry-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.ledger-entry-type {
+  font-size: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+}
+
+.ledger-entry-time {
+  font-size: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #888;
+}
+
+.ledger-entry-headline {
+  margin: 0 0 4px;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.ledger-entry-detail {
+  margin: 0 0 4px;
+  font-family: var(--type-typer, 'Courier New', monospace);
+  font-size: 0.75rem;
+  color: #555;
+}
+
+.ledger-entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ledger-entry-meta span {
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+}
+
+.ledger-entry-district {
+  font-size: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5a513f;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+.ledger-vis-badge {
+  padding: 1px 4px;
+  border: 1px solid;
+  font-size: 0.5rem !important;
+}
+
+.ledger-vis-badge.ledger-vis-public {
+  border-color: #1f5d3a;
+  color: #1f5d3a !important;
+}
+
+.ledger-vis-badge.ledger-vis-redacted {
+  border-color: #8b6914;
+  color: #8b6914 !important;
+}
+
+.ledger-vis-badge.ledger-vis-admin_only {
+  border-color: #b00020;
+  color: #b00020 !important;
+}
+
+/* --- Continuity issues --- */
+
+.ledger-issues {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ledger-issue {
+  border: 1px solid #14110e;
+  padding: 0.6rem 0.75rem;
+}
+
+.ledger-issue-high {
+  border-left: 4px solid #b00020;
+}
+
+.ledger-issue-medium {
+  border-left: 4px solid #8b6914;
+}
+
+.ledger-issue-low {
+  border-left: 4px solid #5a513f;
+}
+
+.ledger-issue-topline {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.ledger-severity {
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 1px 5px;
+  border: 1px solid;
+}
+
+.ledger-severity-high { border-color: #b00020; color: #b00020; }
+.ledger-severity-medium { border-color: #8b6914; color: #8b6914; }
+.ledger-severity-low { border-color: #5a513f; color: #5a513f; }
+
+.ledger-issue-type {
+  font-size: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  color: #888;
+}
+
+.ledger-issue-title {
+  margin: 0 0 4px;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 0.85rem;
+}
+
+.ledger-issue-detail {
+  margin: 0 0 4px;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+.ledger-issue-suggestion {
+  margin: 0;
+  font-size: 0.7rem;
+  font-style: italic;
+  color: #1f5d3a;
+}
+
+/* --- Public ledger --- */
+
+.public-ledger {
+  padding: 0.5rem 0;
+}
+
+.ledger-public-footer {
+  font-size: 0.7rem;
+  color: #888;
+  font-style: italic;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  margin-top: 1.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px dotted #5a513f;
+}

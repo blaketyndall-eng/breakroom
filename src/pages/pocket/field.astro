@@ -1,0 +1,40 @@
+---
+/**
+ * /pocket/field — dedicated field prompt page.
+ * Shows today's prompt in a full-page context.
+ * Also accessible inline via the bump zone on /pocket.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PocketSignalBar from '@/components/pocket/PocketSignalBar';
+import PocketFieldPrompt from '@/components/pocket/PocketFieldPrompt';
+---
+<BaseLayout title="Field Report — The Breakroom" section="pocket" description="Daily observation requested. One line. That's all.">
+  <PocketSignalBar client:load />
+
+  <div class="pocket-field-page">
+    <PocketFieldPrompt client:load />
+
+    <div class="pocket-field-page-footer">
+      <a href="/pocket">← Back to Pocket</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .pocket-field-page {
+    min-height: 60vh;
+    min-height: 60dvh;
+  }
+  .pocket-field-page-footer {
+    padding: 24px 20px;
+    font-family: var(--pocket-mono);
+    font-size: 12px;
+  }
+  .pocket-field-page-footer a {
+    color: var(--pocket-dim);
+    text-decoration: none;
+  }
+  .pocket-field-page-footer a:hover {
+    color: var(--pocket-accent);
+  }
+</style>

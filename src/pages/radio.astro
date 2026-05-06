@@ -1,6 +1,9 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import RadioPlayer from '@/components/radio/RadioPlayer';
+import RadioNowPlaying from '@/components/radio/RadioNowPlaying';
+import RadioLogWidget from '@/components/radio/RadioLogWidget';
+import RadioRequestForm from '@/components/radio/RadioRequestForm';
 import TableBox from '@/components/oldweb/TableBox.astro';
 import LinkMaze from '@/components/oldweb/LinkMaze.astro';
 import SecretTrigger from '@/components/breakroom/SecretTrigger';
@@ -15,30 +18,32 @@ const radioLogs = await getPublicRadioLogs();
   <p class="tagline-block">Channel 1:47. Broadcasting from somewhere behind the bar. Music, station IDs, lot weather, fake ads, and messages that probably came through the phone first.</p>
   {radioLogs.error && <p class="memo-box">Public radio fallback active: {radioLogs.error}</p>}
 
+  <!-- Now Playing + Stream -->
+  <RadioNowPlaying client:load />
   <RadioPlayer client:load />
 
   <section class="grid-2" style="margin-top:16px;">
-    <TableBox title="Transmission log / recently aired">
-      {radioLogs.items.map((log, index) => (
-        <article class="memo-box" style="margin-bottom:12px;">
-          <p style="font-family:var(--type-mono);font-size:11px;text-transform:uppercase;">TAPE {String(index + 1).padStart(2, '0')} / {log.airedAt}</p>
-          <h2>{log.title}</h2>
-          <p>{log.body}</p>
-        </article>
-      ))}
-    </TableBox>
+    <!-- Transmission Log V2 — full radio feed with types -->
+    <div>
+      <RadioLogWidget client:idle limit={15} />
+    </div>
 
-    <TableBox title="Schedule">
-      <table class="table-box">
-        <tbody>
-          <tr><th>Time</th><th>Show</th><th>Host</th></tr>
-          <tr><td>1:47</td><td>Lot Weather</td><td>The Driver</td></tr>
-          <tr><td>2:13</td><td>Phone Behind The Bar</td><td>Room Admin</td></tr>
-          <tr><td>3:00</td><td>OmniShift Compliance Hour</td><td>System Voice</td></tr>
-          <tr><td>4:11</td><td>Back Booth Mix</td><td>Coffee</td></tr>
-        </tbody>
-      </table>
-    </TableBox>
+    <div>
+      <TableBox title="Schedule">
+        <table class="table-box">
+          <tbody>
+            <tr><th>Time</th><th>Show</th><th>Host</th></tr>
+            <tr><td>1:47</td><td>Lot Weather</td><td>The Driver</td></tr>
+            <tr><td>2:13</td><td>Phone Behind The Bar</td><td>Room Admin</td></tr>
+            <tr><td>3:00</td><td>OmniShift Compliance Hour</td><td>System Voice</td></tr>
+            <tr><td>4:11</td><td>Back Booth Mix</td><td>Coffee</td></tr>
+          </tbody>
+        </table>
+      </TableBox>
+
+      <!-- Request form -->
+      <RadioRequestForm client:idle />
+    </div>
   </section>
 
   <LinkMaze title="Radio switchboard" notice="The station does not take requests. It takes evidence and calls it programming." links={[

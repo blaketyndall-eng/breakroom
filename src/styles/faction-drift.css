@@ -70,3 +70,17 @@
   letter-spacing: .08em;
   text-transform: uppercase;
 }
+
+.faction-drift-ready {
+  color: #7a5a20;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .06em;
+}
+
+.faction-drift-joined {
+  color: #4a7a5a;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .06em;
+}

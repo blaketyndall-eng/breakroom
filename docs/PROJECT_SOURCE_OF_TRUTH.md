@@ -2,18 +2,29 @@
 
 This document is the single source of truth for the public V1 build.
 
+## North Star
+
+The Breakroom is the creative internet hiding underneath the controlled one.
+
+It gives users a place to build worlds, identities, pages, products, crews, factions, stories, objects, events, and strange little artifacts outside the standard templates, platform rules, corporate gloss, algorithmic sameness, and sterile brand systems that flatten everything online.
+
+Users are not just posting into a world. They are making the world.
+
+The user should feel: "I can make something here that would not belong anywhere else. I can build a world instead of just posting into one. I can turn a joke, object, brand, crew, story, or style into a place people can enter."
+
 ## Stack
 
 - Astro + React islands + TypeScript + Tailwind
 - Cloudflare Pages for hosting/deployment
 - Supabase for Auth, Postgres, user profiles, saved objects, tournament registrations, radio metadata, wall posts, secrets/unlocks
 - GitHub as repo and review workflow
+- Local-first localStorage with seeded data patterns
 
 ## Build Principle
 
-We are not building a normal brand site. We are building a fake after-hours internet where a user can search, sign up, get assigned a fake corporate identity, clock out, enter the real room underneath, collect objects, read fake news, hear radio transmissions, register for a pool tournament that may or may not exist, and slowly become part of the world.
+We are not building a normal brand site. We are building a fake after-hours internet where a user can search, create weird pages, build identities, collect objects, join factions, form crews, and slowly become part of a world they shape.
 
-The experience should feel like a late-night dystopian Google, fake AI corporate intranet, 2003 online store, old pool tournament page, underground newspaper, dive bar lost-and-found drawer, and secret society archive.
+The experience should feel like part website builder, part fake internet, part worldbuilding engine, part zine machine, part social object, part after-hours marketplace, and part shared hallucination with rules.
 
 ## World Layers
 

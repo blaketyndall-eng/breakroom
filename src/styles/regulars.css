@@ -260,3 +260,291 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* --- Top 8 / Seen Around (PR 53) --- */
+
+.top-eight-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.top-eight-slot {
+  position: relative;
+  border: 1px solid #14110e;
+  background: #efe7d3;
+  padding: 6px 8px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.top-eight-slot.top-eight-empty {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+.top-eight-link {
+  text-decoration: none;
+  color: #14110e;
+}
+
+.top-eight-link:hover .top-eight-name {
+  text-decoration: underline;
+}
+
+.top-eight-name {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.top-eight-remove {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  background: none;
+  border: none;
+  font-size: 0.6rem;
+  color: #b00020;
+  cursor: pointer;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.top-eight-note {
+  display: block;
+  font-size: 0.55rem;
+  color: #888;
+  font-style: italic;
+}
+
+/* Top 8 Editor */
+
+.top-eight-editor {
+  margin-bottom: 1rem;
+}
+
+.editor-section-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+  margin-bottom: 0.5rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.top-eight-empty-msg {
+  font-size: 0.75rem;
+  color: #888;
+  font-style: italic;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.top-eight-editor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 0.75rem;
+}
+
+.top-eight-editor-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 4px 6px;
+  border: 1px solid #14110e;
+  background: #f6f3ec;
+  font-size: 0.7rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.top-eight-editor-pos {
+  color: #888;
+  min-width: 1.2em;
+}
+
+.top-eight-editor-name {
+  font-weight: bold;
+}
+
+.top-eight-editor-handle {
+  color: #5a513f;
+  flex: 1;
+}
+
+.top-eight-editor-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.top-eight-editor-actions button {
+  background: none;
+  border: 1px solid #14110e;
+  font-size: 0.6rem;
+  padding: 1px 4px;
+  cursor: pointer;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.top-eight-editor-actions button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.top-eight-editor-actions .remove-btn {
+  color: #b00020;
+  border-color: #b00020;
+}
+
+.top-eight-add-form {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.top-eight-add-form input {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  padding: 4px 6px;
+  border: 1px solid #14110e;
+  background: #fff;
+  max-width: 160px;
+}
+
+.top-eight-suggestions {
+  margin-top: 0.5rem;
+}
+
+.suggestion-label {
+  font-size: 0.65rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #5a513f;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.suggestion-chips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.suggestion-chip {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  border: 1px dashed #5a513f;
+  background: transparent;
+  cursor: pointer;
+  color: #14110e;
+}
+
+.suggestion-chip:hover {
+  background: #efe7d3;
+  border-style: solid;
+}
+
+.top-eight-feedback {
+  font-size: 0.7rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #1f5d3a;
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+/* Add to Top 8 Button */
+
+.add-top-eight-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.add-top-eight-btn.in-list {
+  border-color: #1f5d3a;
+  color: #1f5d3a;
+}
+
+.add-top-eight-msg {
+  font-size: 0.65rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #5a513f;
+  font-style: italic;
+}
+
+/* Seen Around */
+
+.seen-around-section {
+  margin-top: 1.5rem;
+  border-top: 1px solid #14110e;
+  padding-top: 1rem;
+}
+
+.seen-around-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+  margin-bottom: 0.5rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.seen-around-block {
+  margin-bottom: 0.5rem;
+}
+
+.seen-around-empty {
+  font-size: 0.7rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #888;
+  font-style: italic;
+}
+
+.seen-around-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.seen-around-entry {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #14110e;
+  padding: 4px 8px;
+  text-decoration: none;
+  color: #14110e;
+  background: #f6f3ec;
+}
+
+.seen-around-entry:hover {
+  background: #efe7d3;
+}
+
+.seen-handle {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.seen-location {
+  font-size: 0.55rem;
+  color: #888;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+/* Locker Top 8 section */
+
+.locker-top8-section {
+  margin-top: 2rem;
+}
+
+@media (max-width: 600px) {
+  .top-eight-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

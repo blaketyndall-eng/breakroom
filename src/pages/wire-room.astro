@@ -1,0 +1,16 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import WireRoomGate from '@/components/wireroom/WireRoomGate';
+import WireRoomDashboard from '@/components/wireroom/WireRoomDashboard';
+---
+<OldWebLayout title="Wire Room" section="admin">
+  <div class="status-strip"><span>wire room</span><span>staff only</span><span>ops console</span></div>
+  <section class="old-shell wire-room-shell">
+    <div class="old-header">Wire Room / Operations</div>
+    <div class="old-body">
+      <WireRoomGate client:load>
+        <WireRoomDashboard client:load />
+      </WireRoomGate>
+    </div>
+  </section>
+</OldWebLayout>

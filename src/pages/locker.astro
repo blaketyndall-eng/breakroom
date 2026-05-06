@@ -3,9 +3,11 @@ import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import RegularFileEditor from '@/components/regulars/RegularFileEditor';
 import SavedStuffDrawerPreview from '@/components/stuff/SavedStuffDrawerPreview';
 import FactionDriftPanel from '@/components/factions/FactionDriftPanel';
+import TopEightEditor from '@/components/regulars/TopEightEditor';
+import SeenAroundBlock from '@/components/regulars/SeenAroundBlock';
 ---
 <OldWebLayout title="Locker" section="locker">
-  <div class="status-strip"><span>locker</span><span>regular file</span><span>drawer</span><span>turf signals</span></div>
+  <div class="status-strip"><span>locker</span><span>regular file</span><span>drawer</span><span>turf signals</span><span>top 8</span></div>
   <h1>Locker</h1>
   <p class="tagline-block">Your Regular File, local drawer, saved Stuff, turf signals, and anything the room has agreed to remember for now.</p>
 
@@ -14,4 +16,15 @@ import FactionDriftPanel from '@/components/factions/FactionDriftPanel';
     <SavedStuffDrawerPreview client:load />
     <FactionDriftPanel client:load />
   </div>
+
+  <section class="old-shell locker-top8-section">
+    <div class="old-header">Top 8 / Seen Around</div>
+    <div class="old-body">
+      <TopEightEditor client:load />
+      <div class="seen-around-section">
+        <h3 class="seen-around-label">Seen Around</h3>
+        <SeenAroundBlock client:idle mode="global" limit={12} />
+      </div>
+    </div>
+  </section>
 </OldWebLayout>

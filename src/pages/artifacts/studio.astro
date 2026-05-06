@@ -1,0 +1,22 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import ArtifactStudio from '@/components/artifacts/ArtifactStudio';
+---
+<OldWebLayout title="Artifact Studio" section="artifacts">
+  <div class="status-strip"><span>artifact studio</span><span>prompt system</span><span>not an image generator</span></div>
+  <section class="old-shell">
+    <div class="old-header">Artifact Studio / Controlled Prompt Library / Visual Evidence System</div>
+    <div class="old-body">
+      <p class="memo-box">
+        Generate controlled prompts for Breakroom visual artifacts. Faction cards, fake ads, printable flyers, badges, stickers, and evidence photography. No image API connected. Copy the prompt. Use it elsewhere. The room does not render for you.
+      </p>
+      <ArtifactStudio client:load />
+    </div>
+  </section>
+</OldWebLayout>
+
+<style>
+  .memo-box {
+    margin-bottom: 1.5rem;
+  }
+</style>

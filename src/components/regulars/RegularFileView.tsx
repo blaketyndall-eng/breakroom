@@ -1,5 +1,7 @@
 import { ARTIFACTS } from '@/lib/artifacts';
 import RegularFileShare from '@/components/regulars/RegularFileShare';
+import TopEightGrid from '@/components/regulars/TopEightGrid';
+import AddToTopEightButton from '@/components/regulars/AddToTopEightButton';
 import type { RegularFile } from '@/lib/regularFiles';
 
 function themeLabel(theme: string) {
@@ -79,10 +81,9 @@ export default function RegularFileView({ file }: { file: RegularFile }) {
 
         <article className="old-shell regular-module">
           <div className="old-header">Top 8 Regulars</div>
-          <div className="old-body regular-top8-grid">
-            {['Rudy 44', 'Eddy Pool', 'Unknown', 'Room Hand', 'Reg 3', 'No Eddy', 'Lot Arms', 'You?'].map((name) => (
-              <span key={name}>{name}</span>
-            ))}
+          <div className="old-body">
+            <TopEightGrid />
+            <AddToTopEightButton handle={handle} displayName={file.display_name} />
           </div>
         </article>
 

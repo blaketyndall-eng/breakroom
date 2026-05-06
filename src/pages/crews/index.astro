@@ -1,0 +1,31 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import CrewCard from '@/components/crews/CrewCard.astro';
+import CrewCreator from '@/components/crews/CrewCreator';
+import { getPublicCrews } from '@/lib/crews';
+
+const crews = getPublicCrews();
+---
+<OldWebLayout title="Crews" section="crews">
+  <div class="status-strip"><span>crews</span><span>not official turf</span><span>user-created</span></div>
+  <section class="old-shell">
+    <div class="old-header">Crews / Unofficial Organizations</div>
+    <div class="old-body">
+      <p class="memo-box">
+        Crews are not official Turf. They are clubs, teams, locals, gangs, weird organizations, fake unions, and old-web fan clubs made by people who showed up. Management does not endorse them. Management barely acknowledges them.
+      </p>
+
+      <CrewCreator client:load />
+
+      <div class="crew-list">
+        {crews.map((crew) => (
+          <CrewCard crew={crew} />
+        ))}
+      </div>
+
+      {crews.length === 0 && (
+        <p class="crew-empty-state">No crews formed yet. Someone has to go first.</p>
+      )}
+    </div>
+  </section>
+</OldWebLayout>

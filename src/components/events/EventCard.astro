@@ -1,0 +1,23 @@
+---
+import type { BreakroomEvent } from '@/content/data/events';
+import { EVENT_TYPE_LABELS, EVENT_STATUS_LABELS, getStatusClass } from '@/lib/events';
+
+interface Props {
+  event: BreakroomEvent;
+}
+
+const { event } = Astro.props;
+---
+<article class={`event-card ${getStatusClass(event.status)}`}>
+  <div class="event-card-meta">
+    <span class="event-type-badge">{EVENT_TYPE_LABELS[event.type]}</span>
+    <span class="event-status-badge">{EVENT_STATUS_LABELS[event.status]}</span>
+  </div>
+  <h2 class="event-card-title">
+    <a href={`/events/${event.slug}`}>{event.title}</a>
+  </h2>
+  <p class="event-card-date">{event.dateLabel}</p>
+  <p class="event-card-location">{event.locationLabel}</p>
+  <p class="event-card-desc">{event.description.slice(0, 140)}{event.description.length > 140 ? '...' : ''}</p>
+  {event.signSheetEnabled && <span class="event-sign-available">SIGN SHEET OPEN</span>}
+</article>

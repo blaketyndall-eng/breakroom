@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { generateEmployee } from '@/lib/generators/employeeAssignment';
 import { saveLocalProfile, type LocalEmployeeProfile } from '@/lib/localSession';
+import { syncDriftSignalsToSupabase } from '@/lib/factionDrift';
+import { syncGuestbookEntriesToSupabase } from '@/lib/sleepnetGuestbooks';
 
 type CallbackState = 'checking' | 'ready' | 'error';
 
@@ -81,6 +83,11 @@ export default function AuthCallback() {
         if (error) throw error;
         saveLocalProfile(profile);
       }
+
+      // Sync any local drift signals to Supabase now that we have a session
+      await syncDriftSignalsToSupabase().catch(() => {});
+      // Sync any local guestbook marks to Supabase
+      await syncGuestbookEntriesToSupabase().catch(() => {});
 
       setState('ready');
       setMessage('Employee file recovered. Redirecting before management notices.');

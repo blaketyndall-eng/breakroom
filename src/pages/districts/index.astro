@@ -1,0 +1,32 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import DistrictCard from '@/components/districts/DistrictCard.astro';
+import { getOpenDistricts, SEEDED_DISTRICTS } from '@/lib/districts';
+
+const districts = getOpenDistricts();
+const staffOnly = SEEDED_DISTRICTS.filter((d) => d.status === 'staff_only');
+---
+<OldWebLayout title="District Directory" section="districts">
+  <div class="status-strip"><span>districts</span><span>{districts.length} indexed</span><span>staff zones hidden</span></div>
+  <section class="old-shell">
+    <div class="old-header">District Directory / World Geography</div>
+    <div class="old-body">
+      <p class="memo-box">
+        The directory organizes the world into districts. Some are open. Some require clearance. Some are rumored. Districts affect what you see, what shows up in search, which agents are present, and what Stuff collects in the area. Walking between them is not always straightforward.
+      </p>
+
+      <div class="district-grid">
+        {districts.map((district) => (
+          <DistrictCard district={district} />
+        ))}
+      </div>
+
+      {staffOnly.length > 0 && (
+        <div class="district-staff-notice">
+          <p class="district-restricted-label">STAFF ONLY ZONES — {staffOnly.length} not listed</p>
+          <p class="district-restricted-note">Access requires Wire Room clearance. Filed but not displayed.</p>
+        </div>
+      )}
+    </div>
+  </section>
+</OldWebLayout>

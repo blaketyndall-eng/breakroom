@@ -105,3 +105,57 @@ Stores user messages left on the **Sign The Wall** page.  Each post includes the
 
 ### `site_events`
 Captures miscellaneous user actions for analytics: page visits, secret unlocks, product requests, registration completions, etc.  Each event stores the user ID (nullable for anonymous), event name, page slug, metadata (JSON), and timestamp.  This helps measure engagement and refine the story triggers.
+
+## Reality Bridge
+
+The Breakroom's long-term goal is to connect the fake world to the real world.  Fake weather becomes real weather.  Fake restaurants sit alongside real restaurants.  Fake products become real products.  The system must support this transition gracefully.
+
+### Design principles
+
+1. **Every entity has a `reality_status`.**  The existing enum (`real`, `fictional`, `breakroom_myth`, `unverified`, `out_of_context`, `brand_object`) already covers the spectrum.  When a fictional entity becomes real, its status updates — the system does not create a separate "real" table.
+
+2. **Real data enters through external connectors (free APIs, no keys required).**  The Breakroom prefers APIs that need no authentication:
+   - **Weather**: [Open-Meteo](https://open-meteo.com/) (free, no key, JSON) or [wttr.in](https://wttr.in/) (free, no key, text/JSON)
+   - **Time/location**: browser Intl APIs and navigator.geolocation (optional, user-consented)
+   - **Music/Radio**: public stream URLs, no API needed
+   - **Maps/places**: OpenStreetMap Nominatim (free, no key, rate-limited)
+   - **Links**: plain `<a href>` to real businesses, real events, real places — no API needed
+
+3. **Real links live alongside fake links.**  A fake ad can link to a real product page.  A directory category can mix fictional SleepNet pages with real external URLs.  The `href` field on ads, directory entries, and navigation already supports absolute URLs.
+
+4. **The `approved_rooms` table pattern extends to any real-world entity.**  Real bars, real restaurants, real events, real products — all require verification before publication.  The data model uses `is_verified: boolean` and `source_url: text` to track provenance.
+
+5. **The bit turns down for real money.**  When something is real and purchasable, the copy gets clear.  The `reality_status = 'real'` flag triggers UI changes: trust signals, clear pricing, no ambiguity about what the user is getting.
+
+### External data flow
+
+```
+Free API (no key) → src/lib/externalData.ts → transformed into Breakroom voice → rendered in widget
+```
+
+Example: Open-Meteo returns `{ temperature: 72, weathercode: 3 }`.  The Breakroom transforms this into:
+
+```
+LOT CONDITIONS (REAL)
+Temperature: 72F — hoodie optional
+Sky: overcast — good for schemes
+Bad Decision Pressure: moderate (based on actual barometric)
+```
+
+The real data is the skeleton; the Breakroom voice is the skin.
+
+### Reality status on links and references
+
+Any entity that links to the real world should include:
+
+```ts
+{
+  href: string;              // the actual URL
+  isExternal: boolean;       // true = leaves The Breakroom
+  realityStatus: 'real' | 'fictional' | 'unverified';
+  verifiedAt?: string;       // ISO date of last verification
+  sourceNote?: string;       // "Real bar in Austin, TX" or "Actually sells hats"
+}
+```
+
+This metadata helps the system (and future admin tools) distinguish between fake rabbit-hole links and real-world destinations.

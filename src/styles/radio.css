@@ -1,0 +1,328 @@
+/* Radio 1:47 Expansion — PR 59 */
+
+/* --- Now Playing --- */
+
+.radio-now-playing {
+  border: 2px solid #14110e;
+  background: #111;
+  color: #33ff66;
+  padding: 0;
+  margin-bottom: 1rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.radio-np-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #33ff66;
+  background: #000;
+}
+
+.radio-np-status {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  animation: radio-blink 2s ease-in-out infinite;
+}
+
+@keyframes radio-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.radio-np-signal {
+  font-size: 0.6rem;
+  opacity: 0.7;
+}
+
+.radio-np-body {
+  padding: 0.75rem;
+}
+
+.radio-np-type {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.radio-np-title {
+  margin: 0 0 0.4rem;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 1.1rem;
+  line-height: 1.1;
+  color: #33ff66;
+}
+
+.radio-np-text {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  opacity: 0.9;
+}
+
+.radio-np-host {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+
+.radio-np-footer {
+  padding: 0.4rem 0.75rem;
+  border-top: 1px solid #33ff66;
+  font-size: 0.6rem;
+  opacity: 0.6;
+}
+
+/* --- Log --- */
+
+.radio-log {
+  margin-top: 1rem;
+}
+
+.radio-log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+}
+
+.radio-log-title {
+  font-size: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+}
+
+.radio-log-count {
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #888;
+}
+
+.radio-log-empty {
+  font-size: 0.75rem;
+  color: #888;
+  font-style: italic;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.radio-log-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* --- Entry card --- */
+
+.radio-entry {
+  border: 1px solid #14110e;
+  padding: 0.6rem 0.75rem;
+  background: #f6f3ec;
+}
+
+.radio-entry-dead_air {
+  border-style: dotted;
+  opacity: 0.5;
+}
+
+.radio-entry-fake_ad {
+  border: 2px ridge #14110e;
+  background: #ffff99;
+}
+
+.radio-entry-station_id {
+  border-left: 4px solid #33ff66;
+  background: #0a0a0a;
+  color: #33ff66;
+}
+
+.radio-entry-station_id .radio-entry-body {
+  color: #33ff66;
+}
+
+.radio-entry-faction_beef {
+  border-left: 4px solid #b00020;
+}
+
+.radio-entry-agent_call_in {
+  border-left: 4px solid #0000ee;
+}
+
+.radio-entry-weather_report {
+  border-left: 4px solid #8b6914;
+}
+
+.radio-entry-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.radio-entry-type {
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+}
+
+.radio-type-fake_ad { color: #b00020; }
+.radio-type-station_id { color: #33ff66; }
+.radio-type-faction_beef { color: #b00020; }
+.radio-type-dead_air { color: #888; }
+
+.radio-entry-time {
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #888;
+}
+
+.radio-entry-title {
+  margin: 0 0 4px;
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 0.9rem;
+  line-height: 1.1;
+}
+
+.radio-entry-body {
+  margin: 0 0 6px;
+  font-family: var(--type-typer, 'Courier New', monospace);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: #333;
+}
+
+.radio-entry-host,
+.radio-entry-district {
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  margin-right: 8px;
+}
+
+/* --- Request form --- */
+
+.radio-request-form-wrapper {
+  margin-top: 1rem;
+}
+
+.radio-request-form {
+  border: 1px dashed #5a513f;
+  padding: 0.75rem;
+  background: rgba(239, 231, 211, 0.5);
+}
+
+.radio-request-notice {
+  font-size: 0.7rem;
+  font-style: italic;
+  color: #5a513f;
+  margin: 0 0 0.75rem;
+}
+
+.radio-request-label {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.radio-request-label input,
+.radio-request-label textarea {
+  border: 2px inset #d8c9a6;
+  background: #f6f3ec;
+  color: #14110e;
+  padding: 8px;
+  font-family: var(--type-typer, 'Courier New', monospace);
+  font-size: 13px;
+}
+
+.radio-request-label textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.radio-request-feedback {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #14110e;
+  font-family: var(--type-typer, 'Courier New', monospace);
+  font-size: 0.75rem;
+}
+
+.radio-request-feedback.radio-req-aired {
+  border-color: #1f5d3a;
+  background: rgba(31, 93, 58, 0.05);
+}
+
+.radio-request-feedback.radio-req-pending {
+  border-style: dashed;
+}
+
+.radio-request-feedback p {
+  margin: 0;
+}
+
+/* --- Request history --- */
+
+.radio-request-history {
+  margin-top: 1rem;
+}
+
+.radio-request-history-label {
+  display: block;
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+  margin-bottom: 0.5rem;
+}
+
+.radio-request-entry {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.3rem 0;
+  border-bottom: 1px dotted #d8c9a6;
+  font-size: 0.7rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.radio-request-status {
+  text-transform: uppercase;
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  min-width: 50px;
+}
+
+.radio-req-aired .radio-request-status { color: #1f5d3a; }
+.radio-req-pending .radio-request-status { color: #8b6914; }
+.radio-req-rejected .radio-request-status { color: #b00020; }
+.radio-req-lost .radio-request-status { color: #888; }
+
+.radio-request-msg {
+  flex: 1;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.radio-request-time {
+  color: #888;
+  font-size: 0.6rem;
+}
