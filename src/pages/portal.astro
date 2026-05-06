@@ -2,8 +2,198 @@
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import EmployeePortal from '@/components/auth/EmployeePortal';
 ---
-<OldWebLayout title="OmniShift Employee Portal" section="portal">
-  <h1>OmniShift Employee File</h1>
-  <p class="red-stamp">Hired / not requested</p>
-  <EmployeePortal client:load />
+<OldWebLayout title="OmniShift Employee Portal" section="omnishift" level={4}>
+
+  <!-- Corporate header bar (IBM 2001 / SharePoint 2001) -->
+  <div class="os-corp-header">
+    <div class="os-corp-brand">
+      <span class="os-logo">OMNI<span class="os-logo-accent">SHIFT</span></span>
+      <span class="os-logo-tagline">Employee Services Portal</span>
+    </div>
+    <div class="os-corp-meta">
+      <span>Session: active</span>
+      <span>Last login: 1:47 AM</span>
+      <span class="os-blink">● CONNECTED</span>
+    </div>
+  </div>
+
+  <!-- Tab navigation (SharePoint 2003 style) -->
+  <nav class="os-tabs">
+    <a href="/portal" class="active">Home</a>
+    <a href="/portal">My File</a>
+    <a href="/ventures">Ventures</a>
+    <a href="/rack">Issued Goods</a>
+    <a href="/lost-found">Object Archive</a>
+    <a href="/newsstand">Company News</a>
+    <a href="/breakroom">Back to Room</a>
+  </nav>
+
+  <!-- System alert bar -->
+  <div class="os-alert-bar">
+    <span class="os-alert-icon">⚠</span>
+    SYSTEM NOTICE: OmniShift has acquired SleepNet. All after-hours search traffic is now monitored for compliance. Employees are reminded that the room is always listening. This is not a threat. It is a feature.
+  </div>
+
+  <!-- 3-column portal layout -->
+  <div class="os-portal-layout">
+
+    <!-- Left sidebar: Quick Links + System Status -->
+    <aside class="os-sidebar-left">
+
+      <div class="os-widget">
+        <div class="os-widget-header">Quick Links</div>
+        <div class="os-widget-body">
+          <a href="/signup">New Employee Intake</a>
+          <a href="/clock-out">Clock Out Request</a>
+          <a href="/lost-found">File Object Report</a>
+          <a href="/phone">Phone Behind the Bar</a>
+          <a href="/radio">Radio 1:47</a>
+          <a href="/after-hours">After Hours Access</a>
+        </div>
+      </div>
+
+      <div class="os-widget">
+        <div class="os-widget-header">System Status</div>
+        <div class="os-widget-body os-status-list">
+          <div class="os-status-row">
+            <span class="os-status-dot os-dot-green"></span>
+            <span>Portal Services</span>
+          </div>
+          <div class="os-status-row">
+            <span class="os-status-dot os-dot-green"></span>
+            <span>Employee Database</span>
+          </div>
+          <div class="os-status-row">
+            <span class="os-status-dot os-dot-yellow"></span>
+            <span>SleepNet Integration</span>
+          </div>
+          <div class="os-status-row">
+            <span class="os-status-dot os-dot-red"></span>
+            <span>Online Payment</span>
+          </div>
+          <div class="os-status-row">
+            <span class="os-status-dot os-dot-grey"></span>
+            <span>The Room</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="os-widget">
+        <div class="os-widget-header">Department Directory</div>
+        <div class="os-widget-body os-dept-list">
+          <a href="#">Fluorescent Operations</a>
+          <a href="#">Lot Hours</a>
+          <a href="#">Night Audit</a>
+          <a href="#">Compliance & Felt</a>
+          <a href="#">Vacancy Logistics</a>
+          <a href="#">Chalk & Aim</a>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Main content: Employee File portlet -->
+    <main class="os-main">
+
+      <div class="os-portlet">
+        <div class="os-portlet-header">
+          <span class="os-portlet-icon">📋</span>
+          Employee File — Active Record
+        </div>
+        <div class="os-portlet-body">
+          <EmployeePortal client:load />
+        </div>
+      </div>
+
+      <div class="os-portlet">
+        <div class="os-portlet-header">
+          <span class="os-portlet-icon">📜</span>
+          Corporate Policy Notices
+        </div>
+        <div class="os-portlet-body">
+          <div class="os-policy">
+            <p class="os-policy-id">POLICY OS-2024-147</p>
+            <p><strong>Re: After-Hours Conduct</strong></p>
+            <p>All employees are reminded that clocking out does not constitute leaving. OmniShift retains observation rights over all rooms, lots, and adjacent parking structures. The vending machine is not a witness.</p>
+          </div>
+          <div class="os-policy">
+            <p class="os-policy-id">POLICY OS-2024-003</p>
+            <p><strong>Re: SleepNet Usage During Shift</strong></p>
+            <p>SleepNet access is permitted during lot hours only. Searches for "how to quit" will be forwarded to Compliance & Felt. This has always been the policy. The policy has always existed.</p>
+          </div>
+          <div class="os-policy">
+            <p class="os-policy-id">MEMO — INTERNAL</p>
+            <p><strong>Re: The Swan</strong></p>
+            <p>The swan in the passenger seat has been observed at three locations this week. Management would like to clarify that the swan is not an employee. The swan's parking access has not been revoked because it was never granted. Further questions should be directed to nobody.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Right sidebar: Announcements + Calendar -->
+    <aside class="os-sidebar-right">
+
+      <div class="os-widget">
+        <div class="os-widget-header">Announcements</div>
+        <div class="os-widget-body">
+          <div class="os-announce">
+            <p class="os-announce-date">MAY 2026</p>
+            <p class="os-announce-title">Q2 All-Hands Postponed</p>
+            <p>The all-hands has been moved to an unspecified date. The room was not available. The room is always available. Both statements are correct.</p>
+          </div>
+          <div class="os-announce">
+            <p class="os-announce-date">APR 2026</p>
+            <p class="os-announce-title">New Hire Orientation</p>
+            <p>Report to intake. Bring two forms of ID and one thing you were told not to bring. Orientation occurs in the room that orientation has always occurred in.</p>
+          </div>
+          <div class="os-announce">
+            <p class="os-announce-date">MAR 2026</p>
+            <p class="os-announce-title">Parking Lot Expansion</p>
+            <p>The west lot has been expanded. The expansion includes one additional parking spot and a feeling that you should have gone home two hours ago.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="os-widget">
+        <div class="os-widget-header">Upcoming Events</div>
+        <div class="os-widget-body os-events">
+          <div class="os-event">
+            <span class="os-event-date">TBD</span>
+            <span>Pool Tournament (if table accepts)</span>
+          </div>
+          <div class="os-event">
+            <span class="os-event-date">FRI</span>
+            <span>Lot Weather Advisory</span>
+          </div>
+          <div class="os-event">
+            <span class="os-event-date">1:47</span>
+            <span>Radio 1:47 Broadcast</span>
+          </div>
+          <div class="os-event">
+            <span class="os-event-date">DAILY</span>
+            <span>Coffee Freshness Audit</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="os-widget">
+        <div class="os-widget-header">Help & Support</div>
+        <div class="os-widget-body">
+          <p style="font-size:12px;color:#5a6b58;margin:0 0 6px;">For technical issues, contact the IT department. The IT department does not exist. For all other issues, consult the phone behind the bar.</p>
+          <a href="/phone" style="font-size:12px;">Contact Support →</a>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- Portal footer -->
+  <div class="os-portal-footer">
+    <p>OmniShift Corporation — Employee Services Portal v2.47.1</p>
+    <p>© OmniShift Holdings LLC / All Rights Reserved / Compliance Has Been Notified / Terms of Employment May Change Without Notice or Reason</p>
+    <p style="font-size:10px;color:#8a9b88;">Server: OSPORTAL-PROD-03 | Session: 0x1A47F | Uptime: 1,847 days | Last Maintenance: never / scheduled: never</p>
+  </div>
+
 </OldWebLayout>

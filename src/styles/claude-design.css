@@ -1148,32 +1148,289 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
   .ns-subnav { flex-wrap: wrap; }
 }
 
-/* ============= SECTION: OMNISHIFT ============= */
+/* ============= SECTION: OMNISHIFT (SharePoint 2001 + IBM 2001 + Oracle Portal) ============= */
 [data-section="omnishift"] {
-  background: #f1f4ef;
-  color: #1a1f1a;
+  background: #e8ecf0;
+  color: #1a1f2a;
+  font-family: var(--type-ui);
+  font-size: 13px;
+}
+[data-section="omnishift"] a { color: #003399; }
+[data-section="omnishift"] a:visited { color: #003399; }
+[data-section="omnishift"] a:hover { background: #003399; color: white; text-decoration: none; }
+
+/* Corporate header bar (IBM 2001 blue gradient) */
+.os-corp-header {
+  background: linear-gradient(180deg, #1a3a6b 0%, #0f2647 100%);
+  color: white;
+  padding: 10px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 2px solid #ffc107;
+  flex-wrap: wrap; gap: 6px;
+}
+.os-logo {
+  font-family: var(--type-ui); font-weight: 800; font-size: 20px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.os-logo-accent { color: #ffc107; }
+.os-logo-tagline {
+  font-size: 11px; font-weight: 400; letter-spacing: 0.04em;
+  color: #8aa4cc; margin-left: 12px;
+}
+.os-corp-meta {
+  font-size: 10px; font-family: var(--type-mono);
+  color: #8aa4cc; display: flex; gap: 14px; align-items: center;
+}
+
+/* Tab navigation (SharePoint 2003) */
+.os-tabs {
+  background: #2a5090;
+  display: flex; gap: 0; padding: 0;
+  border-bottom: 1px solid #1a3060;
+  overflow-x: auto; white-space: nowrap;
+}
+.os-tabs a {
+  padding: 7px 16px; font-size: 12px; font-weight: 600;
+  color: #c0d0e8; text-decoration: none;
+  border-right: 1px solid #1a3a6b;
+  transition: background 0.1s;
+}
+.os-tabs a:hover { background: #3a6ab0; color: white; }
+.os-tabs a.active {
+  background: #e8ecf0; color: #1a1f2a;
+  border-bottom: 2px solid #e8ecf0;
+  margin-bottom: -1px;
+}
+
+/* System alert bar */
+.os-alert-bar {
+  background: #fff3cd; border-bottom: 1px solid #d4a300;
+  color: #664d03; font-size: 11px; font-family: var(--type-mono);
+  padding: 6px 16px; line-height: 1.5;
+}
+.os-alert-icon { margin-right: 6px; }
+
+/* 3-column portal layout */
+.os-portal-layout {
+  display: grid;
+  grid-template-columns: 180px 1fr 220px;
+  gap: 12px;
+  padding: 12px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Sidebar widgets (SharePoint web parts) */
+.os-sidebar-left, .os-sidebar-right { display: flex; flex-direction: column; gap: 10px; }
+
+.os-widget {
+  background: white;
+  border: 1px solid #b0bec5;
+  font-size: 12px;
+}
+.os-widget-header {
+  background: linear-gradient(180deg, #3a6ab0 0%, #2a5090 100%);
+  color: white; font-weight: 700; font-size: 11px;
+  padding: 5px 10px; letter-spacing: 0.04em;
+  text-transform: uppercase;
   font-family: var(--type-ui);
 }
+.os-widget-body {
+  padding: 8px 10px;
+}
+.os-widget-body a {
+  display: block; padding: 3px 0; font-size: 12px;
+  color: #003399; text-decoration: none;
+  border-bottom: 1px dotted #d0d8e0;
+}
+.os-widget-body a:last-child { border-bottom: none; }
+.os-widget-body a:hover { color: #0055cc; background: #eef2f7; text-decoration: underline; }
+
+/* System status dots */
+.os-status-list { padding: 6px 10px; }
+.os-status-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; font-size: 11px; color: #3a4a5a; }
+.os-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.os-dot-green { background: #2e7d32; }
+.os-dot-yellow { background: #f9a825; }
+.os-dot-red { background: #c62828; }
+.os-dot-grey { background: #90a4ae; }
+
+/* Department directory */
+.os-dept-list a { font-size: 11px; }
+
+/* Main portlets (SharePoint web parts / Oracle portlets) */
+.os-main { display: flex; flex-direction: column; gap: 12px; }
+
+.os-portlet {
+  background: white;
+  border: 1px solid #b0bec5;
+}
+.os-portlet-header {
+  background: linear-gradient(180deg, #f0f4f8 0%, #dce4ec 100%);
+  border-bottom: 1px solid #b0bec5;
+  padding: 8px 12px; font-size: 13px; font-weight: 700;
+  color: #1a3060; display: flex; align-items: center; gap: 8px;
+}
+.os-portlet-icon { font-size: 16px; }
+.os-portlet-body { padding: 12px; }
+
+/* Employee file styles (inside portlet) */
+.os-file-status {
+  background: #f0f4f8; border: 1px solid #b0bec5;
+  padding: 16px; font-size: 12px; color: #3a4a5a;
+  font-family: var(--type-mono);
+}
+.os-file-notice {
+  background: #fff3cd; border: 1px solid #d4a300;
+  color: #664d03; font-size: 11px; font-family: var(--type-mono);
+  padding: 6px 10px; margin-bottom: 10px;
+}
+.os-file-grid { display: flex; flex-direction: column; gap: 12px; }
+.os-file-section {
+  border: 1px solid #d0d8e0;
+  background: #fafbfc;
+}
+.os-file-section-header {
+  background: linear-gradient(180deg, #e8ecf0 0%, #d4dce4 100%);
+  padding: 6px 10px; font-size: 11px; font-weight: 700;
+  color: #1a3060; text-transform: uppercase;
+  letter-spacing: 0.06em; border-bottom: 1px solid #b0bec5;
+}
+
+/* Employee file table */
+.os-file-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.os-file-table td { padding: 5px 10px; border-bottom: 1px solid #e8ecf0; }
+.os-field-label {
+  width: 140px; font-weight: 600; color: #5a6b78;
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.04em; background: #f0f4f8;
+  border-right: 1px solid #d0d8e0;
+}
+.os-field-value {
+  font-family: var(--type-mono); font-size: 13px;
+  color: #1a1f2a; font-weight: 600;
+}
+
+/* House rule display */
+.os-house-rule {
+  font-family: var(--type-paper); font-size: 20px;
+  color: #1a3060; padding: 12px; margin: 0;
+  line-height: 1.4;
+}
+.os-file-meta { padding: 0 12px 8px; font-size: 12px; color: #5a6b78; }
+.os-file-meta p { margin: 2px 0; }
+
+/* Portal buttons */
+.os-file-actions {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 8px 0 0;
+}
+.os-btn {
+  display: inline-block;
+  padding: 6px 14px; font-size: 12px; font-weight: 600;
+  font-family: var(--type-ui);
+  background: linear-gradient(180deg, #3a6ab0 0%, #2a5090 100%);
+  color: white; border: 1px solid #1a3a6b;
+  text-decoration: none; cursor: pointer;
+  transition: background 0.15s;
+}
+.os-btn:hover { background: linear-gradient(180deg, #4a7ac0 0%, #3a60a0 100%); color: white; }
+.os-btn-secondary {
+  background: linear-gradient(180deg, #f0f4f8 0%, #dce4ec 100%);
+  color: #1a3060; border-color: #b0bec5;
+}
+.os-btn-secondary:hover { background: linear-gradient(180deg, #e0e8f0 0%, #ccd8e4 100%); color: #1a3060; }
+.os-btn-danger {
+  background: linear-gradient(180deg, #c62828 0%, #a01818 100%);
+  border-color: #801010;
+}
+.os-btn-danger:hover { background: linear-gradient(180deg, #d63838 0%, #b02020 100%); color: white; }
+
+/* Corporate policy notices */
+.os-policy {
+  border-bottom: 1px solid #e0e4e8; padding: 10px 0;
+  font-size: 12px; line-height: 1.5; color: #3a4a5a;
+}
+.os-policy:last-child { border-bottom: none; }
+.os-policy p { margin: 0 0 4px; }
+.os-policy-id {
+  font-family: var(--type-mono); font-size: 10px;
+  color: #90a4ae; letter-spacing: 0.06em;
+}
+
+/* Announcement items */
+.os-announce { padding: 8px 0; border-bottom: 1px solid #e0e4e8; }
+.os-announce:last-child { border-bottom: none; }
+.os-announce-date {
+  font-family: var(--type-mono); font-size: 9px;
+  color: #90a4ae; letter-spacing: 0.08em;
+}
+.os-announce-title {
+  font-weight: 700; font-size: 12px; color: #1a3060;
+  margin: 2px 0 4px;
+}
+.os-announce p { margin: 0; font-size: 11px; color: #5a6b78; line-height: 1.4; }
+
+/* Events list */
+.os-events { padding: 6px 10px; }
+.os-event {
+  display: flex; gap: 10px; align-items: baseline;
+  padding: 4px 0; font-size: 11px; color: #3a4a5a;
+  border-bottom: 1px dotted #d0d8e0;
+}
+.os-event:last-child { border-bottom: none; }
+.os-event-date {
+  font-family: var(--type-mono); font-size: 10px;
+  color: #90a4ae; min-width: 40px; font-weight: 700;
+}
+
+/* Portal footer */
+.os-portal-footer {
+  background: #1a3a6b; color: #8aa4cc;
+  padding: 12px 16px; font-size: 10px;
+  font-family: var(--type-mono); text-align: center;
+  border-top: 2px solid #ffc107;
+  margin-top: 16px;
+}
+.os-portal-footer p { margin: 2px 0; }
+
+/* Blink animation */
+[data-section="omnishift"] .os-blink { animation: osBlink 1.5s steps(2) infinite; }
+@keyframes osBlink { 50% { opacity: 0.3; } }
+
+/* Legacy compat */
 [data-section="omnishift"] .os-bar {
   background: var(--dashboard); color: white;
   font-family: var(--type-ui); font-weight: 700; letter-spacing: 0.04em;
 }
 [data-section="omnishift"] .os-card {
-  background: white; border: 1px solid #c4cfc1;
+  background: white; border: 1px solid #b0bec5;
   box-shadow: 2px 2px 0 #c4cfc1;
 }
 [data-section="omnishift"] .os-label {
   font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em;
-  color: #5a6b58; font-weight: 700;
+  color: #5a6b78; font-weight: 700;
 }
-[data-section="omnishift"] .os-value { font-family: var(--type-mono); font-size: 16px; color: #1a1f1a; font-weight: 700; }
+[data-section="omnishift"] .os-value { font-family: var(--type-mono); font-size: 16px; color: #1a1f2a; font-weight: 700; }
 [data-section="omnishift"] .os-warn {
   background: var(--warning); border: 1px solid #b08a00; color: #2a1f00;
   font-family: var(--type-mono); font-size: 12px; letter-spacing: 0.04em;
   padding: 8px 12px;
 }
-[data-section="omnishift"] .os-blink { animation: osBlink 1s steps(2) infinite; }
-@keyframes osBlink { 50% { opacity: 0.35; } }
+
+/* Responsive: collapse to single column on mobile */
+@media (max-width: 900px) {
+  .os-portal-layout { grid-template-columns: 1fr; }
+  .os-sidebar-left { order: 2; }
+  .os-main { order: 1; }
+  .os-sidebar-right { order: 3; }
+  .os-corp-header { flex-direction: column; align-items: flex-start; }
+  .os-tabs { flex-wrap: wrap; }
+}
+@media (max-width: 600px) {
+  .os-file-actions { flex-direction: column; }
+  .os-field-label { width: 100px; font-size: 10px; }
+}
 
 /* ============= SECTION: BREAKROOM (Underground) ============= */
 [data-section="breakroom"] {
