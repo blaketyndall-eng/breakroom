@@ -1,3 +1,7 @@
+# Cloudflare Worker config for The Breakroom
+# IMPORTANT: The build script must NOT delete c.assets from dist/server/wrangler.json
+# The Astro adapter needs the ASSETS binding to serve static files (/_astro/*)
+
 "$schema" = "./node_modules/wrangler/config-schema.json"
 
 name = "thebreakroom"
