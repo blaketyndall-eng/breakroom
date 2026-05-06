@@ -22,6 +22,7 @@
 @import './radio.css';
 @import './claude-design.css';
 @import './pocket.css';
+@import './phone.css';
 
 :root {
   color-scheme: light;
