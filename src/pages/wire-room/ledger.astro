@@ -1,0 +1,16 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import WireRoomGate from '@/components/wireroom/WireRoomGate';
+import WorldLedgerDashboard from '@/components/ledger/WorldLedgerDashboard';
+---
+<OldWebLayout title="Wire Room / Ledger" section="admin">
+  <div class="status-strip"><span>wire room</span><span>world ledger</span><span>continuity engine</span></div>
+  <section class="old-shell wire-room-shell">
+    <div class="old-header">Wire Room / World Ledger</div>
+    <div class="old-body">
+      <WireRoomGate client:load>
+        <WorldLedgerDashboard client:load />
+      </WireRoomGate>
+    </div>
+  </section>
+</OldWebLayout>

@@ -1,0 +1,16 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import PublicLedger from '@/components/ledger/PublicLedger';
+---
+<OldWebLayout title="World Ledger" section="sleepnet">
+  <div class="status-strip"><span>world ledger</span><span>public record</span><span>some entries redacted</span></div>
+  <section class="old-shell">
+    <div class="old-header">World Ledger / Public Record</div>
+    <div class="old-body">
+      <p style="font-size: 0.8rem; color: #5a513f; font-family: var(--type-mono, monospace); margin-bottom: 1rem;">
+        A record of things that happened in the world. Some entries have been removed by management. Others were never shown.
+      </p>
+      <PublicLedger client:load />
+    </div>
+  </section>
+</OldWebLayout>

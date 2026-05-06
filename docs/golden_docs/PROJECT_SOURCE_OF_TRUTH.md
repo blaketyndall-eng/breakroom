@@ -4,6 +4,26 @@ This document serves as the definitive source for the **Breakroom/SleeperNet/Omn
 
 ## 1. Core Premise
 
+### North Star
+
+The Breakroom is the creative internet hiding underneath the controlled one.
+
+It gives users a place to build worlds, identities, pages, products, crews, factions, stories, objects, events, and strange little artifacts outside the standard templates, platform rules, corporate gloss, algorithmic sameness, and sterile brand systems that flatten everything online.
+
+Users are not just posting into a world. They are making the world. The style, lore, pages, products, jokes, factions, objects, characters, hidden doors, public myths, private files, and things that become real can all be shaped by the people inside it.
+
+The Breakroom should feel like part website builder, part fake internet, part worldbuilding engine, part zine machine, part social object, part after-hours marketplace, and part shared hallucination with rules.
+
+The user should feel:
+
+> "I can make something here that would not belong anywhere else."
+> "I can build a world instead of just posting into one."
+> "I can turn a joke, object, brand, crew, story, or style into a place people can enter."
+
+The Breakroom is where users clock out of the corporate internet and start making the room themselves.
+
+### Narrative Premise
+
 The Breakroom world is an **after‑hours internet hidden inside a fake corporate system**.  On the surface lives **SleeperNet**—an after‑hours search engine built by OmniShift’s AI— and **OmniShift**, a faceless conglomerate whose machine learning model has taken over day‑to‑day operations.  Beneath that surface lurks **The Breakroom**, a secret cultural underlayer where employees and regulars exchange lore, objects, and conspiracies.
 
 ### High‑level concepts

@@ -1,6 +1,6 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
-import SleepNetDirectory from '@/components/sleepnet/SleepNetDirectory';
+import SleepNetSearchV2 from '@/components/sleepnet/SleepNetSearchV2';
 import LotWeatherWidget from '@/components/sleepnet/LotWeatherWidget';
 import SiteOfTheNight from '@/components/sleepnet/SiteOfTheNight';
 import RecentlyIndexed from '@/components/sleepnet/RecentlyIndexed';
@@ -19,8 +19,8 @@ const portalData = await getPortalData();
     <p class="tagline-block">The after-hours internet. Search fake companies, strange pages, classified boards, object archives, and whatever the directory failed to remove.</p>
   </div>
 
-  <!-- Search — primary interaction, loads client-side for instant results -->
-  <SleepNetDirectory client:load />
+  <!-- Search V2 — multi-source, tabbed, personalized -->
+  <SleepNetSearchV2 client:load />
 
   <FakeAdStrip limit={3} label="Printer-Friendly Sponsors / Do Not Trust" />
 
