@@ -1,12 +1,17 @@
 /**
- * Crews V1 — PR 54
+ * Crews V2 — PR 63 (Crew Builder V2)
  *
  * User-created groups. Not official Turf.
  * Crews are informal, user-made organizations: clubs, teams, locals,
  * gangs, weird organizations, fake unions, old-web fan clubs.
  *
+ * V2 adds: disbandCrew, searchCrews, onCrewEvent subscription,
+ * ledger integration, expanded seed data, crew stats.
+ *
  * Local-first with future Supabase path.
  */
+
+import { emitCrewFormed, emitCrewDisbanded } from './ledgerEmitters';
 
 // --- Types ---
 
@@ -32,6 +37,23 @@ export type Crew = {
   factionAlignment?: string; // optional faction slug
   visibility: 'public' | 'unlisted' | 'invite_only';
   tags: string[];
+};
+
+export type CrewFilter = {
+  district?: string;
+  factionAlignment?: string;
+  search?: string;
+  visibility?: Crew['visibility'];
+  onlyMine?: boolean;
+};
+
+export type CrewStats = {
+  totalCrews: number;
+  totalMembers: number;
+  officialCount: number;
+  unofficialCount: number;
+  districtCounts: Record<string, number>;
+  factionCounts: Record<string, number>;
 };
 
 // --- Storage ---
@@ -69,6 +91,26 @@ function writeMyCrews(slugs: string[]) {
   window.localStorage.setItem(MY_CREWS_KEY, JSON.stringify(slugs));
 }
 
+// --- Event subscription (V2) ---
+
+type CrewEventCallback = (crew: Crew, action: 'created' | 'joined' | 'left' | 'disbanded') => void;
+const subscribers: CrewEventCallback[] = [];
+
+function notifySubscribers(crew: Crew, action: 'created' | 'joined' | 'left' | 'disbanded') {
+  for (const cb of subscribers) {
+    try { cb(crew, action); } catch { /* subscriber error ignored */ }
+  }
+}
+
+/** Subscribe to crew events. Returns unsubscribe function. */
+export function onCrewEvent(cb: CrewEventCallback): () => void {
+  subscribers.push(cb);
+  return () => {
+    const idx = subscribers.indexOf(cb);
+    if (idx >= 0) subscribers.splice(idx, 1);
+  };
+}
+
 // --- Slug generation ---
 
 function generateSlug(name: string): string {
@@ -100,6 +142,69 @@ export function getMyCrewSlugs(): string[] {
 
 export function isInCrew(slug: string): boolean {
   return readMyCrews().includes(slug);
+}
+
+/** V2: Search and filter crews */
+export function searchCrews(filter: CrewFilter = {}): Crew[] {
+  let results = getAllCrews();
+
+  if (filter.visibility) {
+    results = results.filter((c) => c.visibility === filter.visibility);
+  } else {
+    // Default: exclude invite_only unless specifically requested
+    results = results.filter((c) => c.visibility !== 'invite_only');
+  }
+
+  if (filter.district) {
+    results = results.filter((c) => c.district === filter.district);
+  }
+
+  if (filter.factionAlignment) {
+    results = results.filter((c) => c.factionAlignment === filter.factionAlignment);
+  }
+
+  if (filter.onlyMine) {
+    const mine = readMyCrews();
+    results = results.filter((c) => mine.includes(c.slug));
+  }
+
+  if (filter.search) {
+    const q = filter.search.toLowerCase();
+    results = results.filter((c) =>
+      c.name.toLowerCase().includes(q) ||
+      c.tagline.toLowerCase().includes(q) ||
+      c.tags.some((t) => t.toLowerCase().includes(q))
+    );
+  }
+
+  return results;
+}
+
+/** V2: Get crew statistics */
+export function getCrewStats(): CrewStats {
+  const all = getAllCrews();
+  const districtCounts: Record<string, number> = {};
+  const factionCounts: Record<string, number> = {};
+  let totalMembers = 0;
+
+  for (const c of all) {
+    totalMembers += c.memberCount;
+    if (c.district) {
+      districtCounts[c.district] = (districtCounts[c.district] || 0) + 1;
+    }
+    if (c.factionAlignment) {
+      factionCounts[c.factionAlignment] = (factionCounts[c.factionAlignment] || 0) + 1;
+    }
+  }
+
+  return {
+    totalCrews: all.length,
+    totalMembers,
+    officialCount: all.filter((c) => c.isOfficial).length,
+    unofficialCount: all.filter((c) => !c.isOfficial).length,
+    districtCounts,
+    factionCounts,
+  };
 }
 
 export function createCrew(input: {
@@ -147,6 +252,15 @@ export function createCrew(input: {
   const myCrews = readMyCrews();
   writeMyCrews([...myCrews, slug]);
 
+  // V2: Emit ledger event
+  emitCrewFormed({
+    slug: crew.slug,
+    name: crew.name,
+    founderCount: 1,
+    district: crew.district,
+  });
+
+  notifySubscribers(crew, 'created');
   return crew;
 }
 
@@ -173,6 +287,7 @@ export function joinCrew(slug: string, handle: string, displayName: string): boo
     writeMyCrews([...myCrews, slug]);
   }
 
+  notifySubscribers(crew, 'joined');
   return true;
 }
 
@@ -193,7 +308,46 @@ export function leaveCrew(slug: string, handle: string): boolean {
   const myCrews = readMyCrews().filter((s) => s !== slug);
   writeMyCrews(myCrews);
 
+  notifySubscribers(crew, 'left');
   return true;
+}
+
+/** V2: Disband a crew. Only founder can do this. */
+export function disbandCrew(slug: string, handle: string): boolean {
+  const allUser = readCrews();
+  const idx = allUser.findIndex((c) => c.slug === slug);
+  if (idx < 0) return false;
+
+  const crew = allUser[idx];
+  if (crew.foundedBy !== handle) return false;
+
+  // Remove from user crews
+  allUser.splice(idx, 1);
+  writeCrews(allUser);
+
+  // Remove from everyone's "my crews"
+  const myCrews = readMyCrews().filter((s) => s !== slug);
+  writeMyCrews(myCrews);
+
+  // V2: Emit ledger event
+  emitCrewDisbanded({
+    slug: crew.slug,
+    name: crew.name,
+    reason: `Disbanded by founder @${handle}.`,
+  });
+
+  notifySubscribers(crew, 'disbanded');
+  return true;
+}
+
+/** V2: Get crews for a specific district */
+export function getCrewsByDistrict(district: string): Crew[] {
+  return getAllCrews().filter((c) => c.district === district);
+}
+
+/** V2: Get crews aligned with a faction */
+export function getCrewsByFaction(factionSlug: string): Crew[] {
+  return getAllCrews().filter((c) => c.factionAlignment === factionSlug);
 }
 
 // --- Seeded Crews (world flavor) ---
@@ -212,7 +366,7 @@ export const SEEDED_CREWS: Crew[] = [
       { handle: 'eddy-pool', displayName: 'Eddy Pool', role: 'member', joinedAt: '2003-02-01T00:00:00.000Z' },
       { handle: 'rudy-44', displayName: 'Rudy 44', role: 'member', joinedAt: '2003-03-08T00:00:00.000Z' },
     ],
-    district: 'pool_hall_county',
+    district: 'pool-hall-county',
     visibility: 'public',
     tags: ['regulars', 'pool', 'old guard'],
   },
@@ -228,7 +382,7 @@ export const SEEDED_CREWS: Crew[] = [
       { handle: 'lot-arms', displayName: 'Lot Arms', role: 'founder', joinedAt: '2004-06-20T02:30:00.000Z' },
       { handle: 'no-eddy', displayName: 'No Eddy', role: 'member', joinedAt: '2004-07-01T00:00:00.000Z' },
     ],
-    district: 'parking_lot_west',
+    district: 'parking-lot-west',
     factionAlignment: 'lot-racers',
     visibility: 'public',
     tags: ['lot', 'racers', 'council'],
@@ -245,8 +399,75 @@ export const SEEDED_CREWS: Crew[] = [
       { handle: 'pawn-counter-guy', displayName: 'Pawn Counter Guy', role: 'founder', joinedAt: '2005-11-03T00:00:00.000Z' },
       { handle: 'very-good-clerk', displayName: 'Very Good Clerk', role: 'member', joinedAt: '2005-12-01T00:00:00.000Z' },
     ],
-    district: 'object_district',
+    district: 'object-district',
     visibility: 'public',
     tags: ['stuff', 'union', 'catalog'],
+  },
+  // V2: Additional seed crews
+  {
+    slug: 'back-booth-regulars',
+    name: 'Back Booth Regulars',
+    tagline: 'Table for six. Only four chairs. The math works out.',
+    foundedBy: 'corner-booth-ray',
+    foundedAt: '2003-08-22T23:30:00.000Z',
+    isOfficial: false,
+    memberCount: 6,
+    members: [
+      { handle: 'corner-booth-ray', displayName: 'Corner Booth Ray', role: 'founder', joinedAt: '2003-08-22T23:30:00.000Z' },
+      { handle: 'no-receipt-donna', displayName: 'No Receipt Donna', role: 'member', joinedAt: '2003-09-01T00:00:00.000Z' },
+      { handle: 'cold-coffee-mike', displayName: 'Cold Coffee Mike', role: 'seen_around', joinedAt: '2003-11-14T00:00:00.000Z' },
+    ],
+    district: 'back-booth',
+    factionAlignment: 'night-drinkers',
+    visibility: 'public',
+    tags: ['booth', 'regulars', 'night shift'],
+  },
+  {
+    slug: 'dead-link-recovery-club',
+    name: 'Dead Link Recovery Club',
+    tagline: 'We find the pages that the directory forgot. Then we forget them again, correctly.',
+    foundedBy: 'link-rot-larry',
+    foundedAt: '2004-02-14T00:00:00.000Z',
+    isOfficial: false,
+    memberCount: 5,
+    members: [
+      { handle: 'link-rot-larry', displayName: 'Link Rot Larry', role: 'founder', joinedAt: '2004-02-14T00:00:00.000Z' },
+      { handle: '404-faye', displayName: '404 Faye', role: 'member', joinedAt: '2004-03-01T00:00:00.000Z' },
+    ],
+    district: 'dead-link-cemetery',
+    visibility: 'public',
+    tags: ['links', 'recovery', 'archive'],
+  },
+  {
+    slug: 'motel-row-watch',
+    name: 'Motel Row Watch',
+    tagline: 'Someone has to notice the vacancies. We are someone.',
+    foundedBy: 'front-desk-ghost',
+    foundedAt: '2005-07-04T03:00:00.000Z',
+    isOfficial: false,
+    memberCount: 4,
+    members: [
+      { handle: 'front-desk-ghost', displayName: 'Front Desk Ghost', role: 'founder', joinedAt: '2005-07-04T03:00:00.000Z' },
+      { handle: 'ice-machine-report', displayName: 'Ice Machine Report', role: 'member', joinedAt: '2005-08-15T00:00:00.000Z' },
+    ],
+    district: 'motel-row',
+    visibility: 'public',
+    tags: ['motel', 'watch', 'vacancies'],
+  },
+  {
+    slug: 'classified-readers',
+    name: 'Classified Readers',
+    tagline: 'We read the classifieds that were not meant to be read.',
+    foundedBy: 'small-print-sal',
+    foundedAt: '2004-11-30T00:00:00.000Z',
+    isOfficial: false,
+    memberCount: 3,
+    members: [
+      { handle: 'small-print-sal', displayName: 'Small Print Sal', role: 'founder', joinedAt: '2004-11-30T00:00:00.000Z' },
+    ],
+    district: 'classified-alley',
+    factionAlignment: 'the-smokers',
+    visibility: 'unlisted',
+    tags: ['classifieds', 'reading', 'secrets'],
   },
 ];

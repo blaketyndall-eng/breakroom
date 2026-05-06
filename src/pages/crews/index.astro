@@ -1,10 +1,7 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
-import CrewCard from '@/components/crews/CrewCard.astro';
 import CrewCreator from '@/components/crews/CrewCreator';
-import { getPublicCrews } from '@/lib/crews';
-
-const crews = getPublicCrews();
+import CrewDirectory from '@/components/crews/CrewDirectory';
 ---
 <OldWebLayout title="Crews" section="crews">
   <div class="status-strip"><span>crews</span><span>not official turf</span><span>user-created</span></div>
@@ -17,15 +14,7 @@ const crews = getPublicCrews();
 
       <CrewCreator client:load />
 
-      <div class="crew-list">
-        {crews.map((crew) => (
-          <CrewCard crew={crew} />
-        ))}
-      </div>
-
-      {crews.length === 0 && (
-        <p class="crew-empty-state">No crews formed yet. Someone has to go first.</p>
-      )}
+      <CrewDirectory client:load />
     </div>
   </section>
 </OldWebLayout>
