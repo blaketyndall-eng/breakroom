@@ -1,29 +1,63 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SearchBox from '@/components/sleepernet/SearchBox';
-import TableBox from '@/components/oldweb/TableBox.astro';
 import { BREAKROOM_DATA } from '@/content/data/breakroom';
 ---
 <BaseLayout title="SleeperNet" section="sleeper">
-  <section class="container page-pad sleeper-page">
-    <div class="breakroom-mark">BRKRM / mark not approved</div>
-    <h1 class="sleeper-wordmark">
-      <span class="s1">S</span><span class="s2">l</span><span class="s3">e</span><span class="s4">e</span><span class="s5 flicker">p</span><span class="s6">e</span><span class="s7">r</span><span class="s8">N</span><span class="s9">e</span><span class="s10">t</span>
+  <!-- Google Beta zone: centered search -->
+  <section class="sn-hero">
+    <h1 class="sn-wordmark">
+      <span class="s1">S</span><span class="s2">l</span><span class="s3">e</span><span class="s4">e</span><span class="s5 flicker">p</span><span class="s6">N</span><span class="s7">e</span><span class="s8">t</span><span class="sn-bang">!</span>
     </h1>
-    <p class="sleeper-subline">Search the after-hours internet.</p>
+    <p class="sn-beta">BETA</p>
+    <p class="sn-tagline">Search the after-hours internet.</p>
     <SearchBox client:load />
-
-    <section class="sleeper-lower-grid">
-      <TableBox title="Trending searches / suspicious">
-        <div class="link-cloud">
-          {BREAKROOM_DATA.trendingSearches.map((term) => <a href={`/newsstand?query=${term}`}>{term}</a>)}
-        </div>
-      </TableBox>
-
-      <TableBox title="Public notice">
-        <p><b>OmniShift Notice:</b> Search results may include unverified room memory, product sightings, employee files, motel keys, tournament brackets, or things finance has refused to reimburse.</p>
-        <p><a href="/breakroom">Open employee resources</a> · <a href="/clock-out">Clock out</a></p>
-      </TableBox>
-    </section>
+    <p class="sn-more"><a href="/sleepnet">More SleeperNet!</a></p>
   </section>
+
+  <!-- Yahoo directory zone: below the fold -->
+  <hr class="sn-rule" />
+  <nav class="sn-directory">
+    <div class="sn-dir-header">
+      <span class="sn-dir-title">Site Directory</span> — Sites organized by room
+      <a href="/sleepnet/create" class="sn-dir-suggest">Suggest your site</a>
+    </div>
+    <div class="sn-dir-grid">
+      <div class="sn-dir-col">
+        <a href="/newsstand" class="sn-dir-cat">News &amp; Media</a>
+        <span class="sn-dir-sub">3AM Edition, Corrections, Public Notices...</span>
+        <a href="/idle-hands" class="sn-dir-cat">Recreation &amp; Sports</a>
+        <span class="sn-dir-sub">Pool Tournaments, Player Bios, Brackets...</span>
+        <a href="/stuff" class="sn-dir-cat">Lost Objects &amp; Evidence</a>
+        <span class="sn-dir-sub">Stuff Shelf, Drawer, Object Reports...</span>
+        <a href="/events" class="sn-dir-cat">Events &amp; Happenings</a>
+        <span class="sn-dir-sub">Maybe Real, Archive, Disputed...</span>
+      </div>
+      <div class="sn-dir-col">
+        <a href="/districts" class="sn-dir-cat">Districts &amp; Geography</a>
+        <span class="sn-dir-sub">Parking Lot West, Motel Row, Pool Hall County...</span>
+        <a href="/factions" class="sn-dir-cat">Factions &amp; Turf</a>
+        <span class="sn-dir-sub">The Players, Night Drinkers, Cowboys...</span>
+        <a href="/crews" class="sn-dir-cat">Crews &amp; Groups</a>
+        <span class="sn-dir-sub">User Clubs, Fake Unions, Old Fan Clubs...</span>
+        <a href="/radio" class="sn-dir-cat">Radio &amp; Broadcast</a>
+        <span class="sn-dir-sub">Channel 1:47, Lot Weather, Station IDs...</span>
+      </div>
+    </div>
+    <div class="sn-dir-links">
+      <a href="/breakroom">Employee Resources</a> · <a href="/rack">The Rack</a> · <a href="/phone">Phone Behind Bar</a> · <a href="/dead-link-cemetery">Dead Link Cemetery</a> · <a href="/ventures">Ventures</a>
+    </div>
+  </nav>
+
+  <!-- Trending / suspicious -->
+  <div class="sn-trending">
+    <span class="sn-trending-label">Trending:</span>
+    {BREAKROOM_DATA.trendingSearches.slice(0, 8).map((term) => <a href={`/newsstand?query=${term}`}>{term}</a>)}
+  </div>
+
+  <!-- Footer -->
+  <footer class="sn-footer">
+    <p>OmniShift Notice: Search results may include unverified room memory, product sightings, employee files, motel keys, tournament brackets, or things finance has refused to reimburse.</p>
+    <p class="sn-copy">© 2003 OmniShift Inc. / SleeperNet Division. All rights reserved. <a href="/clock-out">Clock Out</a></p>
+  </footer>
 </BaseLayout>
