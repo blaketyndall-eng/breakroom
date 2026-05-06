@@ -318,3 +318,234 @@
   font-style: italic;
   margin-top: 0.5rem;
 }
+
+
+/* ============================================
+   Crews V2 — PR 63 (Crew Builder V2)
+   Directory, Detail V2, Stats, Filters
+   ============================================ */
+
+/* --- Directory --- */
+
+.crew-directory {
+  margin-top: 1.5rem;
+}
+
+.crew-stats-bar {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #14110e;
+  margin-bottom: 1rem;
+}
+
+.crew-stat-item {
+  font-size: 0.65rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #5a513f;
+}
+
+.crew-filter-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px dashed #ccc;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.015) 0 1px, transparent 1px 4px),
+    #faf8f4;
+}
+
+.crew-search-input {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #14110e;
+  background: #fff;
+  flex: 1;
+  min-width: 140px;
+  max-width: 240px;
+}
+
+.crew-search-input:focus {
+  outline: 2px solid #5a513f;
+  outline-offset: 1px;
+}
+
+.crew-search-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.crew-filter-select {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.7rem;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid #14110e;
+  background: #fff;
+  color: #14110e;
+  cursor: pointer;
+}
+
+.crew-mine-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.65rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #5a513f;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.crew-mine-toggle input[type="checkbox"] {
+  accent-color: #14110e;
+}
+
+/* --- Faction badge (directory cards + detail) --- */
+
+.crew-faction-badge {
+  font-size: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 5px;
+  border: 1px solid #6b4c2a;
+  color: #6b4c2a;
+}
+
+/* --- Crew age in card footer --- */
+
+.crew-age {
+  font-size: 0.7rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #999;
+}
+
+/* --- Detail V2 layout --- */
+
+.crew-detail-v2 {
+  padding: 0.5rem 0;
+}
+
+.crew-detail-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.015) 0 1px, transparent 1px 4px),
+    #faf8f4;
+}
+
+.crew-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.crew-info-label {
+  font-size: 0.55rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #999;
+}
+
+.crew-info-value {
+  font-size: 0.8rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #14110e;
+  text-transform: capitalize;
+}
+
+.crew-info-value a {
+  color: #14110e;
+  text-decoration: none;
+}
+
+.crew-info-value a:hover {
+  text-decoration: underline;
+}
+
+/* --- Detail actions --- */
+
+.crew-detail-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.crew-disband-btn {
+  border-color: #b00020;
+  color: #b00020;
+}
+
+.crew-disband-confirm {
+  background: #b00020;
+  color: #fff;
+  border-color: #b00020;
+}
+
+/* --- Detail tags variant --- */
+
+.crew-detail-tags {
+  margin-bottom: 1rem;
+}
+
+/* --- Member meta in roster --- */
+
+.crew-member-meta {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.crew-member-joined {
+  font-size: 0.55rem;
+  color: #aaa;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+/* --- Disbanded / not-found states --- */
+
+.crew-detail-disbanded,
+.crew-detail-notfound {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.crew-disbanded-notice {
+  font-size: 0.85rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #b00020;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.crew-disbanded-sub,
+.crew-not-found-sub {
+  font-size: 0.7rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #999;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+/* --- Creator V2 field hint --- */
+
+.crew-field-hint {
+  display: block;
+  font-size: 0.6rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #aaa;
+  font-style: italic;
+  margin-top: 0.15rem;
+}
