@@ -5,8 +5,9 @@ interface Props {
   title?: string;
   section?: string;
   description?: string;
+  level?: 1 | 2 | 3 | 4;
 }
-const { title = 'The Breakroom', section = 'breakroom', description = 'After-hours internet hidden inside a fake company.' } = Astro.props;
+const { title = 'The Breakroom', section = 'breakroom', description = 'After-hours internet hidden inside a fake company.', level } = Astro.props;
 ---
 <!doctype html>
 <html lang="en" data-site-mode="3AM">
@@ -16,7 +17,7 @@ const { title = 'The Breakroom', section = 'breakroom', description = 'After-hou
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
-  <body class="scanlines grain" data-section={section}>
+  <body class="scanlines grain" data-section={section} {...(level ? { 'data-level': String(level) } : {})}>
     <OldHeader />
     <main>
       <slot />

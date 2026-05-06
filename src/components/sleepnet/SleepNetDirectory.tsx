@@ -58,7 +58,7 @@ export default function SleepNetDirectory() {
         <p className="memo-box">{status}</p>
 
         {doorMessage && (
-          <div className={`door-reveal ${doorMessage.isNew ? 'door-new' : 'door-known'}`}>
+          <div className={`door-reveal ${doorMessage.isNew ? 'door-new' : 'door-known'}`} data-level="1">
             <p className="door-reveal-header">{doorMessage.isNew ? 'A door moved.' : 'Door already open.'}</p>
             <p className="door-reveal-title">{doorMessage.door.reward.title}</p>
             {doorMessage.door.reward.body && <p>{doorMessage.door.reward.body}</p>}

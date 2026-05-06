@@ -31,6 +31,13 @@ export const SLEEPNET_SITE_TYPE_LABELS: Record<SleepNetSiteType | 'auto', string
   object_archive: 'Object Archive',
 };
 
+export const DESIGN_LEVEL_OPTIONS: { value: 1 | 2 | 3 | 4; label: string; hint: string }[] = [
+  { value: 1, label: 'Insane / Cursed', hint: 'Phosphor green. Pixel fonts. The page is hostile.' },
+  { value: 2, label: 'Underground / Weird', hint: 'Dark metal. Red links. Beveled edges. The page has a past.' },
+  { value: 3, label: 'Old-Web Directory', hint: 'Paper background. Blue links. Visitor counter. Standard.' },
+  { value: 4, label: 'Polished / Corporate', hint: 'White. Serif. Clean. The company made this page.' },
+];
+
 export const FAKE_RESTAURANT_PRESETS = [
   'Very Good Burger',
   'Still Open Burger',
@@ -63,7 +70,21 @@ function titleFromPrompt(prompt: string, fallback: string) {
     .join(' ') || fallback;
 }
 
-function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: string; tagline: string; neighborhood: string; sections: SleepNetSection[]; components: SleepNetComponent[]; relatedObjects?: string[]; relatedAgent?: string; factionAffinity?: string[]; canonicalWeight?: number; realityStatus?: string; }): SleepNetSite {
+/** Maps site types to design intensity levels (1-4).
+ *  1 = Insane/Cursed, 2 = Underground/Weird, 3 = Old-Web Directory, 4 = Polished Corporate */
+export function getDesignLevel(siteType: SleepNetSiteType | string): 1 | 2 | 3 | 4 {
+  switch (siteType) {
+    case 'personal_homepage': return 2;
+    case 'faction_turf': return 2;
+    case 'classified_board': return 3;
+    case 'faux_company': return 3;
+    case 'fake_restaurant': return 3;
+    case 'object_archive': return 3;
+    default: return 3;
+  }
+}
+
+function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: string; tagline: string; neighborhood: string; sections: SleepNetSection[]; components: SleepNetComponent[]; relatedObjects?: string[]; relatedAgent?: string; factionAffinity?: string[]; canonicalWeight?: number; realityStatus?: string; designLevel?: 1 | 2 | 3 | 4; }): SleepNetSite {
   const description = input.prompt.trim() || input.tagline;
   const site: SleepNetSite = {
     slug: normalizeGeneratorSlug(input.title),
@@ -78,6 +99,7 @@ function baseSite(input: { prompt: string; siteType: SleepNetSiteType; title: st
     related_object_slugs: input.relatedObjects ?? [],
     related_agent_slug: input.relatedAgent ?? 'directory-clerk',
     faction_affinity: input.factionAffinity ?? (input.siteType === 'faction_turf' ? ['the-players'] : []),
+    design_level: input.designLevel ?? getDesignLevel(input.siteType),
     weirdness_level: 3,
     reality_status: input.realityStatus ?? 'indexed_noise',
     canonical_weight: input.canonicalWeight ?? 0,

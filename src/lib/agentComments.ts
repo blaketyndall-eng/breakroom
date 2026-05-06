@@ -5,7 +5,7 @@ import type { SleepNetSiteType } from '@/lib/sleepnetGenerators';
 
 // --- Types ---
 
-export type AgentCommentTargetType = 'sleepnet_site' | 'faction' | 'guestbook' | 'artifact' | 'regular_file';
+export type AgentCommentTargetType = 'sleepnet_site' | 'faction' | 'guestbook' | 'artifact' | 'regular_file' | 'event';
 export type AgentCommentTrigger = 'page_visit' | 'drift_threshold' | 'guestbook_activity' | 'scheduled' | 'seed';
 
 export type AgentComment = {
@@ -108,6 +108,76 @@ const GUESTBOOK_COMMENT_LINES: Record<string, string[]> = {
   ],
 };
 
+// --- Design-level-aware comment lines ---
+// Agents shift voice to match the page atmosphere.
+
+const LEVEL_COMMENT_LINES: Record<1 | 2 | 4, Record<string, string[]>> = {
+  1: {
+    'night-manager': [
+      'This page is leaking. Management does not acknowledge leaks.',
+      'The terminal was left open. The terminal is always open.',
+      'Screen flicker confirmed. Cause: unknown. Status: unchanged.',
+    ],
+    'directory-clerk': [
+      'This URL was not requested. The directory filed it anyway.',
+      'Page source: corrupted. Page status: visible. That is worse.',
+      'The index lost this page. The page did not notice.',
+    ],
+    'pool-table-oracle': [
+      'The green light never turns off on this page.',
+      'Something scratched the felt here. Not chalk.',
+    ],
+    'unknown-employee': [
+      'This terminal has been on since before the building.',
+      'Nobody clocked in to this page. The page clocked itself.',
+    ],
+    'seven-eleven-clerk': [
+      'The fluorescent above this page has been blinking for months.',
+      'I can smell ozone through the screen. That should not be possible.',
+    ],
+  },
+  2: {
+    'night-manager': [
+      'Somebody was here after closing. The page remembers.',
+      'The back room light is on. Nobody turned it on.',
+    ],
+    'directory-clerk': [
+      'This page was filed under a name the directory does not recognize.',
+      'Indexed after dark. The timestamp disagrees with the clock.',
+    ],
+    'pool-table-oracle': [
+      'Red felt under the links. The table knows what that means.',
+      'Somebody chalked the wrong end. The table noticed.',
+    ],
+    'random-friend': [
+      'I know this page from somewhere. That is not a good sign.',
+      'Pretty sure I was here before. It looked different then.',
+    ],
+    'phone-behind-the-bar': [
+      'The phone rang when this page loaded. Nobody answered.',
+      'Voicemail is full. Has been full since the page went live.',
+    ],
+  },
+  4: {
+    'night-manager': [
+      'This page has been reviewed and approved per OmniShift protocol.',
+      'Compliance check: passed. The page is within parameters.',
+    ],
+    'directory-clerk': [
+      'Properly indexed. Filed on time. No further action required.',
+      'This page meets directory standards. That is the only compliment.',
+    ],
+    'room-admin': [
+      'Page formatted correctly. Content pending management review.',
+      'This page will be included in the quarterly status report.',
+    ],
+    'unknown-employee': [
+      'The page loaded within acceptable timeframes.',
+      'This content has been approved by the appropriate department.',
+    ],
+  },
+};
+
 // --- Local storage helpers ---
 
 type LocalAgentCommentMap = Record<string, AgentComment[]>;
@@ -168,8 +238,17 @@ function chooseAgentForTarget(targetType: AgentCommentTargetType, targetSlug: st
 /**
  * Choose a line for a given agent and context.
  */
-function chooseLineForContext(agent: BreakroomAgent, targetType: AgentCommentTargetType, targetSlug: string, context?: { factionSlug?: string }): string {
-  // Try faction-specific lines first
+function chooseLineForContext(agent: BreakroomAgent, targetType: AgentCommentTargetType, targetSlug: string, context?: { factionSlug?: string; designLevel?: 1 | 2 | 3 | 4 }): string {
+  // Try design-level-specific lines first (atmosphere-aware)
+  if (context?.designLevel && context.designLevel !== 3) {
+    const levelLines = LEVEL_COMMENT_LINES[context.designLevel as 1 | 2 | 4]?.[agent.slug];
+    if (levelLines?.length) {
+      const seed = targetSlug.length + Date.now() % 1000;
+      return levelLines[seed % levelLines.length]!;
+    }
+  }
+
+  // Try faction-specific lines
   if (targetType === 'faction' && context?.factionSlug) {
     const factionLines = FACTION_COMMENT_LINES[context.factionSlug]?.[agent.slug];
     if (factionLines?.length) {
@@ -216,7 +295,7 @@ export function generateAgentComment(input: {
   targetType: AgentCommentTargetType;
   targetSlug: string;
   trigger: AgentCommentTrigger;
-  context?: { siteType?: SleepNetSiteType; factionSlug?: string };
+  context?: { siteType?: SleepNetSiteType; factionSlug?: string; designLevel?: 1 | 2 | 3 | 4 };
 }): AgentComment | null {
   if (typeof window === 'undefined') return null;
   if (recentlyCommented(input.targetType, input.targetSlug)) return null;

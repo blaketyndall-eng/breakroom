@@ -15,7 +15,7 @@ import {
 } from '@/lib/sleepnetSites';
 import type { SleepNetSection, SleepNetSite } from '@/lib/sleepnetSites';
 import { createFauxCompanyComponents } from '@/lib/sleepnetComponents';
-import { SLEEPNET_SITE_TYPE_LABELS, SLEEPNET_SITE_TYPES, generateSleepNetDraft } from '@/lib/sleepnetGenerators';
+import { DESIGN_LEVEL_OPTIONS, SLEEPNET_SITE_TYPE_LABELS, SLEEPNET_SITE_TYPES, getDesignLevel, generateSleepNetDraft } from '@/lib/sleepnetGenerators';
 import type { SleepNetSiteType } from '@/lib/sleepnetGenerators';
 
 function sectionText(sections: SleepNetSection[]) {
@@ -111,7 +111,8 @@ export default function SleepNetSiteEditor() {
     const next = generateSleepNetDraft({ prompt: seed, siteType: nextSiteType });
     setSite(next);
     setSections(sectionText(next.sections));
-    setStatus(`${SLEEPNET_SITE_TYPE_LABELS[next.site_type as SleepNetSiteType]} draft generated with sections and editable page components.`);
+    const levelLabel = DESIGN_LEVEL_OPTIONS.find((o) => o.value === (next.design_level ?? 3))?.label ?? 'Standard';
+    setStatus(`${SLEEPNET_SITE_TYPE_LABELS[next.site_type as SleepNetSiteType]} draft generated. Atmosphere: ${levelLabel}.`);
   }
 
   function regenerateComponents() {
@@ -189,6 +190,14 @@ export default function SleepNetSiteEditor() {
             <select value={site.neighborhood} onChange={(event) => update('neighborhood', event.target.value)}>
               {SLEEPNET_NEIGHBORHOODS.map((item) => <option key={item} value={item}>{labelSleepNetValue(item)}</option>)}
             </select>
+          </label>
+          <label>Page Atmosphere
+            <select value={String(site.design_level ?? 3)} onChange={(event) => update('design_level', Number(event.target.value) as 1 | 2 | 3 | 4)}>
+              {DESIGN_LEVEL_OPTIONS.map((opt) => <option key={opt.value} value={String(opt.value)}>{opt.label}</option>)}
+            </select>
+            <small style={{ display: 'block', marginTop: '4px', opacity: 0.7, fontFamily: 'var(--type-mono)', fontSize: '10px' }}>
+              {DESIGN_LEVEL_OPTIONS.find((o) => o.value === (site.design_level ?? 3))?.hint ?? ''}
+            </small>
           </label>
         </div>
 

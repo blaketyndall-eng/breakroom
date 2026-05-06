@@ -445,3 +445,237 @@
     min-height: 520px;
   }
 }
+
+/* ============= DESIGN LEVEL COMPONENT VARIANTS ============= */
+
+/* --- LEVEL 1: Insane / Cursed --- */
+/* No containers. Content floats. Everything bleeds into the void. */
+[data-level="1"] .old-shell {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+[data-level="1"] .old-header {
+  background: transparent;
+  color: var(--phosphor);
+  border-bottom: 1px solid rgba(51, 255, 102, 0.2);
+  font-family: var(--type-pixel);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+[data-level="1"] .old-body {
+  color: var(--chrome);
+}
+[data-level="1"] .old-button {
+  border: 1px solid rgba(51, 255, 102, 0.4);
+  background: transparent;
+  color: var(--phosphor);
+  font-family: var(--type-pixel);
+  letter-spacing: 0.15em;
+}
+[data-level="1"] .old-button:hover {
+  background: rgba(51, 255, 102, 0.1);
+  border-style: solid;
+}
+[data-level="1"] .status-strip {
+  background: transparent;
+  color: var(--phosphor);
+  border: none;
+  border-top: 1px solid rgba(51, 255, 102, 0.15);
+  font-family: var(--type-pixel);
+}
+[data-level="1"] .status-strip span {
+  border-right-color: rgba(51, 255, 102, 0.15);
+}
+[data-level="1"] .link-maze-card {
+  border: 1px solid rgba(255, 102, 51, 0.3);
+  background: rgba(0, 0, 0, 0.4);
+  color: #ff6633;
+  box-shadow: none;
+}
+[data-level="1"] .link-maze-card strong {
+  font-family: var(--type-pixel);
+  color: var(--phosphor);
+}
+[data-level="1"] .link-maze-card small {
+  color: var(--chrome);
+}
+[data-level="1"] .red-stamp,
+[data-level="1"] .maze-stamp {
+  border-color: var(--phosphor);
+  color: var(--phosphor);
+}
+[data-level="1"] .visitor-counter {
+  background: transparent;
+  border: 1px solid rgba(51, 255, 102, 0.3);
+}
+[data-level="1"] .object-card {
+  border: 1px solid rgba(255, 102, 51, 0.3);
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: none;
+}
+[data-level="1"] .object-card::before {
+  background: transparent;
+  color: var(--phosphor);
+  border: 1px solid rgba(51, 255, 102, 0.3);
+}
+
+/* --- LEVEL 2: Underground / Weird --- */
+/* Dark metal panels. Beveled edges. Industrial glow. */
+[data-level="2"] .old-shell {
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid #333;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 8px rgba(0, 0, 0, 0.4);
+}
+[data-level="2"] .old-header {
+  background: linear-gradient(180deg, #2a2622 0%, #1a1714 100%);
+  color: var(--phosphor);
+  border-bottom: 2px solid #444;
+  font-family: var(--type-typer);
+  letter-spacing: 0.14em;
+}
+[data-level="2"] .old-body {
+  color: var(--nicotine);
+}
+[data-level="2"] .old-button {
+  border: 2px outset #555;
+  background: linear-gradient(180deg, #3a3632 0%, #1a1714 100%);
+  color: var(--nicotine);
+  font-family: var(--type-typer);
+}
+[data-level="2"] .old-button:hover {
+  border-style: inset;
+  background: linear-gradient(180deg, #4a4642 0%, #2a2724 100%);
+}
+[data-level="2"] .status-strip {
+  background: #0a0908;
+  color: var(--phosphor);
+  border: 1px solid #333;
+}
+[data-level="2"] .status-strip span {
+  border-right-color: #444;
+}
+[data-level="2"] .link-maze-card {
+  border: 1px solid #444;
+  background: rgba(0, 0, 0, 0.5);
+  color: #ff3333;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+}
+[data-level="2"] .link-maze-card strong {
+  font-family: var(--type-typer);
+  color: var(--phosphor);
+}
+[data-level="2"] .link-maze-card small {
+  color: var(--chrome);
+}
+[data-level="2"] .red-stamp,
+[data-level="2"] .maze-stamp {
+  border-color: #ff3333;
+  color: #ff3333;
+}
+[data-level="2"] .visitor-counter {
+  border-color: #444;
+}
+[data-level="2"] .object-card {
+  border: 2px solid #444;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.4);
+}
+[data-level="2"] .object-card::before {
+  background: #1a1714;
+  color: var(--phosphor);
+}
+[data-level="2"] .table-box {
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--nicotine);
+}
+[data-level="2"] .table-box th {
+  background: #1a1714;
+  color: var(--phosphor);
+  border-color: #444;
+}
+[data-level="2"] .table-box td {
+  border-color: #333;
+}
+
+/* --- LEVEL 4: Polished Corporate / OmniShift --- */
+/* Clean white. Serif letterhead. No texture. No noise. */
+[data-level="4"] .old-shell {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-bottom: 1px solid #e0e0e0;
+}
+[data-level="4"] .old-header {
+  background: transparent;
+  color: #333;
+  border-bottom: 2px solid #333;
+  font-family: var(--type-paper);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+[data-level="4"] .old-body {
+  color: #333;
+  font-size: 15px;
+  line-height: 1.6;
+}
+[data-level="4"] .old-button {
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #333;
+  font-family: var(--type-ui);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+[data-level="4"] .old-button:hover {
+  border-color: var(--beer-red);
+  color: var(--beer-red);
+  border-style: solid;
+}
+[data-level="4"] .status-strip {
+  background: #f8f8f8;
+  color: #888;
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  font-family: var(--type-ui);
+  font-size: 11px;
+}
+[data-level="4"] .status-strip span {
+  border-right-color: #e0e0e0;
+}
+[data-level="4"] .red-stamp,
+[data-level="4"] .maze-stamp {
+  border-color: var(--beer-red);
+  color: var(--beer-red);
+  font-family: var(--type-paper);
+  letter-spacing: 0.08em;
+}
+[data-level="4"] .link-maze-card {
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  box-shadow: none;
+}
+[data-level="4"] .link-maze-card strong {
+  font-family: var(--type-ui);
+  color: #333;
+}
+[data-level="4"] .link-maze-card small {
+  color: #888;
+  font-family: var(--type-ui);
+}
+[data-level="4"] .visitor-counter {
+  display: none;
+}
+[data-level="4"] .object-card {
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  box-shadow: none;
+}
+[data-level="4"] .object-card::before {
+  background: #333;
+  color: #fff;
+  font-family: var(--type-ui);
+  letter-spacing: 0.08em;
+}

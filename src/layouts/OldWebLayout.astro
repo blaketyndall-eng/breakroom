@@ -1,8 +1,8 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-const { title, section = 'oldweb' } = Astro.props;
+const { title, section = 'oldweb', level } = Astro.props;
 ---
-<BaseLayout title={title} section={section}>
+<BaseLayout title={title} section={section} level={level}>
   <div class="container page-pad">
     <slot />
   </div>

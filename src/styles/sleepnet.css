@@ -623,6 +623,30 @@
   margin-bottom: 4px;
 }
 
+/* Door reveal forced to Level 1 — always feels cursed */
+.door-reveal[data-level="1"] {
+  border-color: var(--phosphor, #33ff66);
+  background: #050505;
+  box-shadow: 0 0 12px rgba(51, 255, 102, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.8);
+}
+.door-reveal[data-level="1"] .door-reveal-header {
+  color: var(--phosphor, #33ff66);
+  text-shadow: 0 0 4px rgba(51, 255, 102, 0.4);
+}
+.door-reveal[data-level="1"] .door-reveal-title {
+  font-family: var(--type-pixel, monospace);
+  color: var(--chrome, #c8c6c1);
+}
+.door-reveal[data-level="1"] p {
+  font-family: var(--type-typer, monospace);
+  color: var(--nicotine, #e8dfc7);
+}
+.door-reveal[data-level="1"] .old-button {
+  border-color: var(--phosphor, #33ff66);
+  color: var(--phosphor, #33ff66);
+  background: transparent;
+}
+
 /* --- Promotion / Canon Signals (PR 50) --- */
 
 .pass-it-around {
@@ -876,4 +900,282 @@
     overflow-x: auto;
     flex-wrap: nowrap;
   }
+}
+
+
+/* ============================================
+   Search V2 — PR 67
+   Crew + Ledger cards, Search History, More Like This
+   ============================================ */
+
+/* --- Crew result card --- */
+
+.sv2-card-crew {
+  border-left: 5px solid #6b4c2a;
+}
+
+.sv2-badge-crew {
+  border-color: #6b4c2a;
+  color: #6b4c2a;
+}
+
+/* --- Ledger entry result card --- */
+
+.sv2-card-ledger_entry {
+  border-left: 5px solid #5a513f;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.02) 0 1px, transparent 1px 4px),
+    #f6f3ec;
+}
+
+.sv2-badge-ledger_entry {
+  border-color: #5a513f;
+  color: #5a513f;
+}
+
+/* --- Search history --- */
+
+.sv2-history {
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border: 1px dashed #ccc;
+  background:
+    repeating-linear-gradient(0deg, rgba(20,17,14,.015) 0 1px, transparent 1px 4px),
+    #faf8f4;
+}
+
+.sv2-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.sv2-history-label {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5a513f;
+}
+
+.sv2-history-clear {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 9px;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.sv2-history-clear:hover {
+  color: #b00020;
+}
+
+.sv2-history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.sv2-history-item {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 11px;
+  padding: 3px 8px;
+  border: 1px solid #14110e;
+  background: #f6f3ec;
+  cursor: pointer;
+  color: #14110e;
+  box-shadow: 1px 1px 0 rgba(20,17,14,.15);
+}
+
+.sv2-history-item:hover {
+  background: #efe7d3;
+  box-shadow: 2px 2px 0 rgba(20,17,14,.2);
+}
+
+.sv2-history-query {
+  color: #14110e;
+}
+
+.sv2-history-count {
+  font-size: 9px;
+  color: #999;
+}
+
+/* --- More Like This, Unfortunately --- */
+
+.mlt-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mlt-item {
+  padding: 0.4rem 0;
+  border-bottom: 1px dotted var(--color-border, #444);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.mlt-item:last-child {
+  border-bottom: none;
+}
+
+.mlt-link {
+  color: var(--color-link, #0000ee);
+  text-decoration: none;
+  font-family: var(--type-paper, Georgia, serif);
+}
+
+.mlt-link:hover {
+  text-decoration: underline;
+}
+
+.mlt-no-href {
+  color: #5a513f;
+  font-style: italic;
+  cursor: default;
+}
+
+.mlt-note {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  color: var(--color-muted, #888);
+}
+
+.mlt-source-ledger .mlt-link {
+  color: #5a513f;
+}
+
+.mlt-source-crew .mlt-link {
+  color: #6b4c2a;
+}
+
+.mlt-source-history .mlt-link {
+  color: #999;
+}
+
+.mlt-empty {
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  color: #888;
+  font-style: italic;
+}
+
+/* ============= DESIGN LEVEL: SLEEPNET SITE VIEW ============= */
+
+/* --- Level 1: Insane/Cursed --- */
+[data-level="1"].sleepnet-site-view {
+  color: var(--chrome, #c8c6c1);
+}
+[data-level="1"] .sleepnet-site-header {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(51, 255, 102, 0.15);
+}
+[data-level="1"] .sleepnet-site-header h1 {
+  font-family: var(--type-pixel);
+  color: var(--phosphor, #33ff66);
+  text-shadow: 0 0 8px rgba(51, 255, 102, 0.3);
+}
+[data-level="1"] .sleepnet-url {
+  color: #ff6633;
+}
+[data-level="1"] .sleepnet-tagline {
+  font-family: var(--type-typer);
+  color: var(--chrome, #c8c6c1);
+}
+[data-level="1"] .sleepnet-meta span {
+  border-color: rgba(51, 255, 102, 0.2);
+  background: transparent;
+  color: var(--phosphor, #33ff66);
+}
+[data-level="1"] .sleepnet-section h2 {
+  font-family: var(--type-pixel);
+  color: #ff6633;
+}
+[data-level="1"] .sleepnet-section p {
+  color: var(--chrome, #c8c6c1);
+  font-family: var(--type-typer);
+}
+
+/* --- Level 2: Underground/Weird --- */
+[data-level="2"].sleepnet-site-view {
+  color: var(--nicotine, #e8dfc7);
+}
+[data-level="2"] .sleepnet-site-header {
+  border: 2px solid #333;
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+[data-level="2"] .sleepnet-site-header h1 {
+  font-family: var(--type-paper);
+  color: var(--nicotine, #e8dfc7);
+}
+[data-level="2"] .sleepnet-url {
+  color: #ff3333;
+}
+[data-level="2"] .sleepnet-tagline {
+  color: var(--chrome, #c8c6c1);
+}
+[data-level="2"] .sleepnet-meta span {
+  border-color: #444;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--phosphor, #33ff66);
+}
+[data-level="2"] .sleepnet-section h2 {
+  color: var(--phosphor, #33ff66);
+  font-family: var(--type-typer);
+}
+[data-level="2"] .sleepnet-section p {
+  color: var(--nicotine, #e8dfc7);
+}
+
+/* --- Level 4: Polished Corporate --- */
+[data-level="4"].sleepnet-site-view {
+  color: #333;
+}
+[data-level="4"] .sleepnet-site-header {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  border-bottom: 2px solid #333;
+  padding: 24px 0;
+}
+[data-level="4"] .sleepnet-site-header h1 {
+  font-family: var(--type-paper);
+  font-size: clamp(36px, 6vw, 64px);
+  letter-spacing: 0.02em;
+  color: #333;
+}
+[data-level="4"] .sleepnet-url {
+  color: #888;
+}
+[data-level="4"] .sleepnet-tagline {
+  font-family: var(--type-ui);
+  font-size: clamp(16px, 2.5vw, 22px);
+  color: #666;
+}
+[data-level="4"] .sleepnet-meta span {
+  border: 1px solid #e0e0e0;
+  background: #f8f8f8;
+  color: #888;
+  font-family: var(--type-ui);
+}
+[data-level="4"] .sleepnet-section h2 {
+  font-family: var(--type-paper);
+  color: #333;
+  letter-spacing: 0.02em;
+}
+[data-level="4"] .sleepnet-section p {
+  color: #555;
+  font-size: 15px;
+  line-height: 1.6;
 }

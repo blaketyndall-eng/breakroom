@@ -12,7 +12,7 @@ type Props = {
   targetType: AgentCommentTargetType;
   targetSlug: string;
   trigger?: AgentCommentTrigger;
-  context?: { siteType?: SleepNetSiteType; factionSlug?: string };
+  context?: { siteType?: SleepNetSiteType; factionSlug?: string; designLevel?: 1 | 2 | 3 | 4 };
   maxVisible?: number;
   autoGenerate?: boolean;
 };
