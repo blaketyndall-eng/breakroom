@@ -6,4 +6,4 @@ compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "./dist"
 
 [vars]
-PUBLIC_SITE_URL = "https://thebreakroom.pages.dev"
+PUBLIC_SITE_URL = "https://thebreakroom.blaketyndall.workers.dev"

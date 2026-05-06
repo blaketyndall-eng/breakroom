@@ -10,5 +10,5 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  site: 'https://thebreakroom.pages.dev'
+  site: 'https://thebreakroom.blaketyndall.workers.dev'
 });
