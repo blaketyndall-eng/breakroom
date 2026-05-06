@@ -8,6 +8,7 @@ import PocketRadioLine from '@/components/pocket/PocketRadioLine';
 import PocketQuickActions from '@/components/pocket/PocketQuickActions';
 import PocketDrawerPreview from '@/components/pocket/PocketDrawerPreview';
 import PocketSeenAround from '@/components/pocket/PocketSeenAround';
+import PocketV1Styles from '@/components/pocket/PocketV1Styles.astro';
 
 // Night Manager daily observations — one per day, seeded by date.
 // Time-of-day pools (research: Adult Swim bump scheduling — different energy per block)
@@ -68,6 +69,7 @@ const dailyObservation = pool[dayOfYear % pool.length];
 const baseVisitorCount = 18439 + dayOfYear;
 ---
 <BaseLayout title="Pocket — The Breakroom" section="pocket" description="Daily access terminal. Check slips. Get lost. Leave marks.">
+  <PocketV1Styles />
   <PocketSignalBar client:load />
 
   <!-- Bump Zone: Night Manager daily observation -->
