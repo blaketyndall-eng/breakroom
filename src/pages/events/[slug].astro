@@ -83,7 +83,7 @@ if (!event) {
         targetType="event"
         targetSlug={event.slug}
         trigger="page_visit"
-        context={{ eventType: event.type, factionSlug: event.relatedFactionSlugs?.[0] }}
+        context={{ factionSlug: event.relatedFactionSlugs?.[0] }}
       />
     </div>
   </section>

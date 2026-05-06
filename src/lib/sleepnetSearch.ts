@@ -179,7 +179,7 @@ function searchStuff(query: string): SleepNetSearchResult[] {
   const items = getAllStuffItems();
   return items
     .filter((item: StuffItem) => {
-      const text = [item.name, item.slug, item.sku, item.note, ...(item.tags ?? [])].join(' ').toLowerCase();
+      const text = [item.name, item.slug, item.description, item.note, ...(item.tags ?? [])].join(' ').toLowerCase();
       return text.includes(q);
     })
     .slice(0, 5)
@@ -188,7 +188,7 @@ function searchStuff(query: string): SleepNetSearchResult[] {
       type: 'stuff_item' as const,
       title: item.name,
       href: makeStuffUrl(item.slug),
-      snippet: item.note || `SKU: ${item.sku}`,
+      snippet: item.note || item.description,
       reason: item.status === 'not_for_you_yet' ? 'Not For You Yet' : undefined,
       reasonStyle: 'plain' as const,
       score: 60,
@@ -221,7 +221,7 @@ function searchEvents(query: string): SleepNetSearchResult[] {
   const q = query.toLowerCase();
   return BREAKROOM_EVENTS
     .filter((e: BreakroomEvent) => {
-      const text = [e.title, e.slug, e.tagline, e.description, e.eventType].join(' ').toLowerCase();
+      const text = [e.title, e.slug, e.description, e.dateLabel, e.type].join(' ').toLowerCase();
       return text.includes(q);
     })
     .slice(0, 3)
@@ -230,9 +230,9 @@ function searchEvents(query: string): SleepNetSearchResult[] {
       type: 'event' as const,
       title: e.title,
       href: `/events/${e.slug}`,
-      snippet: e.tagline,
+      snippet: e.description,
       score: 50,
-      tags: [e.eventType, e.status],
+      tags: [e.type, e.status],
       source: 'seeded' as const,
     }));
 }
