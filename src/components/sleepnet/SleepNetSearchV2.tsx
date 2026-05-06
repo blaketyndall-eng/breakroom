@@ -1,7 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { FormEvent } from 'react';
-import { searchSleepNetV2, SEARCH_CATEGORIES, SEARCH_CATEGORY_LABELS, explainSearchResult } from '@/lib/sleepnetSearch';
-import type { SleepNetSearchResult, SearchCategory, SearchUserContext } from '@/lib/sleepnetSearch';
+import {
+  searchSleepNetV2,
+  SEARCH_CATEGORIES,
+  SEARCH_CATEGORY_LABELS,
+  explainSearchResult,
+  getSearchHistory,
+  addSearchHistory,
+  clearSearchHistory,
+} from '@/lib/sleepnetSearch';
+import type { SleepNetSearchResult, SearchCategory, SearchUserContext, SearchHistoryEntry } from '@/lib/sleepnetSearch';
 import { checkSearchPhraseTrigger, unlockDoor } from '@/lib/hiddenDoors';
 import type { HiddenDoor } from '@/lib/hiddenDoors';
 import { recordSearchAppearance } from '@/lib/promotionSignals';
@@ -13,6 +21,7 @@ export default function SleepNetSearchV2() {
   const [status, setStatus] = useState('Indexing the after-hours directory...');
   const [searching, setSearching] = useState(false);
   const [doorMessage, setDoorMessage] = useState<{ door: HiddenDoor; isNew: boolean } | null>(null);
+  const [history, setHistory] = useState<SearchHistoryEntry[]>([]);
 
   // Load user context from localStorage for personalization
   function getUserContext(): SearchUserContext | undefined {
@@ -65,6 +74,12 @@ export default function SleepNetSearchV2() {
         }
       }
 
+      // V2: Record search history
+      if (nextQuery.trim()) {
+        addSearchHistory(nextQuery, searchResults.length);
+        setHistory(getSearchHistory());
+      }
+
       // Hidden door triggers
       if (nextQuery.trim()) {
         const triggeredDoor = checkSearchPhraseTrigger(nextQuery);
@@ -86,6 +101,7 @@ export default function SleepNetSearchV2() {
 
   useEffect(() => {
     runSearch('', 'all');
+    setHistory(getSearchHistory());
   }, [runSearch]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -96,6 +112,16 @@ export default function SleepNetSearchV2() {
   function handleCategoryChange(category: SearchCategory) {
     setActiveCategory(category);
     runSearch(query, category);
+  }
+
+  function handleHistoryClick(histQuery: string) {
+    setQuery(histQuery);
+    runSearch(histQuery, activeCategory);
+  }
+
+  function handleClearHistory() {
+    clearSearchHistory();
+    setHistory([]);
   }
 
   return (
@@ -113,6 +139,35 @@ export default function SleepNetSearchV2() {
             {searching ? 'Searching...' : 'Search SleepNet'}
           </button>
         </form>
+
+        {/* V2: Search history */}
+        {history.length > 0 && !query.trim() && (
+          <div className="sv2-history">
+            <div className="sv2-history-header">
+              <span className="sv2-history-label">Recent Searches</span>
+              <button
+                type="button"
+                className="sv2-history-clear"
+                onClick={handleClearHistory}
+              >
+                clear
+              </button>
+            </div>
+            <div className="sv2-history-list">
+              {history.slice(0, 8).map((h) => (
+                <button
+                  key={h.query}
+                  type="button"
+                  className="sv2-history-item"
+                  onClick={() => handleHistoryClick(h.query)}
+                >
+                  <span className="sv2-history-query">{h.query}</span>
+                  <span className="sv2-history-count">{h.resultCount} result{h.resultCount !== 1 ? 's' : ''}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Category tabs */}
         <div className="sv2-tabs">
@@ -132,7 +187,7 @@ export default function SleepNetSearchV2() {
 
         {/* Hidden door reveal */}
         {doorMessage && (
-          <div className={`door-reveal ${doorMessage.isNew ? 'door-new' : 'door-known'}`}>
+          <div className={`door-reveal ${doorMessage.isNew ? 'door-new' : 'door-known'}`} data-level="1">
             <p className="door-reveal-header">{doorMessage.isNew ? 'A door moved.' : 'Door already open.'}</p>
             <p className="door-reveal-title">{doorMessage.door.reward.title}</p>
             {doorMessage.door.reward.body && <p>{doorMessage.door.reward.body}</p>}

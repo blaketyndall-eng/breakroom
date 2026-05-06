@@ -24,6 +24,7 @@ export type SleepNetSite = {
   related_object_slugs?: string[];
   related_agent_slug?: string | null;
   faction_affinity?: string[];
+  design_level?: 1 | 2 | 3 | 4;
   weirdness_level?: number;
   reality_status?: string;
   canonical_weight?: number;
