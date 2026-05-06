@@ -169,3 +169,242 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* === Artifact Studio (PR 51) === */
+
+.artifact-studio {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.studio-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.studio-step h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #5a513f;
+  margin-bottom: 0.75rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.artifact-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.5rem;
+}
+
+.artifact-type-card {
+  background: #f6f3ec;
+  border: 2px solid #14110e;
+  padding: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.1s;
+  font-family: inherit;
+  color: #14110e;
+}
+
+.artifact-type-card:hover {
+  border-color: #0000ee;
+  transform: rotate(-0.3deg);
+}
+
+.artifact-type-card.type-selected {
+  border-color: #b00020;
+  background: #efe7d3;
+  box-shadow: 3px 3px 0 rgba(20,17,14,.2);
+}
+
+.type-card-name {
+  display: block;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.type-card-desc {
+  display: block;
+  font-size: 0.7rem;
+  color: #5a513f;
+  line-height: 1.3;
+}
+
+.source-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.source-button.source-active {
+  background: #14110e;
+  color: #efe7d3;
+  border-color: #14110e;
+}
+
+.studio-select {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.5rem;
+  background: #f6f3ec;
+  border: 2px solid #14110e;
+  color: #14110e;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.8rem;
+}
+
+.studio-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.studio-input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.studio-input-row label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #5a513f;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  letter-spacing: 0.06em;
+}
+
+.studio-input-row label .optional-tag {
+  color: #999;
+}
+
+.studio-input-row input {
+  padding: 0.5rem;
+  background: #fff;
+  border: 2px solid #14110e;
+  color: #14110e;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 0.8rem;
+}
+
+.studio-input-row input:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: #e8e0d0;
+}
+
+.generate-button {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+.prompt-card {
+  background: #f6f3ec;
+  border: 2px solid #14110e;
+  padding: 1.25rem;
+  box-shadow: 3px 3px 0 rgba(20,17,14,.2);
+}
+
+.prompt-card-header {
+  margin-bottom: 1rem;
+}
+
+.prompt-card-type {
+  display: inline-block;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  background: #14110e;
+  color: #efe7d3;
+  padding: 0.15rem 0.4rem;
+  margin-bottom: 0.5rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  letter-spacing: 0.1em;
+}
+
+.prompt-card-title {
+  font-size: 1rem;
+  margin: 0.25rem 0;
+  font-family: var(--type-paper, Georgia, serif);
+}
+
+.prompt-card-source {
+  display: block;
+  font-size: 0.7rem;
+  color: #5a513f;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.prompt-card-body {
+  background: #fff;
+  border: 2px solid #14110e;
+  padding: 1rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  color: #333;
+}
+
+.prompt-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.prompt-card-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  gap: 0.75rem;
+  box-shadow: none;
+}
+
+.prompt-card-compact .prompt-card-header {
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.prompt-card-compact .prompt-card-title {
+  font-size: 0.75rem;
+  margin: 0;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.studio-saved {
+  border-top: 2px solid #14110e;
+  padding-top: 1.5rem;
+}
+
+.studio-saved h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #5a513f;
+  margin-bottom: 0.75rem;
+  font-family: var(--type-mono, 'Courier New', monospace);
+}
+
+.saved-prompt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.studio-result {
+  border-top: 3px double #b00020;
+  padding-top: 1.5rem;
+}
