@@ -2,8 +2,10 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PocketSignalBar from '@/components/pocket/PocketSignalBar';
 import PocketMakePrompt from '@/components/pocket/PocketMakePrompt';
+import PocketV1Styles from '@/components/pocket/PocketV1Styles.astro';
 ---
 <BaseLayout title="Make One Thing — The Breakroom" section="pocket" description="Make something. One field. One tap. It's in the world.">
+  <PocketV1Styles />
   <PocketSignalBar client:load />
   <PocketMakePrompt client:load />
 </BaseLayout>

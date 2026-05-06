@@ -7,8 +7,10 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PocketSignalBar from '@/components/pocket/PocketSignalBar';
 import PocketFieldPrompt from '@/components/pocket/PocketFieldPrompt';
+import PocketV1Styles from '@/components/pocket/PocketV1Styles.astro';
 ---
 <BaseLayout title="Field Report — The Breakroom" section="pocket" description="Daily observation requested. One line. That's all.">
+  <PocketV1Styles />
   <PocketSignalBar client:load />
 
   <div class="pocket-field-page">

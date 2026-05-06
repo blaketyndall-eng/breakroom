@@ -1,0 +1,418 @@
+/* ─────────────────────────────────────
+   POCKET MODE V1 — Field Prompts, Make One Thing, Share Cards
+   Split from pocket.css to ensure Tailwind v4 includes these rules.
+   ───────────────────────────────────── */
+
+/* --- Field Prompt (daily micro-task in bump zone) --- */
+.pocket-field {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--pocket-border);
+  background: var(--pocket-glow);
+}
+
+.pocket-field-frame {
+  font-family: var(--pocket-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--pocket-accent);
+  margin-bottom: 8px;
+}
+
+.pocket-field-text {
+  font-family: var(--pocket-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--pocket-fg);
+  margin-bottom: 12px;
+}
+
+.pocket-field-form {
+  display: flex;
+  gap: 8px;
+}
+
+.pocket-field-input {
+  flex: 1;
+  background: var(--pocket-bg);
+  border: 1px solid var(--pocket-border);
+  border-radius: 0;
+  padding: 10px 12px;
+  font-family: var(--pocket-mono);
+  font-size: 13px;
+  color: var(--pocket-fg);
+  outline: none;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.pocket-field-input::placeholder {
+  color: var(--pocket-dim);
+  font-style: italic;
+}
+
+.pocket-field-input:focus {
+  border-color: var(--pocket-accent);
+  box-shadow: 0 0 0 1px var(--pocket-accent);
+}
+
+.pocket-field-submit {
+  background: var(--pocket-accent);
+  color: var(--pocket-bg);
+  border: none;
+  border-radius: 0;
+  padding: 10px 16px;
+  font-family: var(--pocket-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  font-weight: 700;
+}
+
+.pocket-field-submit:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.pocket-field-submit:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.pocket-field-done {
+  font-family: var(--pocket-mono);
+  font-size: 12px;
+  color: var(--pocket-dim);
+  font-style: italic;
+}
+
+.pocket-field-receipt {
+  font-family: var(--pocket-mono);
+}
+
+.pocket-field-receipt-response {
+  font-size: 13px;
+  color: var(--pocket-fg);
+  line-height: 1.6;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+.pocket-field-receipt-meta {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--pocket-dim);
+}
+
+.pocket-field-loading {
+  font-family: var(--pocket-mono);
+  font-size: 12px;
+  color: var(--pocket-dim);
+  font-style: italic;
+}
+
+/* --- Make One Thing (creation screen) --- */
+.pocket-make {
+  padding: 24px 20px;
+  min-height: 60vh;
+  min-height: 60dvh;
+}
+
+.pocket-make-frame {
+  font-family: var(--pocket-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--pocket-accent);
+  margin-bottom: 4px;
+}
+
+.pocket-make-remaining {
+  font-family: var(--pocket-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--pocket-dim);
+  margin-bottom: 20px;
+}
+
+.pocket-make-type {
+  font-family: var(--pocket-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--pocket-dim);
+  margin-bottom: 6px;
+}
+
+.pocket-make-prompt {
+  font-family: var(--pocket-mono);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--pocket-fg);
+  margin-bottom: 16px;
+}
+
+.pocket-make-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.pocket-make-input {
+  width: 100%;
+  background: var(--pocket-bg);
+  border: 1px solid var(--pocket-border);
+  border-radius: 0;
+  padding: 12px;
+  font-family: var(--pocket-mono);
+  font-size: 14px;
+  color: var(--pocket-fg);
+  outline: none;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+.pocket-make-input::placeholder {
+  color: var(--pocket-dim);
+  font-style: italic;
+}
+
+.pocket-make-input:focus {
+  border-color: var(--pocket-accent);
+  box-shadow: 0 0 0 1px var(--pocket-accent);
+}
+
+.pocket-make-submit {
+  background: var(--pocket-accent);
+  color: var(--pocket-bg);
+  border: none;
+  border-radius: 0;
+  padding: 14px 20px;
+  font-family: var(--pocket-mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 48px;
+}
+
+.pocket-make-submit:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.pocket-make-submit:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.pocket-make-shuffle {
+  background: none;
+  border: none;
+  padding: 8px 0;
+  font-family: var(--pocket-mono);
+  font-size: 12px;
+  color: var(--pocket-dim);
+  cursor: pointer;
+  text-align: left;
+}
+
+.pocket-make-shuffle:hover {
+  color: var(--pocket-accent);
+}
+
+.pocket-make-back {
+  display: block;
+  margin-top: 24px;
+  font-family: var(--pocket-mono);
+  font-size: 12px;
+  color: var(--pocket-dim);
+  text-decoration: none;
+}
+
+.pocket-make-back:hover {
+  color: var(--pocket-accent);
+}
+
+.pocket-make-limit {
+  font-family: var(--pocket-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--pocket-dim);
+  margin: 16px 0;
+}
+
+/* --- Share receipt (post-creation confirmation) --- */
+.pocket-make-stamp {
+  font-family: var(--pocket-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--pocket-red);
+  margin-bottom: 12px;
+}
+
+.pocket-make-receipt {
+  background: var(--pocket-card);
+  border: 1px dashed var(--pocket-border);
+  padding: 16px;
+  margin: 12px 0;
+}
+
+.pocket-make-receipt-type {
+  font-family: var(--pocket-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--pocket-dim);
+  margin-bottom: 8px;
+}
+
+.pocket-make-receipt-content {
+  font-family: var(--pocket-mono);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--pocket-fg);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.pocket-make-receipt-meta {
+  font-family: var(--pocket-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--pocket-dim);
+}
+
+.pocket-make-filed-copy {
+  font-family: var(--pocket-mono);
+  font-size: 12px;
+  color: var(--pocket-dim);
+  line-height: 1.6;
+  margin: 12px 0 16px;
+}
+
+.pocket-make-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pocket-make-btn {
+  background: var(--pocket-card);
+  border: 1px solid var(--pocket-border);
+  border-radius: 0;
+  padding: 12px 16px;
+  font-family: var(--pocket-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--pocket-fg);
+  cursor: pointer;
+  min-height: 44px;
+  text-align: center;
+}
+
+.pocket-make-btn.primary {
+  background: var(--pocket-accent);
+  color: var(--pocket-bg);
+  border-color: var(--pocket-accent);
+  font-weight: 700;
+}
+
+.pocket-make-btn.dim {
+  color: var(--pocket-dim);
+  border-color: transparent;
+  background: transparent;
+}
+
+.pocket-make-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.pocket-make-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.pocket-make-loading {
+  font-family: var(--pocket-mono);
+  font-size: 12px;
+  color: var(--pocket-dim);
+  font-style: italic;
+  margin-top: 12px;
+}
+
+/* --- Share Card (receipt-style creation preview) --- */
+.share-card {
+  background: var(--pocket-card);
+  border: 1px solid var(--pocket-border);
+  padding: 20px;
+  font-family: var(--pocket-mono);
+  max-width: 360px;
+}
+
+.share-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--pocket-border);
+}
+
+.share-card-type {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--pocket-accent);
+}
+
+.share-card-date {
+  font-size: 10px;
+  color: var(--pocket-dim);
+}
+
+.share-card-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--pocket-fg);
+  margin-bottom: 12px;
+  word-break: break-word;
+}
+
+.share-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 8px;
+  border-top: 1px dashed var(--pocket-border);
+}
+
+.share-card-attribution {
+  font-size: 10px;
+  color: var(--pocket-dim);
+}
+
+.share-card-stamp {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--pocket-red);
+}
+
+.share-card-brand {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--pocket-dim);
+  margin-top: 10px;
+  text-align: center;
+  opacity: 0.6;
+}

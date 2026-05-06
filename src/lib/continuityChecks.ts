@@ -6,7 +6,7 @@
  * Used in the Wire Room ledger dashboard.
  */
 
-import { getAllSleepNetSites } from '@/lib/sleepnetSites';
+import { SEED_SLEEPNET_SITES } from '@/content/data/seedSleepNetSites';
 import { getAllStuffItems } from '@/lib/stuff';
 import { BREAKROOM_FACTIONS } from '@/content/data/factions';
 import { BREAKROOM_EVENTS } from '@/content/data/events';
@@ -57,7 +57,7 @@ function checkDuplicateSlugs(): ContinuityIssue[] {
   const allSlugs: { slug: string; source: string }[] = [];
 
   // Collect all slugs from major registries
-  const sites = getAllSleepNetSites();
+  const sites = SEED_SLEEPNET_SITES;
   for (const site of sites) {
     allSlugs.push({ slug: site.slug, source: 'sleepnet_page' });
   }
@@ -110,7 +110,7 @@ function checkDistrictReferences(): ContinuityIssue[] {
   const districtSlugs = new Set(districts.map((d) => d.slug));
 
   // Check sites reference valid neighborhoods/districts
-  const sites = getAllSleepNetSites();
+  const sites = SEED_SLEEPNET_SITES;
   for (const site of sites) {
     if (site.neighborhood && !districtSlugs.has(site.neighborhood)) {
       // Neighborhoods don't have to be districts, but flag if it looks like one
@@ -205,7 +205,7 @@ export function runContinuityChecks(): ContinuityReport {
     timestamp: Date.now(),
     issues,
     stats: {
-      totalChecked: getAllSleepNetSites().length + getAllStuffItems().length + BREAKROOM_FACTIONS.length + BREAKROOM_EVENTS.length + getAllDistricts().length,
+      totalChecked: SEED_SLEEPNET_SITES.length + getAllStuffItems().length + BREAKROOM_FACTIONS.length + BREAKROOM_EVENTS.length + getAllDistricts().length,
       issuesFound: issues.length,
       highSeverity: issues.filter((i) => i.severity === 'high').length,
       mediumSeverity: issues.filter((i) => i.severity === 'medium').length,
