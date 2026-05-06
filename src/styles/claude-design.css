@@ -813,29 +813,339 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
 }
 
 /* ============= SECTION: NEWSSTAND ============= */
+/* 3AM Edition — ABC News '97 + BBC '98 + Fox News '02 blend on newsprint */
 [data-section="newsstand"] {
-  background: var(--nicotine);
+  background: #f5f0e8;
   color: var(--ink);
 }
-[data-section="newsstand"] .masthead {
-  font-family: var(--type-paper); font-weight: 400;
+
+/* Ticker — ABC "Dispatches" dark bar */
+.ns-ticker {
+  background: #14110e;
+  color: #c8c0b0;
+  font-family: var(--type-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 5px 16px;
+  display: flex;
+  gap: 0;
+  border-bottom: 3px solid #8b0000;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ns-ticker span {
+  display: inline-block;
+  padding: 0 14px;
+  border-right: 1px solid #333;
+}
+.ns-ticker span:last-child { border-right: none; }
+.ns-ticker .ns-ticker-alert { color: #ff4444; font-weight: 700; }
+
+/* Masthead — newspaper nameplate */
+.ns-masthead {
+  text-align: center;
+  padding: 18px 0 14px;
   border-top: 4px double var(--ink);
-  border-bottom: 4px double var(--ink);
+  border-bottom: 2px solid var(--ink);
+  margin: 0;
+  background: #f5f0e8;
 }
-[data-section="newsstand"] h1, [data-section="newsstand"] h2, [data-section="newsstand"] h3 {
-  font-family: var(--type-paper); font-weight: 400; line-height: 1;
+.ns-vol {
+  font-family: var(--type-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #8a7c5e;
+  margin: 0;
 }
-[data-section="newsstand"] .meta { font-family: var(--type-typer); font-size: 12px; letter-spacing: 0.05em; }
-[data-section="newsstand"] .col-rule { column-rule: 1px solid #8a7c5e; }
-[data-section="newsstand"] .classified { font-family: var(--type-typer); font-size: 13px; line-height: 1.45; }
-[data-section="newsstand"] .classified strong { letter-spacing: 0.08em; }
-[data-section="newsstand"] .correction-box {
-  border: 1.5px solid var(--correction); padding: 10px 14px; color: var(--correction);
+.ns-masthead h1 {
+  font-family: var(--type-paper);
+  font-size: clamp(48px, 10vw, 96px);
+  font-weight: 400;
+  line-height: 0.85;
+  margin: 6px 0;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.ns-masthead h1 .ns-red { color: #8b0000; }
+.ns-tagline {
+  font-family: var(--type-paper);
+  font-style: italic;
+  font-size: 15px;
+  color: #666;
+  margin: 4px 0 0;
+}
+
+/* Sub-nav bar — BBC style tabs below masthead */
+.ns-subnav {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #ccc4b0;
+  background: #ebe6db;
+  font-family: var(--type-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.ns-subnav a {
+  padding: 6px 14px;
+  color: var(--ink);
+  text-decoration: none;
+  border-right: 1px solid #ccc4b0;
+}
+.ns-subnav a:hover { background: #ddd8cd; }
+.ns-subnav a.active { background: #f5f0e8; font-weight: 700; border-bottom: 2px solid #8b0000; }
+
+/* 3-column layout — BBC/ABC grid: nav + main + sidebar */
+.ns-layout {
+  display: grid;
+  grid-template-columns: 130px 1fr 240px;
+  gap: 0;
+  border-top: 1px solid var(--ink);
+}
+
+/* Left nav — BBC category sidebar */
+.ns-nav {
+  border-right: 1px solid #ccc4b0;
+  padding: 10px 10px 10px 0;
+  font-family: var(--type-mono);
+}
+.ns-nav a {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 5px 0;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px dotted #ccc4b0;
+}
+.ns-nav a:hover { color: #8b0000; }
+.ns-nav-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #8a7c5e;
+  margin: 14px 0 4px;
+  font-weight: 700;
+}
+
+/* Main content */
+.ns-main {
+  padding: 0 18px;
+  border-right: 1px solid #ccc4b0;
+  min-width: 0;
+}
+
+/* Section bar — Fox News bold category dividers */
+.ns-section-bar {
+  background: #14110e;
+  color: #f5f0e8;
+  font-family: var(--type-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  margin: 0 -18px;
+  border-left: 4px solid #8b0000;
+}
+
+/* Lead story — BBC style */
+.ns-lead {
+  padding: 14px 0;
+  border-bottom: 1px solid #ccc4b0;
+}
+.ns-lead h2 {
+  font-family: var(--type-paper);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.05;
+  margin: 0 0 6px;
+}
+.ns-lead h2 a { color: var(--ink); text-decoration: none; }
+.ns-lead h2 a:hover { text-decoration: underline; }
+.ns-lead p { font-size: 14px; line-height: 1.45; margin: 4px 0; }
+.ns-also {
+  margin-top: 8px;
+  font-family: var(--type-mono);
+  font-size: 11px;
+}
+.ns-also b { letter-spacing: 0.08em; text-transform: uppercase; }
+.ns-also a { display: block; color: var(--hyperlink); margin-top: 2px; font-size: 12px; }
+
+/* Headline grid — Fox "LATEST HEADLINES" 2-col pairs */
+.ns-headline-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.ns-story {
+  padding: 10px 10px 10px 0;
+  border-bottom: 1px solid #ccc4b0;
+}
+.ns-story:nth-child(odd) { border-right: 1px solid #ccc4b0; padding-right: 10px; }
+.ns-story:nth-child(even) { padding-left: 10px; padding-right: 0; }
+.ns-story h3 {
+  font-family: var(--type-paper);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 3px;
+}
+.ns-story h3 a { color: var(--ink); text-decoration: none; }
+.ns-story h3 a:hover { color: #8b0000; text-decoration: underline; }
+.ns-story p {
+  font-size: 12px;
+  line-height: 1.35;
+  margin: 0;
+  color: #555;
+}
+.ns-byline {
   font-family: var(--type-typer);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8a7c5e;
+  margin-bottom: 2px;
 }
-[data-section="newsstand"] .pp { /* paper photo */
-  background: repeating-linear-gradient(45deg, #1a1714 0 6px, #2a2622 6px 12px);
-  filter: contrast(0.9) sepia(0.2);
+
+/* Right sidebar — corrections, classifieds, notices */
+.ns-aside {
+  padding: 0 10px;
+}
+.ns-aside-bar {
+  background: #8b0000;
+  color: #fff;
+  font-family: var(--type-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 8px;
+  margin: 0 -10px 10px;
+}
+.ns-correction {
+  border: 1.5px solid var(--correction);
+  padding: 8px 10px;
+  font-family: var(--type-typer);
+  font-size: 12px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.ns-correction b { color: var(--correction); text-transform: uppercase; letter-spacing: 0.06em; }
+.ns-classified {
+  font-family: var(--type-typer);
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 8px 0;
+  border-bottom: 1px dotted #ccc4b0;
+}
+.ns-classified strong {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+}
+.ns-notice {
+  font-family: var(--type-mono);
+  font-size: 11px;
+  color: #8a7c5e;
+  padding: 8px 0;
+  border-bottom: 1px dotted #ccc4b0;
+  line-height: 1.4;
+}
+
+/* Category links — BBC "AROUND THE WORLD NOW" style */
+.ns-world-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
+  padding: 10px 0;
+}
+.ns-world-grid .ns-cat-head {
+  font-family: var(--type-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8b0000;
+  margin: 10px 0 2px;
+}
+.ns-world-grid a {
+  display: block;
+  font-size: 13px;
+  color: var(--hyperlink);
+  padding: 1px 0;
+}
+
+/* Footer */
+.ns-footer {
+  font-family: var(--type-typer);
+  font-size: 11px;
+  line-height: 1.5;
+  color: #8a7c5e;
+  text-align: center;
+  padding: 14px 16px;
+  border-top: 2px solid var(--ink);
+  margin-top: 12px;
+}
+.ns-footer a { color: var(--hyperlink); }
+
+/* Article detail page */
+.ns-article {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+.ns-article-meta {
+  font-family: var(--type-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8a7c5e;
+  border-bottom: 1px solid #ccc4b0;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+.ns-article h1 {
+  font-family: var(--type-paper);
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 400;
+  line-height: 0.95;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+.ns-article .ns-body {
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+.ns-article .ns-note {
+  font-family: var(--type-typer);
+  font-size: 13px;
+  color: #8a7c5e;
+  font-style: italic;
+}
+.ns-back {
+  font-family: var(--type-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: inline-block;
+  padding: 8px 0;
+  color: var(--hyperlink);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ns-layout { grid-template-columns: 1fr; }
+  .ns-nav { display: none; }
+  .ns-main { padding: 0; border-right: none; }
+  .ns-aside { border-top: 1px solid #ccc4b0; }
+  .ns-headline-grid { grid-template-columns: 1fr; }
+  .ns-story:nth-child(odd) { border-right: none; }
+  .ns-story:nth-child(even) { padding-left: 0; }
+  .ns-section-bar { margin: 0; }
+  .ns-subnav { flex-wrap: wrap; }
 }
 
 /* ============= SECTION: OMNISHIFT ============= */

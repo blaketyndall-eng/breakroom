@@ -42,12 +42,34 @@ if (!entry) {
 }
 ---
 <OldWebLayout title={`${entry.title} / Newsstand`} section="newsstand">
-  <a href="/newsstand">← Back to 3AM Edition</a>
-  <article class="newsprint-card" style="max-width:760px;margin:24px auto;">
-    <p style="font-family:var(--type-mono);text-transform:uppercase;">{entry.category} / {entry.byline} / source: {result.source}</p>
-    {result.error && <p class="memo-box">Public news detail fallback active: {result.error}</p>}
-    <h1 style="font-size:48px;line-height:.95;text-transform:uppercase;">{entry.title}</h1>
-    <p style="font-size:22px;line-height:1.35;">{entry.body}</p>
-    <p>The source could not be reached for comment. The room declined to answer because it was busy being a room.</p>
+
+  <!-- Ticker -->
+  <div class="ns-ticker">
+    <span>3AM EDITION</span>
+    <span>ARTICLE</span>
+    <span>source: {result.source}</span>
+  </div>
+
+  <!-- Masthead (compact on article pages) -->
+  <div class="ns-masthead" style="padding:10px 0 8px;">
+    <h1 style="font-size:clamp(28px,6vw,48px);"><a href="/newsstand" style="color:var(--ink);text-decoration:none;">3<span class="ns-red">AM</span> Edition</a></h1>
+  </div>
+
+  <!-- Back link -->
+  <a class="ns-back" href="/newsstand">← Back to 3AM Edition</a>
+
+  <!-- Article -->
+  <article class="ns-article">
+    <div class="ns-article-meta">{entry.category} / {entry.byline} / source: {result.source}</div>
+    {result.error && <p class="ns-notice" style="padding:6px 0;">Public news detail fallback active: {result.error}</p>}
+    <h1>{entry.title}</h1>
+    <p class="ns-body">{entry.body}</p>
+    <p class="ns-note">The source could not be reached for comment. The room declined to answer because it was busy being a room.</p>
   </article>
+
+  <!-- Footer -->
+  <div class="ns-footer">
+    <p><a href="/newsstand">← Return to 3AM Edition</a> / <a href="/after-hours">Back to room</a></p>
+  </div>
+
 </OldWebLayout>
