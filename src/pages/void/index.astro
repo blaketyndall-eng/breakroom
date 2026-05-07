@@ -10,8 +10,12 @@
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { NANO_PROMPTS, pollinationsUrl } from '@/lib/voidImgShim';
+import VoidPollCard from '@/components/voidsignal/VoidPollCard';
+import { getRecentlyIndexedSites, getSiteOfTheNight } from '@/content/data/voidSites';
 
 const N = NANO_PROMPTS;
+const recentlyIndexed = getRecentlyIndexedSites(5);
+const siteOfTheNight = getSiteOfTheNight();
 ---
 <BaseLayout title="VOID" section="void">
   <link rel="preconnect" href="https://fonts.googleapis.com" slot="head"/>
@@ -48,25 +52,25 @@ const N = NANO_PROMPTS;
     <main class="vd-main">
       <aside class="vd-side-left">
         <nav class="vd-nav-block">
-          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">🔑</span>create a regular file</a>
-          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">★</span>VOID central</a>
-          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">⌕</span>explore</a>
-          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">🎱</span>games</a>
-          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">✉</span>voidmail</a>
-          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">▤</span>shops</a>
-          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">📋</span>boards</a>
-          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">📰</span>news</a>
-          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">⊡</span>stuff</a>
-          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">?</span>help</a>
-          <a class="vd-nav-item vd-login" href="#"><span class="vd-ng-icon">→</span>login!</a>
-          <a class="vd-nav-item vd-logout" href="#"><span class="vd-ng-icon">←</span>logout!</a>
+          <a class="vd-nav-item" href="/signup"><span class="vd-ng-icon">🔑</span>create a regular file</a>
+          <a class="vd-nav-item" href="/void"><span class="vd-ng-icon">★</span>VOID central</a>
+          <a class="vd-nav-item" href="/districts"><span class="vd-ng-icon">⌕</span>explore</a>
+          <a class="vd-nav-item" href="/void/games"><span class="vd-ng-icon">🎱</span>games</a>
+          <a class="vd-nav-item" href="/phone"><span class="vd-ng-icon">✉</span>voidmail</a>
+          <a class="vd-nav-item" href="/stuff"><span class="vd-ng-icon">▤</span>shops</a>
+          <a class="vd-nav-item" href="/sign-the-wall"><span class="vd-ng-icon">📋</span>boards</a>
+          <a class="vd-nav-item" href="/newsstand"><span class="vd-ng-icon">📰</span>news</a>
+          <a class="vd-nav-item" href="/stuff"><span class="vd-ng-icon">⊡</span>stuff</a>
+          <a class="vd-nav-item" href="/house-rules"><span class="vd-ng-icon">?</span>help</a>
+          <a class="vd-nav-item vd-login" href="/signup"><span class="vd-ng-icon">→</span>login!</a>
+          <a class="vd-nav-item vd-logout" href="/clock-in"><span class="vd-ng-icon">←</span>logout!</a>
         </nav>
 
-        <div class="vd-search">
-          <label>SEARCH VOID</label>
-          <input type="text" placeholder="anything..."/>
-          <button type="button">Go!</button>
-        </div>
+        <form class="vd-search" method="get" action="/void/search">
+          <label for="vd-search-input">SEARCH VOID</label>
+          <input id="vd-search-input" type="text" name="q" placeholder="anything..."/>
+          <button type="submit">Go!</button>
+        </form>
 
         <div class="vd-mascot">
           <div class="vd-mothie vd-mothie-anim">
@@ -87,12 +91,12 @@ const N = NANO_PROMPTS;
           <div>
             <h3>newsflash!</h3>
             <p><b>Read All About It!</b></p>
-            <p><b>Mystery Lot Sighting!</b> A lowrider in <a href="#">Parking Lot West</a> has been idling since 2:14 a.m. Witnesses report it is <i>"breathing."</i> If you must approach, do not bring snacks.</p>
-            <p><b>Time Traveler in Trouble!</b> Many users are reporting what appears to be a crashed <a href="#">Time Machine</a> on the Pool Hall Plateau. The kid is fine. The clock is not.</p>
+            <p><b>Mystery Lot Sighting!</b> A lowrider in <a href="/districts/parking-lot-west">Parking Lot West</a> has been idling since 2:14 a.m. Witnesses report it is <i>"breathing."</i> If you must approach, do not bring snacks.</p>
+            <p><b>Time Traveler in Trouble!</b> Many users are reporting what appears to be a crashed <a href="/sites/onenight">Time Machine</a> on the Pool Hall Plateau. The kid is fine. The clock is not.</p>
           </div>
         </div>
 
-        <div class="vd-signup">
+        <a href="/signup" class="vd-signup">
           <div class="vd-nano-slot" data-nano-key={N.signupBulb.key}>
             <img class="vd-nano-img" src={pollinationsUrl(N.signupBulb)} alt={N.signupBulb.subject} loading="lazy" width={N.signupBulb.width} height={N.signupBulb.height} />
           </div>
@@ -100,7 +104,7 @@ const N = NANO_PROMPTS;
             <h3><span class="vd-su-1">si</span><span class="vd-su-2">gn</span> <span class="vd-su-3">up!</span></h3>
             <p>Make a regular file with VOID today! It's simple, fast, and <span class="vd-free">FREE!</span> No reason needed. Some people did it by accident.</p>
           </div>
-        </div>
+        </a>
 
         <div class="vd-games">
           <h3><span class="vd-stars">★</span> great games! <span class="vd-stars">★</span></h3>
@@ -110,7 +114,7 @@ const N = NANO_PROMPTS;
                 <img class="vd-nano-img" src={pollinationsUrl(N.wheelOutcomes)} alt={N.wheelOutcomes.subject} loading="lazy" />
               </div>
               <div>
-                <a href="#">The Wheel of Outcomes!</a>
+                <a href="/void/games">The Wheel of Outcomes!</a>
                 <p>Spin spin spin!!! It will tell you what to do tonight.</p>
               </div>
             </div>
@@ -119,7 +123,7 @@ const N = NANO_PROMPTS;
                 <img class="vd-nano-img" src={pollinationsUrl(N.scratchcards)} alt={N.scratchcards.subject} loading="lazy" />
               </div>
               <div>
-                <a href="#">Scratchcard Kiosk!</a>
+                <a href="/void/games">Scratchcard Kiosk!</a>
                 <p>What will you not win??</p>
               </div>
             </div>
@@ -132,18 +136,16 @@ const N = NANO_PROMPTS;
             <div class="vd-nano-slot vd-nano-wide" data-nano-key={N.mothStreet.key}>
               <img class="vd-nano-img" src={pollinationsUrl(N.mothStreet)} alt={N.mothStreet.subject} loading="lazy" />
             </div>
-            <p><a href="#"><b>moths.afterhours</b></a> — A page about moths that has been wrong for ten years. Refuses corrections. Has theories about the lighting.</p>
-            <a href="#" class="vd-readmore">Visit (12 do)</a>
+            <p><a href={`/sites/${siteOfTheNight.slug}`}><b>{siteOfTheNight.title}</b></a> — {siteOfTheNight.tagline}</p>
+            <a href={`/sites/${siteOfTheNight.slug}`} class="vd-readmore">Visit ({siteOfTheNight.meta.visitors} do)</a>
           </div>
 
           <div class="vd-feat">
             <h3 class="vd-orange">Recently Indexed <span class="vd-badge vd-badge-hot">HOT!</span></h3>
             <ul class="vd-rec-list">
-              <li>📌 <a href="#">lostgloves.afterhours</a></li>
-              <li>📌 <a href="#">timing-slips.bible</a></li>
-              <li>📌 <a href="#">onenight.poolhall</a></li>
-              <li>📌 <a href="#">whoateit.classifieds</a></li>
-              <li>📌 <a href="#">notgoinghome.txt</a></li>
+              {recentlyIndexed.map((s) => (
+                <li>📌 <a href={`/sites/${s.slug}`}>{s.title}</a></li>
+              ))}
             </ul>
             <p class="vd-rec-meta">— last crawl was a long time ago.</p>
           </div>
@@ -154,18 +156,18 @@ const N = NANO_PROMPTS;
         <div class="vd-news-box">
           <div class="vd-news-head"><span class="vd-stars">★</span> latest news! <span class="vd-stars">★</span></div>
           <ul>
-            <li><a href="#">Frog Day!</a></li>
-            <li><a href="#">Gone Fishing</a></li>
-            <li><a href="#">Another Lutari Release</a></li>
-            <li><a href="#">Lutari Release</a> <span class="vd-badge vd-badge-live">LIVE</span></li>
-            <li><a href="#">Lutari Day</a></li>
-            <li><a href="#">Swan Day (disputed)</a></li>
+            <li><a href="/newsstand">Frog Day!</a></li>
+            <li><a href="/newsstand">Gone Fishing</a></li>
+            <li><a href="/newsstand">Another Lutari Release</a></li>
+            <li><a href="/newsstand">Lutari Release</a> <span class="vd-badge vd-badge-live">LIVE</span></li>
+            <li><a href="/newsstand">Lutari Day</a></li>
+            <li><a href="/newsstand">Swan Day (disputed)</a></li>
           </ul>
         </div>
 
         <div class="vd-cal">
           <b>We have a Calendar!</b>
-          <p><a href="#">Click here</a> to see what's going on!</p>
+          <p><a href="/events">Click here</a> to see what's going on!</p>
           <p class="vd-cal-spoil">(spoiler: nothing goes on)</p>
         </div>
 
@@ -196,21 +198,7 @@ const N = NANO_PROMPTS;
           </div>
         </div>
 
-        <div class="vd-poll">
-          <div class="vd-poll-head">VoidPoll</div>
-          <div class="vd-poll-body">
-            <p>What would you be most proud of achieving?</p>
-            <label><input type="radio" name="vp"/> A motel key</label>
-            <label><input type="radio" name="vp"/> All my hoodies returned</label>
-            <label><input type="radio" name="vp"/> A complete shelf of Stuff</label>
-            <label><input type="radio" name="vp"/> A real reason</label>
-            <label><input type="radio" name="vp"/> Clocking out (and meaning it)</label>
-            <div class="vd-poll-btns">
-              <button type="button">Vote</button>
-              <button type="button">Results</button>
-            </div>
-          </div>
-        </div>
+        <VoidPollCard client:load />
       </aside>
     </main>
 
@@ -230,9 +218,14 @@ const N = NANO_PROMPTS;
     <footer class="vd-foot">
       <p>VOID is a user-submitted map of the parts of the internet OmniShift would prefer you not visit. We do not endorse anything here. Most things here do not endorse us either.</p>
       <p class="vd-foot-links">
-        <a href="#">about</a> · <a href="#">tell a friend</a> · <a href="#">guestbook</a> ·
-        <a href="#">flag a page</a> · <a href="#">webrings</a> · <a href="#">RSS?</a> ·
-        <a href="#">DMCA (lol)</a> · <a href="#">404</a>
+        <a href="/void/about">about</a> ·
+        <a href="mailto:?subject=found%20a%20door&body=https%3A%2F%2Fthebreakroom.pages.dev%2Fvoid">tell a friend</a> ·
+        <a href="/sign-the-wall">guestbook</a> ·
+        <a href="/void/flag">flag a page</a> ·
+        <a href="/void/webrings">webrings</a> ·
+        <a href="/void/feed.xml">RSS?</a> ·
+        <a href="/void/dmca">DMCA (lol)</a> ·
+        <a href="/void/missing">404</a>
       </p>
       <div class="vd-foot-badges">
         <span class="vd-foot-badge">BEST VIEWED 1024×768</span>
@@ -304,7 +297,8 @@ const N = NANO_PROMPTS;
   .vd-newsflash p { font-size: 12px; line-height: 1.5; margin-top: 6px; }
   .vd-newsflash p b { color: #cc0099; }
 
-  .vd-signup { background: #fff; border: 3px solid #1a0a2e; padding: 10px 14px; margin-bottom: 14px; display: grid; grid-template-columns: 80px 1fr; gap: 12px; align-items: center; box-shadow: 4px 4px 0 #4cff4c; }
+  .vd-signup { background: #fff; border: 3px solid #1a0a2e; padding: 10px 14px; margin-bottom: 14px; display: grid; grid-template-columns: 80px 1fr; gap: 12px; align-items: center; box-shadow: 4px 4px 0 #4cff4c; text-decoration: none !important; color: #1a0a2e !important; cursor: pointer; }
+  .vd-signup:hover { background: #fff8d0; }
   .vd-signup h3 { font-family: 'Bungee', cursive; font-size: 22px; color: #1d2891; letter-spacing: -1px; line-height: 0.9; }
   .vd-su-1 { color: #1d2891; }
   .vd-su-2 { color: #4cff4c; }
