@@ -11,7 +11,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { NANO_PROMPTS, pollinationsUrl } from '@/lib/voidImgShim';
 import VoidPollCard from '@/components/voidsignal/VoidPollCard';
-import VoidWelcomeStrip from '@/components/voidsignal/VoidWelcomeStrip';
+import VoidBootSequence from '@/components/system/VoidBootSequence';
 import { getRecentlyIndexedSites, getSiteOfTheNight } from '@/content/data/voidSites';
 
 const N = NANO_PROMPTS;
@@ -26,7 +26,7 @@ const siteOfTheNight = getSiteOfTheNight();
   </style>
 
   <div class="vd-page">
-    <VoidWelcomeStrip client:load />
+    <VoidBootSequence client:load />
     <noscript>
       <div class="vd-welcome">
         <span>Welcome, <b>frogs</b> &nbsp;|&nbsp; Stuff: <b>0</b> &nbsp;|&nbsp; Applause Money: <b>1,847</b></span>
