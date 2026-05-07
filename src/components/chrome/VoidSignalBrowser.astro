@@ -8,7 +8,12 @@
  *
  * Mounted by BaseLayout (in F5) when:
  *   data-world="voidsignal" + chromeMode === "desktop" + data-clock-state !== "anonymous"
+ *
+ * URL display: defers to inWorldUrlFor() in worldMap.ts. Returns a
+ * voidsignal:// URL with semantic in-world structure (lot/west,
+ * regulars/me/file, bar/phone, radio/1.47fm, etc.).
  */
+import { inWorldUrlFor } from '@/lib/worldMap';
 
 interface Props {
   /** Current URL path, e.g. "/locker". Used to render the vs:/ URL. */
@@ -16,10 +21,7 @@ interface Props {
 }
 
 const { currentPath = '/' } = Astro.props;
-
-// VS uses its own URL scheme — "voidsignal://" reads as a different network,
-// not just a different theme. Strips the leading slash so it reads cleanly.
-const inWorldUrl = `voidsignal://${(currentPath || '/').replace(/^\//, '')}`;
+const inWorldUrl = inWorldUrlFor('voidsignal', currentPath);
 ---
 <div class="vsb" data-chrome-height="50">
   <!-- Strip 1: address line -->

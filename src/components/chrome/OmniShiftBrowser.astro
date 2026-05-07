@@ -7,9 +7,12 @@
  *   data-world="omnishift" + chromeMode === "desktop" + data-clock-state !== "anonymous"
  *
  * Total height: 50px (22px title bar + 28px toolbar). The body needs
- * padding-top: 50px to compensate (handled by F5).
+ * padding-top: 50px to compensate (handled by chrome.css).
+ *
+ * URL display: defers to inWorldUrlFor() in worldMap.ts. The :1147
+ * port carries the 1:47 motif everywhere.
  */
-import { worldForSection } from '@/lib/worldMap';
+import { inWorldUrlFor } from '@/lib/worldMap';
 
 interface Props {
   /** Page title shown in the IE window title bar. */
@@ -19,10 +22,7 @@ interface Props {
 }
 
 const { title = 'The Breakroom', currentPath = '/' } = Astro.props;
-
-// In-world URL: the corporate intranet runs on port 1147 (the 1:47 motif
-// hidden in plain sight throughout the OS chrome).
-const inWorldUrl = `omnishift.intranet:1147${currentPath === '/' ? '/portal' : currentPath}`;
+const inWorldUrl = inWorldUrlFor('omnishift', currentPath);
 ---
 <div class="osb" data-chrome-height="50">
   <!-- IE window title bar -->

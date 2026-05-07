@@ -23,6 +23,9 @@
  *   /pocket     → voidsignal + pocket    (PocketSignalBar handles framing)
  *   /clock-out  → omnishift + suppressed (full immersion for VHS transition)
  *
+ * Also exposes inWorldUrlFor() — a section→fake-URL helper used by the
+ * top browser bars to display period-correct in-world URLs.
+ *
  * See SITE-ARCHITECTURE.md for the full two-world model.
  */
 
@@ -114,8 +117,8 @@ export function chromeFor(section: string | undefined | null): ChromeMode {
 /**
  * Resolve a page's world, allowing an explicit override prop to win over
  * the section-based mapping. Use the override sparingly — it exists for
- * edge cases where a page's visual identity (section) and its world
- * citizenship intentionally diverge.
+ * edge cases where a page's visual section and its world citizenship
+ * intentionally diverge.
  *
  * Most pages: just pass `section` and let the mapping speak.
  * Edge cases: pass `world="voidsignal"` explicitly on the page's layout
@@ -126,6 +129,117 @@ export function resolveWorld(
   override?: World,
 ): World {
   return override ?? worldForSection(section);
+}
+
+// =====================================================================
+// In-world URL display
+// =====================================================================
+//
+// The top browser bars (OmniShiftBrowser, VoidSignalBrowser) display a
+// period-correct fake URL in their address fields. The mapping below is
+// the single source of truth — change it here and both worlds update.
+//
+
+/** Exact-match path overrides for the OmniShift world. */
+const OMNI_EXACT: Record<string, string> = {
+  '/':           '/portal/index.asp',
+  '/portal':     '/employees/file.htm',
+  '/sleepnet':   '/search.asp',
+  '/sleepnet/create': '/search.asp?action=submit',
+  '/newsstand':  '/news/today.cfm',
+  '/rack':       '/products/catalog.asp',
+  '/ventures':   '/companies/portfolio.asp',
+  '/breakroom':  '/employees/breakroom.htm',
+  '/clock-out':  '/timeclock/out.asp',
+  '/signup':     '/intake/new-employee.asp',
+  '/back-office': '/admin/sites.asp',
+  '/dead-link-cemetery': '/archive/dead-links.htm',
+};
+
+/** Prefix overrides for OmniShift parameterized routes. */
+const OMNI_PREFIX: Array<[string, string]> = [
+  ['/sleepnet/',  '/search.asp?id='],
+  ['/newsstand/', '/news/article.cfm?id='],
+  ['/rack/',      '/products/catalog.asp?sku='],
+];
+
+/** Exact-match path overrides for the Void Signal world. */
+const VS_EXACT: Record<string, string> = {
+  '/':              'lot/west',
+  '/void':          'lot/west',
+  '/locker':        'regulars/me/file',
+  '/idle-hands':    'pool-hall/intake',
+  '/phone':         'bar/phone',
+  '/radio':         'radio/1.47fm',
+  '/sign-the-wall': 'wall',
+  '/stuff':         'drawer/stuff',
+  '/artifacts':     'drawer/evidence',
+  '/factions':      'turf/map',
+  '/crews':         'crews/directory',
+  '/districts':     'districts/map',
+  '/events':        'wall/events',
+  '/house-rules':   'pool-hall/rules',
+};
+
+/** Prefix overrides for Void Signal parameterized routes. */
+const VS_PREFIX: Array<[string, string]> = [
+  ['/regulars/',    'regulars/'],
+  ['/idle-hands/player/', 'pool-hall/players/'],
+  ['/stuff/',       'stuff/'],
+  ['/factions/',    'turf/'],
+  ['/crews/',       'crews/'],
+  ['/districts/',   'districts/'],
+  ['/events/',      'wall/events/'],
+];
+
+/**
+ * Compute the in-world display URL for the top browser bar. Both worlds
+ * return a complete user-facing string ready to drop into the address
+ * field. OmniShift returns `omnishift.intranet:1147/<path>.asp`-style
+ * URLs; Void Signal returns `voidsignal://<semantic>` URLs. Neutral
+ * returns the raw pathname (browser bar isn't shown anyway).
+ *
+ * The :1147 port in OmniShift URLs is the foundation 1:47 motif hook —
+ * present on every page without ever calling attention to itself.
+ */
+export function inWorldUrlFor(
+  world: World,
+  pathname: string,
+): string {
+  if (world === 'omnishift') {
+    const fake = remapOmniPath(pathname);
+    return `omnishift.intranet:1147${fake}`;
+  }
+  if (world === 'voidsignal') {
+    const fake = remapVsPath(pathname);
+    return `voidsignal://${fake}`;
+  }
+  return pathname;
+}
+
+function remapOmniPath(pathname: string): string {
+  if (OMNI_EXACT[pathname]) return OMNI_EXACT[pathname];
+  for (const [prefix, replacement] of OMNI_PREFIX) {
+    if (pathname.startsWith(prefix)) {
+      const slug = pathname.slice(prefix.length);
+      return replacement + encodeURIComponent(slug);
+    }
+  }
+  // Fallback: append .asp to a normalized path.
+  if (pathname === '/' || !pathname) return '/index.asp';
+  return `${pathname.replace(/\/$/, '')}.asp`;
+}
+
+function remapVsPath(pathname: string): string {
+  if (VS_EXACT[pathname]) return VS_EXACT[pathname];
+  for (const [prefix, replacement] of VS_PREFIX) {
+    if (pathname.startsWith(prefix)) {
+      const slug = pathname.slice(prefix.length);
+      return replacement + slug;
+    }
+  }
+  // Fallback: strip leading slash, no extension.
+  return pathname.replace(/^\//, '') || 'lot/west';
 }
 
 // ---------- Iteration helpers ----------
