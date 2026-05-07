@@ -2,18 +2,116 @@
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 ---
 <OldWebLayout title="House Rules" section="houserules">
+
+  <p class="hr-eyebrow">Posted 1996. Not updated since. Still in effect.</p>
+
   <h1>House Rules</h1>
-  <ol class="old-shell old-body" style="font-size:20px;line-height:1.7;">
-    <li>House rules apply.</li>
-    <li>No soft hands.</li>
-    <li>Call your own fouls.</li>
-    <li>Scratch on the break equals re-rack.</li>
-    <li>Three fouls equals loss of game.</li>
-    <li>No coaching unless we like you.</li>
-    <li>Respect the table, the players and the room.</li>
-    <li>Management decision is final.</li>
-    <li>If you argue a call, we laugh.</li>
-    <li>Tip the bartender.</li>
-    <li>Don’t be an ass.</li>
+
+  <p class="hr-lede">
+    Some rules are not posted on purpose. The unposted ones still apply.
+  </p>
+
+  <ol class="hr-list">
+    <li>House rules apply. Even when nobody is enforcing them.</li>
+    <li>Call your own fouls. Management is not watching. The room is.</li>
+    <li>No coaching from the rail. Bystanders do not get a vote.</li>
+    <li>Scratch on the break: rack stays. Cue ball comes back to the kitchen. So do you.</li>
+    <li>Three fouls and you're filed. Not removed. Filed.</li>
+    <li>Argue a call and we laugh. Press it and we stop.</li>
+    <li>The phone behind the bar is not a customer service line. Do not pick it up unless you mean it.</li>
+    <li>Online payment is broken. Insert quarters at the counter. Exact change preferred. Machine does not give change. Machine may not exist.</li>
+    <li>The clock reads 1:47. It will read 1:47 at last call. That is not a malfunction.</li>
+    <li>Tip the bartender. Tipping will not move you up the list. Not tipping will move you down.</li>
+    <li>If a door moves, you did not see a door move.</li>
+    <li>Management decisions are final. Management may not be present.</li>
   </ol>
+
+  <p class="hr-stamp">FILED. NOT REMOVED. — Management</p>
+
+  <p class="hr-coda">
+    Posted on the back wall, near the cigarette machine.
+    Wording has not changed since the lease was signed.
+    The lease has not been signed.
+  </p>
+
 </OldWebLayout>
+
+<style>
+  .hr-eyebrow {
+    font-family: var(--type-mono, 'JetBrains Mono', monospace);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-fade, #5a513f);
+    margin: 0 0 4px;
+  }
+
+  h1 {
+    margin: 0 0 18px;
+    font-size: clamp(38px, 6vw, 56px);
+  }
+
+  .hr-lede {
+    font-family: var(--type-paper, Georgia, serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.5;
+    max-width: 56ch;
+    margin: 0 0 28px;
+    color: var(--ink, #14110e);
+    border-left: 3px solid var(--ink, #14110e);
+    padding-left: 14px;
+  }
+
+  .hr-list {
+    font-family: var(--type-paper, Georgia, serif);
+    font-size: 19px;
+    line-height: 1.7;
+    max-width: 64ch;
+    margin: 0 0 36px;
+    padding-left: 28px;
+    counter-reset: hr-counter;
+    list-style: none;
+  }
+  .hr-list li {
+    counter-increment: hr-counter;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .hr-list li::before {
+    content: counter(hr-counter, decimal-leading-zero) ". ";
+    position: absolute;
+    left: -32px;
+    width: 28px;
+    text-align: right;
+    font-family: var(--type-mono, monospace);
+    font-size: 14px;
+    color: var(--ink-fade, #5a513f);
+    top: 4px;
+  }
+
+  .hr-stamp {
+    display: inline-block;
+    margin: 4px 0 28px;
+    padding: 10px 18px 8px;
+    font-family: var(--type-mono, 'JetBrains Mono', monospace);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: #a01818;
+    border: 2.5px solid #a01818;
+    transform: rotate(-1.8deg);
+    box-shadow: inset 0 0 0 1px rgba(160, 24, 24, 0.25);
+  }
+
+  .hr-coda {
+    font-family: var(--type-mono, monospace);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ink-fade, #5a513f);
+    max-width: 52ch;
+    margin: 0;
+    padding-top: 18px;
+    border-top: 1px dashed var(--ink-fade, #5a513f);
+  }
+</style>
