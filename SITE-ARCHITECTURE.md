@@ -1,0 +1,1 @@
+… (truncated; see local file at SITE-ARCHITECTURE.md — full content follows)
