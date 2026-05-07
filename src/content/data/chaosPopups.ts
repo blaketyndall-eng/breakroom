@@ -62,6 +62,12 @@ export interface StatementPopupVariant extends ChaosPopupBase {
   imageKey?: string;
   /** Optional 'mood' style hint — drives background color. */
   mood?: 'pulp' | 'cardboard' | 'caution' | 'paperback' | 'lowfi';
+  /**
+   * Optional red-button CTA below the body. When omitted, the popup just
+   * shows headline + sub. CTA copy itself can be a bit, e.g. "BELIEVE IT" —
+   * the button doesn't actually do anything except sell the ad pretense.
+   */
+  cta?: string;
 }
 
 export interface PromptPopupVariant extends ChaosPopupBase {
@@ -125,6 +131,7 @@ export const CHAOS_POPUPS: ChaosPopupVariant[] = [
     sub: 'Last filed: about now. We have not been told who this is.',
     imageKey: 'adMissingMan',
     mood: 'paperback',
+    cta: 'Report It',
   },
   {
     id: 'work-in-progress',
@@ -150,6 +157,7 @@ export const CHAOS_POPUPS: ChaosPopupVariant[] = [
     sub: 'a TRUE confession. Tell-All paperback. $1.99 at participating drugstores.',
     imageKey: 'adLsdPaperback',
     mood: 'pulp',
+    cta: 'Order Now',
   },
   {
     id: 'ahhhhhh-statement',
@@ -166,6 +174,7 @@ export const CHAOS_POPUPS: ChaosPopupVariant[] = [
     body: 'FREE HOODIES',
     sub: '(none claimed)',
     mood: 'lowfi',
+    cta: 'Claim Yours',
   },
 
   // ── prompts (Y/N or labeled) ───────────────────────────────────────────
