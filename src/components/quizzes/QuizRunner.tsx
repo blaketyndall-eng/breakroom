@@ -11,6 +11,10 @@
  * differs by quiz.kind:
  *   foundational → writes to user_profiles, redirects to redirectTo
  *   scattered    → inserts a row into quiz_results, redirects
+ *
+ * HOOK ORDER NOTE: every hook in this component must run on every render,
+ * before any early return. React tracks hooks by call order, not name —
+ * a conditional hook flips the index and throws error #310.
  */
 import { useCallback, useEffect, useState } from 'react';
 import type { Quiz } from '@/lib/quizzes/engine';
@@ -75,33 +79,8 @@ export default function QuizRunner({ quiz, redirectTo = '/portal/interview/resul
     };
   }, []);
 
-  if (!userId || !currentStats) {
-    return <div className="qr-loading">CONNECTING TO MAINFRAME...</div>;
-  }
-
-  const total = quiz.questions.length;
-  const currentQ = quiz.questions[currentIdx];
-  const isFirst = currentIdx === 0;
-  const isLast = currentIdx >= total - 1;
-  const answeredCount = Object.keys(selected).length;
-
-  const handleSelect = (optionId: string) => {
-    if (submitting) return;
-    setSelected((prev) => ({ ...prev, [currentQ.id]: optionId }));
-    if (!isLast) {
-      window.setTimeout(() => setCurrentIdx((i) => Math.min(total - 1, i + 1)), 400);
-    }
-  };
-
-  const handleBack = () => {
-    if (isFirst || submitting) return;
-    setCurrentIdx((i) => Math.max(0, i - 1));
-  };
-  const handleNext = () => {
-    if (isLast || submitting) return;
-    setCurrentIdx((i) => Math.min(total - 1, i + 1));
-  };
-
+  // IMPORTANT: useCallback must live above any early return so the hook
+  // count stays stable across renders. The inner guard handles null state.
   const handleFinalize = useCallback(async () => {
     if (!userId || !currentStats || submitting) return;
     setSubmitting(true);
@@ -170,6 +149,33 @@ export default function QuizRunner({ quiz, redirectTo = '/portal/interview/resul
       setSubmitting(false);
     }
   }, [userId, currentStats, submitting, quiz, selected, redirectTo]);
+
+  if (!userId || !currentStats) {
+    return <div className="qr-loading">CONNECTING TO MAINFRAME...</div>;
+  }
+
+  const total = quiz.questions.length;
+  const currentQ = quiz.questions[currentIdx];
+  const isFirst = currentIdx === 0;
+  const isLast = currentIdx >= total - 1;
+  const answeredCount = Object.keys(selected).length;
+
+  const handleSelect = (optionId: string) => {
+    if (submitting) return;
+    setSelected((prev) => ({ ...prev, [currentQ.id]: optionId }));
+    if (!isLast) {
+      window.setTimeout(() => setCurrentIdx((i) => Math.min(total - 1, i + 1)), 400);
+    }
+  };
+
+  const handleBack = () => {
+    if (isFirst || submitting) return;
+    setCurrentIdx((i) => Math.max(0, i - 1));
+  };
+  const handleNext = () => {
+    if (isLast || submitting) return;
+    setCurrentIdx((i) => Math.min(total - 1, i + 1));
+  };
 
   return (
     <div className="qr">
