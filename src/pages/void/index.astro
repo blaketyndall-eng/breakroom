@@ -11,6 +11,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { NANO_PROMPTS, pollinationsUrl } from '@/lib/voidImgShim';
 import VoidPollCard from '@/components/voidsignal/VoidPollCard';
+import VoidWelcomeStrip from '@/components/voidsignal/VoidWelcomeStrip';
 import { getRecentlyIndexedSites, getSiteOfTheNight } from '@/content/data/voidSites';
 
 const N = NANO_PROMPTS;
@@ -25,10 +26,13 @@ const siteOfTheNight = getSiteOfTheNight();
   </style>
 
   <div class="vd-page">
-    <div class="vd-welcome">
-      <span>Welcome, <b>frogs</b> &nbsp;|&nbsp; Stuff: <b>0</b> &nbsp;|&nbsp; Applause Money: <b>1,847</b></span>
-      <span class="vd-welcome-time">it is <b>1:47 a.m.</b> NST <span class="vd-tiny">(Not Standard Time)</span></span>
-    </div>
+    <VoidWelcomeStrip client:load />
+    <noscript>
+      <div class="vd-welcome">
+        <span>Welcome, <b>frogs</b> &nbsp;|&nbsp; Stuff: <b>0</b> &nbsp;|&nbsp; Applause Money: <b>1,847</b></span>
+        <span class="vd-welcome-time">it is <b>1:47 a.m.</b> NST <span class="vd-tiny">(Not Standard Time)</span></span>
+      </div>
+    </noscript>
 
     <div class="vd-marquee">
       <div class="vd-marquee-content">
@@ -219,7 +223,7 @@ const siteOfTheNight = getSiteOfTheNight();
       <p>VOID is a user-submitted map of the parts of the internet OmniShift would prefer you not visit. We do not endorse anything here. Most things here do not endorse us either.</p>
       <p class="vd-foot-links">
         <a href="/void/about">about</a> ·
-        <a href="mailto:?subject=found%20a%20door&body=https%3A%2F%2Fthebreakroom.pages.dev%2Fvoid">tell a friend</a> ·
+        <a href="mailto:?subject=found%20a%20door&body=https%3A%2F%2Fthebreakroom.blaketyndall.workers.dev%2Fvoid">tell a friend</a> ·
         <a href="/sign-the-wall">guestbook</a> ·
         <a href="/void/flag">flag a page</a> ·
         <a href="/void/webrings">webrings</a> ·

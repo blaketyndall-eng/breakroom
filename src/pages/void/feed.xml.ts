@@ -10,7 +10,11 @@ import { VOID_SITES } from '@/content/data/voidSites';
 
 export const prerender = false;
 
-const SITE_URL = 'https://thebreakroom.pages.dev';
+// Production deploy lives on Cloudflare Workers (see wrangler.toml).
+// Pull from PUBLIC_SITE_URL when set; fall back to the workers.dev domain.
+const SITE_URL =
+  (typeof process !== 'undefined' && process.env?.PUBLIC_SITE_URL) ||
+  'https://thebreakroom.blaketyndall.workers.dev';
 
 function escapeXml(s: string): string {
   return s
