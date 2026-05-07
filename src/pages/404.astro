@@ -1,9 +1,24 @@
 ---
+/**
+ * /404 — broken-link catastrophe.
+ *
+ * The CatastropheCascade island (BPC-2) renders a fullscreen overlay on
+ * top of the page and orchestrates the 5-phase explosion → redirect to
+ * /void.
+ *
+ * The calm "found photo / page may have existed" body that lived here
+ * before is preserved BELOW the cascade as a noscript / non-JS fallback
+ * — users without JS still see the original 404 with three recovery
+ * links (Lost & Found, breakroom, sign the wall) instead of a blank
+ * page.
+ */
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import CatastropheCascade from '@/components/system/CatastropheCascade';
 ---
 <OldWebLayout title="404 / Room Not Found" section="404">
-  <div class="not-found-frame">
+  <CatastropheCascade client:load redirectTo="/void" />
 
+  <div class="not-found-frame">
     <figure class="not-found-photo">
       <img
         src="/void/foundReptileCouch.jpg"
@@ -28,7 +43,6 @@ import OldWebLayout from '@/layouts/OldWebLayout.astro';
         <a class="old-button" href="/sign-the-wall">Sign the wall instead</a>
       </p>
     </div>
-
   </div>
 </OldWebLayout>
 
