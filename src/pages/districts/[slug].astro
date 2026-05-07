@@ -1,94 +1,176 @@
 ---
+/**
+ * /districts/[slug] — District splash page (V3 redesign).
+ *
+ * Reframed as a 1996 GeoCities Neighborhood splash, per the canonical
+ * personal-internet pattern of the era: themed wordmark, neighborhood
+ * description, "regulars who live here" + "pages indexed in this
+ * neighborhood" lists, "join this neighborhood" CTA, sister-zone links.
+ *
+ * The old `.old-shell .district-detail` card is gone. The new layout
+ * uses dnp-* tokens (District Neighborhood Page) defined in
+ * src/styles/districts-redesign.css, with per-district CSS vars driven
+ * by `data-district="<slug>"` on the root section.
+ *
+ * Behavior unchanged from the previous version:
+ *   - prerender = false (runtime SSR; matches feedback_dynamic_routes_pattern)
+ *   - missing slug → soft-404 with directory link
+ *   - AgentCommentBlock still mounts at the bottom
+ */
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import AgentCommentBlock from '@/components/agents/AgentCommentBlock.tsx';
 import { getDistrictBySlug, getAdjacentDistricts } from '@/lib/districts';
 
-// Runtime SSR pattern: read slug at request time and look it up. We
-// previously tried `prerender = true` to honor getStaticPaths, but every
-// other dynamic route in this app is `prerender = false` and adding
-// prerender broke the SSR build. Matches the working pattern in
-// /factions/[slug].astro.
 export const prerender = false;
 
 const slug = Astro.params.slug ?? '';
 const district = getDistrictBySlug(slug);
 const adjacent = district ? getAdjacentDistricts(district.slug) : [];
+
+// Status display helpers
+function statusLabel(status: string) {
+  return status.replaceAll('_', ' ');
+}
+function dangerDots(level: number) {
+  return '●'.repeat(level) + '○'.repeat(3 - level);
+}
+function nicelySpace(slug: string) {
+  return slug.replaceAll('-', ' ');
+}
 ---
 {district ? (
-  <OldWebLayout title={district.name} section="districts">
-    <div class="status-strip"><span>district</span><span>{district.status.replaceAll('_', ' ')}</span><span>danger: {district.dangerLevel}/3</span></div>
-    <section class={`old-shell district-detail district-status-${district.status}`}>
-      <div class="old-header">{district.name}</div>
-      {district.image && (
-        <div class="district-hero-image">
-          <img src={district.image} alt={`${district.name} — exterior`} loading="eager" decoding="async" />
+  <OldWebLayout title={`${district.name} — Neighborhood`} section="districts">
+    <section
+      class="dnp-splash"
+      data-district={district.slug}
+      data-status={district.status}
+      data-danger={String(district.dangerLevel)}
+    >
+      {/* Welcome banner — neighborhood wordmark */}
+      <header class="dnp-banner">
+        <span class="dnp-banner-welcome">welcome to</span>
+        <h1 class="dnp-banner-name">{district.name}</h1>
+        <p class="dnp-banner-tagline">~ {district.tagline} ~</p>
+        <div class="dnp-banner-meta">
+          <span class="dnp-meta-pill dnp-meta-status">{statusLabel(district.status)}</span>
+          <span class="dnp-meta-pill dnp-meta-danger" title={`Danger level ${district.dangerLevel} of 3`}>
+            danger {dangerDots(district.dangerLevel)}
+          </span>
+          {district.weather && (
+            <span class="dnp-meta-pill dnp-meta-weather">weather: {district.weather}</span>
+          )}
         </div>
-      )}
-      <div class="old-body">
-        <div class="district-detail-meta">
-          <span class="district-status-badge">{district.status.replaceAll('_', ' ')}</span>
-          {district.dangerLevel >= 2 && <span class="district-danger-badge">restricted access</span>}
-          {district.weather && <span class="district-weather-badge">{district.weather}</span>}
+      </header>
+
+      {/* Hero + about row */}
+      <div class="dnp-row dnp-row-hero">
+        <div class="dnp-hero">
+          {district.image ? (
+            <img class="dnp-hero-img" src={district.image} alt={`${district.name} — exterior`} loading="eager" decoding="async" />
+          ) : (
+            <div class="dnp-hero-placeholder" aria-hidden="true">
+              <span class="dnp-hero-placeholder-name">{district.name.toUpperCase()}</span>
+              <span class="dnp-hero-placeholder-line">no photo on file</span>
+            </div>
+          )}
         </div>
 
-        <blockquote class="district-tagline-block">{district.tagline}</blockquote>
+        <div class="dnp-about">
+          <h2 class="dnp-section-head dnp-section-head--about">About this neighborhood</h2>
+          <p class="dnp-about-body">{district.description}</p>
 
-        <div class="district-description">
-          <p>{district.description}</p>
+          <h3 class="dnp-section-head dnp-section-head--atmosphere">Atmosphere</h3>
+          <p class="dnp-atmosphere">{district.atmosphere}</p>
         </div>
+      </div>
 
-        <div class="district-atmosphere">
-          <span class="district-section-label">ATMOSPHERE</span>
-          <p>{district.atmosphere}</p>
-        </div>
-
-        {district.factionPresence.length > 0 && (
-          <div class="district-factions">
-            <span class="district-section-label">FACTION PRESENCE</span>
-            <div class="district-faction-list">
+      {/* Three-card row — factions / agents / stuff */}
+      <div class="dnp-row dnp-row-three">
+        <article class="dnp-card dnp-card--factions">
+          <h3 class="dnp-section-head dnp-section-head--factions">Faction Presence</h3>
+          {district.factionPresence.length > 0 ? (
+            <ul class="dnp-list">
               {district.factionPresence.map((s) => (
-                <a href={`/factions/${s}`} class="district-faction-link">{s.replaceAll('-', ' ')}</a>
+                <li><a href={`/factions/${s}`}>{nicelySpace(s)}</a></li>
               ))}
-            </div>
-          </div>
-        )}
+            </ul>
+          ) : (
+            <p class="dnp-empty">No turf claimed here. Open territory.</p>
+          )}
+        </article>
 
-        {district.agentPresence.length > 0 && (
-          <div class="district-agents">
-            <span class="district-section-label">SEEN AROUND</span>
-            <div class="district-agent-list">
+        <article class="dnp-card dnp-card--agents">
+          <h3 class="dnp-section-head dnp-section-head--agents">Seen Around</h3>
+          {district.agentPresence.length > 0 ? (
+            <ul class="dnp-list">
               {district.agentPresence.map((agent) => (
-                <span class="district-agent-tag">{agent.replaceAll('-', ' ')}</span>
+                <li>{nicelySpace(agent)}</li>
               ))}
-            </div>
-          </div>
-        )}
+            </ul>
+          ) : (
+            <p class="dnp-empty">Nobody known. Or nobody admits to it.</p>
+          )}
+        </article>
 
-        {district.stuffHints.length > 0 && (
-          <div class="district-stuff">
-            <span class="district-section-label">STUFF IN THE AREA</span>
-            <div class="district-stuff-list">
+        <article class="dnp-card dnp-card--stuff">
+          <h3 class="dnp-section-head dnp-section-head--stuff">Stuff In The Area</h3>
+          {district.stuffHints.length > 0 ? (
+            <ul class="dnp-list">
               {district.stuffHints.map((item) => (
-                <a href={`/stuff/${item}`} class="district-stuff-link">{item.replaceAll('-', ' ')}</a>
+                <li><a href={`/stuff/${item}`}>{nicelySpace(item)}</a></li>
               ))}
-            </div>
-          </div>
-        )}
+            </ul>
+          ) : (
+            <p class="dnp-empty">The drawer hasn't filed anything from here.</p>
+          )}
+        </article>
+      </div>
+
+      {/* Regulars who live here — empty state stub for V3, real data wires later */}
+      <section class="dnp-card dnp-card--regulars">
+        <h3 class="dnp-section-head dnp-section-head--regulars">Regulars Who Live Here</h3>
+        <p class="dnp-empty">
+          No regulars filed under this neighborhood yet. The mailbox is in working order.
+          Set your turf in <a href="/locker">your file</a> to claim a corner.
+        </p>
+      </section>
+
+      {/* Pages indexed in this neighborhood — empty state for V3 */}
+      <section class="dnp-card dnp-card--pages">
+        <h3 class="dnp-section-head dnp-section-head--pages">Pages Indexed In This Neighborhood</h3>
+        <p class="dnp-empty">
+          No pages indexed in this zone yet. The crawler missed it on purpose.
+        </p>
+        <a class="dnp-cta" href="/sleepnet/create">+ Make a page that lives here</a>
+      </section>
+
+      {/* Join + Adjacent — bottom row */}
+      <div class="dnp-row dnp-row-tail">
+        <article class="dnp-card dnp-card--join">
+          <h3 class="dnp-section-head dnp-section-head--join">Join This Neighborhood</h3>
+          <p>Set <code>{district.slug}</code> as your turf in your Regular File. Other regulars will see you here. The room may notice.</p>
+          <a class="dnp-cta dnp-cta--accent" href="/locker">Open my file →</a>
+        </article>
 
         {adjacent.length > 0 && (
-          <div class="district-adjacent">
-            <span class="district-section-label">ADJACENT DISTRICTS</span>
-            <div class="district-adjacent-list">
+          <article class="dnp-card dnp-card--adjacent">
+            <h3 class="dnp-section-head dnp-section-head--adjacent">Adjacent Neighborhoods</h3>
+            <ul class="dnp-adjacent-list">
               {adjacent.map((adj) => (
-                <a href={`/districts/${adj.slug}`} class="district-adjacent-link">
-                  <span class="district-adjacent-name">{adj.name}</span>
-                  <span class="district-adjacent-tagline">{adj.tagline}</span>
-                </a>
+                <li>
+                  <a href={`/districts/${adj.slug}`} class="dnp-adjacent-link">
+                    <span class="dnp-adjacent-name">{adj.name}</span>
+                    <span class="dnp-adjacent-tagline">{adj.tagline}</span>
+                  </a>
+                </li>
               ))}
-            </div>
-          </div>
+            </ul>
+          </article>
         )}
+      </div>
 
+      {/* Existing agent commentary mount — kept as-is */}
+      <div class="dnp-row dnp-row-comments">
         <AgentCommentBlock
           client:idle
           targetType="district"
@@ -97,14 +179,16 @@ const adjacent = district ? getAdjacentDistricts(district.slug) : [];
           context={{ district: district.sleepnetNeighborhood }}
         />
       </div>
-    </section>
 
-    <p class="back-link"><a href="/districts">&larr; back to district directory</a></p>
+      <p class="dnp-back"><a href="/districts">&larr; back to district directory</a></p>
+    </section>
   </OldWebLayout>
 ) : (
   <OldWebLayout title="Missing District / Districts" section="districts">
     <div class="status-strip"><span>district</span><span>{slug || 'not found'}</span><span><a href="/districts">districts</a></span></div>
-    <p class="memo-box">No district file was found for {slug || 'an empty slug'}. The directory may have changed its mind.</p>
-    <p class="back-link"><a href="/districts">&larr; back to district directory</a></p>
+    <p class="memo-box">
+      No district file was found for <b>{slug || 'an empty slug'}</b>. The directory may have changed its mind.
+    </p>
+    <p><a href="/districts">&larr; back to district directory</a></p>
   </OldWebLayout>
 )}
