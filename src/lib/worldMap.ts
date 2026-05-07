@@ -70,6 +70,8 @@ const SECTION_WORLD: Record<string, World> = {
   events:      'voidsignal', // happenings
   houserules:  'voidsignal', // rules of the underground (was 'breakroom')
   pocket:      'voidsignal', // Pocket Mode — VS mobile (self-chrome)
+  sites:       'voidsignal', // canonical VS sites (/sites/[slug])
+  voidshell:   'voidsignal', // /void/* utility shells (about, dmca, etc.)
 
   // ---------- NEUTRAL (utility pages, no world chrome) ----------
   admin:  'neutral', // Wire Room / ops console
@@ -138,6 +140,14 @@ const OMNI_PREFIX: Array<[string, string]> = [
 const VS_EXACT: Record<string, string> = {
   '/':              'lot/west',
   '/void':          'lot/west',
+  '/void/games':    'arcade/sticky',
+  '/void/about':    'about/this',
+  '/void/flag':     'flag/page',
+  '/void/webrings': 'webrings/index',
+  '/void/dmca':     'dmca/lol',
+  '/void/missing':  'directory/changed-its-mind',
+  '/void/search':   'search/results',
+  '/clock-in':      'doorway/in',
   '/locker':        'regulars/me/file',
   '/idle-hands':    'pool-hall/intake',
   '/phone':         'bar/phone',
@@ -160,6 +170,8 @@ const VS_PREFIX: Array<[string, string]> = [
   ['/crews/',       'crews/'],
   ['/districts/',   'districts/'],
   ['/events/',      'wall/events/'],
+  ['/sites/',       'sites/'],
+  ['/void/',        'void/'],
 ];
 
 export function inWorldUrlFor(
