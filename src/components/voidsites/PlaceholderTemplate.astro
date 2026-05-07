@@ -1,0 +1,123 @@
+---
+/**
+ * PlaceholderTemplate.astro
+ * --------------------------------------------------------------------------
+ * V1 stub for canonical Void Signal sites. Renders a "page is being indexed"
+ * shell with the site's tagline + visit count + last-indexed date. V3 will
+ * replace this with per-site templates (mothPage, timingSlips, etc.).
+ *
+ * The shell still feels like a real VS site — it's not a generic 404. The
+ * idea is that visiting the slug today returns "the page is here, but we
+ * haven't fully cataloged it yet" rather than "this page does not exist."
+ */
+import type { VoidSite } from '@/content/data/voidSites';
+
+interface Props {
+  site: VoidSite;
+}
+const { site } = Astro.props;
+const indexedDate = new Date(site.meta.indexedAt).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+<div class="vs-site-shell">
+  <header class="vss-head">
+    <div class="vss-domain">{site.domain}</div>
+    <div class="vss-status">
+      <span class="vss-led" aria-hidden="true">●</span>
+      indexed · being cataloged
+    </div>
+  </header>
+
+  <h1 class="vss-title">{site.title}</h1>
+  <p class="vss-tagline">{site.tagline}</p>
+
+  <section class="vss-card">
+    <div class="vss-card-head">Page status</div>
+    <div class="vss-card-body">
+      <p>
+        VOID has indexed this page but is still cataloging the contents.
+        Some sections may exist. Some may have moved. The directory will
+        update when the page admits to being a page.
+      </p>
+      <ul class="vss-meta">
+        <li><b>First seen:</b> {indexedDate}</li>
+        <li><b>Visitors:</b> {site.meta.visitors} (counter is approximate)</li>
+        {site.meta.siteOwner && <li><b>Filed under:</b> @{site.meta.siteOwner}</li>}
+        {site.meta.rumored && <li><b>Status:</b> <span class="vss-rumored">rumored</span></li>}
+      </ul>
+    </div>
+  </section>
+
+  <section class="vss-card">
+    <div class="vss-card-head">What you can do here today</div>
+    <div class="vss-card-body">
+      <ul>
+        <li>Sign the site's guestbook (when it exists)</li>
+        <li>Return to the <a href="/void">VOID portal</a></li>
+        <li>Find a different page via <a href="/void/search">search</a></li>
+        <li>Wait. Pages update at the speed of the room.</li>
+      </ul>
+    </div>
+  </section>
+
+  <p class="vss-foot">
+    Found via <a href="/void">VOID</a>. Not affiliated with OmniShift.
+    They are aware. They have not commented.
+  </p>
+</div>
+
+<style>
+  .vs-site-shell {
+    max-width: 720px; margin: 0 auto; padding: 18px;
+    font-family: 'Verdana', 'Geneva', sans-serif; font-size: 13px;
+    color: #1a0a2e;
+  }
+  .vss-head {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid #1a0a2e; padding-bottom: 6px; margin-bottom: 14px;
+    font-family: 'Courier New', monospace; font-size: 11px;
+  }
+  .vss-domain { color: #6b8c2d; }
+  .vss-status { color: #cc0099; }
+  .vss-led { color: #4cff4c; animation: vss-blink 1.4s steps(2, start) infinite; }
+  @keyframes vss-blink { to { opacity: 0.3; } }
+
+  .vss-title {
+    font-family: 'Carter One', cursive; font-size: 32px; color: #cc0099;
+    margin-bottom: 4px;
+  }
+  .vss-tagline {
+    font-family: 'Special Elite', monospace; color: #5a3066;
+    font-size: 14px; margin-bottom: 18px;
+  }
+
+  .vss-card {
+    background: #fff8d0; border: 3px solid #1a0a2e; box-shadow: 4px 4px 0 #ffd700;
+    margin-bottom: 14px;
+  }
+  .vss-card-head {
+    background: #1a0a2e; color: #ffd700; padding: 4px 10px;
+    font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 12px;
+  }
+  .vss-card-body { padding: 10px 14px; line-height: 1.5; }
+  .vss-card-body p { margin-bottom: 8px; }
+  .vss-card-body ul { padding-left: 18px; }
+  .vss-card-body li { margin-bottom: 4px; }
+
+  .vss-meta { list-style: none !important; padding-left: 0 !important; }
+  .vss-meta li { padding: 2px 0; font-family: 'Courier New', monospace; font-size: 12px; }
+  .vss-rumored {
+    background: #ff3d8a; color: #fff; padding: 0 6px;
+    font-family: 'Bungee', cursive; font-size: 10px;
+    transform: rotate(-2deg); display: inline-block;
+  }
+
+  .vss-foot {
+    text-align: center; font-family: 'Special Elite', monospace;
+    font-size: 11px; color: #6b2d8c; margin-top: 22px;
+    border-top: 1px dashed #cc9900; padding-top: 14px;
+  }
+</style>
