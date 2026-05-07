@@ -2,16 +2,25 @@
 /**
  * /void — Void Signal homepage.
  * --------------------------------------------------------------------------
- * The counterculture clone of SleepNet. Lives inside the same Win9x cream
+ * Counterculture clone of SleepNet. Lives inside the same Win9x cream
  * chrome as OmniShift (subtle Void differences only — see VoidSignalBrowser/
- * VoidSignalTaskbar/VoidLinkBar). The page interior is where the wild lives:
- * Neopets-Classic / Cartoon-Network-2001 / Yahoo-GeoCities energy with
- * mixed retro typography, chunky icon nav, and 11 nanobanana illustration
- * slots ready to be filled when image-gen is wired in.
+ * VoidSignalTaskbar/VoidLinkBar). The page interior goes all-in on 2001
+ * portal energy.
  *
  * Section: 'void' → voidsignal world (see worldMap.ts).
+ *
+ * Image illustrations: 10 nano-banana slots throughout the page reference
+ * prompts in src/lib/nanoPrompts.ts via data-nano-key. The placeholder
+ * boxes show the subject + dimensions; the full art brief lives in the
+ * library so all 10 illustrations stay stylistically cohesive when
+ * generated. When the nanobanana plugin is wired in, a generator can
+ * iterate document.querySelectorAll('[data-nano-key]') and pull each
+ * prompt from NANO_PROMPTS.
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { NANO_PROMPTS } from '@/lib/nanoPrompts';
+
+const N = NANO_PROMPTS;
 ---
 <BaseLayout title="VOID" section="void">
   <link rel="preconnect" href="https://fonts.googleapis.com" slot="head"/>
@@ -75,11 +84,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
         <div class="vd-mascot">
           <div class="vd-mothie">
-            <!-- nano: a hand-drawn cartoon moth with big sparkly eyes, 2001 Neopets art style, 140x110 -->
-            <div class="vd-nano-slot vd-mothie-anim">
-              <b>nanobanana</b>
-              MOTHIE — cartoon moth mascot with sparkly eyes, 2001 Neopets style, 140x110
-              <small>animated GIF preferred</small>
+            <div class="vd-nano-slot vd-mothie-anim" data-nano-key={N.mothie.key}>
+              <b>{N.mothie.subject}</b>
+              {N.mothie.width}×{N.mothie.height}{N.mothie.animated ? ' · animated' : ''}
+              <small>see nanoPrompts.ts</small>
             </div>
           </div>
           <div class="vd-mothie-name">MOTHIE</div>
@@ -91,9 +99,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       <section class="vd-side-center">
         <!-- News flash -->
         <div class="vd-newsflash">
-          <div class="vd-nano-slot">
-            <b>nano</b>
-            a swan reading a folded newspaper, 2001 mascot style, 110x110
+          <div class="vd-nano-slot" data-nano-key={N.newsSwan.key}>
+            <b>{N.newsSwan.subject}</b>
+            {N.newsSwan.width}×{N.newsSwan.height}
+            <small>see nanoPrompts.ts</small>
           </div>
           <div>
             <h3>newsflash!</h3>
@@ -105,9 +114,9 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
         <!-- Sign up callout -->
         <div class="vd-signup">
-          <div class="vd-nano-slot" style="min-height: 64px;">
-            <b>nano</b>
-            a glowing yellow lightbulb with a tiny moth circling it, 2001 cartoon, 70x64
+          <div class="vd-nano-slot" data-nano-key={N.signupBulb.key} style="min-height: 64px;">
+            <b>{N.signupBulb.subject}</b>
+            {N.signupBulb.width}×{N.signupBulb.height}{N.signupBulb.animated ? ' · animated' : ''}
           </div>
           <div>
             <h3><span class="vd-su-1">si</span><span class="vd-su-2">gn</span> <span class="vd-su-3">up!</span></h3>
@@ -120,14 +129,20 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
           <h3><span class="vd-stars">★</span> great games! <span class="vd-stars">★</span></h3>
           <div class="vd-games-list">
             <div class="vd-game-tile">
-              <div class="vd-nano-slot"><b>nano</b>roulette wheel of feelings, 2001 cartoon, 70x64</div>
+              <div class="vd-nano-slot" data-nano-key={N.wheelOutcomes.key}>
+                <b>{N.wheelOutcomes.subject}</b>
+                {N.wheelOutcomes.width}×{N.wheelOutcomes.height}
+              </div>
               <div>
                 <a href="#">The Wheel of Outcomes!</a>
                 <p>Spin spin spin!!! It will tell you what to do tonight.</p>
               </div>
             </div>
             <div class="vd-game-tile">
-              <div class="vd-nano-slot"><b>nano</b>stack of fake scratch-off tickets, 2001, 70x64</div>
+              <div class="vd-nano-slot" data-nano-key={N.scratchcards.key}>
+                <b>{N.scratchcards.subject}</b>
+                {N.scratchcards.width}×{N.scratchcards.height}
+              </div>
               <div>
                 <a href="#">Scratchcard Kiosk!</a>
                 <p>What will you not win??</p>
@@ -140,9 +155,9 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         <div class="vd-features">
           <div class="vd-feat vd-feat-big">
             <h3>Site Tonight <span class="vd-stars">★</span> <span class="vd-badge vd-badge-new">NEW!</span></h3>
-            <div class="vd-nano-slot vd-nano-wide">
-              <b>nano</b>
-              a hand-drawn moth eyeing a streetlight at the lot, 2001 cartoon, 220x100
+            <div class="vd-nano-slot vd-nano-wide" data-nano-key={N.mothStreet.key}>
+              <b>{N.mothStreet.subject}</b>
+              {N.mothStreet.width}×{N.mothStreet.height}
             </div>
             <p><a href="#"><b>moths.afterhours</b></a> — A page about moths that has been wrong for ten years. Refuses corrections. Has theories about the lighting.</p>
             <a href="#" class="vd-readmore">Visit (12 do)</a>
@@ -184,19 +199,31 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
         <div class="vd-quad">
           <div class="vd-quad-tile">
-            <div class="vd-nano-slot"><b>nano</b>weather sun-with-shades</div>
+            <div class="vd-nano-slot" data-nano-key={N.weatherSun.key}>
+              <b>{N.weatherSun.subject}</b>
+              {N.weatherSun.width}×{N.weatherSun.height}
+            </div>
             <div class="vd-quad-name">Weather Voidean</div>
           </div>
           <div class="vd-quad-tile">
-            <div class="vd-nano-slot"><b>nano</b>coin stack with eyes</div>
+            <div class="vd-nano-slot" data-nano-key={N.voidpoints.key}>
+              <b>{N.voidpoints.subject}</b>
+              {N.voidpoints.width}×{N.voidpoints.height}
+            </div>
             <div class="vd-quad-name">Voidpoints!!!</div>
           </div>
           <div class="vd-quad-tile">
-            <div class="vd-nano-slot"><b>nano</b>folded newspaper</div>
+            <div class="vd-nano-slot" data-nano-key={N.voideanTimes.key}>
+              <b>{N.voideanTimes.subject}</b>
+              {N.voideanTimes.width}×{N.voideanTimes.height}
+            </div>
             <div class="vd-quad-name">Voidean Times</div>
           </div>
           <div class="vd-quad-tile">
-            <div class="vd-nano-slot"><b>nano</b>book with question mark</div>
+            <div class="vd-nano-slot" data-nano-key={N.voidpedia.key}>
+              <b>{N.voidpedia.subject}</b>
+              {N.voidpedia.width}×{N.voidpedia.height}
+            </div>
             <div class="vd-quad-name">Voidpedia</div>
           </div>
         </div>
@@ -255,18 +282,11 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
-  /* ============================================================
-     /void — Void Signal homepage interior styles
-     Lives inside the cream Win9x chrome (mounted by BaseLayout).
-     Page interior intentionally goes all-in on 2001 portal energy.
-     ============================================================ */
-
   .vd-page {
     font-family: 'Verdana', 'Geneva', sans-serif;
     font-size: 12px;
     line-height: 1.4;
     color: #1a0a2e;
-    /* Pale yellow background with faint dive-bar grid */
     background: #fff5b0
       repeating-linear-gradient(0deg, transparent 0, transparent 28px, rgba(178,95,255,0.05) 28px, rgba(178,95,255,0.05) 29px),
       repeating-linear-gradient(90deg, transparent 0, transparent 28px, rgba(255,100,200,0.05) 28px, rgba(255,100,200,0.05) 29px);
@@ -276,7 +296,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   .vd-page a { color: #cc0099; text-decoration: underline; }
   .vd-page a:hover { color: #ff3d8a; background: #ffff99; }
 
-  /* ============== Welcome strip ============== */
   .vd-welcome {
     background: #ffd700;
     border-top: 2px solid #cc9900;
@@ -292,236 +311,74 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   .vd-welcome-time { font-family: 'Special Elite', monospace; }
   .vd-tiny { font-size: 9px; color: #888; }
 
-  /* ============== Marquee ============== */
   .vd-marquee {
-    background: #1a0a2e;
-    color: #ffe000;
-    font-family: 'Courier New', monospace;
-    font-size: 11px;
-    padding: 6px 0;
-    overflow: hidden;
-    white-space: nowrap;
+    background: #1a0a2e; color: #ffe000;
+    font-family: 'Courier New', monospace; font-size: 11px;
+    padding: 6px 0; overflow: hidden; white-space: nowrap;
     border-bottom: 2px solid #ff3d8a;
   }
-  .vd-marquee-content {
-    display: inline-block;
-    padding-left: 100%;
-    animation: vd-scroll 38s linear infinite;
-  }
+  .vd-marquee-content { display: inline-block; padding-left: 100%; animation: vd-scroll 38s linear infinite; }
   .vd-marquee-content b { color: #4cff4c; font-family: inherit; }
-  @keyframes vd-scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
-  }
+  @keyframes vd-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-  /* ============== Hero / wordmark ============== */
   .vd-hero {
     text-align: center;
     padding: 28px 16px 14px;
     background: radial-gradient(ellipse 60% 50% at 50% 30%, #fff8d0 0%, transparent 60%);
     border-bottom: 2px dashed #cc9900;
   }
-  .vd-wordmark {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 4px;
-    cursor: default;
-    user-select: none;
-    filter: drop-shadow(3px 3px 0 #1a0a2e);
-  }
-  .vd-star {
-    font-size: 38px; color: #ffd700;
-    align-self: center;
-    filter: drop-shadow(2px 2px 0 #cc9900);
-    animation: vd-twinkle 2.5s ease-in-out infinite;
-  }
-  @keyframes vd-twinkle {
-    0%, 100% { transform: scale(1) rotate(0); }
-    50% { transform: scale(1.15) rotate(15deg); }
-  }
+  .vd-wordmark { display: inline-flex; align-items: baseline; gap: 4px; cursor: default; user-select: none; filter: drop-shadow(3px 3px 0 #1a0a2e); }
+  .vd-star { font-size: 38px; color: #ffd700; align-self: center; filter: drop-shadow(2px 2px 0 #cc9900); animation: vd-twinkle 2.5s ease-in-out infinite; }
+  @keyframes vd-twinkle { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.15) rotate(15deg); } }
   .vd-l { display: inline-block; line-height: 1; }
   .vd-v { font-family: 'Permanent Marker', cursive; font-size: 92px; color: #cc0099; transform: rotate(-4deg) translateY(4px); }
   .vd-o { font-family: 'Bungee Shade', cursive; font-size: 80px; color: #4cff4c; letter-spacing: -2px; transform: translateY(-2px); }
   .vd-i { font-family: 'Rye', serif; font-size: 86px; color: #1d2891; transform: translateY(2px); }
   .vd-d { font-family: 'Lobster', cursive; font-size: 96px; color: #ff8000; transform: rotate(2deg); }
-
-  .vd-wordmark-trail {
-    font-family: 'Caveat', cursive;
-    font-size: 22px;
-    color: #6b2d8c;
-    margin-top: 4px;
-  }
+  .vd-wordmark-trail { font-family: 'Caveat', cursive; font-size: 22px; color: #6b2d8c; margin-top: 4px; }
   .vd-wordmark-trail b { color: #cc0099; }
-
-  .vd-tagline {
-    font-family: 'Special Elite', monospace;
-    color: #5a3066;
-    margin-top: 14px;
-    font-size: 14px;
-  }
+  .vd-tagline { font-family: 'Special Elite', monospace; color: #5a3066; margin-top: 14px; font-size: 14px; }
   .vd-tagline mark { background: #ffff99; color: #1a0a2e; padding: 0 4px; }
 
-  /* ============== Main 3-col ============== */
-  .vd-main {
-    max-width: 1080px;
-    margin: 16px auto 0;
-    padding: 0 12px;
-    display: grid;
-    grid-template-columns: 200px 1fr 220px;
-    gap: 14px;
-  }
+  .vd-main { max-width: 1080px; margin: 16px auto 0; padding: 0 12px; display: grid; grid-template-columns: 200px 1fr 220px; gap: 14px; }
   @media (max-width: 940px) { .vd-main { grid-template-columns: 1fr; } }
 
-  /* Left nav */
-  .vd-nav-block {
-    background: #ffd700;
-    border: 3px solid #1a0a2e;
-    box-shadow: 4px 4px 0 #cc0099;
-    margin-bottom: 14px;
-  }
-  .vd-nav-item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 6px 10px;
-    border-bottom: 2px dotted #1a0a2e;
-    font-family: 'Comfortaa', sans-serif; font-weight: 700;
-    font-size: 13px;
-    color: #1a0a2e !important;
-    text-decoration: none !important;
-    cursor: default;
-    background: #ffd700;
-  }
+  .vd-nav-block { background: #ffd700; border: 3px solid #1a0a2e; box-shadow: 4px 4px 0 #cc0099; margin-bottom: 14px; }
+  .vd-nav-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 2px dotted #1a0a2e; font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 13px; color: #1a0a2e !important; text-decoration: none !important; cursor: default; background: #ffd700; }
   .vd-nav-item:last-child { border-bottom: none; }
   .vd-nav-item:hover { background: #ff3d8a; color: #fff !important; }
-  .vd-ng-icon {
-    width: 24px; height: 24px;
-    display: inline-flex;
-    align-items: center; justify-content: center;
-    background: #fff8d0;
-    border: 2px solid #1a0a2e;
-    border-radius: 4px;
-    flex-shrink: 0;
-    font-size: 14px;
-  }
+  .vd-ng-icon { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; background: #fff8d0; border: 2px solid #1a0a2e; border-radius: 4px; flex-shrink: 0; font-size: 14px; }
   .vd-nav-item:hover .vd-ng-icon { background: #ffd700; }
   .vd-login { background: #cc0099 !important; color: #ffd700 !important; }
   .vd-login .vd-ng-icon { background: #1a0a2e; color: #ffd700; }
   .vd-logout { background: #ff8000 !important; color: #1a0a2e !important; }
 
-  .vd-search {
-    background: #cc0099;
-    border: 3px solid #1a0a2e;
-    padding: 8px;
-    margin-bottom: 14px;
-  }
-  .vd-search label {
-    display: block;
-    color: #ffd700;
-    font-family: 'Comfortaa', sans-serif; font-weight: 700;
-    font-size: 11px;
-    margin-bottom: 4px;
-  }
-  .vd-search input {
-    width: 100%; padding: 3px 5px;
-    border: 1px inset #888;
-    font-family: 'Courier New', monospace; font-size: 11px;
-  }
-  .vd-search button {
-    margin-top: 4px; width: 100%; padding: 3px;
-    background: #ffd700;
-    border: 2px outset #ffec80;
-    font-family: inherit; font-weight: 700;
-    cursor: pointer;
-  }
+  .vd-search { background: #cc0099; border: 3px solid #1a0a2e; padding: 8px; margin-bottom: 14px; }
+  .vd-search label { display: block; color: #ffd700; font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 11px; margin-bottom: 4px; }
+  .vd-search input { width: 100%; padding: 3px 5px; border: 1px inset #888; font-family: 'Courier New', monospace; font-size: 11px; }
+  .vd-search button { margin-top: 4px; width: 100%; padding: 3px; background: #ffd700; border: 2px outset #ffec80; font-family: inherit; font-weight: 700; cursor: pointer; }
 
-  /* Mascot */
-  .vd-mascot {
-    background: #fff;
-    border: 3px solid #1a0a2e;
-    padding: 10px;
-    text-align: center;
-    box-shadow: 4px 4px 0 #4cff4c;
-  }
+  .vd-mascot { background: #fff; border: 3px solid #1a0a2e; padding: 10px; text-align: center; box-shadow: 4px 4px 0 #4cff4c; }
   .vd-mothie-anim { animation: vd-bob 3s ease-in-out infinite; }
-  @keyframes vd-bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-  }
-  .vd-mothie-name {
-    margin-top: 6px;
-    font-family: 'Permanent Marker', cursive;
-    font-size: 16px;
-    color: #cc0099;
-  }
-  .vd-mothie-says {
-    font-family: 'Caveat', cursive;
-    font-size: 14px;
-    color: #6b2d8c;
-  }
+  @keyframes vd-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  .vd-mothie-name { margin-top: 6px; font-family: 'Permanent Marker', cursive; font-size: 16px; color: #cc0099; }
+  .vd-mothie-says { font-family: 'Caveat', cursive; font-size: 14px; color: #6b2d8c; }
 
-  /* Center column */
-  .vd-newsflash {
-    background: #fff8d0;
-    border: 3px solid #1a0a2e;
-    padding: 10px 12px;
-    margin-bottom: 14px;
-    box-shadow: 4px 4px 0 #ffd700;
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    gap: 12px;
-    align-items: center;
-  }
-  .vd-newsflash h3 {
-    font-family: 'Lobster', cursive;
-    font-size: 30px;
-    color: #cc0099;
-    letter-spacing: -1px;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
+  .vd-newsflash { background: #fff8d0; border: 3px solid #1a0a2e; padding: 10px 12px; margin-bottom: 14px; box-shadow: 4px 4px 0 #ffd700; display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: center; }
+  .vd-newsflash h3 { font-family: 'Lobster', cursive; font-size: 30px; color: #cc0099; letter-spacing: -1px; line-height: 1; margin-bottom: 4px; }
   .vd-newsflash p { font-size: 12px; line-height: 1.5; margin-top: 6px; }
   .vd-newsflash p b { color: #cc0099; }
 
-  .vd-signup {
-    background: #fff;
-    border: 3px solid #1a0a2e;
-    padding: 10px 14px;
-    margin-bottom: 14px;
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 12px;
-    align-items: center;
-    box-shadow: 4px 4px 0 #4cff4c;
-  }
-  .vd-signup h3 {
-    font-family: 'Bungee', cursive;
-    font-size: 22px;
-    color: #1d2891;
-    letter-spacing: -1px;
-    line-height: 0.9;
-  }
+  .vd-signup { background: #fff; border: 3px solid #1a0a2e; padding: 10px 14px; margin-bottom: 14px; display: grid; grid-template-columns: 80px 1fr; gap: 12px; align-items: center; box-shadow: 4px 4px 0 #4cff4c; }
+  .vd-signup h3 { font-family: 'Bungee', cursive; font-size: 22px; color: #1d2891; letter-spacing: -1px; line-height: 0.9; }
   .vd-su-1 { color: #1d2891; }
   .vd-su-2 { color: #4cff4c; }
   .vd-su-3 { color: #cc0099; }
   .vd-signup p { font-size: 12px; line-height: 1.5; }
-  .vd-free {
-    background: #4cff4c; color: #1a0a2e;
-    padding: 0 4px; font-weight: 900;
-    letter-spacing: 0.04em;
-  }
+  .vd-free { background: #4cff4c; color: #1a0a2e; padding: 0 4px; font-weight: 900; letter-spacing: 0.04em; }
 
-  .vd-games {
-    background: #fff;
-    border: 3px solid #1a0a2e;
-    padding: 10px;
-    margin-bottom: 14px;
-    box-shadow: 4px 4px 0 #ff8000;
-  }
-  .vd-games h3 {
-    font-family: 'Carter One', cursive;
-    font-size: 22px;
-    color: #ff8000;
-    margin-bottom: 8px;
-  }
+  .vd-games { background: #fff; border: 3px solid #1a0a2e; padding: 10px; margin-bottom: 14px; box-shadow: 4px 4px 0 #ff8000; }
+  .vd-games h3 { font-family: 'Carter One', cursive; font-size: 22px; color: #ff8000; margin-bottom: 8px; }
   .vd-stars { color: #ffd700; }
   .vd-games-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   @media (max-width: 720px) { .vd-games-list { grid-template-columns: 1fr; } }
@@ -531,209 +388,63 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
   .vd-features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
   @media (max-width: 720px) { .vd-features { grid-template-columns: 1fr; } }
-  .vd-feat {
-    background: #fff;
-    border: 3px solid #1a0a2e;
-    padding: 10px;
-    box-shadow: 4px 4px 0 #6b2d8c;
-  }
+  .vd-feat { background: #fff; border: 3px solid #1a0a2e; padding: 10px; box-shadow: 4px 4px 0 #6b2d8c; }
   .vd-feat-big { background: #fff8d0; box-shadow: 4px 4px 0 #cc0099; }
-  .vd-feat h3 {
-    font-family: 'Carter One', cursive;
-    font-size: 22px;
-    color: #cc0099;
-    line-height: 1.05;
-    margin-bottom: 4px;
-  }
+  .vd-feat h3 { font-family: 'Carter One', cursive; font-size: 22px; color: #cc0099; line-height: 1.05; margin-bottom: 4px; }
   .vd-feat .vd-orange { color: #ff8000; }
   .vd-feat p { font-size: 12px; line-height: 1.45; margin-bottom: 6px; }
-  .vd-readmore {
-    display: inline-block;
-    background: #ffd700; color: #1a0a2e !important;
-    padding: 3px 10px;
-    font-family: 'Comfortaa', sans-serif; font-weight: 700;
-    font-size: 11px;
-    text-decoration: none !important;
-    border: 2px solid #1a0a2e;
-  }
+  .vd-readmore { display: inline-block; background: #ffd700; color: #1a0a2e !important; padding: 3px 10px; font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 11px; text-decoration: none !important; border: 2px solid #1a0a2e; }
   .vd-rec-list { list-style: none; font-size: 11.5px; line-height: 1.7; }
   .vd-rec-meta { margin-top: 6px; font-style: italic; font-size: 11px; }
 
-  /* Right sidebar */
-  .vd-news-box {
-    background: #ffd700;
-    border: 3px solid #1a0a2e;
-    box-shadow: 4px 4px 0 #6b2d8c;
-    margin-bottom: 14px;
-  }
-  .vd-news-head {
-    background: #fff8d0;
-    border-bottom: 3px solid #1a0a2e;
-    padding: 6px 10px;
-    font-family: 'Carter One', cursive;
-    font-size: 18px;
-    color: #cc0099;
-    text-align: center;
-    letter-spacing: -0.5px;
-  }
+  .vd-news-box { background: #ffd700; border: 3px solid #1a0a2e; box-shadow: 4px 4px 0 #6b2d8c; margin-bottom: 14px; }
+  .vd-news-head { background: #fff8d0; border-bottom: 3px solid #1a0a2e; padding: 6px 10px; font-family: 'Carter One', cursive; font-size: 18px; color: #cc0099; text-align: center; letter-spacing: -0.5px; }
   .vd-news-box ul { list-style: none; padding: 8px 12px; font-size: 12px; }
-  .vd-news-box ul li {
-    padding: 3px 0;
-    border-bottom: 1px dashed #cc9900;
-    text-align: center;
-  }
+  .vd-news-box ul li { padding: 3px 0; border-bottom: 1px dashed #cc9900; text-align: center; }
   .vd-news-box ul li:last-child { border-bottom: none; }
   .vd-news-box ul li a { color: #1a0a2e; font-weight: 700; }
 
-  .vd-cal {
-    background: #fff;
-    border: 3px solid #1a0a2e;
-    padding: 8px 10px;
-    text-align: center;
-    font-size: 11px;
-    margin-bottom: 14px;
-    box-shadow: 4px 4px 0 #4cff4c;
-  }
+  .vd-cal { background: #fff; border: 3px solid #1a0a2e; padding: 8px 10px; text-align: center; font-size: 11px; margin-bottom: 14px; box-shadow: 4px 4px 0 #4cff4c; }
   .vd-cal b { font-family: 'Comfortaa', sans-serif; font-size: 13px; color: #1d2891; }
   .vd-cal-spoil { font-size: 10px; color: #888; margin-top: 4px; }
 
-  .vd-quad {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 14px;
-  }
-  .vd-quad-tile {
-    background: #fff;
-    border: 2px solid #1a0a2e;
-    padding: 6px;
-    text-align: center;
-    font-family: 'Comfortaa', sans-serif;
-    font-weight: 700;
-    font-size: 10px;
-  }
+  .vd-quad { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; }
+  .vd-quad-tile { background: #fff; border: 2px solid #1a0a2e; padding: 6px; text-align: center; font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 10px; }
   .vd-quad-name { margin-top: 4px; color: #cc0099; }
 
-  .vd-poll {
-    background: #fff;
-    border: 3px solid #1a0a2e;
-    box-shadow: 4px 4px 0 #1d2891;
-  }
-  .vd-poll-head {
-    background: #1d2891; color: #ffd700;
-    padding: 4px 10px;
-    font-family: 'Bungee', cursive;
-    font-size: 14px;
-  }
+  .vd-poll { background: #fff; border: 3px solid #1a0a2e; box-shadow: 4px 4px 0 #1d2891; }
+  .vd-poll-head { background: #1d2891; color: #ffd700; padding: 4px 10px; font-family: 'Bungee', cursive; font-size: 14px; }
   .vd-poll-body { padding: 8px 10px; font-size: 11px; }
   .vd-poll-body p { margin-bottom: 4px; }
   .vd-poll-body label { display: block; padding: 1px 0; }
   .vd-poll-body input[type="radio"] { margin-right: 4px; }
   .vd-poll-btns { margin-top: 6px; display: flex; gap: 4px; }
-  .vd-poll-btns button {
-    flex: 1; padding: 3px;
-    background: #ffd700;
-    border: 2px outset #ffec80;
-    font-family: inherit;
-    font-size: 11px; font-weight: 700;
-    cursor: pointer;
-  }
+  .vd-poll-btns button { flex: 1; padding: 3px; background: #ffd700; border: 2px outset #ffec80; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
 
-  /* Banners */
-  .vd-banner {
-    max-width: 1080px;
-    margin: 14px auto 0;
-    padding: 0 12px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-  }
-  .vd-banner-strip {
-    padding: 9px 14px;
-    font-family: 'Bungee', cursive;
-    font-size: 13px;
-    text-align: center;
-    border: 3px solid #1a0a2e;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-  }
+  .vd-banner { max-width: 1080px; margin: 14px auto 0; padding: 0 12px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .vd-banner-strip { padding: 9px 14px; font-family: 'Bungee', cursive; font-size: 13px; text-align: center; border: 3px solid #1a0a2e; cursor: pointer; letter-spacing: 0.5px; }
   .vd-bs-1 { background: #ff3d8a; color: #fff; }
   .vd-bs-2 { background: #4cff4c; color: #1a0a2e; }
   .vd-bs-3 { background: #45e8ff; color: #1a0a2e; }
-  .vd-banner-disc {
-    max-width: 1080px;
-    margin: 4px auto 0;
-    padding: 0 12px;
-    text-align: center;
-    font-size: 10px;
-    color: #6b2d8c;
-    font-family: 'Special Elite', monospace;
-  }
+  .vd-banner-disc { max-width: 1080px; margin: 4px auto 0; padding: 0 12px; text-align: center; font-size: 10px; color: #6b2d8c; font-family: 'Special Elite', monospace; }
 
-  /* Visitor */
-  .vd-visitor {
-    max-width: 1080px;
-    margin: 22px auto 0;
-    text-align: center;
-    font-family: 'Special Elite', monospace;
-    font-size: 12px;
-    color: #6b2d8c;
-  }
-  .vd-visitor-num {
-    display: inline-block;
-    background: #1a0a2e;
-    color: #4cff4c;
-    font-family: 'Courier New', monospace;
-    font-size: 22px;
-    letter-spacing: 5px;
-    padding: 4px 14px;
-    border: 3px outset #4cff4c;
-    margin: 6px 0;
-    font-weight: 700;
-  }
+  .vd-visitor { max-width: 1080px; margin: 22px auto 0; text-align: center; font-family: 'Special Elite', monospace; font-size: 12px; color: #6b2d8c; }
+  .vd-visitor-num { display: inline-block; background: #1a0a2e; color: #4cff4c; font-family: 'Courier New', monospace; font-size: 22px; letter-spacing: 5px; padding: 4px 14px; border: 3px outset #4cff4c; margin: 6px 0; font-weight: 700; }
   .vd-visitor-disc { font-size: 10px; }
 
-  /* Footer */
-  .vd-foot {
-    max-width: 1080px;
-    margin: 22px auto 0;
-    padding: 16px 12px;
-    text-align: center;
-    font-size: 11px;
-    color: #5a3066;
-    border-top: 2px dashed #cc9900;
-  }
+  .vd-foot { max-width: 1080px; margin: 22px auto 0; padding: 16px 12px; text-align: center; font-size: 11px; color: #5a3066; border-top: 2px dashed #cc9900; }
   .vd-foot p { margin: 4px 0; }
   .vd-foot-links a { margin: 0 3px; }
   .vd-foot-badges { margin-top: 8px; display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
-  .vd-foot-badge {
-    background: #1a0a2e;
-    color: #4cff4c;
-    font-family: 'Courier New', monospace;
-    font-size: 9px;
-    padding: 3px 6px;
-    letter-spacing: 0.04em;
-  }
+  .vd-foot-badge { background: #1a0a2e; color: #4cff4c; font-family: 'Courier New', monospace; font-size: 9px; padding: 3px 6px; letter-spacing: 0.04em; }
   .vd-foot-copy { margin-top: 10px; font-size: 10px; }
 
-  /* Badges (NEW! HOT! LIVE) */
-  .vd-badge {
-    display: inline-block;
-    font-family: 'Bungee', cursive;
-    font-size: 9px;
-    padding: 1px 5px;
-    margin-left: 6px;
-    vertical-align: middle;
-    border: 2px solid #1a0a2e;
-    letter-spacing: 0.04em;
-    transform: rotate(-3deg);
-  }
+  .vd-badge { display: inline-block; font-family: 'Bungee', cursive; font-size: 9px; padding: 1px 5px; margin-left: 6px; vertical-align: middle; border: 2px solid #1a0a2e; letter-spacing: 0.04em; transform: rotate(-3deg); }
   .vd-badge-new { background: #4cff4c; color: #1a0a2e; }
   .vd-badge-hot { background: #ff3d8a; color: #fff; }
   .vd-badge-live { background: #ffe000; color: #1a0a2e; animation: vd-blink 1s steps(2, start) infinite; }
   @keyframes vd-blink { to { opacity: 0.4; } }
 
-  /* Nano illustration placeholder */
   .vd-nano-slot {
     background: repeating-linear-gradient(45deg, #fffbe6 0 8px, #ffe8a8 8px 16px);
     border: 2px dashed #cc0099;
