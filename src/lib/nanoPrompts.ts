@@ -36,26 +36,16 @@ export type Provider =
   | 'luma-dream';
 
 export interface NanoPrompt {
-  /** Stable key referenced from /void/index.astro via data-nano-key. */
   key: string;
-  /** Short label shown in the placeholder fallback when image fails. */
   subject: string;
-  /** Output dimensions in pixels (display size). */
   width: number;
   height: number;
-  /** True if an animated GIF is preferred over a static PNG. */
   animated?: boolean;
-  /** Stable seed for reproducible cache hits. */
   seed: number;
-  /** Which generator to use for this slot. Defaults to pollinations-flux. */
   provider?: Provider;
-  /** The full art brief (subject + SHARED_STYLE) for high-budget generators. */
   prompt: string;
 }
 
-// =====================================================================
-// SHARED_STYLE — global art-direction floor appended to every prompt.
-// =====================================================================
 const SHARED_STYLE = `
 Style anchors (cite all of them so the result averages between them):
   • Neopets pet portrait illustration (2001 Studio art, soft cel shading,
@@ -90,24 +80,12 @@ clip-art Web 2.0 vector mascot feel, drop-shadow glow / bevel-and-emboss
 / chrome filters, modern flat-design aesthetic.
 `.trim();
 
-/**
- * URL-friendly compressed version of SHARED_STYLE. Same anchors, less
- * verbose. Used by URL builders to keep total length under provider
- * URL limits (~1700 chars for Pollinations).
- */
 const COMPRESSED_STYLE = ' Style anchors: 2001 Neopets pet portrait, Cartoon Network 2001 character bumper, Brain Dead hand-drawn shirt graphic, Beanie Babies hangtag, Adult Swim bumper. Technique: bold black outline 3px, flat two-tone cel shading, no gradients, no glow, hand-drawn wobble, off-balance composition, vector-imperfect, MS Paint feel. Era: 2001-2003 web mascot, low-fi internet kid-portal energy. Cream background.';
 
-/**
- * Compose SHARED_STYLE onto a per-slot brief.
- */
 function brief(slot: string): string {
   return `${slot.trim()}\n\n${SHARED_STYLE}`;
 }
 
-/**
- * Strip the verbose SHARED_STYLE block from a stored prompt and return
- * just the per-slot brief. Truncate to keep URL length reasonable.
- */
 function briefForUrl(p: NanoPrompt, maxChars = 700): string {
   const idx = p.prompt.indexOf('Style anchors (cite');
   let brief = idx > 0 ? p.prompt.slice(0, idx).trim() : p.prompt.trim();
@@ -130,7 +108,6 @@ function buildPollinationsUrl(
   const briefShort = briefForUrl(p);
   const fullPrompt = briefShort + COMPRESSED_STYLE;
   const encoded = encodeURIComponent(fullPrompt);
-  // Generate at 4x display size (capped 1024) for crispness on 2x DPI screens.
   const w = Math.min(p.width * 4, 1024);
   const h = Math.min(p.height * 4, 1024);
   const params = [
@@ -144,7 +121,9 @@ function buildPollinationsUrl(
   return `${POLLINATIONS_BASE}${encoded}?${params.join('&')}`;
 }
 
-export function pollinationsUrl(p: NanoPrompt): string {
+// Per-model URL builders (used internally by imageUrl dispatcher and exported
+// for direct use if needed).
+export function pollinationsFluxUrl(p: NanoPrompt): string {
   return buildPollinationsUrl(p, 'flux');
 }
 export function pollinationsRealismUrl(p: NanoPrompt): string {
@@ -165,10 +144,6 @@ export function pollinationsGptImageUrl(p: NanoPrompt): string {
 // =====================================================================
 // PAID PROVIDERS — stubs for future API keys
 // =====================================================================
-// TODO: when REPLICATE_API_TOKEN env var is set, build URLs against
-//   https://api.replicate.com/v1/predictions and include Bearer auth.
-//   For now these throw so a misconfigured slot fails loudly.
-
 function replicateFluxProUrl(_p: NanoPrompt): string {
   throw new Error('replicate-flux-pro not yet wired. Add REPLICATE_API_TOKEN.');
 }
@@ -185,14 +160,10 @@ function lumaDreamUrl(_p: NanoPrompt): string {
 // =====================================================================
 // MASTER DISPATCHER — page calls this, never has to know the backend
 // =====================================================================
-/**
- * Resolve a NanoPrompt to its image URL based on its `provider` field.
- * Falls back to pollinations-flux if no provider is set.
- */
 export function imageUrl(p: NanoPrompt): string {
   const provider = p.provider ?? 'pollinations-flux';
   switch (provider) {
-    case 'pollinations-flux':         return pollinationsUrl(p);
+    case 'pollinations-flux':         return pollinationsFluxUrl(p);
     case 'pollinations-flux-realism': return pollinationsRealismUrl(p);
     case 'pollinations-turbo':        return pollinationsTurboUrl(p);
     case 'pollinations-gptimage':     return pollinationsGptImageUrl(p);
@@ -203,16 +174,19 @@ export function imageUrl(p: NanoPrompt): string {
   }
 }
 
+/**
+ * Backwards-compat alias. /void/index.astro imports `pollinationsUrl` and
+ * we want the page to honor each slot's `provider` field without touching
+ * the page. Dispatch via imageUrl() so per-slot routing takes effect.
+ * Prefer `imageUrl(p)` in new code — the alias may be removed later.
+ */
+export function pollinationsUrl(p: NanoPrompt): string {
+  return imageUrl(p);
+}
+
 // =====================================================================
 // THE 10 VOID HOMEPAGE SLOTS
 // =====================================================================
-//
-// Per-slot provider routing notes:
-//   - Text-heavy slots use 'pollinations-gptimage' so headlines render
-//     legibly (FLUX gives "VOIDHAIN" instead of "VOIDEAN")
-//   - Cinematic / atmospheric uses 'pollinations-flux-realism'
-//   - Cartoon mascots use 'pollinations-flux' (default)
-//
 export const NANO_PROMPTS: Record<string, NanoPrompt> = {
   mothie: {
     key: 'mothie',
