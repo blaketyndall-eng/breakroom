@@ -1,7 +1,12 @@
 ---
 import '../styles/global.css';
 import OldHeader from '@/components/oldweb/OldHeader.astro';
-import { worldForSection, type World } from '@/lib/worldMap';
+import OmniShiftBrowser from '@/components/chrome/OmniShiftBrowser.astro';
+import OmniShiftTaskbar from '@/components/chrome/OmniShiftTaskbar.astro';
+import VoidSignalBrowser from '@/components/chrome/VoidSignalBrowser.astro';
+import VoidSignalTaskbar from '@/components/chrome/VoidSignalTaskbar.astro';
+import AnonymousBar from '@/components/chrome/AnonymousBar.astro';
+import { worldForSection, chromeFor, type World } from '@/lib/worldMap';
 
 interface Props {
   title?: string;
@@ -26,9 +31,17 @@ const {
 } = Astro.props;
 
 const world = worldOverride ?? worldForSection(section);
+const chromeMode = chromeFor(section);
+const currentPath = Astro.url.pathname;
 ---
 <!doctype html>
-<html lang="en" data-site-mode="3AM" data-world={world} data-clock-state="anonymous">
+<html
+  lang="en"
+  data-site-mode="3AM"
+  data-world={world}
+  data-chrome-mode={chromeMode}
+  data-clock-state="anonymous"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -63,8 +76,66 @@ const world = worldOverride ?? worldForSection(section);
         }
       })();
     </script>
+
+    <!--
+      Foundation chrome layout rules. F6 will extract these to a
+      dedicated chrome.css file. For now they live inline so the chrome
+      ships with the layout in one commit.
+    -->
+    <style is:global>
+      /* Body padding compensates for fixed chrome at top + bottom. */
+      html[data-chrome-mode="desktop"] body {
+        padding-top: 50px;
+        padding-bottom: 32px;
+      }
+      html[data-chrome-mode="desktop"][data-clock-state="anonymous"] body {
+        padding-top: 32px;
+        padding-bottom: 0;
+      }
+      html[data-chrome-mode="desktop"][data-world="neutral"]:not([data-clock-state="anonymous"]) body {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+      html[data-chrome-mode="pocket"] body,
+      html[data-chrome-mode="suppressed"] body {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      /* Auth-state chrome visibility:
+         anonymous → AnonymousBar visible, world bars hidden
+         logged in → world bars visible, AnonymousBar hidden
+      */
+      html[data-clock-state="anonymous"] .osb,
+      html[data-clock-state="anonymous"] .vsb,
+      html[data-clock-state="anonymous"] .ost,
+      html[data-clock-state="anonymous"] .vst {
+        display: none !important;
+      }
+      html:not([data-clock-state="anonymous"]) .ab {
+        display: none !important;
+      }
+    </style>
   </head>
   <body class="scanlines grain" data-section={section} {...(level ? { 'data-level': String(level) } : {})}>
+    {chromeMode === 'desktop' && world === 'omnishift' && (
+      <>
+        <OmniShiftBrowser title={title} currentPath={currentPath} />
+        <OmniShiftTaskbar />
+        <AnonymousBar />
+      </>
+    )}
+    {chromeMode === 'desktop' && world === 'voidsignal' && (
+      <>
+        <VoidSignalBrowser currentPath={currentPath} />
+        <VoidSignalTaskbar />
+        <AnonymousBar />
+      </>
+    )}
+    {chromeMode === 'desktop' && world === 'neutral' && (
+      <AnonymousBar />
+    )}
+
     <OldHeader />
     <main>
       <slot />
