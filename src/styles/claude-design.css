@@ -230,12 +230,37 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
 }
 [data-level="2"] body,
 [data-level="2"].sleepnet-site-view {
-  background: var(--ash);
+  background:
+    /* dark-metal brushed texture — Westwood/id Software panel grain */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 2px,
+      rgba(255, 255, 255, 0.01) 2px 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 3px,
+      rgba(0, 0, 0, 0.08) 3px 4px
+    ),
+    var(--ash);
   color: var(--nicotine);
 }
-[data-level="2"] a { color: #ff3333; }
+/* Level 2: per-section accent colors — MTV / late-90s music site energy.
+   Each section gets its own accent so L2 pages feel distinct from each other.
+   Use var(--accent) in component styles to pick up the section color. */
+[data-level="2"][data-section="sleepnet"]   { --accent: #ff3333; }
+[data-level="2"][data-section="omnishift"]  { --accent: #ff9900; }
+[data-level="2"][data-section="stuff"]      { --accent: #ffcc00; }
+[data-level="2"][data-section="turf"]       { --accent: #66ff33; }
+[data-level="2"][data-section="radio"]      { --accent: #33ccff; }
+[data-level="2"][data-section="district"]   { --accent: #cc33ff; }
+[data-level="2"][data-section="events"]     { --accent: #ff6633; }
+[data-level="2"] a { color: var(--accent, #ff3333); }
 [data-level="2"] a:visited { color: #cc2222; }
 [data-level="2"] a:hover { background: transparent; color: #ffcc00; }
+[data-level="2"] .old-header {
+  border-bottom-color: var(--accent, #444);
+}
 
 /* Level 3 is the default — no override needed. The existing :root values ARE Level 3. */
 
@@ -301,6 +326,16 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
 }
 [data-level="2"] .grain::after {
   opacity: 0.35;
+}
+
+/* Level 2: ember glow on headings — Diablo/Quake II fire-logo energy */
+@keyframes emberGlow {
+  0%, 100% { text-shadow: 0 0 4px rgba(255, 51, 51, 0.2); }
+  50% { text-shadow: 0 0 12px rgba(255, 51, 51, 0.4), 0 0 24px rgba(255, 153, 0, 0.15); }
+}
+[data-level="2"] .old-header h1,
+[data-level="2"] .sleepnet-site-header h1 {
+  animation: emberGlow 3s ease-in-out infinite;
 }
 
 /* Level 4: kill all overlays entirely */
@@ -373,6 +408,14 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
 }
 [data-level="4"] .agent-comment-block__name {
   color: #888;
+}
+
+/* Level 1: graph paper texture — Urban Diary collage aesthetic (opt-in) */
+[data-level="1"] .graph-paper-bg {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 19px, rgba(51, 255, 102, 0.06) 19px 20px),
+    repeating-linear-gradient(90deg, transparent 0 19px, rgba(51, 255, 102, 0.06) 19px 20px),
+    var(--ash, #0a0908);
 }
 
 /* Smooth level transitions for SleepNet site view container */

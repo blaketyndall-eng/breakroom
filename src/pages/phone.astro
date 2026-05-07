@@ -3,27 +3,19 @@ import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import TableBox from '@/components/oldweb/TableBox.astro';
 import LinkMaze from '@/components/oldweb/LinkMaze.astro';
 import SecretTrigger from '@/components/breakroom/SecretTrigger';
-import { getPublicPhoneMessages } from '@/lib/publicContent';
-
-const phoneMessages = await getPublicPhoneMessages();
+import PhoneInbox from '@/components/phone/PhoneInbox';
 ---
 <OldWebLayout title="Phone Behind The Bar" section="phone">
   <SecretTrigger client:load trigger="visit:/phone" path="/phone" label="phone behind the bar" />
-  <div class="status-strip"><span>company phone</span><span>carrier: unknown</span><span>missed calls: 147</span><span>battery: spiritually dead</span><span>source: {phoneMessages.source}</span><span><a href="/artifacts">evidence drawer</a></span></div>
+  <div class="status-strip"><span>company phone</span><span>carrier: unknown</span><span>missed calls: 147</span><span>battery: spiritually dead</span><span>signal: 1 bar</span></div>
   <h1>Phone Behind The Bar</h1>
   <p class="tagline-block">Ubers, DoorDash, weird voicemails, invites, late-night messages, and OmniShift interruptions. The phone is not yours. It keeps acting familiar.</p>
-  {phoneMessages.error && <p class="memo-box">Public phone fallback active: {phoneMessages.error}</p>}
 
-  <section class="grid-2">
-    <TableBox title="Incoming / voicemail drawer">
-      {phoneMessages.items.map((v, i) => (
-        <article class="memo-box" style="margin-bottom:12px;">
-          <p style="font-family:var(--type-mono);font-size:11px;text-transform:uppercase;">MSG {String(i + 1).padStart(2, '0')} / FROM: {v.from} / {v.time} / {v.messageType}</p>
-          <p style="font-size:18px;">{v.body}</p>
-          <p><button class="old-button" type="button">Play / pretend audio</button> <button class="old-button" type="button">Save to evidence</button></p>
-        </article>
-      ))}
-    </TableBox>
+  <!-- Live Inbox — subscribes to World Ledger events -->
+  <PhoneInbox client:load />
+
+  <!-- Static call log — the calls that were here before you arrived -->
+  <section class="grid-2" style="margin-top:20px;">
     <TableBox title="Recent calls / unclear relation">
       <table class="table-box">
         <tbody>
@@ -32,15 +24,37 @@ const phoneMessages = await getPublicPhoneMessages();
           <tr><td>1:34 AM</td><td>Food courier</td><td>left bag near a room that denies being a room</td></tr>
           <tr><td>1:47 AM</td><td>OmniShift Dispatch</td><td>do not return to work, report to the room</td></tr>
           <tr><td>2:08 AM</td><td>Unknown invite</td><td>pool table open, bring cash, do not bring certainty</td></tr>
+          <tr><td>2:33 AM</td><td>Phone Behind The Bar</td><td>the phone called itself. it went to voicemail.</td></tr>
+          <tr><td>3:01 AM</td><td>Wrong Department</td><td>asked about a form that does not exist for a building that does</td></tr>
         </tbody>
       </table>
     </TableBox>
+    <div>
+      <TableBox title="Phone settings / do not touch">
+        <p style="font-size:12px;font-family:var(--type-mono);color:#5a513f;">
+          <b>Ringer:</b> on (but quiet)<br/>
+          <b>Vibrate:</b> when it wants to<br/>
+          <b>Notifications:</b> delivered to whoever is closest to the bar<br/>
+          <b>Do Not Disturb:</b> the phone does not respect this<br/>
+          <b>Voicemail greeting:</b> "This phone is behind the bar. Leave a message. The message will become evidence."<br/>
+          <b>Storage:</b> 147 messages / 0 bytes free / storage is a feeling
+        </p>
+      </TableBox>
+      <TableBox title="Notification sources">
+        <p style="font-size:11px;font-family:var(--type-mono);color:#5a513f;">
+          The phone receives messages when the world changes. Guestbook entries, hidden doors, faction drift, new pages, weather shifts, radio broadcasts, crew formations, and things the Wire Room allows through.<br/><br/>
+          <b>You did not subscribe to these.</b> The phone decided.
+        </p>
+      </TableBox>
+    </div>
   </section>
 
   <LinkMaze title="Phone menu / buttons that still click" notice="Every option says it is temporary. None of them are." links={[
     { href: '/idle-hands', label: 'Register for pool', note: 'caller says bracket is filling up', stamp: 'CALL BACK' },
     { href: '/lost-found', label: 'Report found object', note: 'phone asks for item number first' },
     { href: '/radio', label: 'Send to radio', note: 'voicemail may become a station ID', stamp: 'ON AIR' },
+    { href: '/ledger', label: 'World Ledger', note: 'everything the phone heard, filed properly' },
+    { href: '/sleepnet', label: 'Search SleepNet', note: 'the directory has been notified' },
     { href: '/after-hours', label: 'Return to bar', note: 'line stays open after you hang up' }
   ]} />
 </OldWebLayout>
