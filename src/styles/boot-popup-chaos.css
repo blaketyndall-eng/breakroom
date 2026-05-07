@@ -671,3 +671,298 @@
   animation: bpc-toast-in 200ms ease-out;
 }
 @keyframes bpc-toast-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ========================================================================= */
+/*  BPC-3: ChaosPopups variants                                               */
+/*  Six interaction-shape components: statement / prompt / rude-prompt /      */
+/*  rps / oregon-trail / loyalty-card                                         */
+/* ========================================================================= */
+
+/* Mood-driven popup background tints — applied via [data-mood] on .bpc-popup. */
+.bpc-popup[data-mood="paperback"] { background: #d8b76e; }
+.bpc-popup[data-mood="pulp"]      { background: #2a1818; color: #ffe0a0; }
+.bpc-popup[data-mood="cardboard"] { background: #d4c39a; }
+.bpc-popup[data-mood="caution"]   { background: #ffd200; color: #000; }
+.bpc-popup[data-mood="lowfi"]     { background: #c0c0c0; }
+
+/* ── Statement popup ──────────────────────────────────────────────── */
+.bpc-statement {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px 16px;
+  text-align: center;
+}
+.bpc-statement-photo {
+  background: #000;
+  padding: 6px;
+  border: 1px solid #000;
+}
+.bpc-statement-photo img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+.bpc-statement-text strong {
+  display: block;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.bpc-statement-sub {
+  display: block;
+  font-family: 'Times New Roman', Times, serif;
+  font-style: italic;
+  font-size: 12px;
+  margin-top: 6px;
+  opacity: 0.85;
+}
+
+/* Mood-specific text-color overrides for statement bodies. */
+.bpc-statement--pulp strong { color: #ff5050; }
+.bpc-statement--paperback strong { color: #1a0a2e; }
+.bpc-statement--cardboard strong { color: #1a0a2e; }
+.bpc-statement--caution strong { color: #1a0a2e; }
+.bpc-statement--lowfi strong { color: #1a0a2e; }
+
+/* ── Prompt popup ─────────────────────────────────────────────────── */
+.bpc-prompt {
+  padding: 14px 14px 12px;
+  background: #ffffff;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 12px;
+  color: #000;
+}
+.bpc-prompt-body {
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+.bpc-prompt-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.bpc-prompt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--bpc-win-face);
+  color: #000;
+  border: 1px solid;
+  border-color: var(--bpc-win-light) var(--bpc-win-shadow-2) var(--bpc-win-shadow-2) var(--bpc-win-light);
+  box-shadow: inset 1px 1px 0 var(--bpc-win-light-2), inset -1px -1px 0 var(--bpc-win-shadow);
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.bpc-prompt-btn:active {
+  border-color: var(--bpc-win-shadow-2) var(--bpc-win-light) var(--bpc-win-light) var(--bpc-win-shadow-2);
+}
+.bpc-prompt-btn-arrow {
+  font-family: 'Courier New', monospace;
+  color: #1d2891;
+  font-weight: 700;
+}
+
+/* ── RPS rigged minigame ──────────────────────────────────────────── */
+.bpc-rps {
+  padding: 14px 14px 12px;
+  background: #ffffff;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 12px;
+  color: #000;
+  text-align: center;
+}
+.bpc-rps-body {
+  margin: 0 0 10px;
+  line-height: 1.4;
+  text-align: left;
+}
+.bpc-rps-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.bpc-rps-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 4px;
+  background: var(--bpc-win-face);
+  color: #000;
+  border: 1px solid;
+  border-color: var(--bpc-win-light) var(--bpc-win-shadow-2) var(--bpc-win-shadow-2) var(--bpc-win-light);
+  box-shadow: inset 1px 1px 0 var(--bpc-win-light-2), inset -1px -1px 0 var(--bpc-win-shadow);
+  cursor: pointer;
+  font-family: inherit;
+  text-transform: lowercase;
+}
+.bpc-rps-btn:active {
+  border-color: var(--bpc-win-shadow-2) var(--bpc-win-light) var(--bpc-win-light) var(--bpc-win-shadow-2);
+}
+.bpc-rps-glyph {
+  font-size: 24px;
+  line-height: 1;
+  color: #1a0a2e;
+}
+.bpc-rps-btn-label {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+.bpc-rps-result {
+  text-align: left;
+  display: grid;
+  gap: 6px;
+}
+.bpc-rps-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.bpc-rps-label {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #404040;
+  width: 40px;
+}
+.bpc-rps-verdict {
+  margin: 8px 0 0;
+  padding-top: 8px;
+  border-top: 1px dashed #888;
+  font-style: italic;
+  color: #1d2891;
+  text-align: center;
+}
+.bpc-rps-verdict--bored {
+  border-top: none;
+  font-style: normal;
+  color: #404040;
+}
+
+/* ── Oregon Trail "thinking" dots + "disgusting" beat ────────────── */
+.bpc-thinking {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  padding: 28px 14px;
+  background: #ffffff;
+}
+.bpc-thinking-dot {
+  width: 8px;
+  height: 8px;
+  background: #1a0a2e;
+  border-radius: 50%;
+  animation: bpc-thinking-pulse 0.7s ease-in-out infinite;
+}
+.bpc-thinking-dot:nth-child(2) { animation-delay: 0.15s; }
+.bpc-thinking-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bpc-thinking-pulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50%      { opacity: 1;   transform: scale(1.1); }
+}
+
+.bpc-disgusting {
+  background: #ffffff;
+  font-family: 'Times New Roman', Times, serif;
+  font-style: italic;
+  font-size: 22px;
+  text-align: center;
+  padding: 28px 14px;
+  color: #1a0a2e;
+  letter-spacing: -0.01em;
+}
+
+/* ── Loyalty card with stagger-stamp animation ────────────────────── */
+.bpc-loyalty {
+  background: #f4eed3;
+  padding: 14px 14px 16px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  position: relative;
+}
+.bpc-loyalty-brand {
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+  color: #1a0a2e;
+}
+.bpc-loyalty-card {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #1a0a2e;
+  padding: 8px;
+}
+.bpc-loyalty-hole {
+  aspect-ratio: 1 / 1;
+  border: 1px dashed #1a0a2e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: transparent;
+  transition: all 200ms ease-out;
+}
+.bpc-loyalty-hole[data-stamped="true"] {
+  background: #cc0099;
+  color: #ffffff;
+  border-color: #1a0a2e;
+  border-style: solid;
+}
+/* The 10th punch lands with the staggered stamp animation. */
+.bpc-loyalty-hole:nth-child(10)[data-stamped="true"] {
+  animation: bpc-loyalty-stamp 600ms ease-out both;
+}
+@keyframes bpc-loyalty-stamp {
+  0%   { transform: scale(2.5) rotate(-12deg); opacity: 0; }
+  60%  { transform: scale(0.85) rotate(2deg);  opacity: 1; }
+  100% { transform: scale(1)     rotate(0);    opacity: 1; }
+}
+.bpc-loyalty-unlocked {
+  margin: 10px 0 0;
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 16px;
+  color: #006600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.bpc-loyalty-voided {
+  margin: 10px 0 0;
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 14px;
+  color: #c80000;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: line-through;
+  text-decoration-color: #c80000;
+  text-decoration-thickness: 2px;
+}
+
+/* Closing-state sweep-out for chaos popups that self-dismiss (e.g. Oregon
+   Trail final phase). The cascade-item gets a .bpc-cascade-item--closing
+   class that triggers this fadeout. */
+.bpc-cascade-item--closing {
+  animation: bpc-popup-fadeout 320ms ease-in forwards !important;
+}
+@keyframes bpc-popup-fadeout {
+  to { opacity: 0; transform: translateY(8px) scale(0.96); }
+}
+
+/* Reduced-motion: collapse internal animations to instant states. */
+@media (prefers-reduced-motion: reduce) {
+  .bpc-thinking-dot { animation: none; opacity: 1; }
+  .bpc-loyalty-hole:nth-child(10)[data-stamped="true"] { animation: none; }
+  .bpc-cascade-item--closing { animation: none !important; opacity: 0; }
+}
