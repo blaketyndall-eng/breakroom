@@ -1,0 +1,514 @@
+/* ============================================================
+   DISTRICT NEIGHBORHOOD PAGE (dnp-*) — V3 redesign
+   ------------------------------------------------------------
+   1996 GeoCities Neighborhood splash pattern:
+     • themed wordmark + tagline banner
+     • hero photo + about-this-neighborhood block
+     • factions / agents / stuff three-card row
+     • regulars-who-live-here + pages-indexed empty-state stubs
+     • join-this-neighborhood + adjacent-neighborhoods tail
+   Per-district palettes via [data-district="<slug>"] overrides
+   so the same template paints 12 distinct visual moods.
+   ============================================================ */
+
+.dnp-splash {
+  /* Defaults — match the corrupted_employee_portal cream */
+  --dnp-paper: #f0ebde;
+  --dnp-paper-2: #e6dec7;
+  --dnp-ink: #14110e;
+  --dnp-ink-soft: #5a513f;
+  --dnp-link: #0033cc;
+  --dnp-accent: #b00020;
+  --dnp-tape: #e8d76a;
+  --dnp-rule: rgba(20, 17, 14, 0.18);
+  --dnp-banner-font: 'Bungee Shade', 'Cooper Black', serif;
+
+  position: relative;
+  background: var(--dnp-paper);
+  background-image: repeating-linear-gradient(0deg, rgba(20, 17, 14, 0.04) 0 1px, transparent 1px 4px);
+  border: 3px double var(--dnp-ink);
+  box-shadow: 5px 5px 0 rgba(20, 17, 14, 0.22);
+  margin-top: 18px;
+  padding: 0;
+  color: var(--dnp-ink);
+  font-family: 'Verdana', 'Geneva', sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   PER-DISTRICT PALETTES — drives wordmark font + accent + paper
+   ============================================================ */
+
+/* Corporate Ruins — institutional grey/red, IBM 1994 vibe */
+.dnp-splash[data-district='corporate-ruins'] {
+  --dnp-paper: #e8e4d6;
+  --dnp-paper-2: #dad6c7;
+  --dnp-ink: #14110e;
+  --dnp-link: #1d3766;
+  --dnp-accent: #b00020;
+  --dnp-tape: #c8b88d;
+  --dnp-banner-font: 'Special Elite', 'Courier New', monospace;
+}
+
+/* Parking Lot West — lowrider amber + neon */
+.dnp-splash[data-district='parking-lot-west'] {
+  --dnp-paper: #1a1a1a;
+  --dnp-paper-2: #2c2418;
+  --dnp-ink: #ffe070;
+  --dnp-ink-soft: #b89b3e;
+  --dnp-link: #ff8a3a;
+  --dnp-accent: #ff3380;
+  --dnp-tape: #4cff4c;
+  --dnp-rule: rgba(255, 224, 112, 0.2);
+  --dnp-banner-font: 'Bungee Shade', cursive;
+}
+
+/* Motel Row — saint-card red + roadside cream */
+.dnp-splash[data-district='motel-row'] {
+  --dnp-paper: #f0e6d0;
+  --dnp-paper-2: #e0d4b8;
+  --dnp-ink: #2a1810;
+  --dnp-link: #224d67;
+  --dnp-accent: #b00020;
+  --dnp-tape: #e8d76a;
+  --dnp-banner-font: 'Lobster', 'Cooper Black', serif;
+}
+
+/* Pool Hall County — green felt + dive-bar gold */
+.dnp-splash[data-district='pool-hall-county'] {
+  --dnp-paper: #1f3d28;
+  --dnp-paper-2: #173020;
+  --dnp-ink: #f4e3a8;
+  --dnp-ink-soft: #b89b3e;
+  --dnp-link: #ffd700;
+  --dnp-accent: #b00020;
+  --dnp-tape: #4cff4c;
+  --dnp-rule: rgba(244, 227, 168, 0.18);
+  --dnp-banner-font: 'Carter One', 'Cooper Black', serif;
+}
+
+/* Object District — manila + evidence red */
+.dnp-splash[data-district='object-district'] {
+  --dnp-paper: #efe7d3;
+  --dnp-paper-2: #d8cdab;
+  --dnp-ink: #14110e;
+  --dnp-link: #6b3aa0;
+  --dnp-accent: #b00020;
+  --dnp-tape: #ffd700;
+  --dnp-banner-font: 'Permanent Marker', cursive;
+}
+
+/* Classified Alley — newsprint cream + classifieds blue */
+.dnp-splash[data-district='classified-alley'] {
+  --dnp-paper: #f4f0e2;
+  --dnp-paper-2: #e0d8be;
+  --dnp-ink: #1a1a1a;
+  --dnp-link: #0033ee;
+  --dnp-accent: #cc0000;
+  --dnp-tape: #ffeb70;
+  --dnp-banner-font: 'Special Elite', 'Courier New', monospace;
+}
+
+/* The Wrong Department — corporate beige + warning yellow */
+.dnp-splash[data-district='the-wrong-department'] {
+  --dnp-paper: #d4d0c8;
+  --dnp-paper-2: #b8b3a8;
+  --dnp-ink: #14233e;
+  --dnp-link: #0a246a;
+  --dnp-accent: #ff8800;
+  --dnp-tape: #ffe070;
+  --dnp-banner-font: 'Tahoma', sans-serif;
+}
+
+/* Closed Food Court — mall pastel + sad neon */
+.dnp-splash[data-district='the-food-court-that-closed'] {
+  --dnp-paper: #f5d6c0;
+  --dnp-paper-2: #e8b89a;
+  --dnp-ink: #1a0a2e;
+  --dnp-link: #cc0099;
+  --dnp-accent: #ff3380;
+  --dnp-tape: #4cff4c;
+  --dnp-banner-font: 'Carter One', 'Cooper Black', serif;
+}
+
+/* Back Booth — dark dive-bar booth, brass + leather */
+.dnp-splash[data-district='back-booth'] {
+  --dnp-paper: #2a1d10;
+  --dnp-paper-2: #3a2a1a;
+  --dnp-ink: #f4d28a;
+  --dnp-ink-soft: #c0a060;
+  --dnp-link: #ffb84a;
+  --dnp-accent: #cc6633;
+  --dnp-tape: #ffd700;
+  --dnp-rule: rgba(244, 210, 138, 0.2);
+  --dnp-banner-font: 'Lobster', 'Cooper Black', serif;
+}
+
+/* Dead Link Cemetery — graveyard violet + green-screen rot */
+.dnp-splash[data-district='dead-link-cemetery'] {
+  --dnp-paper: #15101e;
+  --dnp-paper-2: #20182a;
+  --dnp-ink: #b8a8d0;
+  --dnp-ink-soft: #807090;
+  --dnp-link: #4cff4c;
+  --dnp-accent: #ff60d4;
+  --dnp-tape: #cc0099;
+  --dnp-rule: rgba(184, 168, 208, 0.2);
+  --dnp-banner-font: 'Permanent Marker', cursive;
+}
+
+/* Radio Tower 1:47 — broadcast neon */
+.dnp-splash[data-district='radio-tower-147'] {
+  --dnp-paper: #0a0a14;
+  --dnp-paper-2: #14142a;
+  --dnp-ink: #4cff4c;
+  --dnp-ink-soft: #2cb02c;
+  --dnp-link: #ffe070;
+  --dnp-accent: #ff3380;
+  --dnp-tape: #4cff4c;
+  --dnp-rule: rgba(76, 255, 76, 0.2);
+  --dnp-banner-font: 'Bungee', 'Impact', sans-serif;
+}
+
+/* The Rack — official commerce — cleaner, brighter */
+.dnp-splash[data-district='the-rack'] {
+  --dnp-paper: #f8f4e8;
+  --dnp-paper-2: #e8dec3;
+  --dnp-ink: #14110e;
+  --dnp-link: #b00020;
+  --dnp-accent: #b00020;
+  --dnp-tape: #ffd700;
+  --dnp-banner-font: 'Bungee', 'Impact', sans-serif;
+}
+
+/* ============================================================
+   BANNER — themed wordmark + tagline + meta pills
+   ============================================================ */
+.dnp-banner {
+  background: var(--dnp-paper-2);
+  border-bottom: 3px double var(--dnp-ink);
+  padding: 24px 18px 18px;
+  text-align: center;
+  position: relative;
+}
+.dnp-banner-welcome {
+  display: block;
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: var(--dnp-ink-soft);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.dnp-banner-name {
+  font-family: var(--dnp-banner-font);
+  font-size: clamp(36px, 7vw, 72px);
+  line-height: 0.95;
+  color: var(--dnp-ink);
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  filter: drop-shadow(2px 2px 0 var(--dnp-accent));
+}
+.dnp-banner-tagline {
+  font-family: 'Caveat', cursive;
+  font-size: 22px;
+  color: var(--dnp-ink);
+  margin: 0 0 14px;
+  font-weight: 700;
+}
+.dnp-banner-meta {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.dnp-meta-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--dnp-ink);
+  background: var(--dnp-paper);
+  color: var(--dnp-ink);
+}
+.dnp-meta-status { background: var(--dnp-tape); }
+.dnp-meta-danger { background: var(--dnp-paper); color: var(--dnp-accent); border-color: var(--dnp-accent); }
+.dnp-meta-weather { font-style: italic; }
+
+/* When status is rumored or staff_only, slap a warning border on */
+.dnp-splash[data-status='rumored'] {
+  border-style: dashed;
+}
+.dnp-splash[data-status='staff_only']::after {
+  content: 'STAFF ONLY';
+  position: absolute;
+  top: 8px;
+  right: -22px;
+  background: var(--dnp-accent);
+  color: #fff;
+  padding: 4px 26px;
+  font-family: 'Bungee', 'Impact', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  transform: rotate(38deg);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ============================================================
+   ROWS + CARDS — section bodies
+   ============================================================ */
+.dnp-row {
+  padding: 14px 18px;
+}
+.dnp-row + .dnp-row {
+  border-top: 1px dashed var(--dnp-rule);
+}
+.dnp-row-hero {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.dnp-row-three {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.dnp-row-tail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 800px) {
+  .dnp-row-hero,
+  .dnp-row-three,
+  .dnp-row-tail {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Hero image / placeholder */
+.dnp-hero {
+  background: var(--dnp-paper-2);
+  border: 1px solid var(--dnp-ink);
+  padding: 6px;
+  box-shadow: 3px 3px 0 var(--dnp-accent);
+}
+.dnp-hero-img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border: 1px solid var(--dnp-ink);
+}
+.dnp-hero-placeholder {
+  height: 220px;
+  background:
+    linear-gradient(135deg, var(--dnp-accent) 0%, var(--dnp-ink) 100%);
+  border: 1px solid var(--dnp-ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+}
+.dnp-hero-placeholder-name {
+  font-family: 'Bungee Shade', cursive;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+.dnp-hero-placeholder-line {
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* About block */
+.dnp-about {
+  font-size: 13px;
+  line-height: 1.55;
+}
+.dnp-about-body {
+  margin: 0 0 12px;
+}
+.dnp-atmosphere {
+  margin: 6px 0 0;
+  font-style: italic;
+  color: var(--dnp-ink-soft);
+  border-left: 3px double var(--dnp-accent);
+  padding-left: 10px;
+}
+
+/* Cards (factions / agents / stuff / regulars / pages / join / adjacent) */
+.dnp-card {
+  background: var(--dnp-paper);
+  border: 2px solid var(--dnp-ink);
+  padding: 10px 12px;
+  box-shadow: 3px 3px 0 var(--dnp-accent);
+}
+.dnp-row-three .dnp-card {
+  background: var(--dnp-paper-2);
+}
+.dnp-row > .dnp-card {
+  /* full-width cards (regulars / pages) */
+  margin: 0 0 12px;
+}
+
+/* Section heads — each gets its own type treatment */
+.dnp-section-head {
+  margin: 0 0 8px;
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--dnp-ink);
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--dnp-ink);
+  padding-bottom: 4px;
+}
+.dnp-section-head--about {
+  font-family: 'Carter One', 'Cooper Black', serif;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  color: var(--dnp-accent);
+  text-transform: none;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.dnp-section-head--atmosphere {
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: var(--dnp-link);
+  text-transform: none;
+  border-bottom: none;
+  margin-top: 10px;
+}
+.dnp-section-head--factions { font-family: 'Bungee', sans-serif; font-size: 13px; color: var(--dnp-accent); }
+.dnp-section-head--agents { font-family: 'Permanent Marker', cursive; font-size: 14px; letter-spacing: 0.04em; color: var(--dnp-link); border-bottom-style: dashed; }
+.dnp-section-head--stuff { font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 13px; color: var(--dnp-ink); }
+.dnp-section-head--regulars { font-family: 'Lobster', cursive; font-size: 22px; color: var(--dnp-link); text-transform: none; letter-spacing: 0.01em; }
+.dnp-section-head--pages { font-family: 'Carter One', 'Cooper Black', serif; font-size: 22px; color: var(--dnp-accent); text-transform: none; letter-spacing: 0; }
+.dnp-section-head--join { font-family: 'Bungee Shade', cursive; font-size: 16px; color: var(--dnp-accent); }
+.dnp-section-head--adjacent { font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 14px; color: var(--dnp-link); }
+
+/* Lists */
+.dnp-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.dnp-list li {
+  padding: 2px 0;
+  border-bottom: 1px dotted var(--dnp-rule);
+}
+.dnp-list li:last-child { border-bottom: none; }
+.dnp-list a {
+  color: var(--dnp-link);
+  text-decoration: underline;
+}
+
+/* Empty state copy */
+.dnp-empty {
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  color: var(--dnp-ink-soft);
+  margin: 0;
+  font-style: italic;
+}
+.dnp-empty a { color: var(--dnp-link); }
+
+/* CTA buttons */
+.dnp-cta {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  background: var(--dnp-tape);
+  color: var(--dnp-ink) !important;
+  border: 1px solid var(--dnp-ink);
+  font-family: 'Carter One', cursive;
+  font-size: 13px;
+  text-decoration: none !important;
+  letter-spacing: 0.02em;
+  box-shadow: 2px 2px 0 var(--dnp-ink);
+  transform: rotate(-1deg);
+}
+.dnp-cta:hover {
+  background: var(--dnp-accent);
+  color: #fff !important;
+}
+.dnp-cta--accent {
+  background: var(--dnp-accent);
+  color: #fff !important;
+  transform: rotate(1deg);
+}
+
+/* Adjacent neighborhoods list */
+.dnp-adjacent-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.dnp-adjacent-list li {
+  border-bottom: 1px dashed var(--dnp-rule);
+  padding: 6px 0;
+}
+.dnp-adjacent-list li:last-child { border-bottom: none; }
+.dnp-adjacent-link {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--dnp-link);
+}
+.dnp-adjacent-name {
+  font-family: 'Comfortaa', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: underline;
+}
+.dnp-adjacent-tagline {
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: var(--dnp-ink-soft);
+  font-style: italic;
+}
+
+/* Comments row + back-link */
+.dnp-row-comments {
+  background: var(--dnp-paper-2);
+}
+.dnp-back {
+  text-align: center;
+  padding: 14px;
+  margin: 0;
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+}
+.dnp-back a {
+  color: var(--dnp-link);
+  text-decoration: underline;
+}
+
+/* Mobile collapse */
+@media (max-width: 600px) {
+  .dnp-banner-name { font-size: 38px; }
+  .dnp-banner-tagline { font-size: 16px; }
+  .dnp-row { padding: 12px; }
+  .dnp-section-head--regulars,
+  .dnp-section-head--pages { font-size: 16px; }
+  .dnp-splash[data-status='staff_only']::after {
+    right: -10px;
+    font-size: 9px;
+    padding: 2px 14px;
+  }
+}
