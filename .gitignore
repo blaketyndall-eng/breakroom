@@ -8,3 +8,8 @@ dist/
 wrangler/.dev.vars
 
 .wrangler/
+
+# Image regen review staging — only /public/void/ is shipped
+void-images-replicate/
+void-images-flash/
+test-mothie-probe.jpg

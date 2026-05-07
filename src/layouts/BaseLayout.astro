@@ -1,24 +1,90 @@
 ---
 import '../styles/global.css';
 import OldHeader from '@/components/oldweb/OldHeader.astro';
+import VoidLinkBar from '@/components/oldweb/VoidLinkBar.astro';
+import OmniShiftBrowser from '@/components/chrome/OmniShiftBrowser.astro';
+import OmniShiftTaskbar from '@/components/chrome/OmniShiftTaskbar.astro';
+import VoidSignalBrowser from '@/components/chrome/VoidSignalBrowser.astro';
+import VoidSignalTaskbar from '@/components/chrome/VoidSignalTaskbar.astro';
+import AnonymousBar from '@/components/chrome/AnonymousBar.astro';
+import { worldForSection, chromeFor, type World } from '@/lib/worldMap';
+
 interface Props {
   title?: string;
   section?: string;
   description?: string;
   level?: 1 | 2 | 3 | 4;
+  world?: World;
 }
-const { title = 'The Breakroom', section = 'breakroom', description = 'After-hours internet hidden inside a fake company.', level } = Astro.props;
+
+const {
+  title = 'The Breakroom',
+  section = 'breakroom',
+  description = 'After-hours internet hidden inside a fake company.',
+  level,
+  world: worldOverride,
+} = Astro.props;
+
+const world = worldOverride ?? worldForSection(section);
+const chromeMode = chromeFor(section);
+const currentPath = Astro.url.pathname;
 ---
 <!doctype html>
-<html lang="en" data-site-mode="3AM">
+<html
+  lang="en"
+  data-site-mode="3AM"
+  data-world={world}
+  data-chrome-mode={chromeMode}
+  data-clock-state="anonymous"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <title>{title}</title>
+
+    <script is:inline>
+      (function () {
+        try {
+          var profileRaw = localStorage.getItem('breakroom.omnishift.profile');
+          var shiftRaw = localStorage.getItem('breakroom.omnishift.shift');
+          var state = 'anonymous';
+          if (profileRaw) {
+            var m = profileRaw.match(/"shift_status":"(on_shift|clocked_out|still_out)"/);
+            if (m) state = m[1];
+          } else if (shiftRaw === 'on_shift' || shiftRaw === 'clocked_out' || shiftRaw === 'still_out') {
+            state = shiftRaw;
+          }
+          document.documentElement.setAttribute('data-clock-state', state);
+        } catch (_) { /* leave default 'anonymous' */ }
+      })();
+    </script>
   </head>
   <body class="scanlines grain" data-section={section} {...(level ? { 'data-level': String(level) } : {})}>
+    {chromeMode === 'desktop' && world === 'omnishift' && (
+      <>
+        <OmniShiftBrowser title={title} currentPath={currentPath} />
+        <OmniShiftTaskbar title={title} />
+        <AnonymousBar />
+      </>
+    )}
+    {chromeMode === 'desktop' && world === 'voidsignal' && (
+      <>
+        <VoidSignalBrowser title={title} currentPath={currentPath} />
+        <VoidSignalTaskbar title={title} />
+        <AnonymousBar />
+      </>
+    )}
+    {chromeMode === 'desktop' && world === 'neutral' && (
+      <AnonymousBar />
+    )}
+
+    {/* Links bar below the chrome — world-specific.
+        OldHeader uses .bookmarks-strip (hidden on VS via chrome.css);
+        VoidLinkBar uses .void-bookmarks-strip and only mounts on VS. */}
     <OldHeader />
+    {world === 'voidsignal' && <VoidLinkBar />}
+
     <main>
       <slot />
     </main>

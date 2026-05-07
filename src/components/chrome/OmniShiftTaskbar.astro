@@ -1,0 +1,271 @@
+---
+/**
+ * OmniShiftTaskbar.astro
+ * --------------------------------------------------------------------------
+ * Bottom OS chrome for OmniShift world. Authentic Windows 2000 taskbar:
+ * Start button (with menu) + open-windows zone + system tray with the
+ * 1:47 clock. Mounted by BaseLayout (in F5) when:
+ *   data-world="omnishift" + chromeMode === "desktop" + data-clock-state !== "anonymous"
+ *
+ * Height: 32px (used as data-chrome-height for body bottom padding).
+ *
+ * Props:
+ *   title — page title shown in the open-windows tab. BaseLayout passes
+ *     the same title used in the browser title bar so the tab reads like
+ *     a real Windows app: 'SleepNet', 'Employee Intake', etc.
+ */
+interface Props {
+  title?: string;
+}
+const { title = 'OmniShift Internet' } = Astro.props;
+---
+<div class="ost" data-chrome-height="32">
+  <!-- Start button + Start menu (native <details> toggle, no JS) -->
+  <details class="ost-start">
+    <summary class="ost-start-btn" aria-label="Start">
+      <span class="ost-logo-mark" aria-hidden="true">
+        <span class="ost-logo-o">O</span><span class="ost-logo-s">S</span>
+      </span>
+    </summary>
+    <ul class="ost-start-menu" role="menu">
+      <li class="ost-menu-banner" aria-hidden="true">OmniShift Workstation</li>
+      <li><a href="/portal" role="menuitem"><span class="ost-mi-icon">☰</span>Employee File</a></li>
+      <li><a href="/portal/interview" role="menuitem"><span class="ost-mi-icon">✎</span>Employee Intake</a></li>
+      <li><a href="/" role="menuitem"><span class="ost-mi-icon">⌕</span>SleepNet Search</a></li>
+      <li><a href="/newsstand" role="menuitem"><span class="ost-mi-icon">▤</span>Newsstand</a></li>
+      <li><a href="/rack" role="menuitem"><span class="ost-mi-icon">▣</span>The Rack</a></li>
+      <li><a href="/ventures" role="menuitem"><span class="ost-mi-icon">▨</span>Our Companies</a></li>
+      <li class="ost-sep" aria-hidden="true"></li>
+      <li><a href="/clock-out" class="ost-clock-out" role="menuitem"><span class="ost-mi-icon">↗</span>Clock Out…</a></li>
+      <li><a href="/clock-in" class="ost-clock-in" role="menuitem"><span class="ost-mi-icon">↙</span>Clock In…</a></li>
+      <li><button class="ost-mi-btn" type="button" data-shutdown role="menuitem"><span class="ost-mi-icon">⏻</span>Shut Down…</button></li>
+    </ul>
+  </details>
+
+  <!-- Open windows zone -->
+  <div class="ost-windows" aria-label="Open windows">
+    <button class="ost-win-active" type="button" tabindex="-1" aria-current="page">
+      <span class="ost-win-icon" aria-hidden="true">⊞</span>
+      <span class="ost-win-label">{title}</span>
+    </button>
+  </div>
+
+  <!-- System tray -->
+  <div class="ost-tray" aria-label="System tray">
+    <span class="ost-tray-icon" title="SleepNet" aria-hidden="true">⌕</span>
+    <span class="ost-tray-icon" title="Network: connected" aria-hidden="true">◔</span>
+    <span class="ost-tray-icon" title="Volume" aria-hidden="true">♪</span>
+    <span class="ost-tray-clock" aria-label="System clock">1:47 AM</span>
+  </div>
+</div>
+
+<script is:inline>
+  // "Shut Down" is a joke item — corporate doesn't let you shut down.
+  document.querySelectorAll('[data-shutdown]').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      alert('Cannot shut down.\nShift in progress.');
+    });
+  });
+  // Close the start menu when clicking outside it.
+  document.addEventListener('click', function (e) {
+    var details = document.querySelector('.ost-start[open]');
+    if (details && !details.contains(e.target)) details.removeAttribute('open');
+  });
+</script>
+
+<style>
+  .ost {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 9100;
+    height: 32px;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    box-shadow: 0 -1px 0 0 #808080 inset;
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    box-sizing: border-box;
+    font-family: 'Tahoma', 'MS Sans Serif', system-ui, sans-serif;
+    font-size: 11px;
+    color: #000;
+    user-select: none;
+  }
+
+  /* ============== Start button ============== */
+  .ost-start { position: relative; flex-shrink: 0; }
+  .ost-start[open] .ost-start-btn {
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+  }
+  .ost-start-btn {
+    list-style: none;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    padding: 2px 14px 2px 12px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    cursor: default;
+    font-family: inherit;
+  }
+  .ost-start-btn::-webkit-details-marker { display: none; }
+
+  /* OS two-color logotype — the desktop landmark, not a tab. */
+  .ost-logo-mark {
+    display: inline-flex;
+    align-items: baseline;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .ost-logo-o { color: #c61f1f; } /* OmniShift red */
+  .ost-logo-s { color: #1d2891; } /* OmniShift indigo */
+
+  .ost-start-menu {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    margin: 0;
+    padding: 2px;
+    min-width: 220px;
+    list-style: none;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    box-shadow: 1px 1px 0 0 #000;
+    z-index: 9200;
+  }
+  .ost-menu-banner {
+    background: linear-gradient(180deg, #0a246a 0%, #3a6ea5 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 4px 8px;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+  .ost-start-menu li { display: block; }
+  .ost-start-menu a,
+  .ost-mi-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 14px 4px 8px;
+    color: #000 !important;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 400;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: default;
+    box-sizing: border-box;
+  }
+  .ost-mi-btn { line-height: 1.2; }
+  .ost-start-menu a:hover,
+  .ost-mi-btn:hover {
+    background: #0a246a !important;
+    color: white !important;
+    text-decoration: none;
+  }
+  .ost-mi-icon {
+    width: 16px;
+    text-align: center;
+    font-size: 13px;
+    color: #404040;
+  }
+  .ost-start-menu a:hover .ost-mi-icon,
+  .ost-mi-btn:hover .ost-mi-icon { color: #ffd76b; }
+  .ost-sep {
+    height: 1px;
+    background: #808080;
+    border-bottom: 1px solid #ffffff;
+    margin: 3px 4px;
+  }
+  /* Hide Clock In or Clock Out depending on shift state */
+  html[data-clock-state="on_shift"]  .ost-clock-in  { display: none !important; }
+  html[data-clock-state="clocked_out"] .ost-clock-out { display: none !important; }
+  html[data-clock-state="still_out"]  .ost-clock-out { display: none !important; }
+  html[data-clock-state="anonymous"]  .ost-clock-in,
+  html[data-clock-state="anonymous"]  .ost-clock-out { display: none !important; }
+
+  /* ============== Open windows zone ============== */
+  .ost-windows {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 4px;
+    overflow: hidden;
+  }
+  .ost-win-active {
+    background: #c0bcb4;
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    padding: 2px 8px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    color: #000;
+    cursor: default;
+    max-width: 320px;
+  }
+  .ost-win-icon { color: #c61f1f; font-size: 12px; flex-shrink: 0; }
+  .ost-win-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ============== System tray ============== */
+  .ost-tray {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 6px;
+    height: 26px;
+    background: #c0bcb4;
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+  }
+  .ost-tray-icon {
+    font-size: 12px;
+    color: #404040;
+    line-height: 1;
+  }
+  .ost-tray-clock {
+    font-family: 'Tahoma', system-ui, sans-serif;
+    font-size: 11px;
+    color: #000;
+    margin-left: 4px;
+    letter-spacing: 0;
+  }
+
+  @media (max-width: 600px) {
+    .ost-tray-icon:nth-child(n+2) { display: none; }
+    .ost-windows { padding: 0; }
+    .ost-win-active { max-width: 160px; }
+  }
+</style>

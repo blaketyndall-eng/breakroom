@@ -23,6 +23,8 @@
 @import './claude-design.css';
 @import './pocket.css';
 @import './phone.css';
+@import './chrome.css';
+@import './quiz.css';
 
 :root {
   color-scheme: light;

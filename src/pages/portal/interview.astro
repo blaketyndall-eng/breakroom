@@ -1,0 +1,11 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import QuizFrame from '@/components/quizzes/QuizFrame.astro';
+import QuizRunner from '@/components/quizzes/QuizRunner';
+import { EMPLOYEE_QUIZ } from '@/lib/quizzes/data/foundational/employee-quiz';
+---
+<OldWebLayout title="Employee Intake" section="omnishift" level={4}>
+  <QuizFrame quiz={EMPLOYEE_QUIZ}>
+    <QuizRunner client:load quiz={EMPLOYEE_QUIZ} redirectTo="/portal/interview/result" />
+  </QuizFrame>
+</OldWebLayout>

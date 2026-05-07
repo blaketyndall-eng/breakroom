@@ -1,0 +1,158 @@
+---
+/**
+ * /sleepnet/search?q=...&mode=...
+ * --------------------------------------------------------------------------
+ * Server-rendered SleepNet search-results page. Same retro-Google look as
+ * the homepage. The header form is plain HTML method=GET, so refining a
+ * search works without JS — Astro static-renders, the browser submits.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { findResults, toDisplayUrl } from '@/lib/sleepnetSearch';
+import { toBreakroomRoute } from '@/lib/routes';
+import { BREAKROOM_DATA } from '@/content/data/breakroom';
+
+const q = (Astro.url.searchParams.get('q') ?? '').trim();
+const modeParam = Astro.url.searchParams.get('mode');
+const mode: 'after-hours' | 'day-shift' | 'closed' =
+  modeParam === 'day-shift' || modeParam === 'closed' ? modeParam : 'after-hours';
+const results = q ? findResults(q) : [];
+
+const took = `0.${Math.floor(Math.random() * 9) + 1}6`;
+const approxTotal = results.length * 47;
+
+const tabs: Array<{ key: typeof mode; label: string }> = [
+  { key: 'after-hours', label: 'After Hours' },
+  { key: 'day-shift', label: 'Day Shift' },
+  { key: 'closed', label: 'Closed?' },
+];
+
+const moreLikeThis = BREAKROOM_DATA.trendingSearches.slice(0, 6);
+const pageTitle = q ? `${q} — SleepNet` : 'SleepNet Search';
+---
+<BaseLayout title={pageTitle} section="sleepnet">
+  <section class="sn-serp">
+    <header class="sn-serp-header">
+      <a href="/" class="sn-serp-wordmark" aria-label="SleepNet home">
+        <span class="s1">S</span><span class="s2">l</span><span class="s3">e</span><span class="s4">e</span><span class="s5 flicker">p</span><span class="s6">N</span><span class="s7">e</span><span class="s8">t</span><span class="sn-bang">!</span>
+      </a>
+      <form class="sn-serp-form" method="get" action="/sleepnet/search">
+        <input class="sn-input sn-serp-input" name="q" value={q} aria-label="Search SleepNet" autocomplete="off" />
+        <input type="hidden" name="mode" value={mode} />
+        <button class="sn-btn sn-serp-btn" type="submit">Search</button>
+      </form>
+    </header>
+
+    <div class="sn-mode-bar sn-serp-modebar" aria-label="Search mode">
+      {tabs.map((t) => (
+        <a
+          href={`/sleepnet/search?q=${encodeURIComponent(q)}&mode=${t.key}`}
+          class={mode === t.key ? 'sn-tab active' : 'sn-tab'}
+        >
+          {t.label}
+        </a>
+      ))}
+      <span class="sn-tab-info">
+        {results.length} result{results.length === 1 ? '' : 's'} · index updated 1:47 a.m.
+      </span>
+    </div>
+
+    {q ? (
+      <div class="sn-results">
+        <div class="sn-results-status">
+          Showing <b>1-{results.length}</b> of approximately <b>{approxTotal}</b> for <b>{q}</b>. Search took <b>{took}</b> seconds.
+        </div>
+        {results.length === 0 ? (
+          <div class="sn-no-results">
+            <p>The room does not have results for <b>"{q}"</b>.</p>
+            <p>Try <a href="/staff-only">asking the room directly</a>. It does not answer fast. That is different from not answering.</p>
+          </div>
+        ) : results.map((item) => (
+          <article class="sn-result">
+            <a href={toBreakroomRoute(item.url, item.title)} class="sn-result-title">{item.title}</a>
+            <span class="sn-result-kind">{item.kind}</span>
+            <p class="sn-result-blurb">...{item.blurb}...</p>
+            <div class="sn-result-url">
+              <span>{toDisplayUrl(item)}</span>
+              {' - '}<a href={toBreakroomRoute(item.url, item.title)}>Cached</a>
+              {' - '}<a href={`/sleepnet/search?q=${encodeURIComponent(item.title)}&mode=${mode}`}>RoomScout</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="sn-no-results">
+        <p>Empty query. Try <a href="/">a search</a>.</p>
+      </div>
+    )}
+
+    <footer class="sn-serp-footer">
+      <div class="sn-trending">
+        <span class="sn-trending-label">More Like This, Unfortunately:</span>
+        {moreLikeThis.map((term) => (
+          <a href={`/sleepnet/search?q=${encodeURIComponent(term)}`}>{term}</a>
+        ))}
+      </div>
+      <p class="sn-copy">© 2003 OmniShift Inc. / SleepNet Division. All rights reserved.</p>
+    </footer>
+  </section>
+</BaseLayout>
+
+<style>
+  /* SERP-specific layout. Falls back to the global .sn-* result styles for
+     the actual result cards/links, which are already defined site-wide. */
+  .sn-serp {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 16px 16px 64px;
+  }
+
+  .sn-serp-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e7e0cf;
+    flex-wrap: wrap;
+  }
+
+  .sn-serp-wordmark {
+    text-decoration: none;
+    font-family: 'Helvetica', Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    flex-shrink: 0;
+  }
+  .sn-serp-wordmark .s1 { color: #4285F4; }
+  .sn-serp-wordmark .s2 { color: #EA4335; }
+  .sn-serp-wordmark .s3 { color: #FBBC05; }
+  .sn-serp-wordmark .s4 { color: #4285F4; }
+  .sn-serp-wordmark .s5 { color: #34A853; }
+  .sn-serp-wordmark .s6 { color: #EA4335; }
+  .sn-serp-wordmark .s7 { color: #FBBC05; }
+  .sn-serp-wordmark .s8 { color: #4285F4; }
+  .sn-serp-wordmark .sn-bang { color: #EA4335; }
+
+  .sn-serp-form {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    align-items: center;
+    min-width: 280px;
+  }
+  .sn-serp-input { flex: 1; }
+  .sn-serp-btn { flex-shrink: 0; }
+
+  .sn-serp-modebar {
+    margin-bottom: 16px;
+  }
+
+  .sn-serp-footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid #e7e0cf;
+    font-size: 12px;
+  }
+</style>

@@ -1,0 +1,256 @@
+---
+/**
+ * VoidSignalTaskbar.astro
+ * --------------------------------------------------------------------------
+ * Bottom OS chrome for Void Signal pages. Near-identical to the
+ * OmniShiftTaskbar Win2K shell (32px, cream Win9x, beveled Start button,
+ * open-windows zone, system tray) with two subtle Void-only differences:
+ *
+ *   1. Start button mark is "VS" two-color (magenta V + purple S) instead
+ *      of OmniShift's "OS" (red O + indigo S).
+ *   2. Tray icon accents drift to magenta/purple instead of red/indigo.
+ *
+ * Height: 32px (matches OmniShiftTaskbar exactly).
+ *
+ * Props:
+ *   title — page title shown in the open-windows tab.
+ */
+interface Props {
+  title?: string;
+}
+const { title = 'Void Net' } = Astro.props;
+---
+<div class="vst" data-chrome-height="32">
+  <!-- Start button + Start menu -->
+  <details class="vst-start">
+    <summary class="vst-start-btn" aria-label="Start">
+      <span class="vst-logo-mark" aria-hidden="true">
+        <span class="vst-logo-v">V</span><span class="vst-logo-s">S</span>
+      </span>
+    </summary>
+    <ul class="vst-start-menu" role="menu">
+      <li class="vst-menu-banner" aria-hidden="true">Void Signal</li>
+      <li><a href="/void" role="menuitem"><span class="vst-mi-icon">⌕</span>VOID Search</a></li>
+      <li><a href="/locker" role="menuitem"><span class="vst-mi-icon">☰</span>Regular File</a></li>
+      <li><a href="/stuff" role="menuitem"><span class="vst-mi-icon">⊡</span>Stuff Drawer</a></li>
+      <li><a href="/crews" role="menuitem"><span class="vst-mi-icon">⊊</span>Crews</a></li>
+      <li><a href="/radio" role="menuitem"><span class="vst-mi-icon">♪</span>Radio 1:47</a></li>
+      <li><a href="/phone" role="menuitem"><span class="vst-mi-icon">☎</span>Phone Behind Bar</a></li>
+      <li class="vst-sep" aria-hidden="true"></li>
+      <li><a href="/clock-in" class="vst-clock-in" role="menuitem"><span class="vst-mi-icon">↙</span>Clock In…</a></li>
+      <li><a href="/clock-out" class="vst-clock-out" role="menuitem"><span class="vst-mi-icon">↗</span>Clock Out…</a></li>
+    </ul>
+  </details>
+
+  <!-- Open windows zone -->
+  <div class="vst-windows" aria-label="Open windows">
+    <button class="vst-win-active" type="button" tabindex="-1" aria-current="page">
+      <span class="vst-win-icon" aria-hidden="true">⊞</span>
+      <span class="vst-win-label">{title}</span>
+    </button>
+  </div>
+
+  <!-- System tray -->
+  <div class="vst-tray" aria-label="System tray">
+    <span class="vst-tray-icon" title="Void Net" aria-hidden="true">⌕</span>
+    <span class="vst-tray-icon" title="Network: warm" aria-hidden="true">◔</span>
+    <span class="vst-tray-icon" title="Radio 1:47" aria-hidden="true">♪</span>
+    <span class="vst-tray-clock" aria-label="System clock">1:47 AM</span>
+  </div>
+</div>
+
+<script is:inline>
+  document.addEventListener('click', function (e) {
+    var details = document.querySelector('.vst-start[open]');
+    if (details && !details.contains(e.target)) details.removeAttribute('open');
+  });
+</script>
+
+<style>
+  .vst {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 9100;
+    height: 32px;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    box-shadow: 0 -1px 0 0 #808080 inset;
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    box-sizing: border-box;
+    font-family: 'Tahoma', 'MS Sans Serif', system-ui, sans-serif;
+    font-size: 11px;
+    color: #000;
+    user-select: none;
+  }
+
+  /* ============== Start button ============== */
+  .vst-start { position: relative; flex-shrink: 0; }
+  .vst-start[open] .vst-start-btn {
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+  }
+  .vst-start-btn {
+    list-style: none;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    padding: 2px 14px 2px 12px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    cursor: default;
+    font-family: inherit;
+  }
+  .vst-start-btn::-webkit-details-marker { display: none; }
+
+  /* VS two-color logotype — magenta V, purple S */
+  .vst-logo-mark {
+    display: inline-flex;
+    align-items: baseline;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .vst-logo-v { color: #cc0099; }
+  .vst-logo-s { color: #6b2d8c; }
+
+  /* Start menu */
+  .vst-start-menu {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    margin: 0;
+    padding: 2px;
+    min-width: 220px;
+    list-style: none;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    box-shadow: 1px 1px 0 0 #000;
+    z-index: 9200;
+  }
+  .vst-menu-banner {
+    /* Slightly purpler navy banner to match the title bar */
+    background: linear-gradient(180deg, #2a3070 0%, #5a6ca5 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 4px 8px;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+  .vst-start-menu a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 14px 4px 8px;
+    color: #000 !important;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 400;
+    background: transparent;
+    cursor: default;
+    box-sizing: border-box;
+  }
+  .vst-start-menu a:hover {
+    background: #2a3070 !important;
+    color: white !important;
+  }
+  .vst-mi-icon {
+    width: 16px;
+    text-align: center;
+    font-size: 13px;
+    color: #6b2d8c;
+  }
+  .vst-start-menu a:hover .vst-mi-icon { color: #ffd76b; }
+  .vst-sep {
+    height: 1px;
+    background: #808080;
+    border-bottom: 1px solid #ffffff;
+    margin: 3px 4px;
+  }
+  /* Hide Clock In or Clock Out depending on shift state — same logic as OmniShift */
+  html[data-clock-state="on_shift"]   .vst-clock-in  { display: none !important; }
+  html[data-clock-state="clocked_out"] .vst-clock-out { display: none !important; }
+  html[data-clock-state="still_out"]  .vst-clock-out { display: none !important; }
+  html[data-clock-state="anonymous"]  .vst-clock-in,
+  html[data-clock-state="anonymous"]  .vst-clock-out { display: none !important; }
+
+  /* ============== Open windows zone ============== */
+  .vst-windows {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 4px;
+    overflow: hidden;
+  }
+  .vst-win-active {
+    background: #c0bcb4;
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    padding: 2px 8px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    color: #000;
+    cursor: default;
+    max-width: 320px;
+  }
+  /* Subtle Void diff: window icon accent goes magenta */
+  .vst-win-icon { color: #cc0099; font-size: 12px; flex-shrink: 0; }
+  .vst-win-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ============== System tray ============== */
+  .vst-tray {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 6px;
+    height: 26px;
+    background: #c0bcb4;
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+  }
+  .vst-tray-icon {
+    font-size: 12px;
+    color: #6b2d8c;
+    line-height: 1;
+  }
+  .vst-tray-clock {
+    font-family: 'Tahoma', system-ui, sans-serif;
+    font-size: 11px;
+    color: #000;
+    margin-left: 4px;
+  }
+
+  @media (max-width: 600px) {
+    .vst-tray-icon:nth-child(n+2) { display: none; }
+    .vst-windows { padding: 0; }
+    .vst-win-active { max-width: 160px; }
+  }
+</style>

@@ -1,0 +1,156 @@
+---
+/**
+ * VoidSignalBrowser.astro
+ * --------------------------------------------------------------------------
+ * Top browser-bar chrome for Void Signal pages. Near-identical to the
+ * OmniShiftBrowser IE5/6 shell (cream Win9x, Tahoma 11px, beveled buttons)
+ * with three subtle Void-only differences so the world reads as "the same
+ * computer, slightly different mood":
+ *
+ *   1. Title bar gradient is purpler (#2a3070→#5a6ca5) instead of
+ *      OmniShift's bluer (#0a246a→#3a6ea5).
+ *   2. Title text reads "<page title> — Void Net" instead of "— OmniShift
+ *      Internet".
+ *   3. Address shows voidsignal:// URLs (via inWorldUrlFor) which give
+ *      the slightly off feel of being on a different network.
+ *
+ * Height: 22px title + 28px toolbar = 50px (matches OmniShiftBrowser so
+ * chrome.css body padding is shared across both worlds).
+ */
+import { inWorldUrlFor } from '@/lib/worldMap';
+
+interface Props {
+  title?: string;
+  currentPath?: string;
+}
+
+const { title = 'VOID', currentPath = '/' } = Astro.props;
+const inWorldUrl = inWorldUrlFor('voidsignal', currentPath);
+---
+<div class="vsb" data-chrome-height="50">
+  <!-- Title bar -->
+  <div class="vsb-title">
+    <span class="vsb-title-icon" aria-hidden="true">⊞</span>
+    <span class="vsb-title-text">{title} — Void Net</span>
+    <span class="vsb-ctrls" aria-hidden="true">
+      <span>−</span><span>□</span><span>×</span>
+    </span>
+  </div>
+
+  <!-- Toolbar / address bar -->
+  <div class="vsb-toolbar">
+    <span class="vsb-nav" aria-hidden="true">◀</span>
+    <span class="vsb-nav" aria-hidden="true">▶</span>
+    <span class="vsb-nav" aria-hidden="true">✕</span>
+    <span class="vsb-nav" aria-hidden="true">↻</span>
+    <span class="vsb-nav" aria-hidden="true">⌂</span>
+    <span class="vsb-addr-label">Address</span>
+    <span class="vsb-addr-field">{inWorldUrl}</span>
+    <span class="vsb-go">Go</span>
+  </div>
+</div>
+
+<style>
+  .vsb {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9100;
+    background: #d4d0c8;
+    border-bottom: 1px solid #808080;
+    font-family: 'Tahoma', 'MS Sans Serif', system-ui, sans-serif;
+    font-size: 11px;
+    color: #000;
+    user-select: none;
+  }
+
+  /* Title bar — subtle Void diff: purpler navy gradient */
+  .vsb-title {
+    height: 22px;
+    background: linear-gradient(180deg, #2a3070 0%, #5a6ca5 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    gap: 6px;
+    font-weight: 700;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.35);
+  }
+  .vsb-title-icon { color: #ffd76b; font-size: 13px; flex-shrink: 0; }
+  .vsb-title-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .vsb-ctrls { display: flex; gap: 2px; flex-shrink: 0; }
+  .vsb-ctrls span {
+    display: inline-block;
+    width: 16px; height: 14px;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    color: #000;
+    font-size: 10px;
+    text-align: center;
+    line-height: 12px;
+    text-shadow: none;
+  }
+
+  /* Toolbar / address bar */
+  .vsb-toolbar {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    padding: 3px 6px;
+    gap: 6px;
+    background: #d4d0c8;
+    box-sizing: border-box;
+  }
+  .vsb-nav {
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    width: 22px; height: 20px;
+    font-size: 11px;
+    text-align: center;
+    line-height: 18px;
+    flex-shrink: 0;
+  }
+  .vsb-nav:hover { background: #c0bcb4; }
+  .vsb-addr-label { padding: 0 4px; flex-shrink: 0; }
+  .vsb-addr-field {
+    flex: 1;
+    background: #fff;
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    padding: 3px 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #1a0a2e;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .vsb-go {
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    padding: 2px 14px;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .vsb-go:hover { background: #c0bcb4; }
+
+  @media (max-width: 600px) {
+    .vsb-addr-label { display: none; }
+    .vsb-nav:nth-child(n+4) { display: none; }
+  }
+</style>

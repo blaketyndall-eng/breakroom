@@ -26,6 +26,7 @@ export default function EmployeePortal() {
   const [state, setState] = useState<PortalState>('loading');
   const [profile, setProfile] = useState<LocalEmployeeProfile | null>(null);
   const [status, setStatus] = useState('');
+  const [quizCompletedAt, setQuizCompletedAt] = useState<string | null>(null);
 
   async function loadProfile(options: { preferRemote?: boolean } = {}) {
     setStatus('');
@@ -34,7 +35,6 @@ export default function EmployeePortal() {
     if (local && !options.preferRemote) {
       setProfile(local);
       setState('ready');
-      return;
     }
 
     if (!supabase) {
@@ -42,6 +42,16 @@ export default function EmployeePortal() {
       saveLocalProfile(preview);
       setProfile(preview);
       setState('ready');
+      // Local mode: read quiz outcome from localStorage if present
+      try {
+        const localQuiz = window.localStorage.getItem('breakroom.quiz.employee_outcome');
+        if (localQuiz) {
+          const parsed = JSON.parse(localQuiz) as { finalized_at?: string } | null;
+          setQuizCompletedAt(parsed?.finalized_at ?? null);
+        }
+      } catch {
+        /* ignore */
+      }
       setStatus(isSupabaseConfigured ? '' : 'Local preview mode. Supabase memory is not connected in this browser.');
       return;
     }
@@ -78,6 +88,7 @@ export default function EmployeePortal() {
       await supabase.from('user_profiles').upsert({ id: user.id, ...next });
       saveLocalProfile(next);
       setProfile(next);
+      setQuizCompletedAt(null); // Provisional — no quiz yet.
       setState('ready');
       setStatus('New employee file issued. HR denies involvement.');
       return;
@@ -99,6 +110,7 @@ export default function EmployeePortal() {
     };
     saveLocalProfile(next);
     setProfile(next);
+    setQuizCompletedAt(data.quiz_completed_at ?? null);
     setState('ready');
     if (options.preferRemote) setStatus('Employee file refreshed from OmniShift memory.');
   }
@@ -114,54 +126,90 @@ export default function EmployeePortal() {
     window.localStorage.removeItem('breakroom.omnishift.profile');
     window.localStorage.removeItem('breakroom.omnishift.shift');
     window.localStorage.removeItem('breakroom.afterhours.profile');
+    window.localStorage.removeItem('breakroom.quiz.employee_outcome');
     if (supabase) await supabase.auth.signOut();
     window.location.href = '/breakroom';
   }
 
   if (state === 'loading') {
-    return <div className="memo-box">Retrieving employee file. Do not look directly at the printer.</div>;
+    return <div className="os-file-status">Retrieving employee file from OmniShift database. Do not look directly at the printer.</div>;
   }
 
   if (state === 'signed_out') {
-    return <div className="memo-box">No employee file found. <a href="/signup">Report to intake.</a> {status}</div>;
+    return (
+      <div className="os-file-status">
+        <p style={{ margin: '0 0 8px' }}>No employee file found in the system.</p>
+        <a className="os-btn" href="/signup">Report to Intake</a>
+        {status && <p style={{ marginTop: 8, fontSize: 11, color: '#5a6b58' }}>{status}</p>}
+      </div>
+    );
   }
 
   if (!profile) return null;
 
   return (
-    <div className="grid-2">
-      <section className="old-shell">
-        <div className="old-header">Assigned Identity</div>
-        <div className="old-body">
-          {status && <p className="memo-box">{status}</p>}
-          <table className="table-box">
-            <tbody>
-              <tr><th>Field</th><th>Value</th></tr>
-              <tr><td>Employee ID</td><td>{profile.employee_id}</td></tr>
-              <tr><td>Email</td><td>{profile.email}</td></tr>
-              <tr><td>Alias</td><td>{profile.alias || 'not provided / still assigned'}</td></tr>
-              <tr><td>Department</td><td>{profile.department}</td></tr>
-              <tr><td>Role</td><td>{profile.role_name}</td></tr>
-              <tr><td>Assigned Object</td><td>{profile.assigned_object_slug}</td></tr>
-              <tr><td>Uniform Recommendation</td><td>{profile.uniform_recommendation_slug}</td></tr>
-              <tr><td>Shift Status</td><td>{profile.shift_status}</td></tr>
-              {profile.clocked_out_at && <tr><td>Clocked Out At</td><td>{profile.clocked_out_at}</td></tr>}
-            </tbody>
-          </table>
+    <div className="os-file-grid">
+      {!quizCompletedAt && (
+        <div
+          className="os-file-notice"
+          style={{
+            background: '#fff3cd',
+            borderColor: '#d4a300',
+            color: '#664d03',
+            padding: '10px 12px',
+            lineHeight: 1.5,
+          }}
+        >
+          <strong>PROVISIONAL FILE.</strong> OmniShift filed you with the available data.
+          The room would prefer you confirm.
+          <br />
+          <a
+            className="os-btn"
+            href="/portal/interview"
+            style={{ marginTop: 8, display: 'inline-block' }}
+          >
+            ► REFINE YOUR FILE
+          </a>
         </div>
-      </section>
-      <section className="old-shell">
-        <div className="old-header">House Rule / Current Orders</div>
-        <div className="old-body">
-          <p style={{ fontSize: 24, fontFamily: 'var(--type-paper)' }}>“{profile.house_rule}”</p>
+      )}
+
+      {status && <div className="os-file-notice">{status}</div>}
+
+      <div className="os-file-section">
+        <div className="os-file-section-header">Assigned Identity</div>
+        <table className="os-file-table">
+          <tbody>
+            <tr><td className="os-field-label">Employee ID</td><td className="os-field-value">{profile.employee_id}</td></tr>
+            <tr><td className="os-field-label">Email</td><td className="os-field-value">{profile.email}</td></tr>
+            <tr><td className="os-field-label">Alias</td><td className="os-field-value">{profile.alias || 'not provided / still assigned'}</td></tr>
+            <tr><td className="os-field-label">Department</td><td className="os-field-value">{profile.department}</td></tr>
+            <tr><td className="os-field-label">Role</td><td className="os-field-value">{profile.role_name}</td></tr>
+            <tr><td className="os-field-label">Assigned Object</td><td className="os-field-value">{profile.assigned_object_slug}</td></tr>
+            <tr><td className="os-field-label">Uniform</td><td className="os-field-value">{profile.uniform_recommendation_slug}</td></tr>
+            <tr><td className="os-field-label">Shift Status</td><td className="os-field-value">{profile.shift_status}</td></tr>
+            {profile.clocked_out_at && <tr><td className="os-field-label">Clocked Out</td><td className="os-field-value">{profile.clocked_out_at}</td></tr>}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="os-file-section">
+        <div className="os-file-section-header">House Rule / Current Orders</div>
+        <p className="os-house-rule">"{profile.house_rule}"</p>
+        <div className="os-file-meta">
           <p>Preferred light: {profile.preferred_light}</p>
           <p>Preferred place: {profile.preferred_place}</p>
-          <p><a className="old-button" href="/clock-out">Clock Out</a></p>
-          <p><a href="/portal/after-hours-profile">View After Hours Persona</a></p>
-          <button className="old-button" type="button" onClick={() => loadProfile({ preferRemote: true })}>Refresh Employee File</button>{' '}
-          <button className="old-button" type="button" onClick={signOut}>Sign Out / Leave Badge</button>
         </div>
-      </section>
+      </div>
+
+      <div className="os-file-actions">
+        <a className="os-btn" href="/clock-out">Clock Out</a>
+        <a className="os-btn os-btn-secondary" href="/idle-hands">After Hours Profile</a>
+        {quizCompletedAt && (
+          <a className="os-btn os-btn-secondary" href="/portal/interview">Re-take Intake</a>
+        )}
+        <button className="os-btn os-btn-secondary" type="button" onClick={() => loadProfile({ preferRemote: true })}>Refresh File</button>
+        <button className="os-btn os-btn-danger" type="button" onClick={signOut}>Sign Out / Leave Badge</button>
+      </div>
     </div>
   );
 }

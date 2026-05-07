@@ -1,63 +1,144 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
-import TableBox from '@/components/oldweb/TableBox.astro';
-import LinkMaze from '@/components/oldweb/LinkMaze.astro';
 import { getPublicNewsItems, groupNewsItems } from '@/lib/publicContent';
 
 const newsItems = await getPublicNewsItems();
 const groups = Object.entries(groupNewsItems(newsItems.items));
+const allItems = groups.flatMap(([, items]) => items);
+const lead = allItems[0];
+const rest = allItems.slice(1);
 ---
-<OldWebLayout title="3AM Edition / Newsstand" section="newsstand">
-  <div class="status-strip"><span>3AM EDITION</span><span>printer friendly</span><span>archive corrupted</span><span>weather: fluorescent</span><span>source: {newsItems.source}</span></div>
-  <header class="masthead" style="margin:18px 0;padding:12px 0;text-align:center;">
-    <p class="meta">VOL. 1 / ISSUE 47 / PRICE: ONE BAD MEMORY</p>
-    <h1 style="font-size:clamp(54px,10vw,128px);margin:0;">3AM Edition</h1>
-    <p>An after-hours newspaper stand for true/fake stories, public notices, corrections, and whatever your brain found after midnight.</p>
-  </header>
-  {newsItems.error && <p class="memo-box">Public news fallback active: {newsItems.error}</p>}
+<OldWebLayout title="SleepNews / Newsstand" section="newsstand">
 
-  <section class="grid-2">
-    <TableBox title="Front page / room desk">
-      <div class="news-columns">
-        {groups.flatMap(([group, items]) => items.slice(0, 2).map((item) => (
-          <article style="break-inside:avoid;border-bottom:1px dotted #8a7c5e;margin-bottom:12px;padding-bottom:10px;">
-            <p class="meta">{group} / {item.byline}</p>
-            <h2><a href={`/newsstand/${item.slug}`}>{item.title}</a></h2>
-            <p>{item.body}</p>
-          </article>
-        )))}
-      </div>
-    </TableBox>
-    <TableBox title="Corrections / legal refused">
-      <div class="correction-box">
-        <p><b>Correction:</b> Yesterday we reported the pool table accepted responsibility. The pool table has since retained counsel.</p>
-      </div>
-      <p class="classified"><strong>CLASSIFIED:</strong> Clock stuck at 1:47 seeks witness. Must be comfortable around receipts, dogs, and old vending machines.</p>
-      <p class="classified"><strong>NOTICE:</strong> OmniShift denies the existence of this paper while continuing to advertise in it.</p>
-    </TableBox>
-  </section>
-
-  <div class="grid-3" style="margin-top:16px;">
-    {groups.map(([group, items]) => (
-      <section class="newsprint-card old-shell">
-        <div class="old-header">{group}</div>
-        <div class="old-body">
-          {items.map((item) => (
-            <article style="border-top:1px solid #14110e;padding-top:10px;margin-top:10px;">
-              <p class="meta">archive link / printer safe / {item.byline}</p>
-              <h3><a href={`/newsstand/${item.slug}`}>{item.title}</a></h3>
-              <p>{item.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-    ))}
+  <!-- ABC '97 dark ticker bar -->
+  <div class="ns-ticker">
+    <span class="ns-ticker-alert">BREAKING</span>
+    <span>SLEEPNEWS</span>
+    <span>printer friendly</span>
+    <span>archive corrupted</span>
+    <span>weather: fluorescent</span>
+    <span>source: {newsItems.source}</span>
   </div>
 
-  <LinkMaze title="Archive links / public notices" notice="The newsstand sells papers, rumors, corrections, and things the room remembers as fact." links={[
-    { href: '/lost-found', label: 'Object archive', note: 'evidence from the drawer', stamp: 'SEE ALSO' },
-    { href: '/ventures', label: 'Business notices', note: 'AI ventures nobody requested' },
-    { href: '/phone', label: 'Call log tips', note: 'anonymous sources with bad service' },
-    { href: '/after-hours', label: 'Back to room', note: 'where most corrections begin' }
-  ]} />
+  <!-- Newspaper masthead -->
+  <div class="ns-masthead">
+    <p class="ns-vol">VOL. 1 / ISSUE 47 / PRICE: ONE BAD MEMORY</p>
+    <h1>Sleep<span class="ns-red">News</span></h1>
+    <p class="ns-tagline">An after-hours newspaper for true/fake stories, public notices, corrections, and whatever your brain found after midnight.</p>
+  </div>
+
+  <!-- BBC-style category tabs -->
+  <nav class="ns-subnav">
+    <a href="/newsstand" class="active">FRONT PAGE</a>
+    {groups.map(([group]) => (
+      <a href={`#${group.toLowerCase().replace(/\s+/g, '-')}`}>{group}</a>
+    ))}
+    <a href="/after-hours">BACK TO ROOM</a>
+  </nav>
+
+  {newsItems.error && <p class="ns-notice" style="padding:8px 16px;">Public news fallback active: {newsItems.error}</p>}
+
+  <!-- 3-column layout: nav | main | sidebar -->
+  <div class="ns-layout">
+
+    <!-- Left nav sidebar (BBC) -->
+    <nav class="ns-nav">
+      <p class="ns-nav-label">Sections</p>
+      {groups.map(([group]) => (
+        <a href={`#${group.toLowerCase().replace(/\s+/g, '-')}`}>{group}</a>
+      ))}
+      <p class="ns-nav-label">Also</p>
+      <a href="/lost-found">Object Archive</a>
+      <a href="/ventures">Business Notices</a>
+      <a href="/phone">Call Log</a>
+      <a href="/radio">Radio 1:47</a>
+    </nav>
+
+    <!-- Main content -->
+    <main class="ns-main">
+
+      <!-- Section bar (Fox News) -->
+      <div class="ns-section-bar">FRONT PAGE / ROOM DESK</div>
+
+      <!-- Lead story (BBC style) -->
+      {lead && (
+        <div class="ns-lead">
+          <p class="ns-byline">{lead.category} / {lead.byline}</p>
+          <h2><a href={`/newsstand/${lead.slug}`}>{lead.title}</a></h2>
+          <p>{lead.body}</p>
+          <div class="ns-also">
+            <b>Also:</b>
+            {rest.slice(0, 3).map((item) => (
+              <a href={`/newsstand/${item.slug}`}>{item.title}</a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Headline grid (Fox News 2-col) -->
+      <div class="ns-section-bar">LATEST HEADLINES</div>
+      <div class="ns-headline-grid">
+        {rest.map((item) => (
+          <article class="ns-story">
+            <p class="ns-byline">{item.category} / {item.byline}</p>
+            <h3><a href={`/newsstand/${item.slug}`}>{item.title}</a></h3>
+            <p>{item.body}</p>
+          </article>
+        ))}
+      </div>
+
+      <!-- Category sections below the grid -->
+      <div class="ns-world-grid">
+        {groups.map(([group, items]) => (
+          <div id={group.toLowerCase().replace(/\s+/g, '-')}>
+            <p class="ns-cat-head">{group}</p>
+            {items.map((item) => (
+              <a href={`/newsstand/${item.slug}`}>{item.title}</a>
+            ))}
+          </div>
+        ))}
+      </div>
+
+    </main>
+
+    <!-- Right sidebar -->
+    <aside class="ns-aside">
+      <div class="ns-aside-bar">CORRECTIONS / LEGAL REFUSED</div>
+
+      <div class="ns-correction">
+        <b>Correction:</b> Yesterday we reported the pool table accepted responsibility. The pool table has since retained counsel.
+      </div>
+
+      <div class="ns-classified">
+        <strong>CLASSIFIED:</strong> Clock stuck at 1:47 seeks witness. Must be comfortable around receipts, dogs, and old vending machines.
+      </div>
+
+      <div class="ns-classified">
+        <strong>NOTICE:</strong> OmniShift denies the existence of this paper while continuing to advertise in it.
+      </div>
+
+      <div class="ns-aside-bar">ARCHIVE LINKS</div>
+
+      <div class="ns-notice">
+        <a href="/lost-found">Object archive</a> — evidence from the drawer
+      </div>
+      <div class="ns-notice">
+        <a href="/ventures">Business notices</a> — AI ventures nobody requested
+      </div>
+      <div class="ns-notice">
+        <a href="/phone">Call log tips</a> — anonymous sources with bad service
+      </div>
+      <div class="ns-notice">
+        <a href="/after-hours">Back to room</a> — where most corrections begin
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="ns-footer">
+    <p>The newsstand sells papers, rumors, corrections, and things the room remembers as fact.</p>
+    <p>© SleepNews / OmniShift Media Holdings / All claims unverified / Printed on whatever was available</p>
+  </div>
+
 </OldWebLayout>

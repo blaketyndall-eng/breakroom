@@ -1,0 +1,399 @@
+---
+/**
+ * /void — Void Signal homepage.
+ * Each nano-banana slot now renders a real <img> from Pollinations.ai
+ * (FLUX). See nanoPrompts.ts for prompts + pollinationsUrl() helper.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { NANO_PROMPTS, pollinationsUrl } from '@/lib/nanoPrompts';
+
+const N = NANO_PROMPTS;
+---
+<BaseLayout title="VOID" section="void">
+  <link rel="preconnect" href="https://fonts.googleapis.com" slot="head"/>
+  <link rel="preconnect" href="https://image.pollinations.ai" slot="head"/>
+  <style is:global>
+    @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bungee&family=Bungee+Shade&family=Lobster&family=Comfortaa:wght@500;700&family=Carter+One&family=Rye&family=Caveat:wght@500;700&family=Special+Elite&display=swap');
+  </style>
+
+  <div class="vd-page">
+    <div class="vd-welcome">
+      <span>Welcome, <b>frogs</b> &nbsp;|&nbsp; Stuff: <b>0</b> &nbsp;|&nbsp; Applause Money: <b>1,847</b></span>
+      <span class="vd-welcome-time">it is <b>1:47 a.m.</b> NST <span class="vd-tiny">(Not Standard Time)</span></span>
+    </div>
+
+    <div class="vd-marquee">
+      <div class="vd-marquee-content">
+        ★ now indexing pages OmniShift removed ★ &nbsp;&nbsp; <b>free hoodies for the first 12 visitors (none claimed)</b> ★ &nbsp;&nbsp;
+        anonymous tip line: knock on table 8 ★ &nbsp;&nbsp; <b>tonight's site: moths.afterhours</b> ★ &nbsp;&nbsp;
+        the swan was driving. correction pending ★ &nbsp;&nbsp; <b>VOID is not affiliated with OmniShift. they are aware</b> ★ &nbsp;&nbsp;
+        sign the guestbook. don't. ★
+      </div>
+    </div>
+
+    <section class="vd-hero">
+      <div class="vd-wordmark">
+        <span class="vd-star">★</span>
+        <span class="vd-l vd-v">v</span><span class="vd-l vd-o">O</span><span class="vd-l vd-i">i</span><span class="vd-l vd-d">D</span>
+        <span class="vd-star">★</span>
+      </div>
+      <div class="vd-wordmark-trail">~ the after-hours internet ~ <b>classic</b></div>
+      <p class="vd-tagline">find the rest of it. <mark>or don't.</mark></p>
+    </section>
+
+    <main class="vd-main">
+      <aside class="vd-side-left">
+        <nav class="vd-nav-block">
+          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">🔑</span>create a regular file</a>
+          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">★</span>VOID central</a>
+          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">⌕</span>explore</a>
+          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">🎱</span>games</a>
+          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">✉</span>voidmail</a>
+          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">▤</span>shops</a>
+          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">📋</span>boards</a>
+          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">📰</span>news</a>
+          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">⊡</span>stuff</a>
+          <a class="vd-nav-item" href="#"><span class="vd-ng-icon">?</span>help</a>
+          <a class="vd-nav-item vd-login" href="#"><span class="vd-ng-icon">→</span>login!</a>
+          <a class="vd-nav-item vd-logout" href="#"><span class="vd-ng-icon">←</span>logout!</a>
+        </nav>
+
+        <div class="vd-search">
+          <label>SEARCH VOID</label>
+          <input type="text" placeholder="anything..."/>
+          <button type="button">Go!</button>
+        </div>
+
+        <div class="vd-mascot">
+          <div class="vd-mothie vd-mothie-anim">
+            <div class="vd-nano-slot" data-nano-key={N.mothie.key}>
+              <img class="vd-nano-img" src={pollinationsUrl(N.mothie)} alt={N.mothie.subject} loading="lazy" width={N.mothie.width} height={N.mothie.height} />
+            </div>
+          </div>
+          <div class="vd-mothie-name">MOTHIE</div>
+          <div class="vd-mothie-says">says hi.</div>
+        </div>
+      </aside>
+
+      <section class="vd-side-center">
+        <div class="vd-newsflash">
+          <div class="vd-nano-slot" data-nano-key={N.newsSwan.key}>
+            <img class="vd-nano-img" src={pollinationsUrl(N.newsSwan)} alt={N.newsSwan.subject} loading="lazy" width={N.newsSwan.width} height={N.newsSwan.height} />
+          </div>
+          <div>
+            <h3>newsflash!</h3>
+            <p><b>Read All About It!</b></p>
+            <p><b>Mystery Lot Sighting!</b> A lowrider in <a href="#">Parking Lot West</a> has been idling since 2:14 a.m. Witnesses report it is <i>"breathing."</i> If you must approach, do not bring snacks.</p>
+            <p><b>Time Traveler in Trouble!</b> Many users are reporting what appears to be a crashed <a href="#">Time Machine</a> on the Pool Hall Plateau. The kid is fine. The clock is not.</p>
+          </div>
+        </div>
+
+        <div class="vd-signup">
+          <div class="vd-nano-slot" data-nano-key={N.signupBulb.key}>
+            <img class="vd-nano-img" src={pollinationsUrl(N.signupBulb)} alt={N.signupBulb.subject} loading="lazy" width={N.signupBulb.width} height={N.signupBulb.height} />
+          </div>
+          <div>
+            <h3><span class="vd-su-1">si</span><span class="vd-su-2">gn</span> <span class="vd-su-3">up!</span></h3>
+            <p>Make a regular file with VOID today! It's simple, fast, and <span class="vd-free">FREE!</span> No reason needed. Some people did it by accident.</p>
+          </div>
+        </div>
+
+        <div class="vd-games">
+          <h3><span class="vd-stars">★</span> great games! <span class="vd-stars">★</span></h3>
+          <div class="vd-games-list">
+            <div class="vd-game-tile">
+              <div class="vd-nano-slot" data-nano-key={N.wheelOutcomes.key}>
+                <img class="vd-nano-img" src={pollinationsUrl(N.wheelOutcomes)} alt={N.wheelOutcomes.subject} loading="lazy" />
+              </div>
+              <div>
+                <a href="#">The Wheel of Outcomes!</a>
+                <p>Spin spin spin!!! It will tell you what to do tonight.</p>
+              </div>
+            </div>
+            <div class="vd-game-tile">
+              <div class="vd-nano-slot" data-nano-key={N.scratchcards.key}>
+                <img class="vd-nano-img" src={pollinationsUrl(N.scratchcards)} alt={N.scratchcards.subject} loading="lazy" />
+              </div>
+              <div>
+                <a href="#">Scratchcard Kiosk!</a>
+                <p>What will you not win??</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="vd-features">
+          <div class="vd-feat vd-feat-big">
+            <h3>Site Tonight <span class="vd-stars">★</span> <span class="vd-badge vd-badge-new">NEW!</span></h3>
+            <div class="vd-nano-slot vd-nano-wide" data-nano-key={N.mothStreet.key}>
+              <img class="vd-nano-img" src={pollinationsUrl(N.mothStreet)} alt={N.mothStreet.subject} loading="lazy" />
+            </div>
+            <p><a href="#"><b>moths.afterhours</b></a> — A page about moths that has been wrong for ten years. Refuses corrections. Has theories about the lighting.</p>
+            <a href="#" class="vd-readmore">Visit (12 do)</a>
+          </div>
+
+          <div class="vd-feat">
+            <h3 class="vd-orange">Recently Indexed <span class="vd-badge vd-badge-hot">HOT!</span></h3>
+            <ul class="vd-rec-list">
+              <li>📌 <a href="#">lostgloves.afterhours</a></li>
+              <li>📌 <a href="#">timing-slips.bible</a></li>
+              <li>📌 <a href="#">onenight.poolhall</a></li>
+              <li>📌 <a href="#">whoateit.classifieds</a></li>
+              <li>📌 <a href="#">notgoinghome.txt</a></li>
+            </ul>
+            <p class="vd-rec-meta">— last crawl was a long time ago.</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="vd-side-right">
+        <div class="vd-news-box">
+          <div class="vd-news-head"><span class="vd-stars">★</span> latest news! <span class="vd-stars">★</span></div>
+          <ul>
+            <li><a href="#">Frog Day!</a></li>
+            <li><a href="#">Gone Fishing</a></li>
+            <li><a href="#">Another Lutari Release</a></li>
+            <li><a href="#">Lutari Release</a> <span class="vd-badge vd-badge-live">LIVE</span></li>
+            <li><a href="#">Lutari Day</a></li>
+            <li><a href="#">Swan Day (disputed)</a></li>
+          </ul>
+        </div>
+
+        <div class="vd-cal">
+          <b>We have a Calendar!</b>
+          <p><a href="#">Click here</a> to see what's going on!</p>
+          <p class="vd-cal-spoil">(spoiler: nothing goes on)</p>
+        </div>
+
+        <div class="vd-quad">
+          <div class="vd-quad-tile">
+            <div class="vd-nano-slot" data-nano-key={N.weatherSun.key}>
+              <img class="vd-nano-img" src={pollinationsUrl(N.weatherSun)} alt={N.weatherSun.subject} loading="lazy" />
+            </div>
+            <div class="vd-quad-name">Weather Voidean</div>
+          </div>
+          <div class="vd-quad-tile">
+            <div class="vd-nano-slot" data-nano-key={N.voidpoints.key}>
+              <img class="vd-nano-img" src={pollinationsUrl(N.voidpoints)} alt={N.voidpoints.subject} loading="lazy" />
+            </div>
+            <div class="vd-quad-name">Voidpoints!!!</div>
+          </div>
+          <div class="vd-quad-tile">
+            <div class="vd-nano-slot" data-nano-key={N.voideanTimes.key}>
+              <img class="vd-nano-img" src={pollinationsUrl(N.voideanTimes)} alt={N.voideanTimes.subject} loading="lazy" />
+            </div>
+            <div class="vd-quad-name">Voidean Times</div>
+          </div>
+          <div class="vd-quad-tile">
+            <div class="vd-nano-slot" data-nano-key={N.voidpedia.key}>
+              <img class="vd-nano-img" src={pollinationsUrl(N.voidpedia)} alt={N.voidpedia.subject} loading="lazy" />
+            </div>
+            <div class="vd-quad-name">Voidpedia</div>
+          </div>
+        </div>
+
+        <div class="vd-poll">
+          <div class="vd-poll-head">VoidPoll</div>
+          <div class="vd-poll-body">
+            <p>What would you be most proud of achieving?</p>
+            <label><input type="radio" name="vp"/> A motel key</label>
+            <label><input type="radio" name="vp"/> All my hoodies returned</label>
+            <label><input type="radio" name="vp"/> A complete shelf of Stuff</label>
+            <label><input type="radio" name="vp"/> A real reason</label>
+            <label><input type="radio" name="vp"/> Clocking out (and meaning it)</label>
+            <div class="vd-poll-btns">
+              <button type="button">Vote</button>
+              <button type="button">Results</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <div class="vd-banner">
+      <div class="vd-banner-strip vd-bs-1">FREE WALLPAPERS · 56K FRIENDLY</div>
+      <div class="vd-banner-strip vd-bs-2">CLICK NOTHING</div>
+      <div class="vd-banner-strip vd-bs-3">DO NOT TRUST THE COFFEE</div>
+    </div>
+    <p class="vd-banner-disc">printer-friendly sponsors / do not trust</p>
+
+    <div class="vd-visitor">
+      <p>visitors who probably shouldn't be here:</p>
+      <div class="vd-visitor-num">000018440</div>
+      <p class="vd-visitor-disc">counter is broken. number is approximate. numbers are political.</p>
+    </div>
+
+    <footer class="vd-foot">
+      <p>VOID is a user-submitted map of the parts of the internet OmniShift would prefer you not visit. We do not endorse anything here. Most things here do not endorse us either.</p>
+      <p class="vd-foot-links">
+        <a href="#">about</a> · <a href="#">tell a friend</a> · <a href="#">guestbook</a> ·
+        <a href="#">flag a page</a> · <a href="#">webrings</a> · <a href="#">RSS?</a> ·
+        <a href="#">DMCA (lol)</a> · <a href="#">404</a>
+      </p>
+      <div class="vd-foot-badges">
+        <span class="vd-foot-badge">BEST VIEWED 1024×768</span>
+        <span class="vd-foot-badge">NETSCAPE OK</span>
+        <span class="vd-foot-badge">FRAMES UNAFRAID</span>
+        <span class="vd-foot-badge">NO COOKIES SERVED</span>
+        <span class="vd-foot-badge">SIGN MY GUESTBOOK</span>
+      </div>
+      <p class="vd-foot-copy">© ████ a few of us. all wrongs reserved. <span class="vd-blink">_</span></p>
+    </footer>
+  </div>
+</BaseLayout>
+
+<style>
+  .vd-page { font-family: 'Verdana', 'Geneva', sans-serif; font-size: 12px; line-height: 1.4; color: #1a0a2e; background: #fff5b0 repeating-linear-gradient(0deg, transparent 0, transparent 28px, rgba(178,95,255,0.05) 28px, rgba(178,95,255,0.05) 29px), repeating-linear-gradient(90deg, transparent 0, transparent 28px, rgba(255,100,200,0.05) 28px, rgba(255,100,200,0.05) 29px); padding-bottom: 40px; margin: 0; }
+  .vd-page a { color: #cc0099; text-decoration: underline; }
+  .vd-page a:hover { color: #ff3d8a; background: #ffff99; }
+
+  .vd-welcome { background: #ffd700; border-top: 2px solid #cc9900; border-bottom: 2px solid #cc9900; padding: 4px 14px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #1a0a2e; }
+  .vd-welcome b { color: #cc0099; }
+  .vd-welcome-time { font-family: 'Special Elite', monospace; }
+  .vd-tiny { font-size: 9px; color: #888; }
+
+  .vd-marquee { background: #1a0a2e; color: #ffe000; font-family: 'Courier New', monospace; font-size: 11px; padding: 6px 0; overflow: hidden; white-space: nowrap; border-bottom: 2px solid #ff3d8a; }
+  .vd-marquee-content { display: inline-block; padding-left: 100%; animation: vd-scroll 38s linear infinite; }
+  .vd-marquee-content b { color: #4cff4c; font-family: inherit; }
+  @keyframes vd-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+  .vd-hero { text-align: center; padding: 28px 16px 14px; background: radial-gradient(ellipse 60% 50% at 50% 30%, #fff8d0 0%, transparent 60%); border-bottom: 2px dashed #cc9900; }
+  .vd-wordmark { display: inline-flex; align-items: baseline; gap: 4px; cursor: default; user-select: none; filter: drop-shadow(3px 3px 0 #1a0a2e); }
+  .vd-star { font-size: 38px; color: #ffd700; align-self: center; filter: drop-shadow(2px 2px 0 #cc9900); animation: vd-twinkle 2.5s ease-in-out infinite; }
+  @keyframes vd-twinkle { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.15) rotate(15deg); } }
+  .vd-l { display: inline-block; line-height: 1; }
+  .vd-v { font-family: 'Permanent Marker', cursive; font-size: 92px; color: #cc0099; transform: rotate(-4deg) translateY(4px); }
+  .vd-o { font-family: 'Bungee Shade', cursive; font-size: 80px; color: #4cff4c; letter-spacing: -2px; transform: translateY(-2px); }
+  .vd-i { font-family: 'Rye', serif; font-size: 86px; color: #1d2891; transform: translateY(2px); }
+  .vd-d { font-family: 'Lobster', cursive; font-size: 96px; color: #ff8000; transform: rotate(2deg); }
+  .vd-wordmark-trail { font-family: 'Caveat', cursive; font-size: 22px; color: #6b2d8c; margin-top: 4px; }
+  .vd-wordmark-trail b { color: #cc0099; }
+  .vd-tagline { font-family: 'Special Elite', monospace; color: #5a3066; margin-top: 14px; font-size: 14px; }
+  .vd-tagline mark { background: #ffff99; color: #1a0a2e; padding: 0 4px; }
+
+  .vd-main { max-width: 1080px; margin: 16px auto 0; padding: 0 12px; display: grid; grid-template-columns: 200px 1fr 220px; gap: 14px; }
+  @media (max-width: 940px) { .vd-main { grid-template-columns: 1fr; } }
+
+  .vd-nav-block { background: #ffd700; border: 3px solid #1a0a2e; box-shadow: 4px 4px 0 #cc0099; margin-bottom: 14px; }
+  .vd-nav-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 2px dotted #1a0a2e; font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 13px; color: #1a0a2e !important; text-decoration: none !important; cursor: default; background: #ffd700; }
+  .vd-nav-item:last-child { border-bottom: none; }
+  .vd-nav-item:hover { background: #ff3d8a; color: #fff !important; }
+  .vd-ng-icon { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; background: #fff8d0; border: 2px solid #1a0a2e; border-radius: 4px; flex-shrink: 0; font-size: 14px; }
+  .vd-nav-item:hover .vd-ng-icon { background: #ffd700; }
+  .vd-login { background: #cc0099 !important; color: #ffd700 !important; }
+  .vd-login .vd-ng-icon { background: #1a0a2e; color: #ffd700; }
+  .vd-logout { background: #ff8000 !important; color: #1a0a2e !important; }
+
+  .vd-search { background: #cc0099; border: 3px solid #1a0a2e; padding: 8px; margin-bottom: 14px; }
+  .vd-search label { display: block; color: #ffd700; font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 11px; margin-bottom: 4px; }
+  .vd-search input { width: 100%; padding: 3px 5px; border: 1px inset #888; font-family: 'Courier New', monospace; font-size: 11px; }
+  .vd-search button { margin-top: 4px; width: 100%; padding: 3px; background: #ffd700; border: 2px outset #ffec80; font-family: inherit; font-weight: 700; cursor: pointer; }
+
+  .vd-mascot { background: #fff; border: 3px solid #1a0a2e; padding: 10px; text-align: center; box-shadow: 4px 4px 0 #4cff4c; }
+  .vd-mothie-anim { animation: vd-bob 3s ease-in-out infinite; }
+  @keyframes vd-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  .vd-mothie-name { margin-top: 6px; font-family: 'Permanent Marker', cursive; font-size: 16px; color: #cc0099; }
+  .vd-mothie-says { font-family: 'Caveat', cursive; font-size: 14px; color: #6b2d8c; }
+
+  .vd-newsflash { background: #fff8d0; border: 3px solid #1a0a2e; padding: 10px 12px; margin-bottom: 14px; box-shadow: 4px 4px 0 #ffd700; display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: center; }
+  .vd-newsflash h3 { font-family: 'Lobster', cursive; font-size: 30px; color: #cc0099; letter-spacing: -1px; line-height: 1; margin-bottom: 4px; }
+  .vd-newsflash p { font-size: 12px; line-height: 1.5; margin-top: 6px; }
+  .vd-newsflash p b { color: #cc0099; }
+
+  .vd-signup { background: #fff; border: 3px solid #1a0a2e; padding: 10px 14px; margin-bottom: 14px; display: grid; grid-template-columns: 80px 1fr; gap: 12px; align-items: center; box-shadow: 4px 4px 0 #4cff4c; }
+  .vd-signup h3 { font-family: 'Bungee', cursive; font-size: 22px; color: #1d2891; letter-spacing: -1px; line-height: 0.9; }
+  .vd-su-1 { color: #1d2891; }
+  .vd-su-2 { color: #4cff4c; }
+  .vd-su-3 { color: #cc0099; }
+  .vd-signup p { font-size: 12px; line-height: 1.5; }
+  .vd-free { background: #4cff4c; color: #1a0a2e; padding: 0 4px; font-weight: 900; letter-spacing: 0.04em; }
+
+  .vd-games { background: #fff; border: 3px solid #1a0a2e; padding: 10px; margin-bottom: 14px; box-shadow: 4px 4px 0 #ff8000; }
+  .vd-games h3 { font-family: 'Carter One', cursive; font-size: 22px; color: #ff8000; margin-bottom: 8px; }
+  .vd-stars { color: #ffd700; }
+  .vd-games-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 720px) { .vd-games-list { grid-template-columns: 1fr; } }
+  .vd-game-tile { display: grid; grid-template-columns: 70px 1fr; gap: 8px; align-items: center; }
+  .vd-game-tile a { font-weight: 700; }
+  .vd-game-tile p { font-size: 11px; color: #5a3066; margin-top: 4px; }
+
+  .vd-features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  @media (max-width: 720px) { .vd-features { grid-template-columns: 1fr; } }
+  .vd-feat { background: #fff; border: 3px solid #1a0a2e; padding: 10px; box-shadow: 4px 4px 0 #6b2d8c; }
+  .vd-feat-big { background: #fff8d0; box-shadow: 4px 4px 0 #cc0099; }
+  .vd-feat h3 { font-family: 'Carter One', cursive; font-size: 22px; color: #cc0099; line-height: 1.05; margin-bottom: 4px; }
+  .vd-feat .vd-orange { color: #ff8000; }
+  .vd-feat p { font-size: 12px; line-height: 1.45; margin-bottom: 6px; }
+  .vd-readmore { display: inline-block; background: #ffd700; color: #1a0a2e !important; padding: 3px 10px; font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 11px; text-decoration: none !important; border: 2px solid #1a0a2e; }
+  .vd-rec-list { list-style: none; font-size: 11.5px; line-height: 1.7; }
+  .vd-rec-meta { margin-top: 6px; font-style: italic; font-size: 11px; }
+
+  .vd-news-box { background: #ffd700; border: 3px solid #1a0a2e; box-shadow: 4px 4px 0 #6b2d8c; margin-bottom: 14px; }
+  .vd-news-head { background: #fff8d0; border-bottom: 3px solid #1a0a2e; padding: 6px 10px; font-family: 'Carter One', cursive; font-size: 18px; color: #cc0099; text-align: center; letter-spacing: -0.5px; }
+  .vd-news-box ul { list-style: none; padding: 8px 12px; font-size: 12px; }
+  .vd-news-box ul li { padding: 3px 0; border-bottom: 1px dashed #cc9900; text-align: center; }
+  .vd-news-box ul li:last-child { border-bottom: none; }
+  .vd-news-box ul li a { color: #1a0a2e; font-weight: 700; }
+
+  .vd-cal { background: #fff; border: 3px solid #1a0a2e; padding: 8px 10px; text-align: center; font-size: 11px; margin-bottom: 14px; box-shadow: 4px 4px 0 #4cff4c; }
+  .vd-cal b { font-family: 'Comfortaa', sans-serif; font-size: 13px; color: #1d2891; }
+  .vd-cal-spoil { font-size: 10px; color: #888; margin-top: 4px; }
+
+  .vd-quad { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; }
+  .vd-quad-tile { background: #fff; border: 2px solid #1a0a2e; padding: 6px; text-align: center; font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 10px; }
+  .vd-quad-name { margin-top: 4px; color: #cc0099; }
+
+  .vd-poll { background: #fff; border: 3px solid #1a0a2e; box-shadow: 4px 4px 0 #1d2891; }
+  .vd-poll-head { background: #1d2891; color: #ffd700; padding: 4px 10px; font-family: 'Bungee', cursive; font-size: 14px; }
+  .vd-poll-body { padding: 8px 10px; font-size: 11px; }
+  .vd-poll-body p { margin-bottom: 4px; }
+  .vd-poll-body label { display: block; padding: 1px 0; }
+  .vd-poll-body input[type="radio"] { margin-right: 4px; }
+  .vd-poll-btns { margin-top: 6px; display: flex; gap: 4px; }
+  .vd-poll-btns button { flex: 1; padding: 3px; background: #ffd700; border: 2px outset #ffec80; font-family: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+
+  .vd-banner { max-width: 1080px; margin: 14px auto 0; padding: 0 12px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .vd-banner-strip { padding: 9px 14px; font-family: 'Bungee', cursive; font-size: 13px; text-align: center; border: 3px solid #1a0a2e; cursor: pointer; letter-spacing: 0.5px; }
+  .vd-bs-1 { background: #ff3d8a; color: #fff; }
+  .vd-bs-2 { background: #4cff4c; color: #1a0a2e; }
+  .vd-bs-3 { background: #45e8ff; color: #1a0a2e; }
+  .vd-banner-disc { max-width: 1080px; margin: 4px auto 0; padding: 0 12px; text-align: center; font-size: 10px; color: #6b2d8c; font-family: 'Special Elite', monospace; }
+
+  .vd-visitor { max-width: 1080px; margin: 22px auto 0; text-align: center; font-family: 'Special Elite', monospace; font-size: 12px; color: #6b2d8c; }
+  .vd-visitor-num { display: inline-block; background: #1a0a2e; color: #4cff4c; font-family: 'Courier New', monospace; font-size: 22px; letter-spacing: 5px; padding: 4px 14px; border: 3px outset #4cff4c; margin: 6px 0; font-weight: 700; }
+  .vd-visitor-disc { font-size: 10px; }
+
+  .vd-foot { max-width: 1080px; margin: 22px auto 0; padding: 16px 12px; text-align: center; font-size: 11px; color: #5a3066; border-top: 2px dashed #cc9900; }
+  .vd-foot p { margin: 4px 0; }
+  .vd-foot-links a { margin: 0 3px; }
+  .vd-foot-badges { margin-top: 8px; display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
+  .vd-foot-badge { background: #1a0a2e; color: #4cff4c; font-family: 'Courier New', monospace; font-size: 9px; padding: 3px 6px; letter-spacing: 0.04em; }
+  .vd-foot-copy { margin-top: 10px; font-size: 10px; }
+
+  .vd-badge { display: inline-block; font-family: 'Bungee', cursive; font-size: 9px; padding: 1px 5px; margin-left: 6px; vertical-align: middle; border: 2px solid #1a0a2e; letter-spacing: 0.04em; transform: rotate(-3deg); }
+  .vd-badge-new { background: #4cff4c; color: #1a0a2e; }
+  .vd-badge-hot { background: #ff3d8a; color: #fff; }
+  .vd-badge-live { background: #ffe000; color: #1a0a2e; animation: vd-blink 1s steps(2, start) infinite; }
+  @keyframes vd-blink { to { opacity: 0.4; } }
+
+  /* Image slot — frames the rendered illustration. The dashed-box look is
+     gone now that real images render. */
+  .vd-nano-slot {
+    background: #fff;
+    border: 2px solid #1a0a2e;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    box-shadow: 2px 2px 0 #cc0099;
+  }
+  .vd-nano-img { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .vd-nano-wide { min-height: 100px; margin: 6px 0; }
+  .vd-game-tile .vd-nano-slot { min-height: 64px; }
+  .vd-quad-tile .vd-nano-slot { min-height: 48px; padding: 2px; box-shadow: none; border: 1px solid #1a0a2e; }
+
+  .vd-blink { animation: vd-blink2 1.2s steps(2, start) infinite; }
+  @keyframes vd-blink2 { to { visibility: hidden; } }
+</style>

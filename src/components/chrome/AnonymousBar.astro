@@ -1,0 +1,81 @@
+---
+/**
+ * AnonymousBar.astro
+ * --------------------------------------------------------------------------
+ * Top chrome strip for anonymous visitors (data-clock-state="anonymous").
+ * Intentionally shorter than the desktop chromes (32px vs 50px) and
+ * cryptic by design. Doesn't explain itself — reads like the room itself
+ * filed you wrong.
+ *
+ * Mounted by BaseLayout (in F5) when:
+ *   chromeMode === "desktop" + data-clock-state === "anonymous"
+ *
+ * Replaces both the OmniShift and Void Signal browser bars for guests.
+ * Logged-in users (any shift_status) get the world-appropriate full chrome.
+ */
+---
+<div class="ab" data-chrome-height="32">
+  <span class="ab-status">[ NOT ON THE BOOKS YET ]</span>
+  <span class="ab-dot" aria-hidden="true">·</span>
+  <span class="ab-time">1:47 a.m.</span>
+  <span class="ab-spacer" aria-hidden="true"></span>
+  <a href="/signup" class="ab-apply">[ APPLY ]</a>
+</div>
+
+<style>
+  .ab {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9100;
+    height: 32px;
+    background: #14110e;
+    color: #5a513f;
+    border-bottom: 1px solid #2a2622;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    user-select: none;
+  }
+  .ab-status {
+    color: #c8bfa6;
+  }
+  .ab-dot {
+    margin: 0 14px;
+    color: #5a513f;
+  }
+  .ab-time {
+    color: #5a513f;
+    letter-spacing: 0.1em;
+  }
+  .ab-spacer {
+    flex: 1;
+  }
+  .ab-apply {
+    color: #c8bfa6;
+    text-decoration: none;
+    letter-spacing: 0.18em;
+    transition: color 0.12s;
+  }
+  .ab-apply:hover {
+    color: #f5c518;
+    background: transparent;
+    text-shadow: 0 0 4px rgba(245, 197, 24, 0.3);
+  }
+  .ab-apply:visited {
+    color: #c8bfa6;
+  }
+
+  @media (max-width: 600px) {
+    .ab {
+      letter-spacing: 0.12em;
+      font-size: 10px;
+      padding: 0 10px;
+    }
+    .ab-time, .ab-dot { display: none; }
+  }
+</style>

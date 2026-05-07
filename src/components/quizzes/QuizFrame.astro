@@ -1,0 +1,55 @@
+---
+/**
+ * QuizFrame.astro
+ * --------------------------------------------------------------------------
+ * Universal VCR shell wrapper for quizzes. Title bar, beveled ridge
+ * frame, content slot, beige instruction strip. Tone color comes from
+ * the Quiz definition (omnishift institutional indigo by default;
+ * scattered quizzes pass their own).
+ *
+ * Used by:
+ *   - /portal/interview          (Employee Quiz runner)
+ *   - /portal/interview/result   (Employee Quiz result reveal)
+ *   - all future scattered-quiz pages
+ */
+import type { Quiz } from '@/lib/quizzes/engine';
+
+interface Props {
+  quiz: Quiz;
+  /** Override the title shown at top. Defaults to quiz.shortTitle. */
+  title?: string;
+  /** When provided, renders "QUESTION 03 / 10" subtitle. */
+  questionNumber?: number;
+  totalQuestions?: number;
+  /** Override the bottom instruction strip lines. */
+  footerLines?: string[];
+}
+
+const {
+  quiz,
+  title,
+  questionNumber,
+  totalQuestions,
+  footerLines = ['PRESS(▲,▼) THEN (OK)', 'PRESS(MENU) TO RETURN'],
+} = Astro.props;
+
+const tone = quiz.toneColor ?? '#1d2891';
+const displayTitle = title ?? quiz.shortTitle;
+const showProgress = questionNumber !== undefined && totalQuestions !== undefined;
+---
+<div class="qf">
+  <div class="qf-frame" style={`--qf-tone: ${tone};`}>
+    <header class="qf-header">
+      <p class="qf-title">{displayTitle}</p>
+      {showProgress && (
+        <p class="qf-progress">QUESTION {String(questionNumber).padStart(2, '0')} / {String(totalQuestions).padStart(2, '0')}</p>
+      )}
+    </header>
+    <div class="qf-body">
+      <slot />
+    </div>
+    <footer class="qf-footer">
+      {footerLines.map((line) => <p>{line}</p>)}
+    </footer>
+  </div>
+</div>
