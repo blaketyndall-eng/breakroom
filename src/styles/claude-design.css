@@ -424,7 +424,7 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
 }
 
 /* ============= SECTION: SLEEPERNET (After-Hours Google '98) ============= */
-[data-section="sleeper"] {
+[data-section="sleepnet"] {
   background: #fff;
   color: var(--ink);
 }
@@ -813,7 +813,7 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
 }
 
 /* ============= SECTION: NEWSSTAND ============= */
-/* 3AM Edition — ABC News '97 + BBC '98 + Fox News '02 blend on newsprint */
+/* SleepNews — ABC News '97 + BBC '98 + Fox News '02 blend on newsprint */
 [data-section="newsstand"] {
   background: #f5f0e8;
   color: var(--ink);
@@ -1471,6 +1471,365 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
 [data-section="staff"] .crt {
   text-shadow: 0 0 4px var(--phosphor);
 }
+
+/* ============= SECTION: CLOCK OUT ============= */
+/* Terminal / DOS boot screen — black void, green phosphor */
+[data-section="clockout"] {
+  background: #050605;
+  color: var(--phosphor);
+}
+[data-section="clockout"] a { color: var(--phosphor); }
+[data-section="clockout"] a:hover { background: var(--phosphor); color: #050605; }
+[data-section="clockout"] .old-shell {
+  border: 1px solid rgba(51, 255, 102, 0.15);
+  box-shadow: 0 0 30px rgba(51, 255, 102, 0.04);
+}
+[data-section="clockout"] .old-button {
+  background: var(--phosphor); color: #050605;
+  font-family: var(--type-mono); font-weight: 700;
+  letter-spacing: 0.12em; border: none;
+  padding: 10px 22px; text-decoration: none;
+  display: inline-block; cursor: pointer;
+}
+[data-section="clockout"] .old-button:hover {
+  background: #66ffaa; color: #050605;
+  box-shadow: 0 0 12px rgba(51, 255, 102, 0.3);
+}
+
+/* ============= SECTION: AFTER HOURS ============= */
+/* Dive bar back room — dark amber, warm shadows, nicotine paper */
+[data-section="afterhours"] {
+  background: #0d0a07;
+  color: var(--nicotine);
+}
+[data-section="afterhours"] a { color: #e8a84c; }
+[data-section="afterhours"] a:visited { color: #b87a30; }
+[data-section="afterhours"] a:hover { background: #e8a84c; color: #0d0a07; }
+[data-section="afterhours"] h1 {
+  font-family: var(--type-typer); color: #e8a84c;
+  text-shadow: 0 0 20px rgba(232, 168, 76, 0.12);
+}
+[data-section="afterhours"] .old-shell {
+  background: #14110a; border-color: #2a2218;
+}
+[data-section="afterhours"] .old-header {
+  background: #1a1510; color: #e8a84c;
+  border-bottom-color: #2a2218;
+}
+[data-section="afterhours"] .status-strip {
+  background: #0d0a07; border-color: #2a2218;
+  color: #7a6a4a;
+}
+
+/* ============= SECTION: FACTIONS / TURF ============= */
+/* Pool hall felt green — tournament bracket energy, chalk dust */
+[data-section="factions"] {
+  background: #0a1a10;
+  color: #c4d8c0;
+}
+[data-section="factions"] a { color: #4ade80; }
+[data-section="factions"] a:visited { color: #22c55e; }
+[data-section="factions"] a:hover { background: #4ade80; color: #0a1a10; }
+[data-section="factions"] h1 {
+  font-family: var(--type-paper); color: #4ade80;
+}
+[data-section="factions"] .old-shell {
+  background: #0f1f14; border-color: #1a3a24;
+}
+[data-section="factions"] .old-header {
+  background: #0a1a10; color: #4ade80;
+  border-bottom: 2px solid #1a3a24;
+}
+
+/* ============= SECTION: STUFF ============= */
+/* Evidence locker — manila, red stamps, institutional */
+[data-section="stuff"] {
+  background: #f0e8d4;
+  color: #2a2218;
+}
+[data-section="stuff"] a { color: var(--beer-red); }
+[data-section="stuff"] a:visited { color: #8b1a1a; }
+[data-section="stuff"] a:hover { background: var(--beer-red); color: #f0e8d4; }
+[data-section="stuff"] h1 {
+  font-family: var(--type-typer); color: #2a2218;
+  letter-spacing: 0.08em;
+}
+[data-section="stuff"] .old-shell {
+  background: #e8dfc7; border-color: #c4b89a;
+}
+[data-section="stuff"] .old-header {
+  background: #d4c8a8; color: #2a2218;
+  border-bottom: 2px solid #b4a888;
+  font-family: var(--type-typer);
+  letter-spacing: 0.15em;
+}
+
+/* ============= SECTION: DISTRICTS ============= */
+/* City planning map — blueprint blue, grid lines */
+[data-section="districts"] {
+  background: #0a0e1a;
+  color: #a0b8d0;
+}
+[data-section="districts"] a { color: #6cb4ee; }
+[data-section="districts"] a:visited { color: #4a90c4; }
+[data-section="districts"] a:hover { background: #6cb4ee; color: #0a0e1a; }
+[data-section="districts"] h1 {
+  font-family: var(--type-mono); color: #6cb4ee;
+  letter-spacing: 0.1em;
+}
+[data-section="districts"] .old-shell {
+  background: rgba(10, 14, 26, 0.8);
+  border-color: rgba(108, 180, 238, 0.2);
+}
+[data-section="districts"] .old-header {
+  background: #0f1424; color: #6cb4ee;
+  border-bottom-color: rgba(108, 180, 238, 0.2);
+}
+
+/* ============= SECTION: EVENTS ============= */
+/* Community bulletin board — cork, pushpins, marker pen */
+[data-section="events"] {
+  background: #1a1408;
+  color: var(--nicotine);
+}
+[data-section="events"] a { color: #f5c518; }
+[data-section="events"] a:visited { color: #c49e14; }
+[data-section="events"] a:hover { background: #f5c518; color: #1a1408; }
+[data-section="events"] h1 {
+  font-family: var(--type-typer); color: #f5c518;
+}
+[data-section="events"] .old-shell {
+  background: #1f1a0e; border-color: #3a3020;
+}
+[data-section="events"] .old-header {
+  background: #2a2414; color: #f5c518;
+  border-bottom: 2px solid #3a3020;
+}
+
+/* ============= SECTION: RADIO ============= */
+/* Late night radio booth — dark purple, warm amber dials */
+[data-section="radio"] {
+  background: #0e0814;
+  color: #c8b4e0;
+}
+[data-section="radio"] a { color: #d4a0ff; }
+[data-section="radio"] a:visited { color: #a878cc; }
+[data-section="radio"] a:hover { background: #d4a0ff; color: #0e0814; }
+[data-section="radio"] h1 {
+  font-family: var(--type-paper); color: #d4a0ff;
+  text-shadow: 0 0 18px rgba(212, 160, 255, 0.1);
+}
+[data-section="radio"] .old-shell {
+  background: #140e1e; border-color: #2a1e3a;
+}
+[data-section="radio"] .old-header {
+  background: #1a1228; color: #d4a0ff;
+  border-bottom-color: #2a1e3a;
+}
+
+/* ============= SECTION: PHONE ============= */
+/* Payphone booth — dark teal, coin slot amber */
+[data-section="phone"] {
+  background: #061214;
+  color: #a0c4c8;
+}
+[data-section="phone"] a { color: #4dcdd4; }
+[data-section="phone"] a:visited { color: #3aa8ae; }
+[data-section="phone"] a:hover { background: #4dcdd4; color: #061214; }
+[data-section="phone"] h1 {
+  font-family: var(--type-mono); color: #4dcdd4;
+}
+[data-section="phone"] .old-shell {
+  background: #0a181c; border-color: #1a2a30;
+}
+[data-section="phone"] .old-header {
+  background: #0e1e24; color: #4dcdd4;
+  border-bottom-color: #1a2a30;
+}
+
+/* ============= SECTION: IDLE HANDS ============= */
+/* Pool tournament — felt green, chalk dust, bracket lines */
+[data-section="idlehands"] {
+  background: #080e08;
+  color: #b8c8a8;
+}
+[data-section="idlehands"] a { color: #66cc66; }
+[data-section="idlehands"] a:visited { color: #449944; }
+[data-section="idlehands"] a:hover { background: #66cc66; color: #080e08; }
+[data-section="idlehands"] h1 {
+  font-family: var(--type-paper); color: #66cc66;
+}
+[data-section="idlehands"] .old-shell {
+  background: #0e160e; border-color: #1a2a1a;
+}
+[data-section="idlehands"] .old-header {
+  background: #0a140a; color: #66cc66;
+  border-bottom: 2px solid #1a2a1a;
+}
+
+/* ============= SECTION: REGULARS ============= */
+/* Employee file — manila folder, typewriter, bureaucratic */
+[data-section="regulars"] {
+  background: #f4edd8;
+  color: #2a2218;
+}
+[data-section="regulars"] a { color: var(--motel-blue); }
+[data-section="regulars"] a:visited { color: #143580; }
+[data-section="regulars"] a:hover { background: var(--motel-blue); color: #f4edd8; }
+[data-section="regulars"] h1 {
+  font-family: var(--type-typer); color: #2a2218;
+}
+[data-section="regulars"] .old-shell {
+  background: #efe7d3; border-color: #c4b89a;
+}
+[data-section="regulars"] .old-header {
+  background: #e0d4b8; color: #2a2218;
+  border-bottom: 1px solid #b4a888;
+  font-family: var(--type-typer);
+}
+
+/* ============= SECTION: CREWS ============= */
+/* Crew roster / local club — dark warm, gold accents */
+[data-section="crews"] {
+  background: #0e0a08;
+  color: #d4c8a8;
+}
+[data-section="crews"] a { color: #e8c060; }
+[data-section="crews"] a:visited { color: #c4a040; }
+[data-section="crews"] a:hover { background: #e8c060; color: #0e0a08; }
+[data-section="crews"] h1 {
+  font-family: var(--type-paper); color: #e8c060;
+}
+[data-section="crews"] .old-shell {
+  background: #14100a; border-color: #2a2418;
+}
+[data-section="crews"] .old-header {
+  background: #1a1610; color: #e8c060;
+  border-bottom-color: #2a2418;
+}
+
+/* ============= SECTION: RACK ============= */
+/* Product shelf — warehouse fluorescent, industrial */
+[data-section="rack"] {
+  background: #f8f4ea;
+  color: #1a1a1a;
+}
+[data-section="rack"] a { color: var(--beer-red); }
+[data-section="rack"] a:visited { color: #8b1a1a; }
+[data-section="rack"] a:hover { background: var(--beer-red); color: #f8f4ea; }
+[data-section="rack"] h1 {
+  font-family: var(--type-ui); font-weight: 800;
+  letter-spacing: 0.08em; color: #1a1a1a;
+}
+[data-section="rack"] .old-shell {
+  background: #ffffff; border-color: #d0c8b0;
+}
+[data-section="rack"] .old-header {
+  background: #f0e8d4; color: #1a1a1a;
+  border-bottom: 2px solid #d0c8b0;
+  font-family: var(--type-ui); font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+/* ============= SECTION: ADMIN / WIRE ROOM ============= */
+/* Ops console — dark gray, amber warnings */
+[data-section="admin"] {
+  background: #0a0a0c;
+  color: #b0b0b8;
+}
+[data-section="admin"] a { color: #f5c518; }
+[data-section="admin"] a:visited { color: #c49e14; }
+[data-section="admin"] a:hover { background: #f5c518; color: #0a0a0c; }
+[data-section="admin"] h1 {
+  font-family: var(--type-mono); color: #f5c518;
+  letter-spacing: 0.1em;
+}
+[data-section="admin"] .old-shell {
+  background: #0f0f12; border-color: #2a2a30;
+}
+[data-section="admin"] .old-header {
+  background: #141418; color: #f5c518;
+  border-bottom: 1px solid #2a2a30;
+  font-family: var(--type-mono);
+}
+
+/* ============= SECTION: LOCKER ============= */
+/* Personal storage — dark, intimate, drawer energy */
+[data-section="locker"] {
+  background: #0a0808;
+  color: #c4b8a0;
+}
+[data-section="locker"] a { color: #d4a870; }
+[data-section="locker"] a:visited { color: #a88850; }
+[data-section="locker"] a:hover { background: #d4a870; color: #0a0808; }
+[data-section="locker"] .old-shell {
+  background: #14100c; border-color: #2a2418;
+}
+[data-section="locker"] .old-header {
+  background: #1a1610; color: #d4a870;
+  border-bottom-color: #2a2418;
+}
+
+/* ============= SECTION: ARTIFACTS ============= */
+/* Evidence drawer — dark, red tape energy */
+[data-section="artifacts"] {
+  background: #0c0808;
+  color: #c8b8a8;
+}
+[data-section="artifacts"] a { color: #e06040; }
+[data-section="artifacts"] a:visited { color: #b84830; }
+[data-section="artifacts"] a:hover { background: #e06040; color: #0c0808; }
+[data-section="artifacts"] h1 {
+  font-family: var(--type-typer); color: #e06040;
+}
+[data-section="artifacts"] .old-shell {
+  background: #120e0c; border-color: #2a2018;
+}
+[data-section="artifacts"] .old-header {
+  background: #1a1410; color: #e06040;
+  border-bottom-color: #2a2018;
+}
+
+/* ============= SECTION: VENTURES ============= */
+/* Fake VC — corporate parody, clean but slightly wrong */
+[data-section="ventures"] {
+  background: #f8f8fc;
+  color: #1a1a2a;
+}
+[data-section="ventures"] a { color: #2a5cff; }
+[data-section="ventures"] a:visited { color: #1a3cc0; }
+[data-section="ventures"] a:hover { background: #2a5cff; color: #ffffff; }
+[data-section="ventures"] h1 {
+  font-family: var(--type-ui); font-weight: 800;
+  color: #1a1a2a;
+}
+
+/* ============= SECTION: SIGNUP ============= */
+/* Intake form — sterile, corporate processing */
+[data-section="signup"] {
+  background: #f0ece0;
+  color: #2a2218;
+}
+[data-section="signup"] a { color: var(--motel-blue); }
+[data-section="signup"] .old-shell {
+  background: #f6f3ec; border-color: #c4b89a;
+}
+
+/* ============= SECTION: LOST AND FOUND ============= */
+[data-section="lostfound"] {
+  background: #f0e8d4;
+  color: #2a2218;
+}
+[data-section="lostfound"] a { color: #8b6914; }
+[data-section="lostfound"] a:hover { background: #8b6914; color: #f0e8d4; }
+
+/* ============= SECTION: 404 ============= */
+[data-section="404"] {
+  background: #0a0808;
+  color: #888;
+}
+[data-section="404"] a { color: #666; }
+[data-section="404"] a:hover { background: #666; color: #0a0808; }
 
 /* ============= UTILITIES ============= */
 .tagline-block {
