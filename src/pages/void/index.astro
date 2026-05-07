@@ -1,41 +1,27 @@
 ---
 /**
  * /void — Void Signal homepage.
- * --------------------------------------------------------------------------
- * Counterculture clone of SleepNet. Lives inside the same Win9x cream
- * chrome as OmniShift (subtle Void differences only — see VoidSignalBrowser/
- * VoidSignalTaskbar/VoidLinkBar). The page interior goes all-in on 2001
- * portal energy.
- *
- * Section: 'void' → voidsignal world (see worldMap.ts).
- *
- * Image illustrations: 10 nano-banana slots throughout the page reference
- * prompts in src/lib/nanoPrompts.ts via data-nano-key. The placeholder
- * boxes show the subject + dimensions; the full art brief lives in the
- * library so all 10 illustrations stay stylistically cohesive when
- * generated. When the nanobanana plugin is wired in, a generator can
- * iterate document.querySelectorAll('[data-nano-key]') and pull each
- * prompt from NANO_PROMPTS.
+ * Each nano-banana slot now renders a real <img> from Pollinations.ai
+ * (FLUX). See nanoPrompts.ts for prompts + pollinationsUrl() helper.
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { NANO_PROMPTS } from '@/lib/nanoPrompts';
+import { NANO_PROMPTS, pollinationsUrl } from '@/lib/nanoPrompts';
 
 const N = NANO_PROMPTS;
 ---
 <BaseLayout title="VOID" section="void">
   <link rel="preconnect" href="https://fonts.googleapis.com" slot="head"/>
+  <link rel="preconnect" href="https://image.pollinations.ai" slot="head"/>
   <style is:global>
     @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Bungee&family=Bungee+Shade&family=Lobster&family=Comfortaa:wght@500;700&family=Carter+One&family=Rye&family=Caveat:wght@500;700&family=Special+Elite&display=swap');
   </style>
 
   <div class="vd-page">
-    <!-- ============== Welcome strip ============== -->
     <div class="vd-welcome">
       <span>Welcome, <b>frogs</b> &nbsp;|&nbsp; Stuff: <b>0</b> &nbsp;|&nbsp; Applause Money: <b>1,847</b></span>
       <span class="vd-welcome-time">it is <b>1:47 a.m.</b> NST <span class="vd-tiny">(Not Standard Time)</span></span>
     </div>
 
-    <!-- ============== Marquee ============== -->
     <div class="vd-marquee">
       <div class="vd-marquee-content">
         ★ now indexing pages OmniShift removed ★ &nbsp;&nbsp; <b>free hoodies for the first 12 visitors (none claimed)</b> ★ &nbsp;&nbsp;
@@ -45,7 +31,6 @@ const N = NANO_PROMPTS;
       </div>
     </div>
 
-    <!-- ============== Hero ============== -->
     <section class="vd-hero">
       <div class="vd-wordmark">
         <span class="vd-star">★</span>
@@ -56,10 +41,7 @@ const N = NANO_PROMPTS;
       <p class="vd-tagline">find the rest of it. <mark>or don't.</mark></p>
     </section>
 
-    <!-- ============== Main 3-column ============== -->
     <main class="vd-main">
-
-      <!-- LEFT NAV -->
       <aside class="vd-side-left">
         <nav class="vd-nav-block">
           <a class="vd-nav-item" href="#"><span class="vd-ng-icon">🔑</span>create a regular file</a>
@@ -83,11 +65,9 @@ const N = NANO_PROMPTS;
         </div>
 
         <div class="vd-mascot">
-          <div class="vd-mothie">
-            <div class="vd-nano-slot vd-mothie-anim" data-nano-key={N.mothie.key}>
-              <b>{N.mothie.subject}</b>
-              {N.mothie.width}×{N.mothie.height}{N.mothie.animated ? ' · animated' : ''}
-              <small>see nanoPrompts.ts</small>
+          <div class="vd-mothie vd-mothie-anim">
+            <div class="vd-nano-slot" data-nano-key={N.mothie.key}>
+              <img class="vd-nano-img" src={pollinationsUrl(N.mothie)} alt={N.mothie.subject} loading="lazy" width={N.mothie.width} height={N.mothie.height} />
             </div>
           </div>
           <div class="vd-mothie-name">MOTHIE</div>
@@ -95,14 +75,10 @@ const N = NANO_PROMPTS;
         </div>
       </aside>
 
-      <!-- CENTER -->
       <section class="vd-side-center">
-        <!-- News flash -->
         <div class="vd-newsflash">
           <div class="vd-nano-slot" data-nano-key={N.newsSwan.key}>
-            <b>{N.newsSwan.subject}</b>
-            {N.newsSwan.width}×{N.newsSwan.height}
-            <small>see nanoPrompts.ts</small>
+            <img class="vd-nano-img" src={pollinationsUrl(N.newsSwan)} alt={N.newsSwan.subject} loading="lazy" width={N.newsSwan.width} height={N.newsSwan.height} />
           </div>
           <div>
             <h3>newsflash!</h3>
@@ -112,11 +88,9 @@ const N = NANO_PROMPTS;
           </div>
         </div>
 
-        <!-- Sign up callout -->
         <div class="vd-signup">
-          <div class="vd-nano-slot" data-nano-key={N.signupBulb.key} style="min-height: 64px;">
-            <b>{N.signupBulb.subject}</b>
-            {N.signupBulb.width}×{N.signupBulb.height}{N.signupBulb.animated ? ' · animated' : ''}
+          <div class="vd-nano-slot" data-nano-key={N.signupBulb.key}>
+            <img class="vd-nano-img" src={pollinationsUrl(N.signupBulb)} alt={N.signupBulb.subject} loading="lazy" width={N.signupBulb.width} height={N.signupBulb.height} />
           </div>
           <div>
             <h3><span class="vd-su-1">si</span><span class="vd-su-2">gn</span> <span class="vd-su-3">up!</span></h3>
@@ -124,14 +98,12 @@ const N = NANO_PROMPTS;
           </div>
         </div>
 
-        <!-- Games row -->
         <div class="vd-games">
           <h3><span class="vd-stars">★</span> great games! <span class="vd-stars">★</span></h3>
           <div class="vd-games-list">
             <div class="vd-game-tile">
               <div class="vd-nano-slot" data-nano-key={N.wheelOutcomes.key}>
-                <b>{N.wheelOutcomes.subject}</b>
-                {N.wheelOutcomes.width}×{N.wheelOutcomes.height}
+                <img class="vd-nano-img" src={pollinationsUrl(N.wheelOutcomes)} alt={N.wheelOutcomes.subject} loading="lazy" />
               </div>
               <div>
                 <a href="#">The Wheel of Outcomes!</a>
@@ -140,8 +112,7 @@ const N = NANO_PROMPTS;
             </div>
             <div class="vd-game-tile">
               <div class="vd-nano-slot" data-nano-key={N.scratchcards.key}>
-                <b>{N.scratchcards.subject}</b>
-                {N.scratchcards.width}×{N.scratchcards.height}
+                <img class="vd-nano-img" src={pollinationsUrl(N.scratchcards)} alt={N.scratchcards.subject} loading="lazy" />
               </div>
               <div>
                 <a href="#">Scratchcard Kiosk!</a>
@@ -151,13 +122,11 @@ const N = NANO_PROMPTS;
           </div>
         </div>
 
-        <!-- Feature row -->
         <div class="vd-features">
           <div class="vd-feat vd-feat-big">
             <h3>Site Tonight <span class="vd-stars">★</span> <span class="vd-badge vd-badge-new">NEW!</span></h3>
             <div class="vd-nano-slot vd-nano-wide" data-nano-key={N.mothStreet.key}>
-              <b>{N.mothStreet.subject}</b>
-              {N.mothStreet.width}×{N.mothStreet.height}
+              <img class="vd-nano-img" src={pollinationsUrl(N.mothStreet)} alt={N.mothStreet.subject} loading="lazy" />
             </div>
             <p><a href="#"><b>moths.afterhours</b></a> — A page about moths that has been wrong for ten years. Refuses corrections. Has theories about the lighting.</p>
             <a href="#" class="vd-readmore">Visit (12 do)</a>
@@ -177,7 +146,6 @@ const N = NANO_PROMPTS;
         </div>
       </section>
 
-      <!-- RIGHT SIDEBAR -->
       <aside class="vd-side-right">
         <div class="vd-news-box">
           <div class="vd-news-head"><span class="vd-stars">★</span> latest news! <span class="vd-stars">★</span></div>
@@ -200,29 +168,25 @@ const N = NANO_PROMPTS;
         <div class="vd-quad">
           <div class="vd-quad-tile">
             <div class="vd-nano-slot" data-nano-key={N.weatherSun.key}>
-              <b>{N.weatherSun.subject}</b>
-              {N.weatherSun.width}×{N.weatherSun.height}
+              <img class="vd-nano-img" src={pollinationsUrl(N.weatherSun)} alt={N.weatherSun.subject} loading="lazy" />
             </div>
             <div class="vd-quad-name">Weather Voidean</div>
           </div>
           <div class="vd-quad-tile">
             <div class="vd-nano-slot" data-nano-key={N.voidpoints.key}>
-              <b>{N.voidpoints.subject}</b>
-              {N.voidpoints.width}×{N.voidpoints.height}
+              <img class="vd-nano-img" src={pollinationsUrl(N.voidpoints)} alt={N.voidpoints.subject} loading="lazy" />
             </div>
             <div class="vd-quad-name">Voidpoints!!!</div>
           </div>
           <div class="vd-quad-tile">
             <div class="vd-nano-slot" data-nano-key={N.voideanTimes.key}>
-              <b>{N.voideanTimes.subject}</b>
-              {N.voideanTimes.width}×{N.voideanTimes.height}
+              <img class="vd-nano-img" src={pollinationsUrl(N.voideanTimes)} alt={N.voideanTimes.subject} loading="lazy" />
             </div>
             <div class="vd-quad-name">Voidean Times</div>
           </div>
           <div class="vd-quad-tile">
             <div class="vd-nano-slot" data-nano-key={N.voidpedia.key}>
-              <b>{N.voidpedia.subject}</b>
-              {N.voidpedia.width}×{N.voidpedia.height}
+              <img class="vd-nano-img" src={pollinationsUrl(N.voidpedia)} alt={N.voidpedia.subject} loading="lazy" />
             </div>
             <div class="vd-quad-name">Voidpedia</div>
           </div>
@@ -246,7 +210,6 @@ const N = NANO_PROMPTS;
       </aside>
     </main>
 
-    <!-- ============== Banner row ============== -->
     <div class="vd-banner">
       <div class="vd-banner-strip vd-bs-1">FREE WALLPAPERS · 56K FRIENDLY</div>
       <div class="vd-banner-strip vd-bs-2">CLICK NOTHING</div>
@@ -254,14 +217,12 @@ const N = NANO_PROMPTS;
     </div>
     <p class="vd-banner-disc">printer-friendly sponsors / do not trust</p>
 
-    <!-- ============== Visitor counter ============== -->
     <div class="vd-visitor">
       <p>visitors who probably shouldn't be here:</p>
       <div class="vd-visitor-num">000018440</div>
       <p class="vd-visitor-disc">counter is broken. number is approximate. numbers are political.</p>
     </div>
 
-    <!-- ============== Footer ============== -->
     <footer class="vd-foot">
       <p>VOID is a user-submitted map of the parts of the internet OmniShift would prefer you not visit. We do not endorse anything here. Most things here do not endorse us either.</p>
       <p class="vd-foot-links">
@@ -282,51 +243,21 @@ const N = NANO_PROMPTS;
 </BaseLayout>
 
 <style>
-  .vd-page {
-    font-family: 'Verdana', 'Geneva', sans-serif;
-    font-size: 12px;
-    line-height: 1.4;
-    color: #1a0a2e;
-    background: #fff5b0
-      repeating-linear-gradient(0deg, transparent 0, transparent 28px, rgba(178,95,255,0.05) 28px, rgba(178,95,255,0.05) 29px),
-      repeating-linear-gradient(90deg, transparent 0, transparent 28px, rgba(255,100,200,0.05) 28px, rgba(255,100,200,0.05) 29px);
-    padding-bottom: 40px;
-    margin: 0;
-  }
+  .vd-page { font-family: 'Verdana', 'Geneva', sans-serif; font-size: 12px; line-height: 1.4; color: #1a0a2e; background: #fff5b0 repeating-linear-gradient(0deg, transparent 0, transparent 28px, rgba(178,95,255,0.05) 28px, rgba(178,95,255,0.05) 29px), repeating-linear-gradient(90deg, transparent 0, transparent 28px, rgba(255,100,200,0.05) 28px, rgba(255,100,200,0.05) 29px); padding-bottom: 40px; margin: 0; }
   .vd-page a { color: #cc0099; text-decoration: underline; }
   .vd-page a:hover { color: #ff3d8a; background: #ffff99; }
 
-  .vd-welcome {
-    background: #ffd700;
-    border-top: 2px solid #cc9900;
-    border-bottom: 2px solid #cc9900;
-    padding: 4px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 11px;
-    color: #1a0a2e;
-  }
+  .vd-welcome { background: #ffd700; border-top: 2px solid #cc9900; border-bottom: 2px solid #cc9900; padding: 4px 14px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #1a0a2e; }
   .vd-welcome b { color: #cc0099; }
   .vd-welcome-time { font-family: 'Special Elite', monospace; }
   .vd-tiny { font-size: 9px; color: #888; }
 
-  .vd-marquee {
-    background: #1a0a2e; color: #ffe000;
-    font-family: 'Courier New', monospace; font-size: 11px;
-    padding: 6px 0; overflow: hidden; white-space: nowrap;
-    border-bottom: 2px solid #ff3d8a;
-  }
+  .vd-marquee { background: #1a0a2e; color: #ffe000; font-family: 'Courier New', monospace; font-size: 11px; padding: 6px 0; overflow: hidden; white-space: nowrap; border-bottom: 2px solid #ff3d8a; }
   .vd-marquee-content { display: inline-block; padding-left: 100%; animation: vd-scroll 38s linear infinite; }
   .vd-marquee-content b { color: #4cff4c; font-family: inherit; }
   @keyframes vd-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-  .vd-hero {
-    text-align: center;
-    padding: 28px 16px 14px;
-    background: radial-gradient(ellipse 60% 50% at 50% 30%, #fff8d0 0%, transparent 60%);
-    border-bottom: 2px dashed #cc9900;
-  }
+  .vd-hero { text-align: center; padding: 28px 16px 14px; background: radial-gradient(ellipse 60% 50% at 50% 30%, #fff8d0 0%, transparent 60%); border-bottom: 2px dashed #cc9900; }
   .vd-wordmark { display: inline-flex; align-items: baseline; gap: 4px; cursor: default; user-select: none; filter: drop-shadow(3px 3px 0 #1a0a2e); }
   .vd-star { font-size: 38px; color: #ffd700; align-self: center; filter: drop-shadow(2px 2px 0 #cc9900); animation: vd-twinkle 2.5s ease-in-out infinite; }
   @keyframes vd-twinkle { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.15) rotate(15deg); } }
@@ -445,22 +376,23 @@ const N = NANO_PROMPTS;
   .vd-badge-live { background: #ffe000; color: #1a0a2e; animation: vd-blink 1s steps(2, start) infinite; }
   @keyframes vd-blink { to { opacity: 0.4; } }
 
+  /* Image slot — frames the rendered illustration. The dashed-box look is
+     gone now that real images render. */
   .vd-nano-slot {
-    background: repeating-linear-gradient(45deg, #fffbe6 0 8px, #ffe8a8 8px 16px);
-    border: 2px dashed #cc0099;
-    color: #6b2d8c;
-    font-family: 'Special Elite', monospace;
-    font-size: 10px;
-    padding: 14px 8px;
-    line-height: 1.3;
-    text-align: center;
+    background: #fff;
+    border: 2px solid #1a0a2e;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-height: 80px;
+    box-shadow: 2px 2px 0 #cc0099;
   }
-  .vd-nano-slot b { color: #cc0099; display: block; margin-bottom: 4px; font-size: 11px; }
-  .vd-nano-slot small { color: #888; font-style: italic; display: block; margin-top: 4px; }
+  .vd-nano-img { display: block; width: 100%; height: 100%; object-fit: contain; }
   .vd-nano-wide { min-height: 100px; margin: 6px 0; }
-  .vd-game-tile .vd-nano-slot { padding: 6px; font-size: 9px; min-height: 64px; display: grid; align-content: center; }
-  .vd-quad-tile .vd-nano-slot { padding: 6px; font-size: 8px; min-height: 48px; display: grid; align-content: center; }
+  .vd-game-tile .vd-nano-slot { min-height: 64px; }
+  .vd-quad-tile .vd-nano-slot { min-height: 48px; padding: 2px; box-shadow: none; border: 1px solid #1a0a2e; }
 
   .vd-blink { animation: vd-blink2 1.2s steps(2, start) infinite; }
   @keyframes vd-blink2 { to { visibility: hidden; } }
