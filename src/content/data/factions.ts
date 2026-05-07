@@ -6,6 +6,10 @@ export type BreakroomFaction = {
   slug: string;
   name: string;
   shortName?: string;
+  /** Retro-social display name — how the crew tags itself online (1999-2003
+   * GeoCities / MySpace / forum-tag energy). Falls through to `name` if
+   * absent. Set on the 5 actives only for now. */
+  webHandle?: string;
   status: BreakroomFactionStatus;
   motto: string;
   description: string;
@@ -34,6 +38,7 @@ export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
   {
     slug: 'the-players',
     name: 'The Players',
+    webHandle: '★ TH3.PLAYERS ★',
     status: 'active',
     motto: 'Call your own fouls.',
     description: 'Pool table regulars, card trick people, chalk carriers, quarter initialers, and anyone who thinks aim is a form of prayer.',
@@ -54,6 +59,7 @@ export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
   {
     slug: 'lot-racers',
     name: 'Lot Racers',
+    webHandle: 'LotRacers_99',
     status: 'active',
     motto: 'Leave late. Leave loud.',
     description: 'People who treat the parking lot like a weather system: low cars, bad underglow, timing slips, dashboard light, and keys with stories.',
@@ -74,6 +80,7 @@ export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
   {
     slug: 'night-drinkers',
     name: 'Night Drinkers',
+    webHandle: '~Night.Drinkers.Lounge~',
     status: 'active',
     motto: 'One more and then the truth.',
     description: 'Stool regulars, bar-napkin philosophers, jukebox witnesses, people who pay with folded cash and remember everybody wrong.',
@@ -94,6 +101,7 @@ export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
   {
     slug: 'the-smokers',
     name: 'The Smokers',
+    webHandle: '[ smokers·lounge ]',
     status: 'active',
     motto: 'Fence talk travels.',
     description: 'Fence leaners, alley diplomats, people under weak bulbs, cigarette-pack archivists, and anyone who knows which door sticks.',
@@ -114,6 +122,7 @@ export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
   {
     slug: 'cowboys',
     name: 'Cowboys',
+    webHandle: 'COWBOYZ_ONLINE.GIF',
     status: 'active',
     motto: 'Cooler opened. Hat noticed.',
     description: 'Rodeo parking lot saints, boot scuff people, cooler guardians, county-fair ghosts, and anyone who knows dust can be formal.',
