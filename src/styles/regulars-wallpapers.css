@@ -1,0 +1,210 @@
+/* ============================================================
+   V3 WALLPAPERS — 80s/90s personal-homepage aesthetic
+   ============================================================ */
+
+/* ---------- 1. xp_bliss — Windows XP "Bliss" desktop ----------
+   Image-backed (Replicate FLUX 1.1 Pro). Until /void/wallpaperXpBliss.jpg
+   ships from `pnpm regen-images wallpaperXpBliss`, the fallback paint
+   is a hand-crafted gradient sky+hill so the theme is usable today. */
+.regular-theme-xp_bliss.rfp-profile {
+  --rfp-paper: #f4f9ff;
+  --rfp-paper-2: #e1eff5;
+  --rfp-ink: #14233e;
+  --rfp-ink-soft: #4a5a73;
+  --rfp-link: #0033a0;
+  --rfp-link-visited: #5e3aa0;
+  --rfp-pin: #c83737;
+  --rfp-tape: #ffeb70;
+  background-color: #6dadea;
+  background-image:
+    /* generated photo, gracefully falls back to the gradients below if 404 */
+    url('/void/wallpaperXpBliss.jpg'),
+    /* fallback hill */
+    linear-gradient(
+      to bottom,
+      #6dadea 0%,
+      #b8dcf5 45%,
+      #cfe78b 50%,
+      #6fa83a 70%,
+      #4d8a26 100%
+    );
+  background-size: cover, auto;
+  background-position: center top;
+  background-repeat: no-repeat, no-repeat;
+}
+
+/* ---------- 2. cyber_checkerboard — 90s VR / rave ----------
+   Pure CSS. Blue cloudy sky on top, black-and-white perspective
+   checker floor on bottom. The floor uses a layered conic-gradient
+   trick to fake the 1990s perspective tile. */
+.regular-theme-cyber_checkerboard.rfp-profile {
+  --rfp-paper: #1a3a8e;
+  --rfp-paper-2: #0e2862;
+  --rfp-ink: #ffffff;
+  --rfp-ink-soft: #c5d3f5;
+  --rfp-link: #ffe070;
+  --rfp-link-visited: #ff60d4;
+  --rfp-pin: #ff3380;
+  --rfp-tape: #ffe070;
+  color: #ffffff;
+  background:
+    /* cloud blobs */
+    radial-gradient(ellipse 30% 20% at 18% 12%, rgba(255, 255, 255, 0.45), transparent 70%),
+    radial-gradient(ellipse 35% 22% at 72% 22%, rgba(255, 255, 255, 0.4), transparent 70%),
+    radial-gradient(ellipse 25% 18% at 40% 30%, rgba(255, 255, 255, 0.35), transparent 70%),
+    /* sky→horizon */
+    linear-gradient(
+      to bottom,
+      #0a2a78 0%,
+      #1a4ec9 35%,
+      #4a8df0 60%,
+      #1a1a1a 60%,
+      #1a1a1a 100%
+    );
+}
+/* Perspective checker floor — layered ::before pseudo on the body */
+.regular-theme-cyber_checkerboard.rfp-profile::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40%;
+  background-image:
+    linear-gradient(45deg, #fff 25%, transparent 25%),
+    linear-gradient(-45deg, #fff 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #fff 75%),
+    linear-gradient(-45deg, transparent 75%, #fff 75%);
+  background-size: 48px 48px;
+  background-position: 0 0, 0 24px, 24px -24px, -24px 0;
+  background-color: #000;
+  transform: perspective(420px) rotateX(58deg);
+  transform-origin: 50% 100%;
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 0;
+}
+.regular-theme-cyber_checkerboard.rfp-profile {
+  position: relative;
+  isolation: isolate;
+}
+.regular-theme-cyber_checkerboard.rfp-profile > * {
+  position: relative;
+  z-index: 1;
+}
+/* Cards inside this theme need a solid bg to read on the busy backdrop */
+.regular-theme-cyber_checkerboard .rfp-info-card,
+.regular-theme-cyber_checkerboard .rfp-away-card,
+.regular-theme-cyber_checkerboard .rfp-pinned-card,
+.regular-theme-cyber_checkerboard .rfp-rooms-card,
+.regular-theme-cyber_checkerboard .rfp-pages-card,
+.regular-theme-cyber_checkerboard .rfp-share-card,
+.regular-theme-cyber_checkerboard .rfp-friends-card,
+.regular-theme-cyber_checkerboard .rfp-counter-card {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a3a8e;
+}
+
+/* ---------- 3. megs_place_plaid — pale-blue tartan tile ----------
+   Pure CSS. Repeating-linear-gradient tartan in pale blue + white.
+   Inspired by GeoCities's Meg's Place. */
+.regular-theme-megs_place_plaid.rfp-profile {
+  --rfp-paper: #d2e6f5;
+  --rfp-paper-2: #b8d8f0;
+  --rfp-ink: #1d3766;
+  --rfp-ink-soft: #4a6188;
+  --rfp-link: #b00060;
+  --rfp-link-visited: #5e3aa0;
+  --rfp-pin: #b00060;
+  --rfp-tape: #ffeb70;
+  background-color: #d2e6f5;
+  background-image:
+    /* horizontal stripes */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 14px,
+      rgba(29, 55, 102, 0.18) 14px 16px,
+      transparent 16px 28px,
+      rgba(29, 55, 102, 0.08) 28px 30px
+    ),
+    /* vertical stripes */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 14px,
+      rgba(29, 55, 102, 0.18) 14px 16px,
+      transparent 16px 28px,
+      rgba(29, 55, 102, 0.08) 28px 30px
+    ),
+    /* faint diagonal shimmer */
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.06) 0 4px,
+      transparent 4px 8px
+    );
+}
+
+/* ---------- 4. chrome_balls_2001 — DPGraph 1999 chrome ball tile ----------
+   Image-backed (Replicate FLUX 1.1 Pro, square 1024×1024 tileable).
+   Until generated, fallback is a dark gradient + dot stipple so the page
+   still has the dark-tech-website mood. */
+.regular-theme-chrome_balls_2001.rfp-profile {
+  --rfp-paper: #f7f4e3;
+  --rfp-paper-2: #ede9d2;
+  --rfp-ink: #0d0d0d;
+  --rfp-ink-soft: #555;
+  --rfp-link: #c0392b;
+  --rfp-link-visited: #6b3aa0;
+  --rfp-pin: #c0392b;
+  --rfp-tape: #ffeb70;
+  background-color: #0d0d0d;
+  background-image:
+    /* generated tile, falls back to gradients if 404 */
+    url('/void/wallpaperChromeBalls.jpg'),
+    /* fallback: stipple of colored radials so the corners feel rendered */
+    radial-gradient(circle at 10% 12%, #c0392b 0 8px, transparent 9px),
+    radial-gradient(circle at 78% 18%, #2e86c1 0 8px, transparent 9px),
+    radial-gradient(circle at 22% 82%, #f1c40f 0 8px, transparent 9px),
+    radial-gradient(circle at 88% 86%, #16a085 0 8px, transparent 9px),
+    radial-gradient(circle at 50% 50%, #8e44ad 0 8px, transparent 9px);
+  background-size: 256px 256px, auto, auto, auto, auto, auto;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+}
+/* Cards inside chrome_balls need a paper bg so content reads against the
+   dark/loud tile background. */
+.regular-theme-chrome_balls_2001 .rfp-info-card,
+.regular-theme-chrome_balls_2001 .rfp-away-card,
+.regular-theme-chrome_balls_2001 .rfp-pinned-card,
+.regular-theme-chrome_balls_2001 .rfp-rooms-card,
+.regular-theme-chrome_balls_2001 .rfp-pages-card,
+.regular-theme-chrome_balls_2001 .rfp-share-card,
+.regular-theme-chrome_balls_2001 .rfp-friends-card,
+.regular-theme-chrome_balls_2001 .rfp-counter-card,
+.regular-theme-chrome_balls_2001 .rfp-id-card,
+.regular-theme-chrome_balls_2001 .rfp-quick-nav,
+.regular-theme-chrome_balls_2001 .rfp-picture-frame {
+  background: var(--rfp-paper);
+  color: var(--rfp-ink);
+}
+
+/* ---------- 5. notebook_grid — 80s amber CRT graph paper ----------
+   Pure CSS. Crossed-gradient grid on warm amber. Reads like a TI-99
+   monitor or a math notebook left under fluorescent light. */
+.regular-theme-notebook_grid.rfp-profile {
+  --rfp-paper: #f4e3a8;
+  --rfp-paper-2: #e8d28c;
+  --rfp-ink: #2d1d05;
+  --rfp-ink-soft: #6b4f1a;
+  --rfp-link: #a02020;
+  --rfp-link-visited: #5e3a05;
+  --rfp-pin: #a02020;
+  --rfp-tape: #ff8a3a;
+  background-color: #f4e3a8;
+  background-image:
+    /* horizontal blue rule lines */
+    linear-gradient(0deg, rgba(34, 77, 158, 0.18) 1px, transparent 1px),
+    /* vertical blue rule lines */
+    linear-gradient(90deg, rgba(34, 77, 158, 0.18) 1px, transparent 1px),
+    /* warm amber CRT glow */
+    radial-gradient(ellipse at 50% 0%, rgba(255, 138, 58, 0.15), transparent 60%);
+  background-size: 24px 24px, 24px 24px, auto;
+}
