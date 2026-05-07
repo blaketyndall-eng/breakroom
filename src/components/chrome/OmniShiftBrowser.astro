@@ -1,0 +1,208 @@
+---
+/**
+ * OmniShiftBrowser.astro
+ * --------------------------------------------------------------------------
+ * Top browser-bar chrome for OmniShift world pages. Win2K title bar +
+ * IE5/6 toolbar/address bar. Mounted by BaseLayout (in F5) when:
+ *   data-world="omnishift" + chromeMode === "desktop" + data-clock-state !== "anonymous"
+ *
+ * Total height: 50px (22px title bar + 28px toolbar). The body needs
+ * padding-top: 50px to compensate (handled by F5).
+ */
+import { worldForSection } from '@/lib/worldMap';
+
+interface Props {
+  /** Page title shown in the IE window title bar. */
+  title?: string;
+  /** Current URL path, e.g. "/portal". Used to render the in-world URL. */
+  currentPath?: string;
+}
+
+const { title = 'The Breakroom', currentPath = '/' } = Astro.props;
+
+// In-world URL: the corporate intranet runs on port 1147 (the 1:47 motif
+// hidden in plain sight throughout the OS chrome).
+const inWorldUrl = `omnishift.intranet:1147${currentPath === '/' ? '/portal' : currentPath}`;
+---
+<div class="osb" data-chrome-height="50">
+  <!-- IE window title bar -->
+  <div class="osb-titlebar">
+    <span class="osb-window-icon" aria-hidden="true">⊞</span>
+    <span class="osb-window-title">{title} — OmniShift Internet</span>
+    <span class="osb-window-controls" aria-hidden="true">
+      <button class="osb-wbtn" tabindex="-1" aria-label="Minimize">_</button>
+      <button class="osb-wbtn" tabindex="-1" aria-label="Maximize">▢</button>
+      <button class="osb-wbtn osb-wbtn-close" tabindex="-1" aria-label="Close">×</button>
+    </span>
+  </div>
+
+  <!-- Toolbar + address bar -->
+  <div class="osb-toolbar">
+    <button class="osb-nav" tabindex="-1" aria-label="Back" onclick="history.back()">◄</button>
+    <button class="osb-nav" tabindex="-1" aria-label="Forward" onclick="history.forward()">►</button>
+    <button class="osb-nav osb-nav-stop" tabindex="-1" aria-label="Stop">×</button>
+    <button class="osb-nav" tabindex="-1" aria-label="Refresh" onclick="location.reload()">↻</button>
+    <a href="/portal" class="osb-nav osb-nav-home" tabindex="-1" aria-label="Home">⌂</a>
+    <span class="osb-addr-label">Address</span>
+    <span class="osb-addr-field" aria-label="current URL">{inWorldUrl}</span>
+    <button class="osb-go" tabindex="-1">Go</button>
+  </div>
+</div>
+
+<style>
+  .osb {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9100;
+    font-family: 'Tahoma', 'MS Sans Serif', system-ui, sans-serif;
+    font-size: 11px;
+    user-select: none;
+  }
+
+  /* ============== Title bar (Win2K active window) ============== */
+  .osb-titlebar {
+    background: linear-gradient(90deg, #0a246a 0%, #3a6ea5 100%);
+    color: #ffffff;
+    padding: 0 4px 0 6px;
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 11px;
+    height: 22px;
+    box-sizing: border-box;
+  }
+  .osb-window-icon {
+    margin-right: 6px;
+    font-size: 14px;
+    line-height: 1;
+    color: #ffd76b;
+  }
+  .osb-window-title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+  }
+  .osb-window-controls {
+    display: flex;
+    gap: 2px;
+  }
+  .osb-wbtn {
+    width: 18px; height: 16px;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    color: #000;
+    font-family: 'Tahoma', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0 0 2px 0;
+    cursor: default;
+  }
+  .osb-wbtn:active {
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+  }
+
+  /* ============== Toolbar + address bar ============== */
+  .osb-toolbar {
+    background: #d4d0c8;
+    border-bottom: 1px solid #808080;
+    padding: 0 6px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    height: 28px;
+    box-sizing: border-box;
+  }
+  .osb-nav {
+    min-width: 24px;
+    height: 22px;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    font-family: 'Tahoma', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #000;
+    padding: 0 4px;
+    cursor: default;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    text-decoration: none;
+  }
+  .osb-nav:visited { color: #000; }
+  .osb-nav:hover { background: #d4d0c8; }
+  .osb-nav:active {
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    padding: 1px 3px 0 5px;
+  }
+  .osb-nav-stop { color: #c00000; }
+
+  .osb-addr-label {
+    margin-left: 8px;
+    margin-right: 4px;
+    color: #404040;
+    font-weight: 400;
+    flex-shrink: 0;
+  }
+  .osb-addr-field {
+    flex: 1;
+    background: #ffffff;
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    padding: 3px 6px;
+    font-family: 'Courier New', 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    height: 22px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+  .osb-go {
+    width: 36px;
+    height: 22px;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    color: #000;
+    font-family: 'Tahoma', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: default;
+  }
+  .osb-go:active {
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+  }
+
+  /* On narrow viewports, collapse the toolbar gracefully */
+  @media (max-width: 600px) {
+    .osb-addr-label { display: none; }
+    .osb-nav-home, .osb-nav-stop { display: none; }
+    .osb-go { display: none; }
+  }
+</style>

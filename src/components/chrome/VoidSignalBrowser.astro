@@ -1,0 +1,143 @@
+---
+/**
+ * VoidSignalBrowser.astro
+ * --------------------------------------------------------------------------
+ * Top browser-bar chrome for Void Signal world pages. Dark warm,
+ * pixel-fonted, customized-personal-browser feel. Same height contract
+ * as OmniShiftBrowser (50px) so layout doesn't shift between worlds.
+ *
+ * Mounted by BaseLayout (in F5) when:
+ *   data-world="voidsignal" + chromeMode === "desktop" + data-clock-state !== "anonymous"
+ */
+
+interface Props {
+  /** Current URL path, e.g. "/locker". Used to render the vs:/ URL. */
+  currentPath?: string;
+}
+
+const { currentPath = '/' } = Astro.props;
+
+// VS uses its own URL scheme — "voidsignal://" reads as a different network,
+// not just a different theme. Strips the leading slash so it reads cleanly.
+const inWorldUrl = `voidsignal://${(currentPath || '/').replace(/^\//, '')}`;
+---
+<div class="vsb" data-chrome-height="50">
+  <!-- Strip 1: address line -->
+  <div class="vsb-strip vsb-strip-addr">
+    <span class="vsb-scheme">vs:/</span>
+    <span class="vsb-addr">{inWorldUrl}</span>
+    <span class="vsb-spacer" aria-hidden="true"></span>
+    <span class="vsb-status">connection: warm</span>
+  </div>
+  <!-- Strip 2: meta + bookmarks -->
+  <div class="vsb-strip vsb-strip-meta">
+    <span class="vsb-counter">visitor #18439</span>
+    <span class="vsb-time">1:47 a.m.</span>
+    <span class="vsb-spacer" aria-hidden="true"></span>
+    <nav class="vsb-bookmarks" aria-label="Void Signal navigation">
+      <a href="/void">home</a>
+      <a href="/locker">file</a>
+      <a href="/phone">phone</a>
+      <a href="/radio">radio</a>
+      <a href="/sign-the-wall">wall</a>
+    </nav>
+  </div>
+</div>
+
+<style>
+  .vsb {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9100;
+    height: 50px;
+    background: #0e0a08;
+    color: #c4b8a0;
+    user-select: none;
+  }
+
+  .vsb-strip {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 14px;
+  }
+
+  /* Strip 1 — address line */
+  .vsb-strip-addr {
+    height: 22px;
+    background: #14100c;
+    border-bottom: 1px solid #2a1f18;
+    font-family: 'VT323', 'JetBrains Mono', monospace;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .vsb-scheme {
+    color: #ff5300;
+    font-weight: 700;
+    margin-right: 6px;
+    text-shadow: 0 0 6px rgba(255, 83, 0, 0.4);
+  }
+  .vsb-addr {
+    color: #e8c060;
+    text-shadow: 0 0 6px rgba(232, 192, 96, 0.18);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .vsb-spacer { flex: 1; }
+  .vsb-status {
+    color: #66cc66;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Strip 2 — meta + bookmarks */
+  .vsb-strip-meta {
+    height: 28px;
+    background: #0e0a08;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #857a65;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    gap: 14px;
+  }
+  .vsb-counter, .vsb-time {
+    flex-shrink: 0;
+  }
+  .vsb-time {
+    color: #d4a870;
+  }
+  .vsb-bookmarks {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .vsb-bookmarks a {
+    color: #d4a870;
+    text-decoration: none;
+    text-transform: lowercase;
+    letter-spacing: 0.04em;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  .vsb-bookmarks a:hover {
+    color: #ff5300;
+    text-decoration: underline;
+    background: transparent;
+    text-shadow: 0 0 4px rgba(255, 83, 0, 0.4);
+  }
+  .vsb-bookmarks a:visited {
+    color: #a88850;
+  }
+
+  @media (max-width: 600px) {
+    .vsb-status { display: none; }
+    .vsb-counter { display: none; }
+    .vsb-bookmarks { gap: 10px; }
+    .vsb-bookmarks a:nth-child(n+4) { display: none; }
+  }
+</style>
