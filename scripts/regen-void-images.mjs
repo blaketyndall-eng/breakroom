@@ -1,21 +1,26 @@
 #!/usr/bin/env node
 /**
- * regen-void-images.mjs — Regenerate Replicate-tier VOID slots
+ * regen-void-images.mjs — Regenerate VOID image slots
+ *
+ * Supports four generation providers:
+ *   - replicate-flux-pro          text-to-image (FLUX 1.1 Pro)
+ *   - replicate-flux-kontext-pro  image-to-image (FLUX Kontext Pro, requires anchorKey)
+ *   - replicate-recraft-v3        text-to-image (Recraft V3, native flat-illustration prior)
+ *   - static-asset                no generation — slot just serves a committed binary
  *
  * Usage:
- *   pnpm regen-images                 # regen ALL replicate-* slots
- *   pnpm regen-images theRegular      # regen one slot by key
- *   pnpm regen-images theRegular --staging   # save to void-images-replicate/ only (don't overwrite live /public/void/)
+ *   pnpm regen-images                 # regen ALL non-static slots
+ *   pnpm regen-images theDriver       # regen one slot by key
+ *   pnpm regen-images theDriver --staging   # save to staging only
  *
  * Requires REPLICATE_API_TOKEN in env or .env.local at project root.
  *
  * Output paths:
- *   void-images-replicate/<key>.jpg          (review staging — gitignored, Blake reviews here)
- *   public/void/<key>.jpg                    (live serving — committed, served to clients)
+ *   void-images-replicate/<key>.jpg          (review staging — gitignored)
+ *   public/void/<key>.jpg                    (live serving — committed)
  *
- * Default behavior writes BOTH so the next deploy picks up the new image.
- * Pass --staging to write ONLY to review staging — useful when iterating
- * prompts and not yet ready to overwrite the live binary.
+ * Anchors live at public/void/refs/<anchor-name>.jpg and are read from disk,
+ * base64-encoded, and sent as input_image to Kontext.
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
@@ -26,7 +31,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, '..');
 
 // ---------------------------------------------------------------------------
-// 1. Load token from env or .env.local
+// 1. Load token
 // ---------------------------------------------------------------------------
 function loadToken() {
   if (process.env.REPLICATE_API_TOKEN) return process.env.REPLICATE_API_TOKEN;
@@ -42,67 +47,65 @@ function loadToken() {
 }
 
 const TOKEN = loadToken();
-if (!TOKEN) {
-  console.error('\n[regen] Missing REPLICATE_API_TOKEN.');
-  console.error('  Either: export REPLICATE_API_TOKEN=r8_xxxxx');
-  console.error('  Or:     echo "REPLICATE_API_TOKEN=r8_xxxxx" >> .env.local');
-  console.error('  Get a fresh token at https://replicate.com/account/api-tokens\n');
-  process.exit(1);
-}
 
 // ---------------------------------------------------------------------------
-// 2. Slot definitions (mirror of src/lib/nanoPrompts.ts replicate-flux-pro slots)
+// 2. STYLE_ANCHORS (mirror of src/lib/nanoPrompts.ts)
 // ---------------------------------------------------------------------------
-// Kept zero-dependency by mirroring rather than importing the .ts source.
-// When slots change in src/lib/nanoPrompts.ts, mirror them below.
+const STYLE_ANCHORS = {
+  theRegularBlack: {
+    diskPath: 'public/void/refs/the-regular-black.jpg',
+    description: 'THE REGULAR canonical — black knit balaclava + white hoodie',
+  },
+  theRegularWhite: {
+    diskPath: 'public/void/refs/the-regular-white.jpg',
+    description: 'THE REGULAR alt — white knit balaclava + white hoodie',
+  },
+};
 
+// ---------------------------------------------------------------------------
+// 3. SLOTS (mirror of src/lib/nanoPrompts.ts)
+// ---------------------------------------------------------------------------
+// Update this in lockstep with NANO_PROMPTS in nanoPrompts.ts. Static-asset
+// slots are intentionally omitted here — they don't need regeneration.
+//
 const SLOTS = [
   {
-    key: 'theRegular',
-    // V Pro 3 — locked direction from ChatGPT reference outputs.
-    // Black knit balaclava with vertical ribbing + single horizontal eye-slot
-    // showing red eyes + white hoodie + white shorts + Mickey-style boots/gloves
-    // + purple background + dotted floor shadows.
+    key: 'theRegularSeated',
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
     width: 1152,
     height: 864,
-    seed: 3142,
+    seed: 3143,
     prompt: [
-      'A counterculture outlaw cartoon character standing in a slight three-quarter side stance with one foot forward and a hint of swagger lean, isolated against a flat saturated purple background (no other elements, no scenery).',
-      'He wears a thick black knit wool balaclava covering the entire head, with clearly visible vertical knit ribbing texture rendered as parallel vertical stitch line strokes drawn throughout the mask fabric.',
-      'The balaclava has ONE single elongated horizontal almond-shaped eye-slot opening — a wide narrow horizontal cutout (NOT separate circular holes) revealing two glowing solid bright red eyes side by side, with an angry downward-slanted brow tilt at the inner corners.',
-      'The mouth and chin area of the mask is fully covered by knit fabric — no mouth hole, no lips visible, no chin showing.',
-      'Below the mask he wears a baggy plain white pullover hoodie with the hood bunched at the back of the neck (small hood bunching visible at the collar), totally flat solid white fill with absolutely no shading and no fold creases — only a single thin black outline indicating the hoodie hem at the waist and a thin outline showing the front kangaroo pocket curve.',
-      'Below the hoodie he wears baggy mid-thigh white shorts (or short pants), totally flat white fill, NO crease lines, NO interior shading, NO leg muscle definition.',
-      'He has big bulbous rounded white cartoon mitten gloves with NO finger separation lines (just a single curved cuff line indicating the wrist).',
-      'He wears big chunky bulbous white Mickey-Mouse-style boots with rounded almost-spherical toes, NO visible laces, NO eyelets, NO shadow lines on the boot surface — just the silhouette outline.',
-      'The ground beneath him is suggested ONLY by 3 to 5 small dark grey oval shadow dots scattered loosely on the ground plane around his feet (NOT one connected cast shadow shape, NOT a single ellipse — discrete tiny dots).',
-      'Drawn in the exact style of Markus Magnusson\'s "Sneaky" character animation series: extremely thick chunky hand-drawn black ink outlines (heavy 10-pixel-equivalent line weight, much heavier than fine vector linework), confident curved lines with a subtle hand-animated wobble, flat 2D vector cartoon illustration, ZERO gradients, ZERO crosshatching, ZERO interior shading lines anywhere on the body or clothing.',
-      '1920s-1930s rubberhose animation lineage — Felix the Cat, early Mickey Mouse, Cuphead — but rendered with a modern motion-design flat finish on a solid saturated purple background.',
+      'Same exact character from the reference image — black knit balaclava with red eye-slot, white hoodie, white shorts, chunky white boots and gloves.',
+      'Now seated on a metal fire escape ledge in a slumped relaxed pose, one knee up, the other leg dangling off the edge.',
+      'A lit cigarette held between two gloved fingers in his right hand, faint thin grey smoke trailing upward.',
+      'Same flat 2D Markus Magnusson Sneaky-style cartoon rendering, same thick black ink outlines, same flat fill colors, same saturated purple background, same dotted floor shadows.',
     ].join(' '),
-    negative: [
-      'no separate round eye holes, no two-circle eye holes, no three-hole balaclava, no mouth hole, no visible mouth, no visible chin,',
-      'no white-sclera eyes, no eye whites, no black pupils on white (the eyes must be solid glowing red ovals with no white showing),',
-      'no smooth painted dome mask without knit texture, no two-tone printed mask pattern, no domino mask, no superhero mask, no goggles, no glasses,',
-      'no jumpsuit, no coveralls, no zip-up suit, no boiler suit, no onesie, no full-body uniform,',
-      'no separated fingers on gloves, no realistic five-finger hands, no flesh-tone hands,',
-      'no detailed boot laces, no eyelets, no boot shadow lines, no foot creases,',
-      'no thin vector lines, no fine detail linework, no manga, no anime, no shojo,',
-      'no fabric folds, no hoodie wrinkles, no body shading, no muscle definition, no contour shading,',
-      'no Mickey Mouse ears, no panda ears, no animal ears of any kind,',
-      'no Pixar 3D render, no plastic AI sheen, no photorealism, no gradient shading,',
-      'no isolated white background, no plain background, no studio backdrop, no scenery, no street, no buildings,',
-      'no single connected cast shadow under the figure (only discrete dot shadows)',
+  },
+  {
+    key: 'theDriver',
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    width: 1152,
+    height: 864,
+    seed: 4011,
+    prompt: [
+      'Drawn in EXACTLY the same Markus Magnusson Sneaky cartoon style as the reference image — same thick black ink outlines, same flat fill, same chunky proportions, same saturated purple background, same dotted floor shadows.',
+      'But this is a DIFFERENT character: a chauffeur. He wears a black peaked chauffeur cap pulled low over his face, a black knit balaclava with a single red eye-slot underneath the cap, a buttoned-up dark grey double-breasted chauffeur jacket with brass buttons, dark grey trousers, polished black shoes.',
+      'He stands in a stiff three-quarter side stance holding a single brass car key dangling from one gloved finger.',
+      'Same chunky white cartoon mitten gloves and same Mickey-style bulbous shoes as the reference (just black/dark instead of white).',
     ].join(' '),
   },
 ];
 
 // ---------------------------------------------------------------------------
-// 3. CLI args
+// 4. CLI args
 // ---------------------------------------------------------------------------
 const args = process.argv.slice(2);
 const stagingOnly = args.includes('--staging');
 const positional = args.filter((a) => !a.startsWith('--'));
-const slotFilter = positional[0]; // optional: 'theRegular' or undefined
+const slotFilter = positional[0];
 
 const targetSlots = slotFilter
   ? SLOTS.filter((s) => s.key === slotFilter)
@@ -114,55 +117,62 @@ if (targetSlots.length === 0) {
   process.exit(1);
 }
 
+if (!TOKEN) {
+  console.error('\n[regen] Missing REPLICATE_API_TOKEN.');
+  console.error('  Either: export REPLICATE_API_TOKEN=r8_xxxxx');
+  console.error('  Or:     echo "REPLICATE_API_TOKEN=r8_xxxxx" >> .env.local');
+  console.error('  Get a fresh token at https://replicate.com/account/api-tokens\n');
+  process.exit(1);
+}
+
 // ---------------------------------------------------------------------------
-// 4. Replicate API call (sync via Prefer: wait=60)
+// 5. Helpers
 // ---------------------------------------------------------------------------
-/**
- * Derive a FLUX-supported aspect_ratio string from slot dimensions.
- * FLUX 1.1 Pro accepts: '1:1', '16:9', '21:9', '3:2', '2:3', '4:5', '5:4',
- * '3:4', '4:3', '9:16', '9:21'. We pick the closest match by ratio so a
- * 1152×864 slot maps to '4:3', an 864×1152 slot maps to '3:4', etc.
- */
 function deriveAspectRatio(width, height) {
   const candidates = [
-    ['1:1', 1 / 1],
-    ['16:9', 16 / 9],
-    ['21:9', 21 / 9],
-    ['3:2', 3 / 2],
-    ['2:3', 2 / 3],
-    ['4:5', 4 / 5],
-    ['5:4', 5 / 4],
-    ['3:4', 3 / 4],
-    ['4:3', 4 / 3],
-    ['9:16', 9 / 16],
-    ['9:21', 9 / 21],
+    ['1:1', 1], ['16:9', 16/9], ['21:9', 21/9], ['3:2', 1.5], ['2:3', 2/3],
+    ['4:5', 0.8], ['5:4', 1.25], ['3:4', 0.75], ['4:3', 4/3],
+    ['9:16', 9/16], ['9:21', 9/21],
   ];
   const target = width / height;
   let best = candidates[0];
-  let bestDiff = Math.abs(best[1] - target);
+  let bd = Math.abs(best[1] - target);
   for (const c of candidates) {
     const d = Math.abs(c[1] - target);
-    if (d < bestDiff) {
-      bestDiff = d;
-      best = c;
-    }
+    if (d < bd) { bd = d; best = c; }
   }
   return best[0];
 }
 
-async function generate(slot) {
-  const aspectRatio = deriveAspectRatio(slot.width, slot.height);
-  console.log(`[regen] ${slot.key} — calling Replicate FLUX 1.1 Pro (${aspectRatio}, seed ${slot.seed})…`);
+/** Read an anchor file and return a base64 data URL Replicate can ingest. */
+function loadAnchorAsDataUrl(anchorKey) {
+  const anchor = STYLE_ANCHORS[anchorKey];
+  if (!anchor) throw new Error(`Unknown anchor key: ${anchorKey}`);
+  const fullPath = resolve(PROJECT_ROOT, anchor.diskPath);
+  if (!existsSync(fullPath)) {
+    throw new Error(
+      `Anchor file missing at ${anchor.diskPath}. ` +
+      `Save your reference JPG to that path first, then rerun.`
+    );
+  }
+  const buf = readFileSync(fullPath);
+  const ext = anchor.diskPath.split('.').pop().toLowerCase();
+  const mime = ext === 'png' ? 'image/png' : 'image/jpeg';
+  return `data:${mime};base64,${buf.toString('base64')}`;
+}
 
+// ---------------------------------------------------------------------------
+// 6. Provider-specific generators
+// ---------------------------------------------------------------------------
+
+async function generateFluxPro(slot) {
+  const aspectRatio = deriveAspectRatio(slot.width, slot.height);
+  console.log(`[regen] ${slot.key} — FLUX 1.1 Pro (${aspectRatio}, seed ${slot.seed})…`);
   const res = await fetch(
     'https://api.replicate.com/v1/models/black-forest-labs/flux-1.1-pro/predictions',
     {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-        'Content-Type': 'application/json',
-        Prefer: 'wait=60',
-      },
+      headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json', Prefer: 'wait=60' },
       body: JSON.stringify({
         input: {
           prompt: slot.prompt,
@@ -176,27 +186,91 @@ async function generate(slot) {
       }),
     }
   );
+  return handlePrediction(res);
+}
 
+async function generateFluxKontextPro(slot) {
+  if (!slot.anchorKey) throw new Error(`${slot.key}: kontext slot requires anchorKey`);
+  const inputImage = loadAnchorAsDataUrl(slot.anchorKey);
+  console.log(`[regen] ${slot.key} — FLUX Kontext Pro (anchor: ${slot.anchorKey}, seed ${slot.seed})…`);
+  const res = await fetch(
+    'https://api.replicate.com/v1/models/black-forest-labs/flux-kontext-pro/predictions',
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json', Prefer: 'wait=60' },
+      body: JSON.stringify({
+        input: {
+          prompt: slot.prompt,
+          input_image: inputImage,
+          // 'match_input_image' preserves the anchor's framing — critical for
+          // character continuity. Override only when intentionally reframing.
+          aspect_ratio: 'match_input_image',
+          output_format: 'jpg',
+          output_quality: 90,
+          safety_tolerance: 5,
+          seed: slot.seed,
+        },
+      }),
+    }
+  );
+  return handlePrediction(res);
+}
+
+async function generateRecraftV3(slot) {
+  // Recraft V3 takes a literal pixel `size` string, not aspect_ratio. Closest
+  // supported sizes: 1024x1024, 1365x1024, 1707x1024, 2048x1024, 1024x1365,
+  // 1024x1707, 1024x2048. Pick the closest to slot dims.
+  const supported = [
+    '1024x1024', '1365x1024', '1707x1024', '2048x1024',
+    '1024x1365', '1024x1707', '1024x2048',
+  ];
+  const slotRatio = slot.width / slot.height;
+  const size = supported
+    .map((s) => {
+      const [w, h] = s.split('x').map(Number);
+      return { s, diff: Math.abs(w / h - slotRatio) };
+    })
+    .sort((a, b) => a.diff - b.diff)[0].s;
+
+  const style = slot.recraftStyle || 'digital_illustration';
+  console.log(`[regen] ${slot.key} — Recraft V3 (${size}, ${style})…`);
+  const res = await fetch(
+    'https://api.replicate.com/v1/models/recraft-ai/recraft-v3/predictions',
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json', Prefer: 'wait=60' },
+      body: JSON.stringify({ input: { prompt: slot.prompt, size, style } }),
+    }
+  );
+  return handlePrediction(res);
+}
+
+async function handlePrediction(res) {
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`Replicate ${res.status}: ${body}`);
   }
-
   const data = await res.json();
   if (data.status === 'failed') throw new Error(`Generation failed: ${data.error}`);
-
   const imageUrl = Array.isArray(data.output) ? data.output[0] : data.output;
-  if (!imageUrl) throw new Error(`No output URL in response: ${JSON.stringify(data)}`);
-
-  console.log(`[regen] ${slot.key} — downloading ${imageUrl}`);
+  if (!imageUrl) throw new Error(`No output URL: ${JSON.stringify(data)}`);
+  console.log(`[regen]   downloading ${imageUrl.slice(0, 60)}…`);
   const imgRes = await fetch(imageUrl);
   if (!imgRes.ok) throw new Error(`Image download ${imgRes.status}`);
-  const buf = Buffer.from(await imgRes.arrayBuffer());
-  return buf;
+  return Buffer.from(await imgRes.arrayBuffer());
+}
+
+async function generate(slot) {
+  switch (slot.provider) {
+    case 'replicate-flux-pro': return generateFluxPro(slot);
+    case 'replicate-flux-kontext-pro': return generateFluxKontextPro(slot);
+    case 'replicate-recraft-v3': return generateRecraftV3(slot);
+    default: throw new Error(`Unsupported provider: ${slot.provider}`);
+  }
 }
 
 // ---------------------------------------------------------------------------
-// 5. Save to staging (+ live, unless --staging)
+// 7. Main
 // ---------------------------------------------------------------------------
 function ensureDir(p) {
   if (!existsSync(p)) mkdirSync(p, { recursive: true });

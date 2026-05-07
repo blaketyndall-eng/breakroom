@@ -21,17 +21,76 @@
  */
 
 export type Provider =
+  // Free text-to-image (Pollinations.ai)
   | 'pollinations-flux'
   | 'pollinations-realism'
   | 'pollinations-turbo'
   | 'pollinations-gptimage'
+  // Paid text-to-image (Replicate)
   | 'replicate-flux-pro'
   | 'replicate-flux-dev'
+  | 'replicate-recraft-v3' // flat-illustration native prior — NO style ref via Replicate
   | 'replicate-sdxl'
-  | 'replicate-imagen';
+  | 'replicate-imagen'
+  // Paid image-to-image (Replicate) — requires anchorKey
+  | 'replicate-flux-kontext-pro'
+  // Locked binary committed to /public/void/<key>.jpg — no generation
+  | 'static-asset';
+
+/**
+ * Recraft V3 style modes. Recraft's prior is purpose-built for flat
+ * illustration — its `style` field tells the model which sub-prior to use.
+ * `digital_illustration` is the closest match to our Sneaky/Magnusson
+ * register; `vector_illustration` is a harder-edged alternative.
+ */
+export type RecraftStyle =
+  | 'digital_illustration'
+  | 'digital_illustration/2d_art_poster'
+  | 'digital_illustration/2d_art_poster_2'
+  | 'digital_illustration/hand_drawn'
+  | 'digital_illustration/handmade_3d'
+  | 'digital_illustration/grain'
+  | 'vector_illustration'
+  | 'vector_illustration/cartoon'
+  | 'vector_illustration/flat_2'
+  | 'realistic_image';
+
+/**
+ * Style anchors — committed reference images that drive image-to-image
+ * generation. A slot with `provider: 'replicate-flux-kontext-pro'` references
+ * one of these by key, and the regen script base64-encodes the file at
+ * `diskPath` and sends it to Kontext as `input_image`.
+ *
+ * Workflow: save your hero/canonical character as a JPG, drop it in
+ * `public/void/refs/`, then add it to STYLE_ANCHORS. Any number of variant
+ * slots can target it.
+ */
+export interface StyleAnchor {
+  /** Disk path relative to project root (used by regen script for fs read) */
+  diskPath: string;
+  /** Public URL path (used at request time for in-page rendering, if needed) */
+  publicPath: string;
+  /** What this anchor is — character + register + framing */
+  description: string;
+}
+
+export const STYLE_ANCHORS: Record<string, StyleAnchor> = {
+  theRegularBlack: {
+    diskPath: 'public/void/refs/the-regular-black.jpg',
+    publicPath: '/void/refs/the-regular-black.jpg',
+    description:
+      'THE REGULAR — canonical pose, black knit balaclava + white hoodie + white shorts + Mickey-style chunky white boots/gloves, glowing red eye-slot, on saturated purple background with dotted floor shadows. Locked from ChatGPT reference.',
+  },
+  theRegularWhite: {
+    diskPath: 'public/void/refs/the-regular-white.jpg',
+    publicPath: '/void/refs/the-regular-white.jpg',
+    description:
+      'THE REGULAR — alt "stealth" variant, all-white knit balaclava + white hoodie + white shorts on saturated purple background. Same character family as theRegularBlack, different mask color. Locked from ChatGPT reference.',
+  },
+};
 
 export interface NanoPrompt {
-  /** Stable slot key. Becomes filename for replicate-* providers: /public/void/<key>.jpg */
+  /** Stable slot key. Becomes filename for replicate-*/static-asset providers: /public/void/<key>.jpg */
   key: string;
   /** One-line subject summary, used for alt text and admin tooling */
   subject: string;
@@ -43,10 +102,14 @@ export interface NanoPrompt {
   seed: number;
   /** Which generation provider to route through */
   provider: Provider;
-  /** The full prompt sent to the model. Self-contained — no SHARED_STYLE concat for replicate-* slots */
+  /** The full prompt sent to the model. For Kontext: describe the DELTA from the anchor, not the whole image */
   prompt: string;
-  /** Optional negative prompt (Replicate FLUX Pro supports it; Pollinations ignores) */
+  /** Optional negative prompt (Replicate FLUX Pro supports it; Kontext ignores; Pollinations ignores) */
   negative?: string;
+  /** Required for `replicate-flux-kontext-pro` — which STYLE_ANCHORS entry to feed as input_image */
+  anchorKey?: keyof typeof STYLE_ANCHORS;
+  /** Required for `replicate-recraft-v3` — which Recraft style mode to use */
+  recraftStyle?: RecraftStyle;
   /** True if this slot is intended to be animated later (motion design, lottie, etc) */
   animated?: boolean;
 }
@@ -137,19 +200,67 @@ const THE_REGULAR_V3_NEGATIVE = [
 
 export const NANO_PROMPTS: Record<string, NanoPrompt> = {
   /**
-   * THE REGULAR — VOID's primary mascot character.
-   * Counterculture Sneaky-style outlaw in white knit balaclava + white jumpsuit.
-   * Replaces / supplements MOTHIE in the hero mascot slot.
+   * THE REGULAR — VOID's primary mascot. Locked as static-asset (committed
+   * binary) since the ChatGPT-generated reference IS the canonical version.
+   * Drop the JPG at public/void/theRegular.jpg.
+   *
+   * The V3 prompt + negative are kept on the slot as documentation — if we
+   * ever need to re-derive via FLUX, flipping `provider` to 'replicate-flux-pro'
+   * is the only change needed.
    */
   theRegular: {
     key: 'theRegular',
     subject: 'THE REGULAR — VOID mascot, Sneaky-style outlaw in black knit balaclava + white hoodie',
     width: 1152,
-    height: 864, // 4:3 landscape — matches ChatGPT reference proportions
-    seed: 3142, // fresh seed for V3 — ChatGPT-anchored direction is a new branch from V2
-    provider: 'replicate-flux-pro',
-    prompt: THE_REGULAR_V3_PROMPT,
+    height: 864,
+    seed: 3142,
+    provider: 'static-asset',
+    prompt: THE_REGULAR_V3_PROMPT, // documentation; not executed
     negative: THE_REGULAR_V3_NEGATIVE,
+  },
+
+  /**
+   * THE REGULAR — SEATED variant (Kontext pilot).
+   * Demonstrates image-to-image: takes the locked anchor and applies a small
+   * pose delta. Use this slot to verify Kontext respects identity before
+   * committing to a larger cast roll-out.
+   */
+  theRegularSeated: {
+    key: 'theRegularSeated',
+    subject: 'THE REGULAR — seated on a fire escape, smoking',
+    width: 1152,
+    height: 864,
+    seed: 3143,
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    // Kontext prompts describe the DELTA, not the whole image. Anchor handles identity.
+    prompt: [
+      'Same exact character from the reference image — black knit balaclava with red eye-slot, white hoodie, white shorts, chunky white boots and gloves.',
+      'Now seated on a metal fire escape ledge in a slumped relaxed pose, one knee up, the other leg dangling off the edge.',
+      'A lit cigarette held between two gloved fingers in his right hand, faint thin grey smoke trailing upward.',
+      'Same flat 2D Markus Magnusson Sneaky-style cartoon rendering, same thick black ink outlines, same flat fill colors, same saturated purple background, same dotted floor shadows.',
+    ].join(' '),
+  },
+
+  /**
+   * THE DRIVER — cast pilot (Kontext, transformative).
+   * Demonstrates using the anchor for STYLE/REGISTER carry-over while
+   * transforming the character into a new entity. Heavy delta prompt.
+   */
+  theDriver: {
+    key: 'theDriver',
+    subject: 'THE DRIVER — chauffeur cousin of THE REGULAR',
+    width: 1152,
+    height: 864,
+    seed: 4011,
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    prompt: [
+      'Drawn in EXACTLY the same Markus Magnusson Sneaky cartoon style as the reference image — same thick black ink outlines, same flat fill, same chunky proportions, same saturated purple background, same dotted floor shadows.',
+      'But this is a DIFFERENT character: a chauffeur. He wears a black peaked chauffeur cap pulled low over his face, a black knit balaclava with a single red eye-slot underneath the cap, a buttoned-up dark grey double-breasted chauffeur jacket with brass buttons, dark grey trousers, polished black shoes.',
+      'He stands in a stiff three-quarter side stance holding a single brass car key dangling from one gloved finger.',
+      'Same chunky white cartoon mitten gloves and same Mickey-style bulbous shoes as the reference (just black/dark instead of white).',
+    ].join(' '),
   },
 
   /**
@@ -196,8 +307,12 @@ export const pollinationsTurboUrl = (p: NanoPrompt) => buildPollinationsUrl(p, '
 export const pollinationsGptImageUrl = (p: NanoPrompt) =>
   buildPollinationsUrl(p, 'gptimage');
 
-/** Replicate-tier slots are pre-generated. Return the committed static path. */
-export function replicateStaticUrl(p: NanoPrompt): string {
+/**
+ * Pre-generated slots and static assets all resolve to a committed binary
+ * at /public/void/<key>.jpg. The regen script (or you, manually) writes that
+ * file; the dispatcher just returns its path.
+ */
+export function staticAssetUrl(p: NanoPrompt): string {
   return `/void/${p.key}.jpg`;
 }
 
@@ -212,11 +327,17 @@ export function imageUrl(p: NanoPrompt): string {
       return pollinationsTurboUrl(p);
     case 'pollinations-gptimage':
       return pollinationsGptImageUrl(p);
+    // All paid providers + static-asset serve from the same committed-binary
+    // path. The differences (which model generates, whether img2img, etc.)
+    // matter only at regen time — not at request/render time.
     case 'replicate-flux-pro':
     case 'replicate-flux-dev':
+    case 'replicate-flux-kontext-pro':
+    case 'replicate-recraft-v3':
     case 'replicate-sdxl':
     case 'replicate-imagen':
-      return replicateStaticUrl(p);
+    case 'static-asset':
+      return staticAssetUrl(p);
   }
 }
 
