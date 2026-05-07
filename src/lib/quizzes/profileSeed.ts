@@ -62,12 +62,39 @@ export function generateProvisionalProfile(userId: string): ProvisionalProfile {
 // Contribution application — runs after every quiz finalize.
 // ============================================================
 
+/**
+ * Zero-mean a contribution vector across all 8 axes.
+ *
+ * Without this, every quiz answer's option deltas are all positive (e.g.
+ * "option C: AIM +2, NERVE +3"), so 10 answered questions push every
+ * touched axis toward 10 — ceiling stats. Subtracting the mean per axis
+ * preserves the *shape* of preference (which axes won vs. lost) while
+ * making the total stat change per question net to zero. Skip-all then
+ * stays near the provisional baseline; pick-a-pattern shifts the profile
+ * in that pattern's direction without ceilinging.
+ */
+function zeroMeanContribution(contribution: Partial<StatVector>): Partial<StatVector> {
+  const axes = Object.keys(emptyStats()) as Array<keyof StatVector>;
+  const total = axes.reduce((sum, k) => sum + (contribution[k] ?? 0), 0);
+  const mean = total / axes.length;
+  if (mean === 0) return contribution; // nothing to subtract; skip allocation
+
+  const result: Partial<StatVector> = {};
+  for (const k of axes) {
+    const v = contribution[k] ?? 0;
+    // Round so stats stay integer-clean after addStats + clampStats.
+    result[k] = Math.round((v - mean) * 10) / 10;
+  }
+  return result;
+}
+
 export function applyContribution(
   current: StatVector,
   contribution: Partial<StatVector>,
   userId: string,
 ): ProvisionalProfile {
-  const merged = clampStats(addStats(current, contribution));
+  const normalized = zeroMeanContribution(contribution);
+  const merged = clampStats(addStats(current, normalized));
   return { stats: merged, assignment: deriveAssignment(merged, userId) };
 }
 
