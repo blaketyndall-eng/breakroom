@@ -241,14 +241,14 @@ SLOTS.push(
   },
   {
     key: 'omnishiftEmployeePortraitDefault',
-    provider: 'replicate-recraft-v3',
-    recraftStyle: 'vector_illustration/cartoon',
+    provider: 'replicate-flux-pro',
     width: 1024, height: 1024, seed: 6003,
     prompt: [
-      'A generic clip-art-style vector illustration of a business professional from the chest up, facing forward with a neutral pleasant expression.',
-      'Wearing a white collared shirt with a navy IBM-blue tie. Short brown hair, ambiguous gender, ambiguous ethnicity — the kind of "everyperson" placeholder figure used in stock corporate clip-art collections from 2001.',
-      'Flat 2D vector illustration with a thin black outline and limited color palette (5 to 6 colors maximum). Background is a flat cream-white. No gradients, no shading except a single flat shadow on the neck.',
-      'Cheap clip-art register — this is the kind of figure that appears in a Microsoft Office 2001 ClipArt Gallery search for "businessperson". Friendly but generic, slightly stiff, suitable for a placeholder.',
+      'A flatbed-scanned image of a single piece of clip art from the 1999 Microsoft Office 2000 ClipArt Gallery, displayed in the center of a plain cream-white background.',
+      'The clip art shows a generic business professional from the chest up, facing forward with a neutral pleasant expression — wearing a crisp white collared shirt with a navy blue striped tie. Short brown hair, ambiguous gender, ambiguous ethnicity. The kind of generic "everyperson" placeholder figure used in 2001-era corporate clip art collections.',
+      'The illustration itself is a flat 2D vector cartoon with a thin black outline, hard edges with no anti-aliasing, limited 8-color palette (white shirt, navy tie, peach skin, brown hair, and small detail colors). No gradients. No modern shading. No bokeh. Pure 1999-era ClipArt Gallery aesthetic — friendly but generic, slightly stiff, the kind of figure that ships with Microsoft Office.',
+      'The whole image has the visible compression artifacts of a low-resolution JPEG saved in 2001 — slight purple chromatic aberration on dark edges, faint scanner-bed paper texture, a barely-visible "Microsoft ClipArt Gallery 2.0" watermark stamped in the lower-right corner in 8-point Arial grey.',
+      'CRITICAL: This is NOT a modern flat illustration. It is NOT contemporary editorial design. It is NOT Mailchimp-style art. It is the actual rough cheap clip art that came on the Microsoft Office 2000 install CD — boxy, flat, hard-edged, slightly amateurish, period-locked to 1999-2001.',
     ].join(' '),
   },
   // SleepNet portal
@@ -267,7 +267,7 @@ SLOTS.push(
   {
     key: 'sleepnetWebRingBadge',
     provider: 'replicate-recraft-v3',
-    recraftStyle: 'vector_illustration/flat_2',
+    recraftStyle: 'digital_illustration/pixel_art',
     width: 1024, height: 360, seed: 6102,
     prompt: [
       'A horizontal banner-ad-shaped graphic in the exact style of a 1999 Geocities web ring banner — proportioned roughly 1024 by 360 pixels but rendered in the visual register of the original 88x31 GIF banner ads of that era.',
@@ -279,16 +279,16 @@ SLOTS.push(
   // Very Good Burger
   {
     key: 'vgbMascotBilly',
-    provider: 'replicate-recraft-v3',
-    recraftStyle: 'digital_illustration/hand_drawn',
+    provider: 'replicate-flux-pro',
     width: 1024, height: 1280, seed: 6201,
     prompt: [
-      'A friendly anthropomorphic cartoon hamburger mascot character standing facing the camera with one tiny white-gloved hand raised in a wave.',
-      "The character's body is a single sesame-seed bun with cartoon eyes (large, white, with small black pupils and one off-center) on the top bun half, a wide friendly mouth across the middle (the burger patty layer), and a thin layer of melted cheese drooping at the corners.",
-      'The sesame seeds on the top bun are arranged in a slightly off-symmetric pattern — they look like freckles. Tiny white-gloved hands, tiny white-booted feet, no visible legs or arms beyond the gloves and boots (rubber hose limbs implied).',
-      'A small red banner above his head reads "VERY GOOD!" in bold uppercase marker text with a slight drop shadow.',
-      "Standing on a flat yellow background with a single pencil-shadow at his feet. Drawn in the register of a 1999 regional fast-food chain mascot — friendlier than McDonald's, cheaper than Disney, the kind of mascot that appeared on the side of a Styrofoam cup in a mall food court.",
-      'Ink outlines, flat fill, no gradients. Sized for use as a hero illustration on a "Welcome to Very Good Burger" page.',
+      'A close-up photograph of a single white Styrofoam cup sitting upright on a red plastic mall food court tray, photographed slightly above eye level.',
+      'Printed on the curved side of the cup in vivid four-color silkscreen ink is the cartoon mascot of a regional fast-food chain called "Very Good Burger" — an anthropomorphic cartoon hamburger character named Billy.',
+      'The mascot illustration shows a friendly cartoon burger character with a sesame-seed bun head, large white cartoon eyes with small black pupils (one slightly off-center), a wide friendly smile across the patty layer, and tiny white-gloved hands with a single hand raised in a wave. The mascot is printed in the flat 1999-era cartoon style of a regional burger chain — thick black outlines, four-color palette (red, yellow, white, black), no gradients, slightly off-register where the colors meet (the red is a pixel off from the black outline).',
+      'Above the mascot, a curved banner reading "VERY GOOD!" in bold uppercase red marker letters wraps around the upper portion of the cup.',
+      'The cup is photographed with a slight coffee-ring stain near the rim and a small dent in the lip. The food court tray reflects fluorescent ceiling lights as a long bright streak. Out-of-focus chain-restaurant interior in the background — red vinyl booth, yellow walls, hint of a "TRAY RETURN" sign.',
+      'Period-correct 2001 mall food court photograph aesthetic — slightly too-bright fluorescent lighting, mild JPEG compression artifacts, the photographic flatness of a chain-restaurant interior. The kind of cup that ran for two summers in 1999-2001 and quietly disappeared.',
+      'CRITICAL: This is a PHOTOGRAPH of a real-world cup with printed cartoon art — NOT an illustration of a mascot directly. The mascot lives on the curved cup surface, not as the primary subject in vacuum.',
     ].join(' '),
   },
   {
