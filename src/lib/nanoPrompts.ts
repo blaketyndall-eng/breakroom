@@ -6,8 +6,7 @@
  *
  * Each prompt has a `provider` field that picks which model generates it.
  * The page calls one master function — imageUrl(p) — and never has to
- * know which backend actually produced the image. Swap a slot's provider
- * to upgrade quality without touching any other code.
+ * know which backend actually produced the image.
  *
  * Free providers (no auth, runtime URL):
  *   pollinations-flux         — default FLUX schnell, best for cartoon
@@ -18,13 +17,11 @@
  * Paid providers (pre-generated, served from /public/void/<key>.jpg):
  *   replicate-flux-pro    — FLUX 1.1 Pro for hero quality
  *   replicate-sdxl-lora   — SDXL + Civitai LoRA for style-specific
- *                           (MF DOOM cartoon, MS Paint, etc.)
  *   replicate-ideogram    — Ideogram 2.0 for posters with real typography
  *   luma-dream            — Luma Dream Machine for image→looping GIF (TODO)
  *
  * Replicate-routed slots use static images committed to /public/void/.
  * Run `pnpm regen-images` (with REPLICATE_API_TOKEN in env) to regenerate.
- * See scripts/regen-void-images.mjs.
  */
 
 export type Provider =
@@ -48,6 +45,10 @@ export interface NanoPrompt {
   prompt: string;
 }
 
+// =====================================================================
+// SHARED_STYLE — Void Warm Cartoon (Neopets / Beanie Babies / CN 2001).
+// Used by the original 10 slots (mothie, newsSwan, etc.).
+// =====================================================================
 const SHARED_STYLE = `
 Style anchors (cite all of them so the result averages between them):
   • Neopets pet portrait illustration (2001 Studio art, soft cel shading,
@@ -98,7 +99,7 @@ function briefForUrl(p: NanoPrompt, maxChars = 700): string {
 }
 
 // =====================================================================
-// FREE PROVIDERS — Pollinations.ai (no auth, runtime URL)
+// FREE PROVIDERS — Pollinations.ai
 // =====================================================================
 const POLLINATIONS_BASE = 'https://image.pollinations.ai/prompt/';
 
@@ -125,15 +126,8 @@ export function pollinationsGptImageUrl(p: NanoPrompt): string {
 }
 
 // =====================================================================
-// PAID PROVIDERS — pre-generated, served from /public/void/<key>.jpg
+// PAID PROVIDERS — served from /public/void/<key>.jpg, pre-generated
 // =====================================================================
-//
-// These return a LOCAL FILE PATH. The actual image must be generated
-// ahead of time via `pnpm regen-images` (see scripts/regen-void-images.mjs)
-// and committed to public/void/. If the file doesn't exist, the browser
-// will show a broken-image icon — fall back to pollinations until the
-// asset is committed.
-
 function replicateFluxProUrl(p: NanoPrompt): string {
   return `/void/${p.key}.jpg`;
 }
@@ -144,14 +138,9 @@ function replicateIdeogramUrl(p: NanoPrompt): string {
   return `/void/${p.key}.jpg`;
 }
 function lumaDreamUrl(p: NanoPrompt): string {
-  // GIF served from public/. When wired, regen script will save .gif
-  // instead of .jpg — ext switch happens here.
   return `/void/${p.key}.gif`;
 }
 
-// =====================================================================
-// MASTER DISPATCHER
-// =====================================================================
 export function imageUrl(p: NanoPrompt): string {
   const provider = p.provider ?? 'pollinations-flux';
   switch (provider) {
@@ -166,25 +155,21 @@ export function imageUrl(p: NanoPrompt): string {
   }
 }
 
-/**
- * Backwards-compat alias. /void/index.astro imports `pollinationsUrl` and
- * we want the page to honor each slot's `provider` field without touching
- * the page. Dispatch via imageUrl() so per-slot routing takes effect.
- */
+/** Backwards-compat alias for /void/index.astro. */
 export function pollinationsUrl(p: NanoPrompt): string {
   return imageUrl(p);
 }
 
 // =====================================================================
-// THE 10 VOID HOMEPAGE SLOTS
+// THE 10 ORIGINAL VOID HOMEPAGE SLOTS (voidWarmCartoon style)
 // =====================================================================
 export const NANO_PROMPTS: Record<string, NanoPrompt> = {
   mothie: {
     key: 'mothie',
-    subject: 'MOTHIE — VOID mascot',
+    subject: 'MOTHIE — VOID mascot (legacy)',
     width: 140, height: 110, seed: 11, animated: true,
-    provider: 'pollinations-flux', // flip to 'replicate-flux-pro' after public/void/mothie.jpg is committed
-    prompt: brief(`MOTHIE the recurring VOID mascot. A chubby kawaii moth, body roughly as tall as wide. Two big rounded eyes with a single shiny highlight dot in each (slightly off-center for hand-drawn feel). Two perky antennae with little curl tips, sticking straight up. Fluffy luna-moth-shaped wings spread (dusty pale-lavender wing tops with neon-cyan eye-spot patterns near the edges). One tiny hand raised in a small wave. Warm cream cheek-blush dots under the eyes. Personality: the friendly tired friend at 3am. Specific palette: dusty pink fur (#ffaad0), pale lavender wings (#c9a8ff), neon cyan eye-spots (#5ff0ff), warm cream cheek-blush. Background: soft cream oval. Composition: 3/4 front view, slight lean.`),
+    provider: 'pollinations-flux',
+    prompt: brief(`MOTHIE the recurring VOID mascot. A chubby kawaii moth, body roughly as tall as wide. Two big rounded eyes with a single shiny highlight dot in each (slightly off-center for hand-drawn feel). Two perky antennae with little curl tips, sticking straight up. Fluffy luna-moth-shaped wings spread (dusty pale-lavender wing tops with neon-cyan eye-spot patterns near the edges). One tiny hand raised in a small wave. Warm cream cheek-blush dots under the eyes. Personality: the friendly tired friend at 3am.`),
   },
   newsSwan: {
     key: 'newsSwan',
@@ -205,7 +190,7 @@ export const NANO_PROMPTS: Record<string, NanoPrompt> = {
     subject: 'Wheel of Outcomes',
     width: 70, height: 64, seed: 44,
     provider: 'pollinations-gptimage',
-    prompt: brief(`A chunky carnival prize wheel divided into 6 pie-slice sections, each a different bright color (magenta, hot pink, neon green, electric yellow, toxic cyan, warm purple). Each slice has a tiny hand-lettered phrase clearly readable: "GO HOME", "DON'T", "ASK MOM", "MAYBE LATER", "JUST DRIVE", "NEVER". A red pointer arrow at the top. Wheel sits on a small wooden tripod stand. Slight tilt for hand-drawn feel.`),
+    prompt: brief(`A chunky carnival prize wheel divided into 6 pie-slice sections, each a different bright color (magenta, hot pink, neon green, electric yellow, toxic cyan, warm purple). Each slice has a tiny hand-lettered phrase clearly readable: "GO HOME", "DON'T", "ASK MOM", "MAYBE LATER", "JUST DRIVE", "NEVER". A red pointer arrow at the top.`),
   },
   scratchcards: {
     key: 'scratchcards',
@@ -218,36 +203,64 @@ export const NANO_PROMPTS: Record<string, NanoPrompt> = {
     key: 'mothStreet',
     subject: 'Moth at streetlight',
     width: 220, height: 100, seed: 66,
-    provider: 'pollinations-flux-realism', // flip to 'replicate-flux-pro' after public/void/mothStreet.jpg is committed
-    prompt: brief(`Wide cinematic horizontal scene. A single wistful slim moth with half-closed eyes hovering in front of a glowing streetlight on a tall pole at the right side of frame, casting yellow cone of light onto dark empty asphalt parking lot. Stars in night sky. Faint silhouette of a parked car in distance on left. Mood: quieter cinematic atmospheric, like a still from a slow-pan shot in a 90s music video. Palette: night sky deep indigo to near-black gradient, streetlight halo electric yellow fading to warm orange, asphalt cool gray, moth body warm cream with magenta wing accents.`),
+    provider: 'pollinations-flux-realism',
+    prompt: brief(`Wide cinematic horizontal scene. A single wistful slim moth with half-closed eyes hovering in front of a glowing streetlight on a tall pole at the right side of frame, casting yellow cone of light onto dark empty asphalt parking lot. Stars in night sky. Faint silhouette of a parked car in distance on left. Mood: quieter cinematic atmospheric, like a still from a slow-pan shot in a 90s music video.`),
   },
   weatherSun: {
     key: 'weatherSun',
     subject: 'Weather sun-with-shades',
     width: 56, height: 48, seed: 77,
     provider: 'pollinations-flux',
-    prompt: brief(`A round friendly sun face wearing thick black wayfarer sunglasses, slight asymmetric smile. Yellow body, 8 short triangle rays radiating outward. Single black mole on one cheek for character. Slight orange shadow on the lower face. Tiny icon, max 4 colors, simple shapes only.`),
+    prompt: brief(`A round friendly sun face wearing thick black wayfarer sunglasses, slight asymmetric smile. Yellow body, 8 short triangle rays radiating outward. Single black mole on one cheek for character.`),
   },
   voidpoints: {
     key: 'voidpoints',
     subject: 'Coin stack with eyes',
     width: 56, height: 48, seed: 88,
     provider: 'pollinations-flux',
-    prompt: brief(`A small stack of 3 gold coins each with a "VP" stamp on the face. The middle coin has two big cute eyes peeking out of a horizontal slit. Top coin tilted at a lazy angle. Bottom coin sits flat. Palette: light gold body, darker amber edge shadow, eyes near-black with white highlights.`),
+    prompt: brief(`A small stack of 3 gold coins each with a "VP" stamp on the face. The middle coin has two big cute eyes peeking out of a horizontal slit. Top coin tilted at a lazy angle. Bottom coin sits flat.`),
   },
   voideanTimes: {
     key: 'voideanTimes',
     subject: 'Folded newspaper',
     width: 56, height: 48, seed: 99,
     provider: 'pollinations-gptimage',
-    prompt: brief(`A folded broadsheet newspaper at -10 degree diagonal angle. Visible masthead reads "VOIDEAN TIMES" in chunky display type. Below the masthead, 3 faint horizontal lines of body text and one small headline reading "SWAN DENIES". Small fold shadow at the crease. Cream paper with deep indigo ink. Tiny icon, paper takes 80% of frame.`),
+    prompt: brief(`A folded broadsheet newspaper at -10 degree diagonal angle. Visible masthead reads "VOIDEAN TIMES" in chunky display type. Below the masthead, 3 faint horizontal lines of body text and one small headline reading "SWAN DENIES". Small fold shadow at the crease. Cream paper with deep indigo ink.`),
   },
   voidpedia: {
     key: 'voidpedia',
     subject: 'Encyclopedia book with question mark',
     width: 56, height: 48, seed: 110,
     provider: 'pollinations-flux',
-    prompt: brief(`A thick old-school encyclopedia-style hardcover book, deep purple with gold trim and a gold spine label reading "V". Closed at -8 degree diagonal angle. A floating yellow question mark hovers above-right of the book, slightly tilted. Mysterious-friendly library reference mood.`),
+    prompt: brief(`A thick old-school encyclopedia-style hardcover book, deep purple with gold trim and a gold spine label reading "V". Closed at -8 degree diagonal angle. A floating yellow question mark hovers above-right of the book, slightly tilted.`),
+  },
+
+  // =====================================================================
+  // SNEAKY-STYLE CHARACTER ROSTER (Markus Magnusson register)
+  // =====================================================================
+  // First entry. Self-contained prompt (no brief() helper) because the
+  // Sneaky style anchor is fundamentally different from voidWarmCartoon
+  // (rubberhose 1930s clean cartoon, not Neopets kawaii). Once we have
+  // 3+ characters in this register, extract a STYLE_PRESETS map.
+  //
+  theRegular: {
+    key: 'theRegular',
+    subject: 'THE REGULAR — VOID mascot (Sneaky-style)',
+    width: 720, height: 960, seed: 1147,
+    provider: 'replicate-flux-pro',
+    prompt: `Cartoon character illustration in the EXACT style of Markus Magnusson's 'Sneaky' character series (Dribbble shot 14218415-sneaky) and his 'Magic of Walk Cycles' course illustrations. Rubberhose 1930s-1940s classic animation register — the Cuphead / Felix the Cat / Mickey Mouse / Fleischer Studios aesthetic with modern motion-design clean execution. Bold smooth confident black outlines (4px hand-animated curves, perfectly weighted, NOT vector-stiff and NOT marker-bleed messy — just cartoon-clean). Flat solid color blocks ONLY — NO gradients, NO cel shading, NO interior texture, NO grain. Pure white background.
+
+A single chunky cartoon character standing upright facing forward in a casual neutral pose, arms hanging straight down at sides.
+
+Outfit: plain solid white from head to toe — a single uniform all-white jumpsuit / coverall covering the entire body. Solid white throughout, no scarf, no cuffs, no colored pants, no accessories of any kind.
+
+Head: smooth round dome silhouette with NO ears, NO peaks, NO points. The whole head is wrapped in plain white knit fabric with TWO ROUND COIN-SIZED CIRCLE EYE OPENINGS (two distinct separate circles cut into the white fabric, NOT a band, NOT a visor, NOT goggles — two individual round holes). One small horizontal mouth slit below. Two simple oval YELLOW eyes with slightly angled tops peer through the round eye openings (just yellow eye-color visible, no goggle lenses).
+
+Hands: white four-fingered cartoon-glove hands at sides (Mickey-Mouse-style classic cartoon glove proportions).
+Feet: big chunky plain white marshmallow-style cartoon shoes (rounded toe, plain solid white, NOT skates with blades, NOT ski boots, plain rubberhose cartoon shoes).
+Ground: small simple black oval ground shadow under feet.
+
+The character is a Markus Magnusson 'Sneaky' character mascot in disguise — same body geometry, head/body/shoe ratio, four-finger glove hands, smooth marshmallow shoes, perfectly weighted black outlines, flat color blocks. Same artist's hand. Just dressed in disguise.`,
   },
 };
 

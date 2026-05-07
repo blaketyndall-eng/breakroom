@@ -2,12 +2,12 @@
 /**
  * scripts/regen-void-images.mjs
  * --------------------------------------------------------------------------
- * Generate VOID hero illustrations via Replicate (FLUX 1.1 Pro). Saves
- * to public/void/<key>.jpg, then you commit + push.
+ * Generate VOID hero illustrations via Replicate (FLUX 1.1 Pro). Saves to
+ * public/void/<key>.jpg, then you commit + push.
  *
  * Usage:
  *   REPLICATE_API_TOKEN=r8_xxx pnpm regen-images
- * Or with a .env.local file containing REPLICATE_API_TOKEN.
+ * Or with .env.local at project root containing REPLICATE_API_TOKEN.
  *
  * Slots are duplicated inline below (rather than imported from
  * src/lib/nanoPrompts.ts) to avoid a TS runtime dependency on this
@@ -44,24 +44,31 @@ if (!TOKEN) {
 
 if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
 
-// Shared style suffix — must match COMPRESSED_STYLE in nanoPrompts.ts
-const SHARED = ' Style anchors: 2001 Neopets pet portrait, Cartoon Network 2001 character bumper, Brain Dead hand-drawn shirt graphic, Beanie Babies hangtag, Adult Swim bumper. Technique: bold black outline 3px, flat two-tone cel shading, no gradients, no glow, hand-drawn wobble, off-balance composition, vector-imperfect, MS Paint feel. Era: 2001-2003 web mascot, low-fi internet kid-portal energy. Cream background.';
-
-// Slots routed to replicate-flux-pro. Add new entries when flipping a slot.
+// Slots routed to replicate-flux-pro. Add new entries when flipping a slot
+// in nanoPrompts.ts to use this provider.
 const SLOTS = [
+  // ============== THE REGULAR — Sneaky-style mascot ==============
+  // Self-contained prompt (no SHARED_STYLE suffix) because Sneaky style
+  // is anchored on Markus Magnusson's published character series.
   {
-    key: 'mothie',
-    aspect: '4:3',
-    seed: 11,
-    prompt: 'MOTHIE the recurring VOID mascot. A chubby kawaii moth, body roughly as tall as wide. Two big rounded eyes with a single shiny highlight dot in each. Two perky antennae with little curl tips. Fluffy luna-moth-shaped wings spread (dusty pale-lavender wing tops with neon-cyan eye-spot patterns near the edges). One tiny hand raised in a small wave. Warm cream cheek-blush dots under the eyes. Friendly tired-3am personality.' + SHARED,
+    key: 'theRegular',
+    aspect: '3:4',
+    seed: 1147,
+    prompt: `Cartoon character illustration in the EXACT style of Markus Magnusson's 'Sneaky' character series (Dribbble shot 14218415-sneaky) and his 'Magic of Walk Cycles' course illustrations. Rubberhose 1930s-1940s classic animation register — the Cuphead / Felix the Cat / Mickey Mouse / Fleischer Studios aesthetic with modern motion-design clean execution. Bold smooth confident black outlines (4px hand-animated curves, perfectly weighted, NOT vector-stiff and NOT marker-bleed messy — just cartoon-clean). Flat solid color blocks ONLY — NO gradients, NO cel shading, NO interior texture, NO grain. Pure white background.
+
+A single chunky cartoon character standing upright facing forward in a casual neutral pose, arms hanging straight down at sides.
+
+Outfit: plain solid white from head to toe — a single uniform all-white jumpsuit / coverall covering the entire body. Solid white throughout, no scarf, no cuffs, no colored pants, no accessories of any kind.
+
+Head: smooth round dome silhouette with NO ears, NO peaks, NO points. The whole head is wrapped in plain white knit fabric with TWO ROUND COIN-SIZED CIRCLE EYE OPENINGS (two distinct separate circles cut into the white fabric, NOT a band, NOT a visor, NOT goggles — two individual round holes). One small horizontal mouth slit below. Two simple oval YELLOW eyes with slightly angled tops peer through the round eye openings (just yellow eye-color visible, no goggle lenses).
+
+Hands: white four-fingered cartoon-glove hands at sides (Mickey-Mouse-style classic cartoon glove proportions).
+Feet: big chunky plain white marshmallow-style cartoon shoes (rounded toe, plain solid white, NOT skates with blades, NOT ski boots, plain rubberhose cartoon shoes).
+Ground: small simple black oval ground shadow under feet.
+
+The character is a Markus Magnusson 'Sneaky' character mascot in disguise — same body geometry, head/body/shoe ratio, four-finger glove hands, smooth marshmallow shoes, perfectly weighted black outlines, flat color blocks. Same artist's hand. Just dressed in disguise.`,
   },
-  {
-    key: 'mothStreet',
-    aspect: '21:9',
-    seed: 66,
-    prompt: 'Wide cinematic horizontal scene. A single wistful slim moth with half-closed eyes hovering in front of a glowing streetlight on a tall pole at the right side of frame, casting yellow cone of light onto dark empty asphalt parking lot. Stars in night sky. Faint silhouette of a parked car in distance on left. Quiet cinematic atmospheric mood. Palette: night sky deep indigo to near-black gradient, streetlight halo electric yellow fading to warm orange, asphalt cool gray, moth body warm cream with magenta wing accents.' + SHARED,
-  },
-  // Add more slots here as you flip them to replicate-flux-pro
+  // (Add more entries here as we flip slots to replicate-flux-pro)
 ];
 
 async function generate(slot) {
@@ -111,7 +118,7 @@ async function generate(slot) {
 }
 
 (async () => {
-  console.log(`Regenerating ${SLOTS.length} VOID illustrations via Replicate FLUX 1.1 Pro\n`);
+  console.log(`Regenerating ${SLOTS.length} VOID illustration(s) via Replicate FLUX 1.1 Pro\n`);
   let ok = 0, fail = 0;
   for (const slot of SLOTS) {
     if (await generate(slot)) ok++;
@@ -121,7 +128,7 @@ async function generate(slot) {
   if (ok > 0) {
     console.log('\nNext step: commit the new images:');
     console.log('  git add public/void/');
-    console.log('  git commit -m "feat(void): regenerate hero images via Replicate FLUX 1.1 Pro"');
+    console.log('  git commit -m "feat(void): regenerate via Replicate FLUX 1.1 Pro"');
     console.log('  git push');
   }
   process.exit(fail > 0 ? 1 : 0);
