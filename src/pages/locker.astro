@@ -5,11 +5,15 @@ import SavedStuffDrawerPreview from '@/components/stuff/SavedStuffDrawerPreview'
 import FactionDriftPanel from '@/components/factions/FactionDriftPanel';
 import TopEightEditor from '@/components/regulars/TopEightEditor';
 import SeenAroundBlock from '@/components/regulars/SeenAroundBlock';
+import LockerPublicViewLink from '@/components/regulars/LockerPublicViewLink';
+import LockerRecentGuestbook from '@/components/regulars/LockerRecentGuestbook';
 ---
 <OldWebLayout title="Locker" section="locker">
   <div class="status-strip"><span>locker</span><span>regular file</span><span>drawer</span><span>turf signals</span><span>top 8</span></div>
   <h1>Locker</h1>
   <p class="tagline-block">Your Regular File, local drawer, saved Stuff, turf signals, and anything the room has agreed to remember for now.</p>
+
+  <LockerPublicViewLink client:load />
 
   <div class="grid-3">
     <RegularFileEditor client:load />
@@ -25,6 +29,13 @@ import SeenAroundBlock from '@/components/regulars/SeenAroundBlock';
         <h3 class="seen-around-label">Seen Around</h3>
         <SeenAroundBlock client:idle mode="global" limit={12} />
       </div>
+    </div>
+  </section>
+
+  <section class="old-shell">
+    <div class="old-header">Recent Signatures On Your Wall</div>
+    <div class="old-body">
+      <LockerRecentGuestbook client:idle />
     </div>
   </section>
 </OldWebLayout>
