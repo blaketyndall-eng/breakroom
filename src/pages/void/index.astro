@@ -3,9 +3,13 @@
  * /void — Void Signal homepage.
  * Each nano-banana slot now renders a real <img> from Pollinations.ai
  * (FLUX). See nanoPrompts.ts for prompts + pollinationsUrl() helper.
+ *
+ * Imports from `voidImgShim` (not `nanoPrompts` directly) so legacy slot
+ * keys that were dropped during PR-G/PR-H/PR-K refactors fall back to
+ * existing committed images instead of 500ing the page. See voidImgShim.ts.
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { NANO_PROMPTS, pollinationsUrl } from '@/lib/nanoPrompts';
+import { NANO_PROMPTS, pollinationsUrl } from '@/lib/voidImgShim';
 
 const N = NANO_PROMPTS;
 ---
