@@ -447,6 +447,197 @@ export const NANO_PROMPTS: Record<string, NanoPrompt> = {
     ].join(' '),
   },
 
+  // =========================================================================
+  // PR-M FACTION MASCOTS — Kontext img2img from theRegularBlack
+  // =========================================================================
+  // The five Turf factions. Each is THE REGULAR with a small faction-specific
+  // delta (prop, outfit accent, lighting). Anchor handles identity; prompt
+  // describes the change. Same SKIN_NEGATIVES clause baked in to prevent
+  // flesh-gap hallucinations between shorts and boots.
+
+  factionPlayers: {
+    key: 'factionPlayers',
+    subject: 'THE PLAYERS — Pool Hall County faction',
+    width: 1152,
+    height: 864,
+    seed: 7501,
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    prompt: [
+      'Same exact character from the reference image — black knit balaclava with elongated horizontal red eye-slot and visible vertical knit ribbing, baggy white pullover hoodie, baggy white shorts, big chunky bulbous white Mickey-style boots with rounded toes, big rounded white mitten gloves with no finger separation.',
+      'Now standing in the same three-quarter side stance, but holding a wooden two-piece pool cue resting horizontally across both shoulders behind his neck — left and right gloves resting on the cue stick on either side, fingers wrapped over the top.',
+      'A small smudge of bright blue cue chalk visible on the right glove. The pool cue has a brass joint and dark wood stain.',
+      'Same saturated purple background, but a single low-hanging conical bar lamp casts a circle of warmer yellow light around his head and shoulders, suggesting a pool hall interior. Same dotted floor shadows beneath his feet.',
+      'Same flat 2D Markus Magnusson Sneaky cartoon style — same thick chunky black ink outlines, same flat fill colors with zero shading.',
+      SKIN_NEGATIVES,
+    ].join(' '),
+  },
+
+  factionLotRacers: {
+    key: 'factionLotRacers',
+    subject: 'THE LOT RACERS — Parking Lot West faction',
+    width: 1152,
+    height: 864,
+    seed: 7502,
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    prompt: [
+      'Same exact character from the reference image — black knit balaclava with red eye-slot and vertical knit ribbing, white pullover hoodie, white shorts, chunky white Mickey-style boots, white mitten gloves.',
+      'Now leaning casually on the cherry-red painted hood of a tuned-up American muscle car (visible in the right two-thirds of the frame), one gloved elbow resting on the hood, the other gloved hand on his hip.',
+      'The car is a 1970s muscle car with a black hood scoop, chrome bumper, and one round headlight visible. The paint has a slight metallic sheen with a thin painted yellow racing stripe running along the side.',
+      'Same saturated purple background gives way to a hint of asphalt parking lot at the bottom of the frame, with three or four small dotted shadow puddles beneath both his boots and the car tires.',
+      'Same flat 2D Markus Magnusson Sneaky cartoon style — thick chunky black ink outlines, flat fill colors with zero gradients, no interior shading lines on the body.',
+      SKIN_NEGATIVES,
+    ].join(' '),
+  },
+
+  factionNightDrinkers: {
+    key: 'factionNightDrinkers',
+    subject: 'THE NIGHT DRINKERS — Back Booth faction',
+    width: 1152,
+    height: 864,
+    seed: 7503,
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    prompt: [
+      'Same exact character from the reference image — black knit balaclava with red eye-slot and vertical knit ribbing, white pullover hoodie, white shorts, chunky white Mickey-style boots, white mitten gloves.',
+      'Now seated slumped at a dive bar back booth, photographed from the front, his right gloved hand wrapped around a clear short highball glass half-full of amber liquid (whiskey or amber beer) with two ice cubes visible.',
+      'A red vinyl booth seat back is visible behind his shoulders. The bar surface in front of him is dark formica with a single coaster ring stain and a small folded paper napkin.',
+      'Same saturated purple background fades into the booth interior. Same dotted floor shadows just visible at the bottom of the frame near his boot.',
+      'Same flat 2D Markus Magnusson Sneaky cartoon style — thick chunky black ink outlines, flat fill colors, no interior shading.',
+      SKIN_NEGATIVES,
+    ].join(' '),
+  },
+
+  factionSmokers: {
+    key: 'factionSmokers',
+    subject: 'THE SMOKERS — Local 47 faction',
+    width: 1152,
+    height: 864,
+    seed: 7504,
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    prompt: [
+      'Same exact character from the reference image — black knit balaclava with red eye-slot and vertical knit ribbing, white pullover hoodie, white shorts, chunky white Mickey-style boots, white mitten gloves.',
+      'Now standing in three-quarter profile silhouette on a dark metal fire escape ledge, his right gloved hand near his face holding a lit cigarette with a small bright orange-red ember at the tip glowing visibly in the dark.',
+      'A thin trail of grey smoke curls upward from the cigarette tip past his eye-slot.',
+      'The background is darker than usual — a deeper saturated purple-to-black gradient with one yellow square window light dot in the distance suggesting a city at night. The glowing red eye-slot of the balaclava and the orange cigarette ember are the brightest spots in the frame.',
+      'Same flat 2D Markus Magnusson Sneaky cartoon style — thick chunky black ink outlines, flat fill colors with zero gradients, no interior shading lines on the body.',
+      SKIN_NEGATIVES,
+    ].join(' '),
+  },
+
+  factionCowboys: {
+    key: 'factionCowboys',
+    subject: 'THE COWBOYS — Motel Row faction',
+    width: 1152,
+    height: 864,
+    seed: 7505,
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    prompt: [
+      'Same exact character head from the reference image — black knit balaclava with red eye-slot and vertical knit ribbing — but now wearing a battered black peaked cowboy hat pulled low over the balaclava (the hat sits on top of the knit fabric, brim shading the upper part of the eye-slot).',
+      'An oversized faded blue denim jacket replaces the white hoodie. Same baggy white shorts below the jacket, same chunky white Mickey-style boots, same white mitten gloves.',
+      'He stands in the same three-quarter side stance against the same saturated purple background. A single small wooden matchstick is held between two gloved fingers at hip level, just struck — a tiny orange flame visible at the tip.',
+      'Same dotted floor shadows under his boots, same flat 2D Markus Magnusson Sneaky cartoon style with thick chunky black ink outlines and flat fill colors.',
+      SKIN_NEGATIVES,
+    ].join(' '),
+  },
+
+  // =========================================================================
+  // PR-M DISTRICT HEROES — FLUX Pro photography
+  // =========================================================================
+  // Period-correct location heroes for the four core districts. Each is a
+  // straight photograph in the 1990s/2000s American empty-place register.
+
+  districtPoolHall: {
+    key: 'districtPoolHall',
+    subject: 'POOL HALL COUNTY — interior at 1:47 AM',
+    width: 1280,
+    height: 854,
+    seed: 7001,
+    provider: 'replicate-flux-pro',
+    prompt: [
+      'Interior photograph of an empty pool hall at 1:47 AM, taken from a low angle near the felt of a single pool table that fills the foreground (one striped 9-ball and one solid 3-ball still on the green felt, mid-game).',
+      'A single low-hanging conical brass bar lamp with a green glass shade hangs over the table, casting a hot yellow cone of light onto the green felt and leaving the rest of the room in deep amber shadow.',
+      'In the background, faintly visible: a wood-paneled wall with two dim neon beer signs (one PABST script, one MILLER LITE blue), the corner of a jukebox, a chalkboard with handwritten game names. A blue chalk cube sits on the rail of the table.',
+      'A thin haze of cigarette smoke is just visible in the lamp light. The image has the quality of a mid-1990s 35mm flash photograph with slight warm color shift, soft grain, and a single hot spot where the lamp hits the felt.',
+      'Period photo register — Pool Hall County, somewhere in the 1990s American Midwest. Empty in a way that suggests someone just left, or is about to arrive.',
+    ].join(' '),
+  },
+
+  districtMotelRow: {
+    key: 'districtMotelRow',
+    subject: 'MOTEL ROW — neon-lit exterior at night',
+    width: 1280,
+    height: 854,
+    seed: 7002,
+    provider: 'replicate-flux-pro',
+    prompt: [
+      'Nighttime exterior photograph of a low-rise 1960s American motel along a dark suburban road, taken from across the parking lot at street level.',
+      'A tall metal pole sign rises from the corner of the lot with neon tube letters spelling "VACANCY" — the V is dark and partially burned out, the rest glowing pink-orange. Above the VACANCY sign, in larger script neon, the word "MOTEL" with one cursive letter dim.',
+      'The motel itself is a single-story L-shape with about eight visible room doors painted faded turquoise, each with a small concrete step and a small porch light. Two parked cars: a beige 1990s sedan and a maroon Chrysler.',
+      'A single ice machine glows white at the corner near the office. The asphalt parking lot is wet from earlier rain, reflecting the neon sign in puddles. The sky is full black with no stars.',
+      'Period photo register — 35mm film with on-camera flash, slight motion blur on a window AC unit visible in one room. Low-key Americana, lonely but unthreatening.',
+    ].join(' '),
+  },
+
+  districtClosedFoodCourt: {
+    key: 'districtClosedFoodCourt',
+    subject: 'CLOSED FOOD COURT — empty mall food court at 1:47 AM',
+    width: 1280,
+    height: 854,
+    seed: 7003,
+    provider: 'replicate-flux-pro',
+    prompt: [
+      'Interior photograph of an empty mall food court at 1:47 AM after closing, taken from one corner looking across the seating area toward the row of shuttered chain restaurants.',
+      'Plastic chairs in red, yellow, and brown are stacked or upturned on top of small round formica tables, leaving the floor visible. The floor is a beige mottled commercial tile.',
+      'In the background, three or four chain restaurant counters with their security gates half-pulled-down — only the bottom halves of branded signage visible: the lower portion of a generic red pizza chain logo, a slice of yellow Chinese-food chain, the cropped corner of a blue submarine sandwich wordmark.',
+      'A single fluorescent ceiling light is still on in the center of the seating area, the rest dark. A janitor\'s yellow CAUTION WET FLOOR sign sits visible in one corner. A small abandoned trash heap with crushed soda cups sits on one table.',
+      'Period photo register — slightly underexposed, the kind of photo a security camera would take if it were also a person. Mall in slow decline, 2001-era. Empty in a way that suggests no one has been here in a while.',
+    ].join(' '),
+  },
+
+  districtParkingLotWest: {
+    key: 'districtParkingLotWest',
+    subject: 'PARKING LOT WEST — empty asphalt lot under fluorescent pole',
+    width: 1280,
+    height: 854,
+    seed: 7004,
+    provider: 'replicate-flux-pro',
+    prompt: [
+      'Nighttime photograph of a large empty asphalt parking lot taken from the middle of the lot at ground level, looking out toward the perimeter.',
+      'A single tall fluorescent light pole rises from the center-right of the frame, casting a wide cone of cool greenish-white light onto the cracked asphalt. The light pole has a small No Parking sign nailed halfway up the post, and a single bird (possibly a crow) is silhouetted on the top fixture.',
+      'Faded yellow parking line stripes run across the asphalt, peeling. A single shopping cart is overturned in the middle distance. The asphalt has wide tar-line patches where cracks have been filled, forming irregular black snakes across the surface.',
+      'The horizon shows the silhouette of a low-rise commercial building with a "BREAKROOM" wordmark above the entrance in dim red neon (one letter is dark — possibly the K or A). A single yellow window glows in the building.',
+      'Sky is dark navy with no stars. The image has the quality of a 35mm flash photograph with mild grain and slight purple chromatic aberration on the bright light pole. Lonely, quiet, period-correct.',
+    ].join(' '),
+  },
+
+  // =========================================================================
+  // PR-M CURSED FOUND-PHOTO — singular probe slot
+  // =========================================================================
+  // Tests whether FLUX Pro can deliver "the off-ness IS the whole image"
+  // (Reptilian-headed person on couch, photographed straight) versus
+  // "off-ness sprinkled into a clean image" (which got averaged away in PR-L).
+
+  foundReptileCouch: {
+    key: 'foundReptileCouch',
+    subject: 'FOUND PHOTO — Reptilian-headed person on a beige couch with a phone',
+    width: 1280,
+    height: 854,
+    seed: 7101,
+    provider: 'replicate-flux-pro',
+    prompt: [
+      'Faded amateur photograph of a Reptilian-headed person sitting casually on a beige 1990s suburban living-room couch, taken with on-camera flash from across the room.',
+      'The figure has the body of an adult human in faded blue jeans and an unremarkable tan polo shirt — but their head is that of a green-scaled lizard with two large yellow eyes (one very slightly larger than the other), small horizontal pupils, and small ear holes. Their expression is neutral, just sitting.',
+      'They are holding a beige rotary telephone receiver up to where their ear would be on the lizard head, with a curly beige phone cord trailing off the right of the frame.',
+      'Behind them: a beige textured wall with one framed bird painting hanging slightly crooked, a doily on a side table, and a small ceramic cat figurine. The couch has a quilted blanket draped over the back.',
+      'The image has the visible chemical color shift of a 1990s drugstore-printed snapshot — slightly warm magenta cast in the shadows, slight cyan on the highlights, soft focus, small white "MAR 17 1997" date stamp printed in the lower-right corner in red LCD-style numerals.',
+      'CRITICAL: Photograph this STRAIGHT, as if it is real and unremarkable — no surreal lighting, no horror lighting, no special effects. The fact that the person has a Reptilian head is just a fact of the photograph. Banal staging, mundane composition. The off-ness is the entire image, not added on top.',
+    ].join(' '),
+  },
+
   /**
    * MOTHIE — legacy moth mascot. Pre-generated via Replicate FLUX 1.1 Pro,
    * served from /public/void/mothie.jpg. Kept around but de-prioritized in
