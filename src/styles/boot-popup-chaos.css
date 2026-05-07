@@ -1,0 +1,673 @@
+/**
+ * Boot · Popup · Chaos — `bpc-*` system voice chrome.
+ *
+ * This file owns the *system voice* surfaces of The Breakroom:
+ *   - bpc-boot         : XP-style boot sequence on /void (once per session)
+ *   - bpc-dialog       : Win95 OS dialog primitive (calm restraint mode)
+ *   - bpc-popup        : ad-popup chrome (chaos mode)
+ *   - bpc-progress     : "Downloading Virus..." hourglass progress bar
+ *   - bpc-cascade      : 4-stage broken-link explosion overlay
+ *   - bpc-scanline     : 200ms ambient page transition
+ *
+ * Two grammars on purpose:
+ *   1. CALM — tahoma 11px, gray-blue Win9x dialog. One dialog visible.
+ *   2. CHAOS — cascading popups, garish colors, deliberate misalignment.
+ *      Only on /404. Triggered by an unhandled URL.
+ *
+ * Imported once via global.css. Components reference these classes directly.
+ */
+
+/* ------------------------------------------------------------------------- */
+/*  Shared design tokens                                                      */
+/* ------------------------------------------------------------------------- */
+
+:root {
+  --bpc-win-face: #c0c0c0;
+  --bpc-win-face-2: #d4d0c8;
+  --bpc-win-shadow: #808080;
+  --bpc-win-shadow-2: #404040;
+  --bpc-win-light: #ffffff;
+  --bpc-win-light-2: #dfdfdf;
+  --bpc-win-text: #000000;
+  --bpc-win-titlebar: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  --bpc-win-titlebar-text: #ffffff;
+  --bpc-mono: 'Pixelated MS Sans Serif', 'Tahoma', 'MS Sans Serif', 'Geneva', sans-serif;
+
+  --bpc-boot-bg: #000000;
+  --bpc-boot-text: #c0c8d4;
+  --bpc-boot-accent: #2bb0ff;
+}
+
+/* ------------------------------------------------------------------------- */
+/*  bpc-scanline — ambient page transition                                    */
+/*  A pseudo-element overlay that briefly sweeps top→bottom on route change. */
+/*  Triggered by adding .bpc-scanline-active to <body> for 200ms.            */
+/* ------------------------------------------------------------------------- */
+
+.bpc-scanline-active::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.04) 0,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  animation: bpc-scanwipe 200ms ease-out forwards;
+}
+@keyframes bpc-scanwipe {
+  0%   { opacity: 0;   transform: translateY(-100%); }
+  40%  { opacity: 0.9; transform: translateY(0); }
+  100% { opacity: 0;   transform: translateY(100%); }
+}
+
+/* ------------------------------------------------------------------------- */
+/*  bpc-boot — XP-style boot sequence                                         */
+/*  Fullscreen black, centered VOID-OS logo, sliding-dot progress bar,        */
+/*  bureaucratic footer copyright text. Fades out after ~2.5s.                */
+/* ------------------------------------------------------------------------- */
+
+.bpc-boot {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bpc-boot-bg);
+  color: var(--bpc-boot-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--bpc-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  animation: bpc-boot-fadein 180ms ease-out;
+}
+.bpc-boot--exiting {
+  animation: bpc-boot-fadeout 420ms ease-in forwards;
+}
+@keyframes bpc-boot-fadein  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes bpc-boot-fadeout { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+
+.bpc-boot-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  /* Slight upward offset so the logo sits visually centered, like XP did. */
+  transform: translateY(-4vh);
+}
+
+/* Image slot — when a Replicate-generated VOID-OS logo is committed at
+   /void/bootLogo.jpg, the <img> renders inside this frame. Fallback:
+   pure-typography wordmark (.bpc-boot-wordmark) renders if image missing. */
+.bpc-boot-logo {
+  width: clamp(180px, 28vw, 360px);
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 18px rgba(43, 176, 255, 0.18));
+}
+.bpc-boot-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Typography fallback — used when the Replicate logo image hasn't been
+   generated yet. Austere, monochrome, pre-color-Web. */
+.bpc-boot-wordmark {
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: clamp(48px, 7vw, 86px);
+  letter-spacing: 0.18em;
+  color: #e8eef4;
+  text-shadow: 0 0 12px rgba(43, 176, 255, 0.4);
+}
+.bpc-boot-wordmark-sub {
+  font-family: var(--bpc-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: #6f7a86;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* XP-style sliding-dot progress bar.
+   Three blue dots travel left→right inside a thin, recessed track. */
+.bpc-boot-progress {
+  position: relative;
+  width: 220px;
+  height: 14px;
+  border: 1px solid #1a1a1a;
+  background: #0a0a0a;
+  overflow: hidden;
+}
+.bpc-boot-progress::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: -60px;
+  width: 60px;
+  height: 10px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--bpc-boot-accent) 30%,
+    #58c9ff 50%,
+    var(--bpc-boot-accent) 70%,
+    transparent 100%
+  );
+  animation: bpc-boot-progress-slide 1.6s linear infinite;
+}
+@keyframes bpc-boot-progress-slide {
+  from { left: -60px; }
+  to   { left: 220px; }
+}
+
+.bpc-boot-foot {
+  position: absolute;
+  bottom: 28px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: #4a5360;
+  text-transform: uppercase;
+}
+
+/* Reduced-motion: collapse the boot to instant. */
+@media (prefers-reduced-motion: reduce) {
+  .bpc-boot { animation: none; }
+  .bpc-boot--exiting { animation: none; opacity: 0; visibility: hidden; }
+  .bpc-boot-progress::before { animation: none; }
+}
+
+/* ------------------------------------------------------------------------- */
+/*  bpc-dialog — Win95 OS dialog primitive                                    */
+/*  Used for: post-boot welcome, restraint-mode confirmations,                */
+/*  any future agent/save/error opt-in dialog.                                */
+/* ------------------------------------------------------------------------- */
+
+.bpc-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  background: rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: bpc-dialog-overlay-in 120ms ease-out;
+}
+@keyframes bpc-dialog-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+
+.bpc-dialog {
+  /* Win95 chrome */
+  background: var(--bpc-win-face);
+  color: var(--bpc-win-text);
+  border: 2px solid;
+  border-color: var(--bpc-win-light) var(--bpc-win-shadow-2) var(--bpc-win-shadow-2) var(--bpc-win-light);
+  box-shadow:
+    inset 1px 1px 0 var(--bpc-win-light-2),
+    inset -1px -1px 0 var(--bpc-win-shadow),
+    3px 3px 0 rgba(0, 0, 0, 0.18);
+  font-family: var(--bpc-mono);
+  font-size: 11px;
+  width: clamp(280px, 92vw, 440px);
+  user-select: none;
+  animation: bpc-dialog-in 160ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+@keyframes bpc-dialog-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.bpc-dialog-titlebar {
+  background: var(--bpc-win-titlebar);
+  color: var(--bpc-win-titlebar-text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 4px 3px 6px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  cursor: default;
+}
+.bpc-dialog-title-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bpc-dialog-titlebar-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  display: inline-block;
+  vertical-align: middle;
+  background: #c0c0c0;
+  border: 1px solid #000;
+  position: relative;
+}
+.bpc-dialog-titlebar-icon::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: var(--bpc-win-titlebar);
+}
+
+.bpc-dialog-x {
+  width: 16px;
+  height: 14px;
+  background: var(--bpc-win-face);
+  border: 1px solid;
+  border-color: var(--bpc-win-light) var(--bpc-win-shadow-2) var(--bpc-win-shadow-2) var(--bpc-win-light);
+  color: var(--bpc-win-text);
+  font-family: var(--bpc-mono);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 10px;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.bpc-dialog-x:active {
+  border-color: var(--bpc-win-shadow-2) var(--bpc-win-light) var(--bpc-win-light) var(--bpc-win-shadow-2);
+}
+
+.bpc-dialog-body {
+  padding: 14px 14px 4px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* Win95 message-box icons. Drawn entirely in CSS — circle/triangle/square
+   with character glyph centered. Cheap, period-correct, no asset deps. */
+.bpc-dialog-icon {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--bpc-mono);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+  color: #fff;
+  border-radius: 50%;
+}
+.bpc-dialog-icon[data-kind="info"]    { background: #1084d0; }
+.bpc-dialog-icon[data-kind="info"]::before { content: 'i'; font-style: italic; font-family: 'Times New Roman', serif; }
+.bpc-dialog-icon[data-kind="warn"]    { background: #ffd200; color: #000; border-radius: 0; clip-path: polygon(50% 0, 100% 100%, 0 100%); width: 36px; height: 32px; }
+.bpc-dialog-icon[data-kind="warn"]::before { content: '!'; transform: translateY(4px); }
+.bpc-dialog-icon[data-kind="error"]   { background: #c80000; }
+.bpc-dialog-icon[data-kind="error"]::before { content: '×'; font-size: 28px; }
+.bpc-dialog-icon[data-kind="ask"]     { background: #1084d0; }
+.bpc-dialog-icon[data-kind="ask"]::before { content: '?'; }
+
+.bpc-dialog-text { flex: 1; }
+.bpc-dialog-text p { margin: 0 0 6px; }
+.bpc-dialog-text p:last-child { margin-bottom: 0; }
+.bpc-dialog-text ul {
+  list-style: '· ' inside;
+  margin: 6px 0 0;
+  padding: 0;
+}
+.bpc-dialog-text li { padding: 1px 0; }
+.bpc-dialog-text code {
+  font-family: 'Courier New', monospace;
+  background: #fff;
+  border: 1px solid #888;
+  padding: 0 3px;
+  font-size: 10px;
+}
+
+.bpc-dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 8px 12px 12px;
+}
+.bpc-dialog-btn {
+  min-width: 75px;
+  padding: 4px 10px;
+  font-family: var(--bpc-mono);
+  font-size: 11px;
+  background: var(--bpc-win-face);
+  color: var(--bpc-win-text);
+  border: 1px solid;
+  border-color: var(--bpc-win-light) var(--bpc-win-shadow-2) var(--bpc-win-shadow-2) var(--bpc-win-light);
+  box-shadow: inset 1px 1px 0 var(--bpc-win-light-2), inset -1px -1px 0 var(--bpc-win-shadow);
+  cursor: pointer;
+}
+.bpc-dialog-btn:active {
+  border-color: var(--bpc-win-shadow-2) var(--bpc-win-light) var(--bpc-win-light) var(--bpc-win-shadow-2);
+  box-shadow: inset 1px 1px 0 var(--bpc-win-shadow), inset -1px -1px 0 var(--bpc-win-light-2);
+}
+.bpc-dialog-btn[data-default="true"] {
+  outline: 1px dotted var(--bpc-win-shadow-2);
+  outline-offset: -4px;
+}
+
+/* ------------------------------------------------------------------------- */
+/*  bpc-progress — "Downloading Virus..." hourglass progress bar              */
+/*  Used inside a bpc-dialog body during the catastrophe Stage 1.             */
+/* ------------------------------------------------------------------------- */
+
+.bpc-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bpc-progress-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.bpc-progress-hourglass {
+  display: inline-block;
+  width: 14px;
+  height: 16px;
+  position: relative;
+  animation: bpc-hourglass-flip 1s steps(2, end) infinite;
+}
+.bpc-progress-hourglass::before {
+  content: '⌛';
+  font-size: 14px;
+  line-height: 1;
+}
+@keyframes bpc-hourglass-flip {
+  0%, 49%   { transform: rotate(0deg); }
+  50%, 100% { transform: rotate(180deg); }
+}
+.bpc-progress-bar {
+  flex: 1;
+  height: 16px;
+  background: #fff;
+  border: 1px solid;
+  border-color: var(--bpc-win-shadow) var(--bpc-win-light) var(--bpc-win-light) var(--bpc-win-shadow);
+  box-shadow: inset 1px 1px 0 var(--bpc-win-shadow-2), inset -1px -1px 0 var(--bpc-win-light-2);
+  position: relative;
+  overflow: hidden;
+}
+.bpc-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    #1084d0 0,
+    #1084d0 8px,
+    #0058a8 8px,
+    #0058a8 10px
+  );
+  width: 0;
+  animation: bpc-progress-fill 1100ms ease-out forwards;
+}
+@keyframes bpc-progress-fill { to { width: 100%; } }
+
+/* ------------------------------------------------------------------------- */
+/*  bpc-cascade — broken-link catastrophe overlay                             */
+/*  Fullscreen, hosts staggered popups, fades to redirect.                    */
+/* ------------------------------------------------------------------------- */
+
+.bpc-cascade {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  /* Fake "desktop" backdrop — the OS the popups think they live on. */
+  background:
+    radial-gradient(ellipse at 30% 20%, #6080a8 0, transparent 60%),
+    radial-gradient(ellipse at 70% 80%, #4a6890 0, transparent 60%),
+    #2a3a55;
+}
+.bpc-cascade--exiting { animation: bpc-cascade-fadeout 700ms ease-in forwards; }
+@keyframes bpc-cascade-fadeout { to { opacity: 0; visibility: hidden; } }
+
+/* Each cascade child is absolutely positioned and animates in. */
+.bpc-cascade-item {
+  position: absolute;
+  pointer-events: auto;
+  animation: bpc-cascade-pop 220ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  filter: drop-shadow(2px 3px 0 rgba(0, 0, 0, 0.35));
+}
+@keyframes bpc-cascade-pop {
+  0%   { opacity: 0; transform: scale(0.86) translateY(-6px); }
+  60%  { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ------------------------------------------------------------------------- */
+/*  bpc-popup — late-90s ad popup chrome                                      */
+/*  Win95 titlebar over an image-or-typography ad body. Each popup is its     */
+/*  own little IE6 window — rectangular, badly scaled, slightly wrong.        */
+/* ------------------------------------------------------------------------- */
+
+.bpc-popup {
+  background: var(--bpc-win-face);
+  border: 2px solid;
+  border-color: var(--bpc-win-light) var(--bpc-win-shadow-2) var(--bpc-win-shadow-2) var(--bpc-win-light);
+  box-shadow: inset 1px 1px 0 var(--bpc-win-light-2), inset -1px -1px 0 var(--bpc-win-shadow);
+  font-family: var(--bpc-mono);
+  font-size: 11px;
+  width: clamp(220px, 30vw, 360px);
+  user-select: none;
+}
+.bpc-popup-titlebar {
+  background: var(--bpc-win-titlebar);
+  color: var(--bpc-win-titlebar-text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 4px 3px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.bpc-popup-title-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bpc-popup-x {
+  width: 16px;
+  height: 14px;
+  background: var(--bpc-win-face);
+  border: 1px solid;
+  border-color: var(--bpc-win-light) var(--bpc-win-shadow-2) var(--bpc-win-shadow-2) var(--bpc-win-light);
+  color: var(--bpc-win-text);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 10px;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bpc-popup-body {
+  padding: 0;
+  position: relative;
+  background: #ffffff;
+}
+.bpc-popup-body img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Typography-only ad popups — for moments where AI image gen would fail
+   (text fidelity is bad in image models). These look genuine when done well. */
+.bpc-popup--text {
+  background: #ffe000;
+  color: #000;
+  text-align: center;
+  padding: 28px 22px;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.18;
+  border-top: 0;
+}
+.bpc-popup--text strong {
+  display: block;
+  font-size: 30px;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.bpc-popup--text small {
+  display: block;
+  font-family: var(--bpc-mono);
+  font-weight: 400;
+  font-size: 10px;
+  margin-top: 14px;
+  letter-spacing: 0.04em;
+  color: #6a4d00;
+}
+.bpc-popup--text-cta {
+  display: inline-block;
+  margin-top: 14px;
+  background: #c80000;
+  color: #ffffff;
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  padding: 6px 14px;
+  border: 2px solid #000;
+  cursor: pointer;
+}
+
+/* Banner-ad style — lurid horizontal strip. */
+.bpc-popup--banner {
+  width: clamp(280px, 36vw, 480px);
+}
+.bpc-popup--banner .bpc-popup-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #45c8ff;
+  color: #ffffff;
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 22px;
+  text-shadow: 2px 2px 0 #000;
+  padding: 22px 14px;
+  text-align: center;
+}
+
+/* "Stop sign" style — for Woah-There-Partner moments. */
+.bpc-popup--stop .bpc-popup-body {
+  background: #ffffff;
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 10px;
+  padding: 14px;
+  align-items: center;
+  font-family: 'Arial Black', Arial, sans-serif;
+}
+.bpc-popup--stop .bpc-popup-stopsign {
+  width: 76px;
+  height: 76px;
+  background: #c80000;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1;
+  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+  font-weight: 900;
+}
+.bpc-popup--stop .bpc-popup-stopcopy {
+  font-size: 18px;
+  color: #000;
+  line-height: 1.15;
+}
+
+/* Reduced-motion: still show the cascade, but don't pop-animate. */
+@media (prefers-reduced-motion: reduce) {
+  .bpc-cascade-item { animation: none; }
+  .bpc-cascade--exiting { animation: none; opacity: 0; visibility: hidden; }
+  .bpc-progress-fill { animation: bpc-progress-fill 200ms linear forwards; }
+  .bpc-progress-hourglass { animation: none; }
+}
+
+/* ------------------------------------------------------------------------- */
+/*  Catastrophe stack positioning — six pre-baked offset slots.               */
+/*  Each `bpc-cascade-item` gets data-slot="1..8" and CSS positions it.       */
+/*  Doing it in CSS (not JS) keeps the JS island small and the offsets        */
+/*  predictable across reduced-motion / SSR.                                  */
+/* ------------------------------------------------------------------------- */
+
+.bpc-cascade-item[data-slot="1"] { top: 8%;  left: 6%;  animation-delay:   0ms; z-index: 11; }
+.bpc-cascade-item[data-slot="2"] { top: 14%; left: 38%; animation-delay: 180ms; z-index: 12; }
+.bpc-cascade-item[data-slot="3"] { top: 22%; left: 62%; animation-delay: 320ms; z-index: 13; }
+.bpc-cascade-item[data-slot="4"] { top: 36%; left: 14%; animation-delay: 480ms; z-index: 14; }
+.bpc-cascade-item[data-slot="5"] { top: 44%; left: 46%; animation-delay: 620ms; z-index: 15; }
+.bpc-cascade-item[data-slot="6"] { top: 52%; left: 70%; animation-delay: 780ms; z-index: 16; }
+.bpc-cascade-item[data-slot="7"] { top: 60%; left: 22%; animation-delay: 940ms; z-index: 17; }
+.bpc-cascade-item[data-slot="8"] { top: 68%; left: 50%; animation-delay: 1100ms; z-index: 18; }
+
+/* The Stage-1 virus dialog — centered, on top of everything, opens first. */
+.bpc-cascade-item[data-slot="virus"] {
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  animation-delay: 0ms;
+}
+.bpc-cascade-item[data-slot="virus"] .bpc-dialog { width: clamp(300px, 40vw, 460px); }
+
+/* The Stage-4 calm "page may have existed" dialog — fades in last. */
+.bpc-cascade-item[data-slot="calm"] {
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+  animation-delay: 0ms;
+}
+
+/* Mobile: collapse cascade slots to a vertical stack so popups still read. */
+@media (max-width: 720px) {
+  .bpc-cascade-item[data-slot]:not([data-slot="virus"]):not([data-slot="calm"]) {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 12px auto;
+    display: block;
+  }
+  .bpc-cascade { overflow-y: auto; padding: 14px; }
+}
+
+/* ------------------------------------------------------------------------- */
+/*  bpc-toast — small bottom-right toast for the redirect notice              */
+/* ------------------------------------------------------------------------- */
+
+.bpc-toast {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  z-index: 60;
+  background: #000;
+  color: #4cff4c;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  padding: 8px 14px;
+  border: 1px solid #4cff4c;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  animation: bpc-toast-in 200ms ease-out;
+}
+@keyframes bpc-toast-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
