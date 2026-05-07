@@ -8,14 +8,24 @@
  *   data-world="omnishift" + chromeMode === "desktop" + data-clock-state !== "anonymous"
  *
  * Height: 32px (used as data-chrome-height for body bottom padding).
+ *
+ * Props:
+ *   title — page title shown in the open-windows tab. BaseLayout passes
+ *     the same title used in the browser title bar so the tab reads like
+ *     a real Windows app: 'SleepNet', 'Employee Intake', etc.
  */
+interface Props {
+  title?: string;
+}
+const { title = 'OmniShift Internet' } = Astro.props;
 ---
 <div class="ost" data-chrome-height="32">
   <!-- Start button + Start menu (native <details> toggle, no JS) -->
   <details class="ost-start">
     <summary class="ost-start-btn" aria-label="Start">
-      <span class="ost-start-icon" aria-hidden="true">⊞</span>
-      <span class="ost-start-text">OmniShift</span>
+      <span class="ost-logo-mark" aria-hidden="true">
+        <span class="ost-logo-o">O</span><span class="ost-logo-s">S</span>
+      </span>
     </summary>
     <ul class="ost-start-menu" role="menu">
       <li class="ost-menu-banner" aria-hidden="true">OmniShift Workstation</li>
@@ -36,7 +46,7 @@
   <div class="ost-windows" aria-label="Open windows">
     <button class="ost-win-active" type="button" tabindex="-1" aria-current="page">
       <span class="ost-win-icon" aria-hidden="true">⊞</span>
-      <span class="ost-win-label">OmniShift Internet</span>
+      <span class="ost-win-label">{title}</span>
     </button>
   </div>
 
@@ -98,18 +108,27 @@
     border-left: 1px solid #ffffff;
     border-right: 1px solid #404040;
     border-bottom: 1px solid #404040;
-    padding: 2px 8px 2px 4px;
+    padding: 2px 14px 2px 12px;
     height: 26px;
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-weight: 700;
     cursor: default;
     font-family: inherit;
-    font-size: 11px;
   }
   .ost-start-btn::-webkit-details-marker { display: none; }
-  .ost-start-icon { color: #c61f1f; font-size: 14px; line-height: 1; }
+
+  /* OS two-color logotype — the desktop landmark, not a tab. */
+  .ost-logo-mark {
+    display: inline-flex;
+    align-items: baseline;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .ost-logo-o { color: #c61f1f; } /* OmniShift red */
+  .ost-logo-s { color: #1d2891; } /* OmniShift indigo */
 
   .ost-start-menu {
     position: absolute;
@@ -208,7 +227,7 @@
     font-weight: 700;
     color: #000;
     cursor: default;
-    max-width: 240px;
+    max-width: 320px;
   }
   .ost-win-icon { color: #c61f1f; font-size: 12px; flex-shrink: 0; }
   .ost-win-label {
@@ -245,8 +264,8 @@
   }
 
   @media (max-width: 600px) {
-    .ost-start-text { display: none; }
     .ost-tray-icon:nth-child(n+2) { display: none; }
     .ost-windows { padding: 0; }
+    .ost-win-active { max-width: 160px; }
   }
 </style>

@@ -82,7 +82,7 @@ const currentPath = Astro.url.pathname;
     {chromeMode === 'desktop' && world === 'omnishift' && (
       <>
         <OmniShiftBrowser title={title} currentPath={currentPath} />
-        <OmniShiftTaskbar />
+        <OmniShiftTaskbar title={title} />
         <AnonymousBar />
       </>
     )}

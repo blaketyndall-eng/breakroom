@@ -1,12 +1,124 @@
-<nav style="background:#1a1714;color:#c8bfa6;border-bottom:1px solid #000;font-family:var(--type-mono);font-size:11px;letter-spacing:.05em;padding:5px 12px;display:flex;gap:14px;align-items:center;overflow-x:auto;white-space:nowrap;">
-  <span style="color:#5a513f;">★ Bookmarks:</span>
-  <a href="/">SleepNet <span style="color:#5a513f;">· search</span></a>
-  <a href="/">SleepNet Directory</a>
-  <a href="/breakroom">Breakroom <span style="color:#5a513f;">· resources</span></a>
-  <a href="/portal">OmniShift Portal</a>
-  <a href="/rack">The Rack</a>
-  <a href="/newsstand">Newsstand</a>
-  <a href="/radio">Radio</a>
-  <a href="/void">Void Signal</a>
-  <span style="margin-left:auto;color:#5a513f;">load: 1.47s · 3:17 a.m.</span>
+---
+/**
+ * OldHeader.astro
+ * --------------------------------------------------------------------------
+ * IE5/6 Links bar that sits below the address bar on OmniShift desktop
+ * pages. Visual continuation of OmniShiftBrowser.astro: same #d4d0c8
+ * cream surface, Tahoma 11px, beveled separators. Per-bookmark icons
+ * use OmniShift red (#c61f1f) and indigo (#1d2891) to tie back to the
+ * Start button mark + quiz channel. The After Hours bookmark drifts
+ * toward Void Signal purple as a small visual hand-off.
+ *
+ * The .bookmarks-strip class is what chrome.css uses to hide this on
+ * Void Signal pages, pocket mode, and suppressed mode — see chrome.css.
+ */
+---
+<nav class="bookmarks-strip" aria-label="Links">
+  <span class="bm-fav-mark" aria-hidden="true">★</span>
+  <span class="bm-label">Links</span>
+  <a href="/" class="bm-link"><span class="bm-ico bm-ico-search" aria-hidden="true">⌕</span>SleepNet</a>
+  <a href="/newsstand" class="bm-link"><span class="bm-ico bm-ico-news" aria-hidden="true">▤</span>Newsstand</a>
+  <a href="/rack" class="bm-link"><span class="bm-ico bm-ico-rack" aria-hidden="true">▣</span>The Rack</a>
+  <a href="/portal" class="bm-link"><span class="bm-ico bm-ico-portal" aria-hidden="true">⊞</span>OmniShift Portal</a>
+  <a href="/radio" class="bm-link"><span class="bm-ico bm-ico-radio" aria-hidden="true">♪</span>Radio 1:47</a>
+  <a href="/breakroom" class="bm-link"><span class="bm-ico bm-ico-breakroom" aria-hidden="true">▨</span>Breakroom</a>
+  <a href="/void" class="bm-link"><span class="bm-ico bm-ico-void" aria-hidden="true">☾</span>After Hours</a>
+  <span class="bm-status" aria-hidden="true">load: 1.47s · 3:17 a.m.</span>
 </nav>
+
+<style>
+  .bookmarks-strip {
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-bottom: 1px solid #808080;
+    padding: 2px 8px;
+    height: 24px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-family: 'Tahoma', 'MS Sans Serif', system-ui, sans-serif;
+    font-size: 11px;
+    color: #000;
+    user-select: none;
+  }
+
+  .bm-fav-mark {
+    color: #ffd76b; /* same gold as the title-bar window icon */
+    font-size: 12px;
+    line-height: 1;
+    margin-right: 4px;
+    padding-left: 2px;
+  }
+
+  .bm-label {
+    font-weight: 700;
+    color: #404040;
+    margin-right: 8px;
+    padding-right: 8px;
+    border-right: 1px solid #808080;
+    box-shadow: 1px 0 0 0 #ffffff; /* second beveled hairline */
+    line-height: 1;
+  }
+
+  .bm-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 6px;
+    color: #000 !important;
+    text-decoration: none;
+    cursor: default;
+    border: 1px solid transparent;
+    line-height: 1.4;
+    box-sizing: border-box;
+  }
+  .bm-link:hover {
+    background: #316ac5; /* IE5 selected-favorite blue */
+    color: #ffffff !important;
+    border-top: 1px solid #608cd5;
+    border-left: 1px solid #608cd5;
+    border-right: 1px solid #1d3a7d;
+    border-bottom: 1px solid #1d3a7d;
+  }
+  .bm-link:active {
+    border-top: 1px solid #1d3a7d;
+    border-left: 1px solid #1d3a7d;
+    border-right: 1px solid #608cd5;
+    border-bottom: 1px solid #608cd5;
+  }
+
+  .bm-ico {
+    display: inline-block;
+    width: 14px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1;
+  }
+  /* Per-bookmark accent colors. Hover flips them all to gold to match
+     the title-bar window icon — matches Win9x highlight cohesion. */
+  .bm-ico-search    { color: #c61f1f; }
+  .bm-ico-news      { color: #1d2891; }
+  .bm-ico-rack      { color: #c61f1f; }
+  .bm-ico-portal    { color: #1d2891; }
+  .bm-ico-radio     { color: #c61f1f; }
+  .bm-ico-breakroom { color: #1d2891; }
+  .bm-ico-void      { color: #5a2c8c; } /* drift toward Void Signal purple */
+  .bm-link:hover .bm-ico { color: #ffd76b !important; }
+
+  .bm-status {
+    margin-left: auto;
+    color: #5a513f;
+    font-family: 'Courier New', 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 720px) {
+    .bm-label,
+    .bm-status { display: none; }
+  }
+</style>
