@@ -70,47 +70,65 @@ export const COMPRESSED_STYLE =
   '2001 cartoon network mascot, ink lines, flat fill, soft pastel, neopets adjacent';
 
 // ---------------------------------------------------------------------------
-// THE REGULAR — V Pro 2
+// THE REGULAR — V Pro 3 (locked direction from ChatGPT reference outputs)
 // ---------------------------------------------------------------------------
-// Blake's V1 critique: lines too fine, jumpsuit too creased, ski mask reads
-// as smooth dome with printed eyes (not knit fabric with cutouts).
+// Blake reviewed V Pro 1 ("too fine, no knit, smooth dome") and V Pro 2
+// (corrected line weight + 3-hole mask). Then ChatGPT generated two
+// reference images that nailed the direction. V3 codifies what those
+// references taught us:
 //
-// V2 corrections baked into the prompt:
-//   1. THICKER outlines — explicit "thick chunky black ink outlines" + line
-//      weight reference to Markus Magnusson Sneaky-style.
-//   2. MINIMAL interior detail — "flat white fill, no fold lines, no shading
-//      lines, no creases" + negative reinforcement.
-//   3. PROPER ski mask anatomy — leads with "knit white wool balaclava" and
-//      explicitly calls out THREE distinct circular openings: two round eye
-//      holes (visible eyes inside) + one round mouth hole (visible darkness
-//      inside). Knit fabric must read as fabric, not painted skin.
+//   1. NOT a jumpsuit — Sneaky is a HOODIE character. White hoodie + white
+//      shorts + Mickey-style chunky white boots + Mickey-style mitten gloves.
+//   2. NOT three holes — ONE elongated horizontal almond-shaped eye-slot
+//      showing both eyes side by side. The mouth area is fully covered.
+//   3. RED EYES, not white-sclera-with-black-pupils. Solid glowing red ovals
+//      with angry downward brow tilt.
+//   4. VISIBLE knit ribbing — vertical parallel stitch lines drawn into the
+//      mask fabric. This is what finally sells "knit wool" vs "smooth blob."
+//   5. PURPLE saturated background, not isolated white.
+//   6. DOTTED floor shadows (3-5 small grey ovals) — Magnusson signature,
+//      keeps the figure feeling walk-cycle-ready, not portrait-grounded.
 //
-// Negatives stack-ranked by failure mode observed in V1 + Pollinations runs.
+// Black mask is canonical. White-mask sibling is intentionally not encoded
+// here — when we need a "stealth" variant we'll fork to a new slot key.
 
-const THE_REGULAR_V2_PROMPT = [
-  // Lead with the mask material, not the head silhouette.
-  'A 1930s rubberhose cartoon character wearing a thick knit white wool balaclava ski mask covering the entire head.',
-  'The balaclava has THREE distinct circular cutout openings: two round eye holes on the upper face revealing only the eyes inside (small black dot pupils on white sclera), and one round mouth hole on the lower face revealing only solid darkness inside.',
-  'The knit wool fabric is clearly visible — chunky stitched texture, slightly fuzzy edges around each cutout opening, the holes are real holes cut into fabric (not painted-on shapes).',
-  // Body simplification.
-  'Below the mask he wears a baggy plain white loose-fitting jumpsuit, totally flat white fill with no creases, no fold lines, no pleats, no shading, no contour lines on the body.',
-  'White cuffed gloves, simple white work boots with NO visible laces and NO shadow lines on the boot surface.',
-  'Standing relaxed in a slight contrapposto pose, full body shot, isolated on pure white background with one soft cast shadow on the ground beneath the boots.',
-  // Style anchor — Markus Magnusson "Sneaky" series.
-  'Drawn in the exact style of Markus Magnusson\'s "Sneaky" character animation series: thick chunky hand-drawn black ink outlines (heavy 8-pixel-equivalent line weight), confident curved lines with slight hand-animated wobble, flat 2D vector cartoon illustration, NO gradients, NO interior detail lines, NO crosshatching.',
-  '1920s-1930s rubberhose animation lineage — Felix the Cat, early Mickey Mouse, Cuphead inspiration — but rendered with modern motion-design flat finish.',
+const THE_REGULAR_V3_PROMPT = [
+  // Pose + background — set the stage first.
+  'A counterculture outlaw cartoon character standing in a slight three-quarter side stance with one foot forward and a hint of swagger lean, isolated against a flat saturated purple background (no other elements, no scenery).',
+  // Mask — lead with knit texture so FLUX commits to fabric.
+  'He wears a thick black knit wool balaclava covering the entire head, with clearly visible vertical knit ribbing texture rendered as parallel vertical stitch line strokes drawn throughout the mask fabric.',
+  'The balaclava has ONE single elongated horizontal almond-shaped eye-slot opening — a wide narrow horizontal cutout (NOT separate circular holes) revealing two glowing solid bright red eyes side by side, with an angry downward-slanted brow tilt at the inner corners.',
+  'The mouth and chin area of the mask is fully covered by knit fabric — no mouth hole, no lips visible, no chin showing.',
+  // Outfit — hoodie + shorts, NOT a jumpsuit.
+  'Below the mask he wears a baggy plain white pullover hoodie with the hood bunched at the back of the neck (small hood bunching visible at the collar), totally flat solid white fill with absolutely no shading and no fold creases — only a single thin black outline indicating the hoodie hem at the waist and a thin outline showing the front kangaroo pocket curve.',
+  'Below the hoodie he wears baggy mid-thigh white shorts (or short pants), totally flat white fill, NO crease lines, NO interior shading, NO leg muscle definition.',
+  // Hands and feet — Mickey/Felix register.
+  'He has big bulbous rounded white cartoon mitten gloves with NO finger separation lines (just a single curved cuff line indicating the wrist).',
+  'He wears big chunky bulbous white Mickey-Mouse-style boots with rounded almost-spherical toes, NO visible laces, NO eyelets, NO shadow lines on the boot surface — just the silhouette outline.',
+  // Floor anchor — dot shadows, not a single shape.
+  'The ground beneath him is suggested ONLY by 3 to 5 small dark grey oval shadow dots scattered loosely on the ground plane around his feet (NOT one connected cast shadow shape, NOT a single ellipse — discrete tiny dots).',
+  // Style anchor — Markus Magnusson Sneaky series, very heavy ink line.
+  'Drawn in the exact style of Markus Magnusson\'s "Sneaky" character animation series: extremely thick chunky hand-drawn black ink outlines (heavy 10-pixel-equivalent line weight, much heavier than fine vector linework), confident curved lines with a subtle hand-animated wobble, flat 2D vector cartoon illustration, ZERO gradients, ZERO crosshatching, ZERO interior shading lines anywhere on the body or clothing.',
+  '1920s-1930s rubberhose animation lineage — Felix the Cat, early Mickey Mouse, Cuphead — but rendered with a modern motion-design flat finish on a solid saturated purple background.',
 ].join(' ');
 
-const THE_REGULAR_V2_NEGATIVE = [
+const THE_REGULAR_V3_NEGATIVE = [
+  // Wrong mask anatomy.
+  'no separate round eye holes, no two-circle eye holes, no three-hole balaclava, no mouth hole, no visible mouth, no visible chin,',
+  'no white-sclera eyes, no eye whites, no black pupils on white (the eyes must be solid glowing red ovals with no white showing),',
+  'no smooth painted dome mask without knit texture, no two-tone printed mask pattern, no domino mask, no superhero mask, no goggles, no glasses,',
+  // Wrong body anatomy.
+  'no jumpsuit, no coveralls, no zip-up suit, no boiler suit, no onesie, no full-body uniform,',
+  'no separated fingers on gloves, no realistic five-finger hands, no flesh-tone hands,',
+  'no detailed boot laces, no eyelets, no boot shadow lines, no foot creases,',
+  // Wrong style.
+  'no thin vector lines, no fine detail linework, no manga, no anime, no shojo,',
+  'no fabric folds, no hoodie wrinkles, no body shading, no muscle definition, no contour shading,',
   'no Mickey Mouse ears, no panda ears, no animal ears of any kind,',
-  'no domino mask, no superhero mask, no goggles, no glasses, no eye paint,',
-  'no smooth dome head, no plain white blob, no Baymax, no marshmallow figure,',
-  'no hood, no hoodie, no pulled-up shirt collar covering the face,',
-  'no jumpsuit creases, no fabric folds, no body shading, no foot shadows,',
-  'no thin vector lines, no fine detail linework, no manga style, no anime,',
-  'no photorealism, no 3D render, no Pixar fur, no plastic AI sheen,',
-  'no skin tone visible anywhere, no exposed face, no mouth lips visible,',
-  'no two-tone mask printed pattern (the mask must be solid white knit wool with three real cutout holes)',
+  'no Pixar 3D render, no plastic AI sheen, no photorealism, no gradient shading,',
+  // Wrong background.
+  'no isolated white background, no plain background, no studio backdrop, no scenery, no street, no buildings,',
+  'no single connected cast shadow under the figure (only discrete dot shadows)',
 ].join(' ');
 
 // ---------------------------------------------------------------------------
@@ -125,13 +143,13 @@ export const NANO_PROMPTS: Record<string, NanoPrompt> = {
    */
   theRegular: {
     key: 'theRegular',
-    subject: 'THE REGULAR — VOID mascot, Sneaky-style ski-masked figure',
-    width: 896,
-    height: 1152,
-    seed: 2287, // fresh seed to break out of V1 composition trap
+    subject: 'THE REGULAR — VOID mascot, Sneaky-style outlaw in black knit balaclava + white hoodie',
+    width: 1152,
+    height: 864, // 4:3 landscape — matches ChatGPT reference proportions
+    seed: 3142, // fresh seed for V3 — ChatGPT-anchored direction is a new branch from V2
     provider: 'replicate-flux-pro',
-    prompt: THE_REGULAR_V2_PROMPT,
-    negative: THE_REGULAR_V2_NEGATIVE,
+    prompt: THE_REGULAR_V3_PROMPT,
+    negative: THE_REGULAR_V3_NEGATIVE,
   },
 
   /**

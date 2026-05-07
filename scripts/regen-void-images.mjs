@@ -59,29 +59,39 @@ if (!TOKEN) {
 const SLOTS = [
   {
     key: 'theRegular',
-    width: 896,
-    height: 1152,
-    seed: 2287,
+    // V Pro 3 — locked direction from ChatGPT reference outputs.
+    // Black knit balaclava with vertical ribbing + single horizontal eye-slot
+    // showing red eyes + white hoodie + white shorts + Mickey-style boots/gloves
+    // + purple background + dotted floor shadows.
+    width: 1152,
+    height: 864,
+    seed: 3142,
     prompt: [
-      'A 1930s rubberhose cartoon character wearing a thick knit white wool balaclava ski mask covering the entire head.',
-      'The balaclava has THREE distinct circular cutout openings: two round eye holes on the upper face revealing only the eyes inside (small black dot pupils on white sclera), and one round mouth hole on the lower face revealing only solid darkness inside.',
-      'The knit wool fabric is clearly visible — chunky stitched texture, slightly fuzzy edges around each cutout opening, the holes are real holes cut into fabric (not painted-on shapes).',
-      'Below the mask he wears a baggy plain white loose-fitting jumpsuit, totally flat white fill with no creases, no fold lines, no pleats, no shading, no contour lines on the body.',
-      'White cuffed gloves, simple white work boots with NO visible laces and NO shadow lines on the boot surface.',
-      'Standing relaxed in a slight contrapposto pose, full body shot, isolated on pure white background with one soft cast shadow on the ground beneath the boots.',
-      'Drawn in the exact style of Markus Magnusson\'s "Sneaky" character animation series: thick chunky hand-drawn black ink outlines (heavy 8-pixel-equivalent line weight), confident curved lines with slight hand-animated wobble, flat 2D vector cartoon illustration, NO gradients, NO interior detail lines, NO crosshatching.',
-      '1920s-1930s rubberhose animation lineage — Felix the Cat, early Mickey Mouse, Cuphead inspiration — but rendered with modern motion-design flat finish.',
+      'A counterculture outlaw cartoon character standing in a slight three-quarter side stance with one foot forward and a hint of swagger lean, isolated against a flat saturated purple background (no other elements, no scenery).',
+      'He wears a thick black knit wool balaclava covering the entire head, with clearly visible vertical knit ribbing texture rendered as parallel vertical stitch line strokes drawn throughout the mask fabric.',
+      'The balaclava has ONE single elongated horizontal almond-shaped eye-slot opening — a wide narrow horizontal cutout (NOT separate circular holes) revealing two glowing solid bright red eyes side by side, with an angry downward-slanted brow tilt at the inner corners.',
+      'The mouth and chin area of the mask is fully covered by knit fabric — no mouth hole, no lips visible, no chin showing.',
+      'Below the mask he wears a baggy plain white pullover hoodie with the hood bunched at the back of the neck (small hood bunching visible at the collar), totally flat solid white fill with absolutely no shading and no fold creases — only a single thin black outline indicating the hoodie hem at the waist and a thin outline showing the front kangaroo pocket curve.',
+      'Below the hoodie he wears baggy mid-thigh white shorts (or short pants), totally flat white fill, NO crease lines, NO interior shading, NO leg muscle definition.',
+      'He has big bulbous rounded white cartoon mitten gloves with NO finger separation lines (just a single curved cuff line indicating the wrist).',
+      'He wears big chunky bulbous white Mickey-Mouse-style boots with rounded almost-spherical toes, NO visible laces, NO eyelets, NO shadow lines on the boot surface — just the silhouette outline.',
+      'The ground beneath him is suggested ONLY by 3 to 5 small dark grey oval shadow dots scattered loosely on the ground plane around his feet (NOT one connected cast shadow shape, NOT a single ellipse — discrete tiny dots).',
+      'Drawn in the exact style of Markus Magnusson\'s "Sneaky" character animation series: extremely thick chunky hand-drawn black ink outlines (heavy 10-pixel-equivalent line weight, much heavier than fine vector linework), confident curved lines with a subtle hand-animated wobble, flat 2D vector cartoon illustration, ZERO gradients, ZERO crosshatching, ZERO interior shading lines anywhere on the body or clothing.',
+      '1920s-1930s rubberhose animation lineage — Felix the Cat, early Mickey Mouse, Cuphead — but rendered with a modern motion-design flat finish on a solid saturated purple background.',
     ].join(' '),
     negative: [
+      'no separate round eye holes, no two-circle eye holes, no three-hole balaclava, no mouth hole, no visible mouth, no visible chin,',
+      'no white-sclera eyes, no eye whites, no black pupils on white (the eyes must be solid glowing red ovals with no white showing),',
+      'no smooth painted dome mask without knit texture, no two-tone printed mask pattern, no domino mask, no superhero mask, no goggles, no glasses,',
+      'no jumpsuit, no coveralls, no zip-up suit, no boiler suit, no onesie, no full-body uniform,',
+      'no separated fingers on gloves, no realistic five-finger hands, no flesh-tone hands,',
+      'no detailed boot laces, no eyelets, no boot shadow lines, no foot creases,',
+      'no thin vector lines, no fine detail linework, no manga, no anime, no shojo,',
+      'no fabric folds, no hoodie wrinkles, no body shading, no muscle definition, no contour shading,',
       'no Mickey Mouse ears, no panda ears, no animal ears of any kind,',
-      'no domino mask, no superhero mask, no goggles, no glasses, no eye paint,',
-      'no smooth dome head, no plain white blob, no Baymax, no marshmallow figure,',
-      'no hood, no hoodie, no pulled-up shirt collar covering the face,',
-      'no jumpsuit creases, no fabric folds, no body shading, no foot shadows,',
-      'no thin vector lines, no fine detail linework, no manga style, no anime,',
-      'no photorealism, no 3D render, no Pixar fur, no plastic AI sheen,',
-      'no skin tone visible anywhere, no exposed face, no mouth lips visible,',
-      'no two-tone mask printed pattern (the mask must be solid white knit wool with three real cutout holes)',
+      'no Pixar 3D render, no plastic AI sheen, no photorealism, no gradient shading,',
+      'no isolated white background, no plain background, no studio backdrop, no scenery, no street, no buildings,',
+      'no single connected cast shadow under the figure (only discrete dot shadows)',
     ].join(' '),
   },
 ];
@@ -107,8 +117,42 @@ if (targetSlots.length === 0) {
 // ---------------------------------------------------------------------------
 // 4. Replicate API call (sync via Prefer: wait=60)
 // ---------------------------------------------------------------------------
+/**
+ * Derive a FLUX-supported aspect_ratio string from slot dimensions.
+ * FLUX 1.1 Pro accepts: '1:1', '16:9', '21:9', '3:2', '2:3', '4:5', '5:4',
+ * '3:4', '4:3', '9:16', '9:21'. We pick the closest match by ratio so a
+ * 1152×864 slot maps to '4:3', an 864×1152 slot maps to '3:4', etc.
+ */
+function deriveAspectRatio(width, height) {
+  const candidates = [
+    ['1:1', 1 / 1],
+    ['16:9', 16 / 9],
+    ['21:9', 21 / 9],
+    ['3:2', 3 / 2],
+    ['2:3', 2 / 3],
+    ['4:5', 4 / 5],
+    ['5:4', 5 / 4],
+    ['3:4', 3 / 4],
+    ['4:3', 4 / 3],
+    ['9:16', 9 / 16],
+    ['9:21', 9 / 21],
+  ];
+  const target = width / height;
+  let best = candidates[0];
+  let bestDiff = Math.abs(best[1] - target);
+  for (const c of candidates) {
+    const d = Math.abs(c[1] - target);
+    if (d < bestDiff) {
+      bestDiff = d;
+      best = c;
+    }
+  }
+  return best[0];
+}
+
 async function generate(slot) {
-  console.log(`[regen] ${slot.key} — calling Replicate FLUX 1.1 Pro…`);
+  const aspectRatio = deriveAspectRatio(slot.width, slot.height);
+  console.log(`[regen] ${slot.key} — calling Replicate FLUX 1.1 Pro (${aspectRatio}, seed ${slot.seed})…`);
 
   const res = await fetch(
     'https://api.replicate.com/v1/models/black-forest-labs/flux-1.1-pro/predictions',
@@ -122,7 +166,7 @@ async function generate(slot) {
       body: JSON.stringify({
         input: {
           prompt: slot.prompt,
-          aspect_ratio: '3:4',
+          aspect_ratio: aspectRatio,
           output_format: 'jpg',
           output_quality: 90,
           safety_tolerance: 5,
@@ -184,8 +228,11 @@ async function main() {
 
   console.log('\n[regen] done.');
   if (!stagingOnly) {
+    const slotKeys = targetSlots.map((s) => s.key).join(', ');
     console.log('  Next: review staging image, then commit /public/void/ binaries:');
-    console.log('  git add public/void/ && git commit -m "regen: theRegular V Pro 2"');
+    console.log(`  git add public/void/ && git commit -m "regen: ${slotKeys}"`);
+  } else {
+    console.log('  Staging-only run. When happy, rerun without --staging to update /public/void/.');
   }
 }
 
