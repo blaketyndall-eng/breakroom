@@ -57,6 +57,7 @@ function PopupShell({
   closing,
   children,
   bodyClass,
+  ie6,
 }: {
   slot: number;
   title: string;
@@ -64,17 +65,56 @@ function PopupShell({
   closing?: boolean;
   children: ReactNode;
   bodyClass?: string;
+  /**
+   * BPC-4 polish: when true, renders the full IE6 window chrome (window
+   * controls trio + verbose title format + faux address bar). Used by ad-style
+   * statement popups so they read as full IE6 windows. Prompt-style popups
+   * stay as bare Win95 alert dialogs (ie6={false}, the default).
+   */
+  ie6?: boolean;
 }) {
+  // IE6 mode: dress the title up "Welcome to {title} - Microsoft Internet Expl..."
+  // and synthesize a faux URL for the address bar from the title string.
+  const titleText = ie6
+    ? `Welcome to ${title} — Microsoft Internet Expl...`
+    : title;
+  const addrUrl = ie6
+    ? `http://www.${title.replace(/\s+/g, '')}/?ref=broadbrain`
+    : '';
+
   return (
     <div
       className={`bpc-cascade-item${closing ? ' bpc-cascade-item--closing' : ''}`}
       data-slot={slot}
     >
-      <div className="bpc-popup" data-mood={mood ?? null}>
+      <div
+        className={`bpc-popup${ie6 ? ' bpc-popup--ie6' : ''}`}
+        data-mood={mood ?? null}
+      >
         <div className="bpc-popup-titlebar">
-          <span className="bpc-popup-title-text">{title}</span>
-          <span className="bpc-popup-x" aria-hidden="true">×</span>
+          <span className="bpc-popup-title-text">{titleText}</span>
+          {ie6 ? (
+            <span className="bpc-popup-controls">
+              <span className="bpc-popup-min" aria-hidden="true">_</span>
+              <span className="bpc-popup-max" aria-hidden="true">□</span>
+              <span className="bpc-popup-x" aria-hidden="true">×</span>
+            </span>
+          ) : (
+            <span className="bpc-popup-x" aria-hidden="true">×</span>
+          )}
         </div>
+        {ie6 && (
+          <div className="bpc-popup-addrbar" aria-hidden="true">
+            <span className="bpc-popup-addrbar-nav">◀</span>
+            <span className="bpc-popup-addrbar-nav">▶</span>
+            <span className="bpc-popup-addrbar-nav">✕</span>
+            <span className="bpc-popup-addrbar-nav">↻</span>
+            <span className="bpc-popup-addrbar-nav">⌂</span>
+            <span className="bpc-popup-addrbar-label">Address</span>
+            <span className="bpc-popup-addrbar-field">{addrUrl}</span>
+            <span className="bpc-popup-addrbar-go">Go</span>
+          </div>
+        )}
         <div className={bodyClass ?? 'bpc-popup-body'}>{children}</div>
       </div>
     </div>
@@ -96,7 +136,7 @@ function StatementPopup({
   const showImage = !!variant.imageKey && !imageBroken;
 
   return (
-    <PopupShell slot={slot} title={variant.title} mood={variant.mood}>
+    <PopupShell slot={slot} title={variant.title} mood={variant.mood} ie6>
       <div className={`bpc-statement bpc-statement--${variant.mood ?? 'lowfi'}`}>
         {showImage && (
           <div className="bpc-statement-photo">
@@ -110,6 +150,9 @@ function StatementPopup({
         <div className="bpc-statement-text">
           <strong>{variant.body}</strong>
           {variant.sub && <span className="bpc-statement-sub">{variant.sub}</span>}
+          {variant.cta && (
+            <span className="bpc-statement-cta">{variant.cta}</span>
+          )}
         </div>
       </div>
     </PopupShell>
