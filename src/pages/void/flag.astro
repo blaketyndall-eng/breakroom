@@ -1,0 +1,65 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+---
+<OldWebLayout title="flag a page" section="voidshell">
+  <div class="status-strip">
+    <span>void</span>
+    <span>flag</span>
+    <span>complaint not guaranteed</span>
+    <span><a href="/void">return to portal</a></span>
+  </div>
+
+  <h1>Flag a Page</h1>
+
+  <p class="tagline-block">
+    If a page on VOID is dangerous, broken, or pretending too hard, you can tell the room.
+    The room will hear you. The room may not act.
+  </p>
+
+  <section class="old-shell">
+    <div class="old-header">Form (does not submit)</div>
+    <div class="old-body">
+      <form class="flag-form" onsubmit="event.preventDefault(); document.getElementById('flag-result').hidden = false;">
+        <label>
+          URL of page
+          <input type="text" name="url" placeholder="voidsignal://..." />
+        </label>
+        <label>
+          Why
+          <select name="reason">
+            <option>Dangerous</option>
+            <option>Broken on purpose</option>
+            <option>Broken by accident</option>
+            <option>Pretending to be official</option>
+            <option>Pretending to be unofficial</option>
+            <option>The page noticed me</option>
+            <option>Other (the room knows)</option>
+          </select>
+        </label>
+        <label>
+          Detail
+          <textarea name="detail" rows="4" placeholder="explain. or don't."></textarea>
+        </label>
+        <button type="submit">File complaint</button>
+      </form>
+
+      <p id="flag-result" hidden class="memo-box">
+        Filed. Or not. The directory does not display received complaints.
+        If a door moves, that was probably you.
+      </p>
+    </div>
+  </section>
+</OldWebLayout>
+
+<style>
+  .flag-form label { display: block; margin-bottom: 10px; font-family: var(--type-mono); font-size: 12px; }
+  .flag-form input, .flag-form select, .flag-form textarea {
+    display: block; margin-top: 4px; width: 100%; max-width: 480px;
+    padding: 5px 7px; border: 1px solid #1a0a2e; font-family: inherit; font-size: 13px;
+    background: #fff8d0;
+  }
+  .flag-form button {
+    margin-top: 6px; padding: 5px 14px; border: 2px outset #ffec80;
+    background: #ffd700; font-family: inherit; font-weight: 700; cursor: pointer;
+  }
+</style>

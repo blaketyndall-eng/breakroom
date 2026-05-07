@@ -1,0 +1,84 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+---
+<OldWebLayout title="VOID webrings" section="voidshell">
+  <div class="status-strip">
+    <span>void</span>
+    <span>webrings</span>
+    <span>{`<<`} prev · next {`>>`}</span>
+    <span><a href="/void">return to portal</a></span>
+  </div>
+
+  <h1>Webrings</h1>
+
+  <p class="tagline-block">
+    Pages linked by purpose, mood, or accident. Click the next button enough times and
+    you'll come back here. Or you won't. Both happen.
+  </p>
+
+  <div class="rings-grid">
+    <div class="old-shell">
+      <div class="old-header">Moth Ring</div>
+      <div class="old-body">
+        <p>Pages run by people who love moths and are wrong about lighting.</p>
+        <p class="ring-meta">3 sites · last update: 2026-04-12</p>
+        <p>
+          <a href="/sites/moths">moths.afterhours</a> ·
+          <a href="#">porchlight.thoughts</a> ·
+          <a href="#">bulb-dependents.org</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="old-shell">
+      <div class="old-header">Lost &amp; Filed Ring</div>
+      <div class="old-body">
+        <p>Object archives. Evidence drawers. People with too many manila folders.</p>
+        <p class="ring-meta">5 sites · last update: 2026-03-30</p>
+        <p>
+          <a href="/sites/lostgloves">lostgloves.afterhours</a> ·
+          <a href="#">item9.evidence</a> ·
+          <a href="/sites/whoateit">whoateit.classifieds</a> ·
+          <a href="#">receipt-archive.txt</a> ·
+          <a href="#">nun-dog-records</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="old-shell">
+      <div class="old-header">After-Hours Drag Strip Ring</div>
+      <div class="old-body">
+        <p>Speed nerds, timing slips, lowriders that exist mainly at 2am.</p>
+        <p class="ring-meta">7 sites · last update: 2026-04-02</p>
+        <p>
+          <a href="/sites/timing-slips">timing-slips.bible</a> ·
+          <a href="#">drivers-log.htm</a> ·
+          <a href="#">fuzzy-dice-economy</a> ·
+          <a href="#">parking-lot-west.fan</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="old-shell">
+      <div class="old-header">One Night Only Ring</div>
+      <div class="old-body">
+        <p>Tournaments, events, parties. Some happened. Some haven't.</p>
+        <p class="ring-meta">2 sites · last update: 2026-02-19</p>
+        <p>
+          <a href="/sites/onenight">onenight.poolhall</a> ·
+          <a href="/idle-hands">Idle Hands Invitational</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <p class="memo-box">
+    Want your page in a ring? Sign the wall asking. The room reads the wall.
+  </p>
+</OldWebLayout>
+
+<style>
+  .rings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+  @media (max-width: 720px) { .rings-grid { grid-template-columns: 1fr; } }
+  .ring-meta { font-family: var(--type-mono); font-size: 11px; color: #5a513f; margin: 6px 0; }
+</style>

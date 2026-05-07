@@ -1,0 +1,73 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+---
+<OldWebLayout title="VOID arcade" section="voidshell">
+  <div class="status-strip">
+    <span>void</span>
+    <span>arcade</span>
+    <span>sticky tonight</span>
+    <span><a href="/void">return to portal</a></span>
+  </div>
+
+  <h1>The Arcade</h1>
+
+  <p class="tagline-block">
+    The arcade is sticky tonight. Most cabinets are unplugged. Two of them aren't, but
+    the screen is showing someone else's high score and won't accept new initials.
+  </p>
+
+  <section class="old-shell">
+    <div class="old-header">Cabinets currently here</div>
+    <div class="old-body">
+      <ul class="game-list">
+        <li>
+          <b>The Wheel of Outcomes</b>
+          <span class="status-pill">UNPLUGGED</span>
+          <p>Spinning works. Outcomes do not. Last spin landed on a result that did not exist on the wheel.</p>
+        </li>
+        <li>
+          <b>Scratchcard Kiosk</b>
+          <span class="status-pill">OUT OF SCRATCHERS</span>
+          <p>The kiosk has scratchers. The kiosk says it doesn't. We trust the kiosk.</p>
+        </li>
+        <li>
+          <b>Pool Hall Simulator '03</b>
+          <span class="status-pill">CRT WARMING UP</span>
+          <p>Three minutes since power-on. Eighteen minutes since the CRT will warm up. Math may be off.</p>
+        </li>
+        <li>
+          <b>Drag Strip Bible</b>
+          <span class="status-pill">WAITING FOR TIMING SLIP</span>
+          <p>See <a href="/sites/timing-slips">timing-slips.bible</a>. The cabinet reads from the same file.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="old-shell">
+    <div class="old-header">If you brought quarters</div>
+    <div class="old-body">
+      <p>
+        ONLINE PAYMENT IS BROKEN. Insert quarters at counter. Exact change preferred.
+        Machine does not give change. Machine may not exist.
+      </p>
+    </div>
+  </section>
+
+  <p class="memo-box">
+    A door moved while you were reading this.
+  </p>
+</OldWebLayout>
+
+<style>
+  .game-list { list-style: none; padding: 0; }
+  .game-list li { padding: 10px 0; border-bottom: 1px dashed #cc9900; }
+  .game-list li:last-child { border-bottom: none; }
+  .game-list li b { display: inline-block; margin-right: 8px; }
+  .game-list li p { margin-top: 4px; font-size: 13px; color: #5a513f; }
+  .status-pill {
+    display: inline-block; padding: 1px 6px; font-family: 'Courier New', monospace;
+    font-size: 10px; background: #1a0a2e; color: #4cff4c; letter-spacing: 1px;
+    vertical-align: middle;
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+/**
+ * /clock-in — return to OmniShift from Void Signal.
+ *
+ * The "logout" of VS — your absence will be logged. Renders in the
+ * voidsignal world (you're still leaving from there) but framed as a
+ * doorway back into the corporate shell.
+ */
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+---
+<OldWebLayout title="Clock In" section="voidshell">
+  <div class="status-strip">
+    <span>doorway</span>
+    <span>clock in</span>
+    <span>your absence will be logged</span>
+    <span><a href="/void">stay here</a></span>
+  </div>
+
+  <h1>Clock In</h1>
+
+  <p class="tagline-block">
+    You are about to return to OmniShift. The clock will resume reading whatever the
+    clock reads. The Breakroom will not call you. It does not know your number.
+  </p>
+
+  <section class="old-shell">
+    <div class="old-header">Reminder before re-entry</div>
+    <div class="old-body">
+      <ul>
+        <li>Your Regular File stays where it is.</li>
+        <li>The Drawer keeps everything in it.</li>
+        <li>Your Top 8 will not change while you are gone.</li>
+        <li>Mothie remembers you. So does the room.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="clock-in-actions">
+    <a class="cta-clock-in" href="/portal">Yes. Clock me back in.</a>
+    <a class="cta-stay" href="/void">No. Stay.</a>
+  </div>
+
+  <p class="memo-box">
+    Welcome back. Your absence was logged.
+  </p>
+</OldWebLayout>
+
+<style>
+  .clock-in-actions {
+    display: flex; gap: 12px; margin: 22px 0; flex-wrap: wrap;
+  }
+  .cta-clock-in {
+    display: inline-block; padding: 8px 16px; background: #0a246a; color: #fff !important;
+    border: 2px outset #5a6ca5; font-family: 'Tahoma', sans-serif; font-weight: 700;
+    text-decoration: none !important;
+  }
+  .cta-clock-in:hover { background: #1d3a8a; }
+  .cta-stay {
+    display: inline-block; padding: 8px 16px; background: #ffd700; color: #1a0a2e !important;
+    border: 2px solid #1a0a2e; font-family: 'Comfortaa', sans-serif; font-weight: 700;
+    text-decoration: none !important;
+  }
+</style>
