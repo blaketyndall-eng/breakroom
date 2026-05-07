@@ -1,0 +1,777 @@
+/* ============================================================
+   REGULAR FILE PAGE (rfp-*) — UI redesign
+   ------------------------------------------------------------
+   2005 TheFacebook 3-column profile shape with Citizen-Phoebe
+   per-section typography and a MySpace-integrated Wall.
+   Tokens namespaced with rfp- so V2 module tokens stay intact.
+   ============================================================ */
+
+/* Page-level wallpaper drives off the existing --reg-accent / --reg-soft
+   theme tokens. Each theme adds a `--rfp-paper` (background) and an
+   accent fallback. The `corrupted_employee_portal` default below is the
+   "manila/file" feel; other themes override below. */
+.rfp-profile {
+  --rfp-paper: #f0ebde;
+  --rfp-paper-2: #e6dfca;
+  --rfp-ink: #14110e;
+  --rfp-ink-soft: #5a513f;
+  --rfp-link: #0033cc;
+  --rfp-link-visited: #6b2d8c;
+  --rfp-pin: #b00020;
+  --rfp-rule: rgba(20, 17, 14, 0.18);
+  --rfp-tape: #e8d76a;
+  --rfp-accent: var(--reg-accent, #b00020);
+  --rfp-accent-soft: var(--reg-soft, rgba(176, 0, 32, 0.06));
+
+  background: var(--rfp-paper);
+  background-image:
+    /* faint paper grain */
+    repeating-linear-gradient(
+      0deg,
+      rgba(20, 17, 14, 0.04) 0 1px,
+      transparent 1px 4px
+    );
+  border: 3px double var(--rfp-ink);
+  box-shadow: 5px 5px 0 rgba(20, 17, 14, 0.22);
+  margin-top: 18px;
+  color: var(--rfp-ink);
+  font-family: 'Verdana', 'Geneva', sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Theme wallpapers */
+.regular-theme-corrupted_employee_portal.rfp-profile {
+  --rfp-paper: #f0ebde;
+  --rfp-paper-2: #e8dec3;
+}
+.regular-theme-pool_hall_personal_page.rfp-profile {
+  --rfp-paper: #e3d8b8;
+  --rfp-paper-2: #d6caa1;
+  --rfp-link: #1f5d3a;
+  --rfp-link-visited: #4a7d3d;
+  background-image:
+    /* felt grain */
+    repeating-linear-gradient(45deg, rgba(31, 93, 58, 0.05) 0 2px, transparent 2px 5px);
+}
+.regular-theme-motel_shrine.rfp-profile {
+  --rfp-paper: #e9e1cb;
+  --rfp-paper-2: #d8cdab;
+  --rfp-link: #224d67;
+  --rfp-link-visited: #b00020;
+  background-image:
+    radial-gradient(circle at 14% 14%, rgba(34, 77, 103, 0.08), transparent 35%),
+    radial-gradient(circle at 84% 80%, rgba(176, 0, 32, 0.06), transparent 35%),
+    repeating-linear-gradient(0deg, rgba(20, 17, 14, 0.04) 0 1px, transparent 1px 4px);
+}
+.regular-theme-bathroom_wall_lite.rfp-profile {
+  --rfp-paper: #d8c9a6;
+  --rfp-paper-2: #c8b88d;
+  --rfp-link: #9b201c;
+  --rfp-link-visited: #6b2d8c;
+  background-image:
+    /* tile grout grid */
+    linear-gradient(0deg, rgba(20, 17, 14, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 17, 14, 0.08) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.regular-theme-two_thousand_three_local_webpage.rfp-profile {
+  /* The Citizen Phoebe palette: lime green + magenta + blue rainbow type */
+  --rfp-paper: #e9ff66;
+  --rfp-paper-2: #d3ff45;
+  --rfp-ink: #1a0a2e;
+  --rfp-ink-soft: #5a3066;
+  --rfp-link: #cc0099;
+  --rfp-link-visited: #1d2891;
+  --rfp-pin: #cc0099;
+  --rfp-tape: #4cff4c;
+  background-image:
+    radial-gradient(ellipse at 10% 0%, rgba(204, 0, 153, 0.12), transparent 40%),
+    radial-gradient(ellipse at 95% 100%, rgba(29, 40, 145, 0.1), transparent 40%);
+}
+
+/* ----------- Top bar (Facebook-2005 strip) ----------- */
+.rfp-topbar {
+  background: var(--rfp-ink);
+  color: #f0ebde;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid var(--rfp-accent);
+}
+.rfp-tb-mark {
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--rfp-tape);
+}
+.rfp-tb-nav {
+  display: flex;
+  gap: 14px;
+}
+.rfp-tb-nav a {
+  color: #f0ebde;
+  text-decoration: none;
+  text-transform: lowercase;
+  border-bottom: 1px dotted transparent;
+}
+.rfp-tb-nav a:hover {
+  color: var(--rfp-tape);
+  border-bottom-color: var(--rfp-tape);
+  background: transparent;
+}
+.rfp-tb-edit {
+  color: var(--rfp-tape) !important;
+  border: 1px solid var(--rfp-tape);
+  padding: 1px 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 10px;
+}
+
+/* ----------- 3-column body ----------- */
+.rfp-body {
+  display: grid;
+  grid-template-columns: 220px 1fr 280px;
+  gap: 14px;
+  padding: 16px;
+}
+@media (max-width: 1080px) {
+  .rfp-body {
+    grid-template-columns: 200px 1fr;
+  }
+  .rfp-col-right {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 720px) {
+  .rfp-body {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+}
+
+/* ============================================================
+   LEFT COLUMN — identity + nav
+   ============================================================ */
+.rfp-col-left > * + * {
+  margin-top: 12px;
+}
+
+/* Picture frame — initials avatar with photo-frame surround */
+.rfp-picture-frame {
+  background: #fff;
+  border: 1px solid var(--rfp-ink);
+  padding: 6px;
+  box-shadow: 3px 3px 0 var(--rfp-accent);
+  text-align: center;
+}
+.rfp-picture {
+  background:
+    linear-gradient(135deg, var(--rfp-accent) 0%, var(--rfp-ink) 100%);
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--rfp-ink);
+}
+.rfp-picture-initials {
+  font-family: 'Bungee Shade', 'Bungee', cursive;
+  font-size: 64px;
+  color: #fff;
+  letter-spacing: -0.05em;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+}
+.rfp-picture-caption {
+  margin-top: 4px;
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 10px;
+  color: var(--rfp-ink-soft);
+}
+
+/* ID card */
+.rfp-id-card {
+  background: var(--rfp-paper-2);
+  border: 1px solid var(--rfp-ink);
+  padding: 10px 12px;
+}
+.rfp-id-kicker {
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--rfp-ink-soft);
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+.rfp-display-name {
+  font-family: 'Permanent Marker', 'Comic Sans MS', cursive;
+  font-size: 32px;
+  line-height: 0.95;
+  color: var(--rfp-ink);
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+}
+.rfp-handle {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--rfp-link);
+  margin: 0 0 6px;
+}
+.rfp-fake-title {
+  font-family: 'Verdana', sans-serif;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--rfp-ink-soft);
+  margin: 0;
+}
+.rfp-in-top8 {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 7px;
+  background: var(--rfp-tape);
+  color: var(--rfp-ink);
+  border: 1px solid var(--rfp-ink);
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  box-shadow: 2px 2px 0 var(--rfp-pin);
+}
+
+/* Quick nav (sidebar links) */
+.rfp-quick-nav {
+  background: #fff;
+  border: 1px solid var(--rfp-ink);
+  padding: 8px 12px;
+  font-family: 'Verdana', sans-serif;
+  font-size: 12px;
+}
+.rfp-qn-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--rfp-ink-soft);
+  text-transform: uppercase;
+  margin: 0 0 4px;
+  border-bottom: 1px dotted var(--rfp-rule);
+  padding-bottom: 4px;
+}
+.rfp-quick-nav a {
+  display: block;
+  padding: 2px 0;
+  color: var(--rfp-link);
+  text-decoration: underline;
+}
+.rfp-quick-nav a:hover {
+  background: var(--rfp-tape);
+  color: var(--rfp-ink);
+}
+.rfp-qn-cta {
+  margin-top: 4px;
+  padding: 4px 6px !important;
+  background: var(--rfp-accent);
+  color: #fff !important;
+  text-decoration: none !important;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  letter-spacing: 0.04em;
+}
+.rfp-qn-cta:hover {
+  background: var(--rfp-pin) !important;
+  color: var(--rfp-tape) !important;
+}
+
+/* Status card */
+.rfp-status-card {
+  background: var(--rfp-ink);
+  color: var(--rfp-tape);
+  padding: 8px 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.rfp-status-card p {
+  margin: 2px 0;
+}
+.rfp-status-card b {
+  color: #fff;
+}
+.rfp-status-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  border-bottom: 1px dotted rgba(232, 215, 106, 0.4);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+.rfp-status-dot {
+  color: #4cff4c;
+  animation: rfp-blink 1.4s steps(2, start) infinite;
+}
+@keyframes rfp-blink {
+  to { opacity: 0.3; }
+}
+
+/* Hand-collaged tile wall (left col) */
+.rfp-photo-collage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 4px;
+}
+.rfp-collage-tile {
+  background: #fff;
+  border: 1px solid var(--rfp-ink);
+  padding: 6px;
+  box-shadow: 2px 2px 0 var(--rfp-ink);
+  font-family: 'Verdana', sans-serif;
+  font-size: 10px;
+  line-height: 1.3;
+}
+.rfp-collage-tile--1 { transform: rotate(-3deg); }
+.rfp-collage-tile--2 { transform: rotate(2deg); }
+.rfp-collage-tile--3 { transform: rotate(-1deg); }
+.rfp-collage-tile--4 { transform: rotate(3deg); }
+.rfp-collage-stamp {
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  color: var(--rfp-pin);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 2px;
+}
+.rfp-collage-title {
+  font-family: 'Comfortaa', sans-serif;
+  font-weight: 700;
+  color: var(--rfp-ink);
+  margin: 0;
+}
+
+/* ============================================================
+   CENTER COLUMN — Information, Away, Pinned, Rooms, Pages
+   ============================================================ */
+.rfp-col-center > * + * {
+  margin-top: 14px;
+}
+
+/* All center "cards" share a base — paper with a tint */
+.rfp-info-card,
+.rfp-away-card,
+.rfp-pinned-card,
+.rfp-rooms-card,
+.rfp-pages-card,
+.rfp-share-card {
+  background: #fff;
+  border: 1px solid var(--rfp-ink);
+  padding: 10px 14px 12px;
+}
+
+/* ----------- Section heads — Citizen Phoebe variations ----------- */
+
+/* Information — typewriter caps with double underline */
+.rfp-section-head--info {
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 16px;
+  letter-spacing: 0.18em;
+  color: var(--rfp-ink);
+  text-transform: uppercase;
+  border-bottom: 3px double var(--rfp-ink);
+  padding-bottom: 4px;
+  margin: 0 0 10px;
+}
+
+/* Away Message — handwritten Caveat, italic, with pen-stroke underline */
+.rfp-section-head--away {
+  font-family: 'Caveat', 'Comic Sans MS', cursive;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--rfp-ink);
+  margin: 0 0 6px;
+  letter-spacing: 0.01em;
+  position: relative;
+}
+.rfp-section-head--away::after {
+  content: '';
+  display: block;
+  height: 2px;
+  background: var(--rfp-accent);
+  margin-top: -4px;
+  width: 80%;
+  border-radius: 4px;
+}
+
+/* Pinned Evidence — stamped red caps */
+.rfp-section-head--pinned {
+  font-family: 'Bungee', 'Impact', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: var(--rfp-pin);
+  text-transform: uppercase;
+  border: 3px double var(--rfp-pin);
+  padding: 3px 10px;
+  display: inline-block;
+  margin: 0 0 12px;
+  transform: rotate(-1.5deg);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* Top Rooms — handwritten, smaller */
+.rfp-section-head--rooms {
+  font-family: 'Caveat', cursive;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--rfp-link);
+  margin: 0 0 6px;
+}
+
+/* Pages Made — Carter One bubble letters */
+.rfp-section-head--pages {
+  font-family: 'Carter One', 'Cooper Black', serif;
+  font-size: 22px;
+  color: var(--rfp-accent);
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+/* Wall — Permanent Marker rotated, the headline of the right col */
+.rfp-section-head--wall {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 22px;
+  color: var(--rfp-pin);
+  margin: 0 0 4px;
+  transform: rotate(-2deg);
+  letter-spacing: 0.04em;
+}
+
+/* Friends / Top 8 — Comfortaa bold pill */
+.rfp-section-head--friends {
+  font-family: 'Comfortaa', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  background: var(--rfp-link);
+  display: inline-block;
+  padding: 3px 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+/* Visitor Counter — Lobster cursive label */
+.rfp-section-head--counter {
+  font-family: 'Lobster', 'Cooper Black', serif;
+  font-size: 18px;
+  color: var(--rfp-link-visited);
+  margin: 0 0 4px;
+}
+
+/* ----------- Information rows ----------- */
+.rfp-info-rows {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  font-family: 'Verdana', sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.rfp-info-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dotted var(--rfp-rule);
+}
+.rfp-info-row:last-child {
+  border-bottom: none;
+}
+.rfp-info-row dt {
+  font-weight: 700;
+  color: var(--rfp-ink);
+}
+.rfp-info-row dd {
+  margin: 0;
+  color: var(--rfp-ink);
+}
+.rfp-info-row dd a {
+  color: var(--rfp-link);
+  text-decoration: underline;
+}
+.rfp-info-row dd a:visited {
+  color: var(--rfp-link-visited);
+}
+.rfp-info-muted {
+  color: var(--rfp-ink-soft);
+  font-style: italic;
+}
+
+/* ----------- Away Message ----------- */
+.rfp-away-quote {
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: clamp(20px, 3.4vw, 32px);
+  line-height: 1.1;
+  color: var(--rfp-ink);
+  margin: 8px 0;
+  padding: 8px 0;
+  border-top: 1px dotted var(--rfp-rule);
+  border-bottom: 1px dotted var(--rfp-rule);
+  font-style: italic;
+}
+.rfp-away-bio {
+  font-family: 'Verdana', sans-serif;
+  font-size: 12px;
+  color: var(--rfp-ink);
+  margin: 8px 0 0;
+}
+
+/* ----------- Pinned Evidence (corkboard) ----------- */
+.rfp-pinned-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 8px 4px;
+  background:
+    /* corkboard stipple */
+    radial-gradient(circle at 20% 30%, rgba(176, 130, 60, 0.08) 0 1.5px, transparent 1.5px),
+    radial-gradient(circle at 70% 80%, rgba(176, 130, 60, 0.08) 0 1.5px, transparent 1.5px),
+    var(--rfp-paper-2);
+  background-size: 12px 12px, 16px 16px, auto;
+  border: 1px solid var(--rfp-ink);
+}
+@media (max-width: 720px) {
+  .rfp-pinned-grid { grid-template-columns: 1fr; }
+}
+.rfp-artifact {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--rfp-ink);
+  padding: 18px 12px 12px;
+  box-shadow: 3px 3px 0 rgba(20, 17, 14, 0.25);
+}
+.rfp-artifact--rot1 { transform: rotate(-2deg); }
+.rfp-artifact--rot2 { transform: rotate(1.5deg); }
+.rfp-artifact--rot3 { transform: rotate(-0.5deg); }
+.rfp-artifact-pin {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--rfp-pin);
+  color: #fff;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  border: 1px solid var(--rfp-ink);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+}
+.rfp-artifact-stamp {
+  font-family: 'Special Elite', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--rfp-pin);
+  text-transform: uppercase;
+  margin: 0 0 4px;
+}
+.rfp-artifact-title {
+  font-family: var(--type-paper, Georgia, serif);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--rfp-ink);
+  margin: 0 0 4px;
+}
+.rfp-artifact-desc {
+  font-size: 11px;
+  color: var(--rfp-ink-soft);
+  margin: 0;
+}
+
+.rfp-empty {
+  font-family: 'Special Elite', monospace;
+  font-size: 12px;
+  color: var(--rfp-ink-soft);
+  font-style: italic;
+}
+
+/* ----------- Top Rooms (lined paper) ----------- */
+.rfp-rooms-card {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 23px, rgba(34, 77, 103, 0.16) 23px 24px),
+    #fffaee;
+  border-left: 4px double var(--rfp-pin);
+}
+.rfp-rooms-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  line-height: 24px;
+}
+.rfp-rooms-list li {
+  padding-left: 18px;
+  position: relative;
+}
+.rfp-rooms-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--rfp-pin);
+}
+.rfp-rooms-list a {
+  color: var(--rfp-link);
+  text-decoration: underline;
+}
+
+/* ----------- Pages Made ----------- */
+.rfp-pages-empty {
+  font-family: 'Verdana', sans-serif;
+  font-size: 12px;
+  color: var(--rfp-ink);
+  margin: 0 0 8px;
+}
+.rfp-pages-cta {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--rfp-tape);
+  color: var(--rfp-ink) !important;
+  border: 1px solid var(--rfp-ink);
+  font-family: 'Carter One', cursive;
+  font-size: 14px;
+  text-decoration: none !important;
+  letter-spacing: 0.02em;
+  box-shadow: 2px 2px 0 var(--rfp-ink);
+  transform: rotate(-1deg);
+}
+.rfp-pages-cta:hover {
+  background: var(--rfp-accent);
+  color: #fff !important;
+}
+
+/* ============================================================
+   RIGHT COLUMN — Wall, Top 8, Counter
+   ============================================================ */
+.rfp-col-right > * + * {
+  margin-top: 14px;
+}
+
+/* Friends + Counter cards mostly inherit the V2 module shell */
+.rfp-friends-card,
+.rfp-counter-card {
+  background: #fff;
+  border: 1px solid var(--rfp-ink);
+  padding: 10px 12px;
+}
+
+/* ----------- The Wall — MySpace-integrated comments + future stickers ----------- */
+.rfp-wall-card {
+  /* No card border — the wall blends into the page background.
+     This is the key visual move: signatures continue the page surface. */
+  background: transparent;
+  padding: 4px 0 0;
+}
+.rfp-wall-meta {
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  color: var(--rfp-ink-soft);
+  font-style: italic;
+  margin: 0 0 10px;
+  letter-spacing: 0.04em;
+}
+.rfp-wall-stickers {
+  /* Reserved for V3+ friend-placed stickers — kept zero-height for now
+     so the layout doesn't reserve empty space when the feature ships. */
+  position: relative;
+  min-height: 0;
+}
+
+/* The signatures container — let ProfileGuestbook entries flow without
+   a wrapping border. The component's own .pgb-form keeps its yellow
+   form box (which reads as a marker note pinned to the wall). */
+.rfp-wall-signatures .pgb-root {
+  /* nothing — let the island use its own styles */
+}
+/* But the entries themselves should feel like marker on the page,
+   not boxed cards. Override the V2 .pgb-entry chrome inside the wall. */
+.rfp-wall-signatures .pgb-entry {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px dashed var(--rfp-rule) !important;
+  box-shadow: none !important;
+  padding: 8px 4px 10px !important;
+}
+.rfp-wall-signatures .pgb-entry:last-of-type {
+  border-bottom: none !important;
+}
+.rfp-wall-signatures .pgb-entry-body {
+  font-family: 'Permanent Marker', 'Caveat', cursive !important;
+  font-size: 15px !important;
+  line-height: 1.3 !important;
+  color: var(--rfp-pin) !important;
+  letter-spacing: 0.01em;
+}
+.rfp-wall-signatures .pgb-entry-signer b {
+  font-family: 'Comfortaa', sans-serif !important;
+  background: var(--rfp-tape);
+  padding: 0 5px;
+  border: 1px solid var(--rfp-ink);
+  font-size: 11px !important;
+  border-radius: 2px;
+}
+.rfp-wall-signatures .pgb-entry-handle {
+  color: var(--rfp-link) !important;
+}
+.rfp-wall-signatures .pgb-entry-time {
+  color: var(--rfp-ink-soft) !important;
+  font-style: italic;
+}
+.rfp-wall-signatures .pgb-empty {
+  font-family: 'Caveat', cursive !important;
+  font-size: 16px !important;
+  color: var(--rfp-ink-soft) !important;
+}
+
+/* ----------- Visitor Counter LED ----------- */
+.rfp-led {
+  display: inline-block;
+  background: var(--rfp-ink);
+  color: #4cff4c;
+  font-family: 'Courier New', monospace;
+  font-size: 22px;
+  letter-spacing: 6px;
+  padding: 4px 14px;
+  border: 3px outset #4cff4c;
+  margin: 4px 0;
+  font-weight: 700;
+}
+.rfp-counter-foot {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  color: var(--rfp-ink-soft);
+  font-style: italic;
+  margin: 4px 0 0;
+}
+
+/* ============================================================
+   Mobile collapse — ensure each column is readable on phones
+   ============================================================ */
+@media (max-width: 720px) {
+  .rfp-display-name { font-size: 26px; }
+  .rfp-section-head--info { font-size: 14px; }
+  .rfp-section-head--away { font-size: 22px; }
+  .rfp-section-head--wall { font-size: 18px; }
+  .rfp-info-row { grid-template-columns: 1fr; gap: 2px; padding: 6px 0; }
+  .rfp-info-row dt { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rfp-ink-soft); }
+}
