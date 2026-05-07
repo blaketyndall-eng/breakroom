@@ -1,0 +1,78 @@
+/* ============================================================
+   chrome.css
+   ----------------------------------------------------------------
+   Layout and visibility rules for the two-desktop chrome system.
+   Component-level visual styles live INSIDE each chrome component
+   (OmniShiftBrowser.astro, VoidSignalTaskbar.astro, etc.) — this
+   file owns only the cross-cutting rules that depend on the
+   data-* attributes set by BaseLayout.
+
+   Attributes (set in BaseLayout.astro):
+     html[data-world]        omnishift | voidsignal | neutral
+     html[data-chrome-mode]  desktop | pocket | suppressed
+     html[data-clock-state]  anonymous | on_shift | clocked_out | still_out
+     html[data-site-mode]    DAY | 3AM | CLOSED   (orthogonal lighting axis)
+
+   See src/lib/worldMap.ts for the section→world+chromeMode mapping
+   and SITE-ARCHITECTURE.md for the full two-world model.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Body padding compensates for the position:fixed top + bottom
+   chrome strips. Padding flips when chrome height changes.
+   ------------------------------------------------------------ */
+html[data-chrome-mode="desktop"] body {
+  padding-top: 50px;
+  padding-bottom: 32px;
+}
+
+/* Anonymous gets only the slim 32px AnonymousBar at top, no bottom chrome */
+html[data-chrome-mode="desktop"][data-clock-state="anonymous"] body {
+  padding-top: 32px;
+  padding-bottom: 0;
+}
+
+/* Authenticated visitors on neutral-world pages (admin, ledger, staff)
+   get NO chrome — they're shared utilities, not citizens of either world. */
+html[data-chrome-mode="desktop"][data-world="neutral"]:not([data-clock-state="anonymous"]) body {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Pocket and suppressed modes mount nothing → no padding */
+html[data-chrome-mode="pocket"] body,
+html[data-chrome-mode="suppressed"] body {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* ------------------------------------------------------------
+   Auth-state chrome visibility.
+
+   At SSR time we don't know if the user is authenticated, so
+   BaseLayout always renders BOTH the world chrome and the
+   AnonymousBar. The pre-paint script in BaseLayout's <head>
+   sets data-clock-state synchronously before first paint, and
+   these rules show the right one with zero flicker.
+   ------------------------------------------------------------ */
+html[data-clock-state="anonymous"] .osb,
+html[data-clock-state="anonymous"] .vsb,
+html[data-clock-state="anonymous"] .ost,
+html[data-clock-state="anonymous"] .vst {
+  display: none !important;
+}
+
+html:not([data-clock-state="anonymous"]) .ab {
+  display: none !important;
+}
+
+/* ------------------------------------------------------------
+   Z-index stacking. Documentation here so future overlays know
+   what they're competing with.
+
+     9000  scanlines overlay      (claude-design.css)
+     8999  grain overlay          (claude-design.css)
+     9100  chrome (top + bottom)  (this file's components)
+     9200  chrome menus           (e.g. Start menu dropdown)
+     99999 WorldTransition VHS    (full-screen transition canvas)
+   ------------------------------------------------------------ */

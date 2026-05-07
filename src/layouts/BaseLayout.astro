@@ -51,7 +51,8 @@ const currentPath = Astro.url.pathname;
     <!--
       Pre-paint hydrator. Reads shift_status from localStorage and rewrites
       data-clock-state on <html> BEFORE first paint, so chrome CSS can key
-      off the attribute with zero flash.
+      off the attribute with zero flash. Must stay inline (an external
+      script can't run synchronously before parser-blocked stylesheets).
 
       Source of truth: src/lib/localSession.ts
         LOCAL_PROFILE_KEY = 'breakroom.omnishift.profile'
@@ -76,46 +77,6 @@ const currentPath = Astro.url.pathname;
         }
       })();
     </script>
-
-    <!--
-      Foundation chrome layout rules. F6 will extract these to a
-      dedicated chrome.css file. For now they live inline so the chrome
-      ships with the layout in one commit.
-    -->
-    <style is:global>
-      /* Body padding compensates for fixed chrome at top + bottom. */
-      html[data-chrome-mode="desktop"] body {
-        padding-top: 50px;
-        padding-bottom: 32px;
-      }
-      html[data-chrome-mode="desktop"][data-clock-state="anonymous"] body {
-        padding-top: 32px;
-        padding-bottom: 0;
-      }
-      html[data-chrome-mode="desktop"][data-world="neutral"]:not([data-clock-state="anonymous"]) body {
-        padding-top: 0;
-        padding-bottom: 0;
-      }
-      html[data-chrome-mode="pocket"] body,
-      html[data-chrome-mode="suppressed"] body {
-        padding-top: 0;
-        padding-bottom: 0;
-      }
-
-      /* Auth-state chrome visibility:
-         anonymous → AnonymousBar visible, world bars hidden
-         logged in → world bars visible, AnonymousBar hidden
-      */
-      html[data-clock-state="anonymous"] .osb,
-      html[data-clock-state="anonymous"] .vsb,
-      html[data-clock-state="anonymous"] .ost,
-      html[data-clock-state="anonymous"] .vst {
-        display: none !important;
-      }
-      html:not([data-clock-state="anonymous"]) .ab {
-        display: none !important;
-      }
-    </style>
   </head>
   <body class="scanlines grain" data-section={section} {...(level ? { 'data-level': String(level) } : {})}>
     {chromeMode === 'desktop' && world === 'omnishift' && (
