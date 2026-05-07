@@ -21,11 +21,20 @@ export type RegularFile = {
 export const LOCAL_REGULAR_FILE_KEY = 'breakroom.regular-file.v1';
 
 export const REGULAR_THEMES = [
+  // V2 originals (file/evidence/dive-bar palette)
   'corrupted_employee_portal',
   'pool_hall_personal_page',
   'motel_shrine',
   'bathroom_wall_lite',
   'two_thousand_three_local_webpage',
+  // V3 wallpapers — 80s/90s personal-homepage aesthetic
+  // Pure CSS:
+  'cyber_checkerboard',  // 90s VR/rave: blue clouds + checker floor
+  'megs_place_plaid',    // pale-blue plaid GeoCities tile
+  'notebook_grid',       // amber CRT graph paper / 80s schoolwork
+  // Replicate FLUX 1.1 Pro (run `pnpm regen-images <slot>`):
+  'xp_bliss',            // Windows XP green hill + sky
+  'chrome_balls_2001',   // DPGraph rainbow 3D ball tile
 ] as const;
 
 export function normalizeHandle(value: string) {
