@@ -612,14 +612,17 @@
 /*  predictable across reduced-motion / SSR.                                  */
 /* ------------------------------------------------------------------------- */
 
-.bpc-cascade-item[data-slot="1"] { top: 8%;  left: 6%;  animation-delay:   0ms; z-index: 11; }
-.bpc-cascade-item[data-slot="2"] { top: 14%; left: 38%; animation-delay: 180ms; z-index: 12; }
-.bpc-cascade-item[data-slot="3"] { top: 22%; left: 62%; animation-delay: 320ms; z-index: 13; }
-.bpc-cascade-item[data-slot="4"] { top: 36%; left: 14%; animation-delay: 480ms; z-index: 14; }
-.bpc-cascade-item[data-slot="5"] { top: 44%; left: 46%; animation-delay: 620ms; z-index: 15; }
-.bpc-cascade-item[data-slot="6"] { top: 52%; left: 70%; animation-delay: 780ms; z-index: 16; }
-.bpc-cascade-item[data-slot="7"] { top: 60%; left: 22%; animation-delay: 940ms; z-index: 17; }
-.bpc-cascade-item[data-slot="8"] { top: 68%; left: 50%; animation-delay: 1100ms; z-index: 18; }
+/* BPC-4 polish: tighter, more overlapping slot positions to match Yzzerdd-style
+   popup hell density. Adjacent popups now overlap by ~30-50% creating the
+   "I cannot close them faster than they appear" cascade feel. */
+.bpc-cascade-item[data-slot="1"] { top: 4%;  left: 4%;  animation-delay:   0ms; z-index: 11; }
+.bpc-cascade-item[data-slot="2"] { top: 10%; left: 34%; animation-delay: 180ms; z-index: 12; }
+.bpc-cascade-item[data-slot="3"] { top: 16%; left: 58%; animation-delay: 320ms; z-index: 13; }
+.bpc-cascade-item[data-slot="4"] { top: 26%; left: 12%; animation-delay: 480ms; z-index: 14; }
+.bpc-cascade-item[data-slot="5"] { top: 32%; left: 42%; animation-delay: 620ms; z-index: 15; }
+.bpc-cascade-item[data-slot="6"] { top: 40%; left: 64%; animation-delay: 780ms; z-index: 16; }
+.bpc-cascade-item[data-slot="7"] { top: 50%; left: 18%; animation-delay: 940ms; z-index: 17; }
+.bpc-cascade-item[data-slot="8"] { top: 56%; left: 46%; animation-delay: 1100ms; z-index: 18; }
 
 /* The Stage-1 virus dialog — centered, on top of everything, opens first. */
 .bpc-cascade-item[data-slot="virus"] {
@@ -965,4 +968,139 @@
   .bpc-thinking-dot { animation: none; opacity: 1; }
   .bpc-loyalty-hole:nth-child(10)[data-stamped="true"] { animation: none; }
   .bpc-cascade-item--closing { animation: none !important; opacity: 0; }
+}
+
+/* ========================================================================= */
+/*  BPC-4: Polish pass — IE6 chrome, window controls trio, statement CTA     */
+/*  Reference: Yzzerdd 2003 popup hell (Dazed magazine).                     */
+/* ========================================================================= */
+
+/* Stronger drop shadow on every popup so the stack reads as layered. */
+.bpc-popup {
+  box-shadow:
+    inset 1px 1px 0 var(--bpc-win-light-2),
+    inset -1px -1px 0 var(--bpc-win-shadow),
+    3px 3px 0 rgba(0, 0, 0, 0.42);
+}
+
+/* ── Window controls trio (_  □  ×) — replaces single [×] on IE6 popups ── */
+.bpc-popup-controls {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+}
+.bpc-popup-controls .bpc-popup-x,
+.bpc-popup-controls .bpc-popup-min,
+.bpc-popup-controls .bpc-popup-max {
+  width: 16px;
+  height: 14px;
+  background: var(--bpc-win-face);
+  border: 1px solid;
+  border-color: var(--bpc-win-light) var(--bpc-win-shadow-2) var(--bpc-win-shadow-2) var(--bpc-win-light);
+  color: var(--bpc-win-text);
+  font-family: var(--bpc-mono);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 10px;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── IE6 fake address bar — sits BELOW titlebar, ABOVE body                  */
+/*  Only rendered on .bpc-popup--ie6 variants (statement popups, ad popups). */
+/*  Three rows would be authentic — title / menu / address — but two reads   */
+/*  better in the cascade and adds enough chrome density. */
+.bpc-popup-addrbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 4px;
+  background: var(--bpc-win-face);
+  border-top: 1px solid var(--bpc-win-light);
+  border-bottom: 1px solid var(--bpc-win-shadow-2);
+  font-family: var(--bpc-mono);
+  font-size: 10px;
+  color: #000;
+}
+.bpc-popup-addrbar-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 14px;
+  border: 1px solid;
+  border-color: var(--bpc-win-light) var(--bpc-win-shadow-2) var(--bpc-win-shadow-2) var(--bpc-win-light);
+  background: var(--bpc-win-face);
+  color: #000;
+  font-size: 9px;
+  cursor: default;
+}
+.bpc-popup-addrbar-label {
+  font-size: 10px;
+  color: #000;
+  letter-spacing: 0.02em;
+  margin-left: 2px;
+  margin-right: 4px;
+}
+.bpc-popup-addrbar-field {
+  flex: 1;
+  background: #fff;
+  border: 1px solid;
+  border-color: var(--bpc-win-shadow-2) var(--bpc-win-light) var(--bpc-win-light) var(--bpc-win-shadow-2);
+  padding: 1px 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #1d2891;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.bpc-popup-addrbar-go {
+  background: var(--bpc-win-face);
+  border: 1px solid;
+  border-color: var(--bpc-win-light) var(--bpc-win-shadow-2) var(--bpc-win-shadow-2) var(--bpc-win-light);
+  padding: 1px 8px;
+  font-family: var(--bpc-mono);
+  font-size: 10px;
+  color: #000;
+  cursor: pointer;
+}
+
+/* ── Statement CTA button — red rectangular "click here" / "view" / "more"  */
+.bpc-statement-cta {
+  display: inline-block;
+  margin-top: 12px;
+  background: #c80000;
+  color: #ffffff;
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: 6px 16px;
+  border: 2px solid #1a0a2e;
+  cursor: pointer;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 #1a0a2e;
+}
+.bpc-statement-cta:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1a0a2e;
+}
+
+/* Pulp-mood CTA: yellow on red for that dime-paperback hand-painted vibe. */
+.bpc-statement--pulp .bpc-statement-cta {
+  background: #ffe000;
+  color: #c80000;
+  border-color: #c80000;
+  box-shadow: 2px 2px 0 #c80000;
+}
+.bpc-statement--paperback .bpc-statement-cta {
+  background: #1a0a2e;
+  color: #ffe000;
+  border-color: #1a0a2e;
+  box-shadow: 2px 2px 0 #6a4d00;
 }
