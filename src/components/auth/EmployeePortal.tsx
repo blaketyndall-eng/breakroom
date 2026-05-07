@@ -177,7 +177,17 @@ export default function EmployeePortal() {
 
       <div className="os-file-section">
         <div className="os-file-section-header">Assigned Identity</div>
-        <table className="os-file-table">
+        <div className="os-file-identity-row">
+          <div className="os-file-photo">
+            <img
+              src="/void/omnishiftEmployeePortraitDefault.jpg"
+              alt="Photo of record (placeholder)"
+              loading="lazy"
+              decoding="async"
+            />
+            <span className="os-file-photo-caption">PHOTO OF RECORD</span>
+          </div>
+          <table className="os-file-table">
           <tbody>
             <tr><td className="os-field-label">Employee ID</td><td className="os-field-value">{profile.employee_id}</td></tr>
             <tr><td className="os-field-label">Email</td><td className="os-field-value">{profile.email}</td></tr>
@@ -189,7 +199,8 @@ export default function EmployeePortal() {
             <tr><td className="os-field-label">Shift Status</td><td className="os-field-value">{profile.shift_status}</td></tr>
             {profile.clocked_out_at && <tr><td className="os-field-label">Clocked Out</td><td className="os-field-value">{profile.clocked_out_at}</td></tr>}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
 
       <div className="os-file-section">

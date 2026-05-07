@@ -1106,6 +1106,62 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
   padding-bottom: 8px;
   margin-bottom: 12px;
 }
+
+/* /breakroom homepage exterior banner. Wide-aspect photograph at the top
+ * of the page — the parking-lot-west composition with the BREAKROOM neon
+ * grounds the whole page in a physical place before the copy starts. */
+.brkrm-exterior {
+  margin: 0 0 18px;
+  padding: 0;
+  border: 1px solid #14110e;
+  background: #14110e;
+  position: relative;
+  overflow: hidden;
+}
+.brkrm-exterior img {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  display: block;
+}
+.brkrm-exterior figcaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 6px 12px;
+  background: rgba(20, 17, 14, .72);
+  color: #f0e6cc;
+  font-family: var(--type-mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+/* Press photo hero on newsstand articles. Aspect-locked, monochrome-leaning
+ * filter to match the period press-photo register, italic newsroom caption. */
+.ns-hero-photo {
+  margin: 0 0 16px;
+  padding: 0;
+  background: #14110e;
+}
+.ns-hero-photo img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.05) saturate(.85);
+}
+.ns-hero-photo figcaption {
+  font-family: var(--type-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #f0e6cc;
+  background: #14110e;
+  padding: 6px 10px;
+  font-style: italic;
+}
 .ns-article h1 {
   font-family: var(--type-paper);
   font-size: clamp(28px, 5vw, 48px);
@@ -1200,6 +1256,41 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
   background: #e8ecf0; color: #1a1f2a;
   border-bottom: 2px solid #e8ecf0;
   margin-bottom: -1px;
+}
+
+/* Corporate masthead — boardroom hero with caption strip below.
+ * Slight aspect-locked banner: full width, ~26vh tall on desktop, the kind of
+ * stock-photo hero that ran above the fold on every 2001 enterprise portal. */
+.os-portal-masthead {
+  position: relative;
+  width: 100%;
+  height: clamp(180px, 26vh, 320px);
+  overflow: hidden;
+  background: #003F7F;
+  border-bottom: 1px solid #003F7F;
+}
+.os-portal-masthead img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(.92) contrast(.96);
+}
+.os-portal-masthead-caption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 5px 14px;
+  background: rgba(0, 0, 0, .55);
+  color: #f4f4f4;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
 }
 
 /* System alert bar */
@@ -1298,6 +1389,40 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
 }
 
 /* Employee file table */
+/* Employee identity row — photo of record on left, table on right.
+ * Collapses to stacked single-column on narrow widths. */
+.os-file-identity-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 14px;
+  align-items: start;
+  padding: 12px;
+}
+.os-file-photo {
+  border: 1px solid #b0bec5;
+  background: #f4f4f4;
+  position: relative;
+}
+.os-file-photo img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+.os-file-photo-caption {
+  display: block;
+  padding: 4px 6px;
+  background: #1a3060;
+  color: #f4f4f4;
+  font-family: var(--type-mono, 'Courier New', monospace);
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-align: center;
+}
+@media (max-width: 700px) {
+  .os-file-identity-row { grid-template-columns: 1fr; }
+}
+
 .os-file-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .os-file-table td { padding: 5px 10px; border-bottom: 1px solid #e8ecf0; }
 .os-field-label {
