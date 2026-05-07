@@ -1,32 +1,97 @@
 ---
+/**
+ * /districts — directory of all 12 neighborhoods.
+ *
+ * Redesigned to match the splash style at /districts/[slug] (V3
+ * dnp-* token system). Each tile uses `data-district="<slug>"` so the
+ * SAME palette overrides that paint the splash page paint each tile —
+ * one CSS layer drives both surfaces.
+ *
+ * Layout:
+ *   ┌─ welcome banner ────────────────────────────┐
+ *   │ THE DIRECTORY · 12 NEIGHBORHOODS         │
+ *   ├──────────────────────────────────────────┤
+ *   │  [tile] [tile] [tile] [tile]             │
+ *   │  [tile] [tile] [tile] [tile]             │
+ *   │  [tile] [tile] [tile] [tile]             │
+ *   │  staff-only zones — filed but not shown  │
+ *   └──────────────────────────────────────────┘
+ *
+ * Status filter:
+ *   open + restricted + rumored → rendered as tiles
+ *   staff_only → counted but not rendered (preserves the V1 behavior)
+ */
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
-import DistrictCard from '@/components/districts/DistrictCard.astro';
-import { getOpenDistricts, SEEDED_DISTRICTS } from '@/lib/districts';
+import { SEEDED_DISTRICTS } from '@/lib/districts';
 
-const districts = getOpenDistricts();
+const visible = SEEDED_DISTRICTS.filter((d) => d.status !== 'staff_only');
 const staffOnly = SEEDED_DISTRICTS.filter((d) => d.status === 'staff_only');
+
+function statusLabel(status: string) {
+  return status.replaceAll('_', ' ');
+}
+function dangerDots(level: number) {
+  return '●'.repeat(level) + '○'.repeat(3 - level);
+}
 ---
 <OldWebLayout title="District Directory" section="districts">
-  <div class="status-strip"><span>districts</span><span>{districts.length} indexed</span><span>staff zones hidden</span></div>
-  <section class="old-shell">
-    <div class="old-header">District Directory / World Geography</div>
-    <div class="old-body">
-      <p class="memo-box">
-        The directory organizes the world into districts. Some are open. Some require clearance. Some are rumored. Districts affect what you see, what shows up in search, which agents are present, and what Stuff collects in the area. Walking between them is not always straightforward.
+  <section class="dnp-directory">
+    {/* Banner — matches the splash banner pattern but for the directory */}
+    <header class="dnp-directory-banner">
+      <span class="dnp-directory-welcome">welcome to</span>
+      <h1 class="dnp-directory-name">The Directory</h1>
+      <p class="dnp-directory-tagline">~ {visible.length} neighborhoods. some are honest about it. ~</p>
+      <p class="dnp-directory-meta">
+        the world is organized by district. each one looks slightly different
+        because it is. walking between them is not always straightforward.
       </p>
+    </header>
 
-      <div class="district-grid">
-        {districts.map((district) => (
-          <DistrictCard district={district} />
-        ))}
-      </div>
-
-      {staffOnly.length > 0 && (
-        <div class="district-staff-notice">
-          <p class="district-restricted-label">STAFF ONLY ZONES — {staffOnly.length} not listed</p>
-          <p class="district-restricted-note">Access requires Wire Room clearance. Filed but not displayed.</p>
-        </div>
-      )}
+    {/* Tile grid — each tile inherits its district's palette via data-district */}
+    <div class="dnp-directory-grid">
+      {visible.map((district) => (
+        <a
+          class="dnp-tile"
+          href={`/districts/${district.slug}`}
+          data-district={district.slug}
+          data-status={district.status}
+          data-danger={String(district.dangerLevel)}
+          aria-label={`${district.name} — ${district.tagline}`}
+        >
+          <div class="dnp-tile-banner">
+            <span class="dnp-tile-welcome">visit</span>
+            <span class="dnp-tile-name">{district.name}</span>
+          </div>
+          <p class="dnp-tile-tagline">{district.tagline}</p>
+          <div class="dnp-tile-meta">
+            <span class="dnp-tile-pill dnp-tile-pill--status">{statusLabel(district.status)}</span>
+            <span class="dnp-tile-pill dnp-tile-pill--danger" title={`Danger level ${district.dangerLevel} of 3`}>
+              {dangerDots(district.dangerLevel)}
+            </span>
+            {district.weather && (
+              <span class="dnp-tile-pill dnp-tile-pill--weather">{district.weather}</span>
+            )}
+          </div>
+          <div class="dnp-tile-foot">
+            {district.factionPresence.length > 0 ? (
+              <span class="dnp-tile-turf">turf: {district.factionPresence.map((f) => f.replaceAll('-', ' ')).join(', ')}</span>
+            ) : (
+              <span class="dnp-tile-turf">no turf claimed</span>
+            )}
+            <span class="dnp-tile-enter" aria-hidden="true">enter &rarr;</span>
+          </div>
+        </a>
+      ))}
     </div>
+
+    {/* Staff-only zones — filed but not displayed */}
+    {staffOnly.length > 0 && (
+      <aside class="dnp-directory-staff">
+        <p class="dnp-directory-staff-label">STAFF ONLY ZONES — {staffOnly.length} not listed</p>
+        <p class="dnp-directory-staff-note">Access requires Wire Room clearance. Filed but not displayed.</p>
+      </aside>
+    )}
+
+    <p class="dnp-back"><a href="/void">&larr; back to VOID portal</a></p>
   </section>
 </OldWebLayout>

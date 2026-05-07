@@ -1,0 +1,322 @@
+/* ============================================================
+   DISTRICT DIRECTORY (/districts) — tile grid index
+   ------------------------------------------------------------
+   Each .dnp-tile gets `data-district="<slug>"` and inherits the
+   per-district palette overrides defined in districts-redesign.css
+   (one CSS layer drives both the splash and the directory).
+
+   Note: the per-district palette blocks in districts-redesign.css
+   target `.dnp-splash[data-district='X']` — those won't fire on
+   `.dnp-tile`. We re-declare the palette consumption locally below
+   via the same vars, then add tile-specific [data-district='X']
+   overrides at the bottom of this file so each tile paints itself.
+   ============================================================ */
+
+.dnp-directory {
+  /* Default palette (matches Corporate Ruins / cream file) */
+  --dnp-paper: #f0ebde;
+  --dnp-paper-2: #e6dec7;
+  --dnp-ink: #14110e;
+  --dnp-ink-soft: #5a513f;
+  --dnp-link: #0033cc;
+  --dnp-accent: #b00020;
+  --dnp-tape: #e8d76a;
+  --dnp-rule: rgba(20, 17, 14, 0.18);
+
+  background: var(--dnp-paper);
+  background-image: repeating-linear-gradient(0deg, rgba(20, 17, 14, 0.04) 0 1px, transparent 1px 4px);
+  border: 3px double var(--dnp-ink);
+  box-shadow: 5px 5px 0 rgba(20, 17, 14, 0.22);
+  margin-top: 18px;
+  padding: 0;
+  color: var(--dnp-ink);
+  font-family: 'Verdana', 'Geneva', sans-serif;
+  font-size: 12px;
+}
+
+/* Directory banner — same beat as the splash banner */
+.dnp-directory-banner {
+  background: var(--dnp-paper-2);
+  border-bottom: 3px double var(--dnp-ink);
+  padding: 24px 18px 18px;
+  text-align: center;
+}
+.dnp-directory-welcome {
+  display: block;
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: var(--dnp-ink-soft);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.dnp-directory-name {
+  font-family: 'Bungee Shade', 'Cooper Black', serif;
+  font-size: clamp(36px, 7vw, 64px);
+  line-height: 0.95;
+  color: var(--dnp-ink);
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  filter: drop-shadow(2px 2px 0 var(--dnp-accent));
+}
+.dnp-directory-tagline {
+  font-family: 'Caveat', cursive;
+  font-size: 22px;
+  color: var(--dnp-ink);
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+.dnp-directory-meta {
+  font-family: 'Verdana', sans-serif;
+  font-size: 12px;
+  color: var(--dnp-ink-soft);
+  font-style: italic;
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* Tile grid — 4-col on desktop, collapses on smaller screens */
+.dnp-directory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px;
+}
+@media (max-width: 1080px) { .dnp-directory-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 800px)  { .dnp-directory-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px)  { .dnp-directory-grid { grid-template-columns: 1fr; } }
+
+/* Tile shell */
+.dnp-tile {
+  /* Default palette (overridden by [data-district] blocks below) */
+  --dnp-paper: #f0ebde;
+  --dnp-paper-2: #e6dec7;
+  --dnp-ink: #14110e;
+  --dnp-ink-soft: #5a513f;
+  --dnp-link: #0033cc;
+  --dnp-accent: #b00020;
+  --dnp-tape: #e8d76a;
+  --dnp-rule: rgba(20, 17, 14, 0.18);
+  --dnp-banner-font: 'Bungee Shade', 'Cooper Black', serif;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  text-decoration: none !important;
+  color: var(--dnp-ink) !important;
+  background: var(--dnp-paper);
+  border: 2px solid var(--dnp-ink);
+  box-shadow: 3px 3px 0 var(--dnp-accent);
+  transition: transform 80ms ease-out, box-shadow 80ms ease-out;
+  overflow: hidden;
+}
+.dnp-tile:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--dnp-accent);
+}
+.dnp-tile:active {
+  transform: translate(0, 0);
+  box-shadow: 2px 2px 0 var(--dnp-accent);
+}
+
+/* PER-DISTRICT TILE PALETTES — same colors as the splash blocks in
+   districts-redesign.css, but scoped to .dnp-tile so the tile context
+   inherits them. Authoring twice is a small cost; the alternative
+   (changing the splash selectors to be more permissive) would risk
+   leaking those vars into other surfaces unintentionally. */
+.dnp-tile[data-district='corporate-ruins'] {
+  --dnp-paper: #e8e4d6; --dnp-paper-2: #dad6c7; --dnp-ink: #14110e;
+  --dnp-link: #1d3766; --dnp-accent: #b00020; --dnp-tape: #c8b88d;
+  --dnp-banner-font: 'Special Elite', 'Courier New', monospace;
+}
+.dnp-tile[data-district='parking-lot-west'] {
+  --dnp-paper: #1a1a1a; --dnp-paper-2: #2c2418; --dnp-ink: #ffe070;
+  --dnp-ink-soft: #b89b3e; --dnp-link: #ff8a3a; --dnp-accent: #ff3380;
+  --dnp-tape: #4cff4c; --dnp-rule: rgba(255, 224, 112, 0.2);
+  --dnp-banner-font: 'Bungee Shade', cursive;
+}
+.dnp-tile[data-district='motel-row'] {
+  --dnp-paper: #f0e6d0; --dnp-paper-2: #e0d4b8; --dnp-ink: #2a1810;
+  --dnp-link: #224d67; --dnp-accent: #b00020; --dnp-tape: #e8d76a;
+  --dnp-banner-font: 'Lobster', 'Cooper Black', serif;
+}
+.dnp-tile[data-district='pool-hall-county'] {
+  --dnp-paper: #1f3d28; --dnp-paper-2: #173020; --dnp-ink: #f4e3a8;
+  --dnp-ink-soft: #b89b3e; --dnp-link: #ffd700; --dnp-accent: #b00020;
+  --dnp-tape: #4cff4c; --dnp-rule: rgba(244, 227, 168, 0.18);
+  --dnp-banner-font: 'Carter One', 'Cooper Black', serif;
+}
+.dnp-tile[data-district='object-district'] {
+  --dnp-paper: #efe7d3; --dnp-paper-2: #d8cdab; --dnp-ink: #14110e;
+  --dnp-link: #6b3aa0; --dnp-accent: #b00020; --dnp-tape: #ffd700;
+  --dnp-banner-font: 'Permanent Marker', cursive;
+}
+.dnp-tile[data-district='classified-alley'] {
+  --dnp-paper: #f4f0e2; --dnp-paper-2: #e0d8be; --dnp-ink: #1a1a1a;
+  --dnp-link: #0033ee; --dnp-accent: #cc0000; --dnp-tape: #ffeb70;
+  --dnp-banner-font: 'Special Elite', 'Courier New', monospace;
+}
+.dnp-tile[data-district='the-wrong-department'] {
+  --dnp-paper: #d4d0c8; --dnp-paper-2: #b8b3a8; --dnp-ink: #14233e;
+  --dnp-link: #0a246a; --dnp-accent: #ff8800; --dnp-tape: #ffe070;
+  --dnp-banner-font: 'Tahoma', sans-serif;
+}
+.dnp-tile[data-district='the-food-court-that-closed'] {
+  --dnp-paper: #f5d6c0; --dnp-paper-2: #e8b89a; --dnp-ink: #1a0a2e;
+  --dnp-link: #cc0099; --dnp-accent: #ff3380; --dnp-tape: #4cff4c;
+  --dnp-banner-font: 'Carter One', 'Cooper Black', serif;
+}
+.dnp-tile[data-district='back-booth'] {
+  --dnp-paper: #2a1d10; --dnp-paper-2: #3a2a1a; --dnp-ink: #f4d28a;
+  --dnp-ink-soft: #c0a060; --dnp-link: #ffb84a; --dnp-accent: #cc6633;
+  --dnp-tape: #ffd700; --dnp-rule: rgba(244, 210, 138, 0.2);
+  --dnp-banner-font: 'Lobster', 'Cooper Black', serif;
+}
+.dnp-tile[data-district='dead-link-cemetery'] {
+  --dnp-paper: #15101e; --dnp-paper-2: #20182a; --dnp-ink: #b8a8d0;
+  --dnp-ink-soft: #807090; --dnp-link: #4cff4c; --dnp-accent: #ff60d4;
+  --dnp-tape: #cc0099; --dnp-rule: rgba(184, 168, 208, 0.2);
+  --dnp-banner-font: 'Permanent Marker', cursive;
+}
+.dnp-tile[data-district='radio-tower-147'] {
+  --dnp-paper: #0a0a14; --dnp-paper-2: #14142a; --dnp-ink: #4cff4c;
+  --dnp-ink-soft: #2cb02c; --dnp-link: #ffe070; --dnp-accent: #ff3380;
+  --dnp-tape: #4cff4c; --dnp-rule: rgba(76, 255, 76, 0.2);
+  --dnp-banner-font: 'Bungee', 'Impact', sans-serif;
+}
+.dnp-tile[data-district='the-rack'] {
+  --dnp-paper: #f8f4e8; --dnp-paper-2: #e8dec3; --dnp-ink: #14110e;
+  --dnp-link: #b00020; --dnp-accent: #b00020; --dnp-tape: #ffd700;
+  --dnp-banner-font: 'Bungee', 'Impact', sans-serif;
+}
+
+/* Tile banner — mini-version of the splash banner */
+.dnp-tile-banner {
+  background: var(--dnp-paper-2);
+  margin: -12px -12px 0;
+  padding: 8px 10px 10px;
+  border-bottom: 2px double var(--dnp-ink);
+}
+.dnp-tile-welcome {
+  display: block;
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--dnp-ink-soft);
+  text-transform: uppercase;
+}
+.dnp-tile-name {
+  display: block;
+  font-family: var(--dnp-banner-font);
+  font-size: 18px;
+  line-height: 1.05;
+  color: var(--dnp-ink);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  filter: drop-shadow(1px 1px 0 var(--dnp-accent));
+  margin-top: 2px;
+}
+
+.dnp-tile-tagline {
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  color: var(--dnp-ink);
+  font-weight: 700;
+  margin: 4px 0;
+  line-height: 1.15;
+}
+
+.dnp-tile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.dnp-tile-pill {
+  display: inline-block;
+  padding: 1px 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid var(--dnp-ink);
+  color: var(--dnp-ink);
+}
+.dnp-tile-pill--status { background: var(--dnp-tape); }
+.dnp-tile-pill--danger { background: var(--dnp-paper); color: var(--dnp-accent); border-color: var(--dnp-accent); letter-spacing: 0.04em; }
+.dnp-tile-pill--weather { font-style: italic; background: transparent; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.dnp-tile-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 1px dotted var(--dnp-rule);
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  color: var(--dnp-ink-soft);
+}
+.dnp-tile-turf {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dnp-tile-enter {
+  font-family: 'Comfortaa', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--dnp-link);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.dnp-tile:hover .dnp-tile-enter {
+  color: var(--dnp-accent);
+}
+
+/* Status-driven flourishes — same shapes as the splash */
+.dnp-tile[data-status='rumored'] { border-style: dashed; }
+.dnp-tile[data-status='restricted']::before {
+  content: 'RESTRICTED';
+  position: absolute;
+  top: 6px;
+  right: -22px;
+  background: var(--dnp-accent);
+  color: #fff;
+  padding: 2px 22px;
+  font-family: 'Bungee', 'Impact', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  transform: rotate(38deg);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Staff-only notice — quieter aside */
+.dnp-directory-staff {
+  margin: 0 18px 18px;
+  padding: 10px 14px;
+  border: 2px dashed var(--dnp-rule);
+  background: var(--dnp-paper-2);
+  text-align: center;
+}
+.dnp-directory-staff-label {
+  font-family: 'Bungee', 'Impact', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--dnp-accent);
+  margin: 0 0 4px;
+}
+.dnp-directory-staff-note {
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  color: var(--dnp-ink-soft);
+  margin: 0;
+  font-style: italic;
+}
