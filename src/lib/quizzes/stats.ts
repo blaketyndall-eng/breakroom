@@ -1,41 +1,30 @@
 /**
- * Quiz stat axes — the 10 dimensions every quiz outcome is scored against.
+ * Quiz stat axes — the 8 dimensions every quiz outcome is scored against.
  *
- * Treat outcomes as a vector, not a label. "Sink Light Saint" and
- * "Receipt Auditor" aren't stored anywhere as canonical types; they're
- * derived from threshold rules over the stat vector at read time.
- *
- * Edit this file to add/remove/rename axes. The engine, profileSeed,
- * and quiz data files all consume StatKey from here.
+ * Universal RPG-style stats that apply to any quiz topic, not just
+ * Breakroom-specific scenarios. Edit this file to add/remove/rename
+ * axes; the engine, profileSeed, and quiz data files all consume
+ * StatKey from here.
  */
 
-export type StatKind = 'skill' | 'personality' | 'tendency' | 'social';
+export type StatKind = 'skill' | 'personality' | 'social' | 'chance' | 'aesthetic';
 
 export interface StatAxis {
   key: StatKey;
   label: string;       // SCREEN-CASE for VCR UI
   kind: StatKind;
-  desc: string;        // one-liner shown in stat tooltip / share card
+  desc: string;        // one-liner for tooltip / share card
 }
 
 export const STAT_AXES = [
-  // tendencies — what you do when nobody asked
-  { key: 'late_hours',    label: 'LATE HOURS',    kind: 'tendency',    desc: 'Time on the books. Comfort after midnight.' },
-  { key: 'lot_hours',     label: 'LOT HOURS',     kind: 'tendency',    desc: 'Sitting in a lot for no reason.' },
-  { key: 'exit_instinct', label: 'EXIT INSTINCT', kind: 'tendency',    desc: 'How fast you leave when it gets weird.' },
-
-  // personality — internal weather
-  { key: 'compliance',    label: 'COMPLIANCE',    kind: 'personality', desc: 'Rule-following. Corporate alignment.' },
-  { key: 'witnessing',    label: 'WITNESSING',    kind: 'personality', desc: 'What you notice but don\'t say.' },
-  { key: 'warmth',        label: 'WARMTH',        kind: 'personality', desc: 'How cold you would let it get.' },
-
-  // skill — competence-under-conditions
-  { key: 'chalk',         label: 'CHALK',         kind: 'skill',       desc: 'Cue aim. Competence under low light.' },
-  { key: 'coin',          label: 'COIN',          kind: 'skill',       desc: 'Patience for slow systems.' },
-
-  // social — what the room thinks of you
-  { key: 'applause',      label: 'APPLAUSE',      kind: 'social',      desc: 'Earned non-money. Compensation that isn\'t.' },
-  { key: 'room_rec',      label: 'ROOM REC',      kind: 'social',      desc: 'Whether the room knows you.' },
+  { key: 'aim',    label: 'AIM',    kind: 'skill',       desc: 'Precision. Follow-through under pressure.' },
+  { key: 'nerve',  label: 'NERVE',  kind: 'personality', desc: 'Boldness. Willing to do the thing.' },
+  { key: 'wit',    label: 'WIT',    kind: 'personality', desc: 'Observation. Picking up signals.' },
+  { key: 'cool',   label: 'COOL',   kind: 'personality', desc: 'Composure. Keeps it together.' },
+  { key: 'heart',  label: 'HEART',  kind: 'personality', desc: 'Emotional weight. Capacity to feel.' },
+  { key: 'charm',  label: 'CHARM',  kind: 'social',      desc: 'Social pull. Presence in a room.' },
+  { key: 'luck',   label: 'LUCK',   kind: 'chance',      desc: 'Grace under chance.' },
+  { key: 'taste',  label: 'TASTE',  kind: 'aesthetic',   desc: 'Discernment. Knowing what is good.' },
 ] as const satisfies readonly StatAxis[];
 
 export type StatKey = (typeof STAT_AXES)[number]['key'];
@@ -87,16 +76,14 @@ export function scaleStats(v: Partial<StatVector>, factor: number): Partial<Stat
   return out;
 }
 
-/** Top-N axes by value (ties broken by stat-key order). Used to derive
- *  dominant Department/Role/Object from a final vector. */
+/** Top-N axes by value (ties broken by stat-key order). */
 export function topN(v: StatVector, n: number): StatKey[] {
   return [...STAT_KEYS]
     .sort((a, b) => (v[b] - v[a]) || STAT_KEYS.indexOf(a) - STAT_KEYS.indexOf(b))
     .slice(0, n);
 }
 
-/** Distance between two stat vectors — squared Euclidean.
- *  Useful for picking the closest preset persona / department from a list. */
+/** Squared Euclidean distance between two stat vectors. */
 export function statDistance(a: StatVector, b: StatVector): number {
   let total = 0;
   for (const k of STAT_KEYS) {
@@ -106,8 +93,8 @@ export function statDistance(a: StatVector, b: StatVector): number {
   return total;
 }
 
-/** Pick the entry from a list of {target, payload} whose target vector is
- *  closest to the given vector. Used to map stats → department, etc. */
+/** Pick the entry whose target vector is closest to the given vector.
+ *  Used to map stats → department / role / etc. via fingerprint match. */
 export function nearest<T>(
   v: StatVector,
   candidates: Array<{ target: Partial<StatVector>; payload: T }>,
