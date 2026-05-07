@@ -2,26 +2,29 @@
  * nanoPrompts.ts
  * --------------------------------------------------------------------------
  * Single source of truth for VOID-side illustration prompts + image-URL
- * dispatcher across multiple generators (free + future paid).
+ * dispatcher across multiple generators (free + paid).
  *
  * Each prompt has a `provider` field that picks which model generates it.
  * The page calls one master function — imageUrl(p) — and never has to
  * know which backend actually produced the image. Swap a slot's provider
  * to upgrade quality without touching any other code.
  *
- * Free providers wired today (no auth required):
+ * Free providers (no auth, runtime URL):
  *   pollinations-flux         — default FLUX schnell, best for cartoon
  *   pollinations-flux-realism — photoreal-tuned FLUX, for cinematic scenes
  *   pollinations-turbo        — SDXL turbo, fastest
- *   pollinations-gptimage     — GPT-image-1, the only free model that
- *                               reliably renders legible text
+ *   pollinations-gptimage     — GPT-image-1, only free model with legible text
  *
- * Future paid providers (stubs below — fill when API keys land):
+ * Paid providers (pre-generated, served from /public/void/<key>.jpg):
  *   replicate-flux-pro    — FLUX 1.1 Pro for hero quality
  *   replicate-sdxl-lora   — SDXL + Civitai LoRA for style-specific
  *                           (MF DOOM cartoon, MS Paint, etc.)
  *   replicate-ideogram    — Ideogram 2.0 for posters with real typography
- *   luma-dream            — Luma Dream Machine for image→looping GIF
+ *   luma-dream            — Luma Dream Machine for image→looping GIF (TODO)
+ *
+ * Replicate-routed slots use static images committed to /public/void/.
+ * Run `pnpm regen-images` (with REPLICATE_API_TOKEN in env) to regenerate.
+ * See scripts/regen-void-images.mjs.
  */
 
 export type Provider =
@@ -29,7 +32,6 @@ export type Provider =
   | 'pollinations-flux-realism'
   | 'pollinations-turbo'
   | 'pollinations-gptimage'
-  // ---- paid stubs (not yet wired) ----
   | 'replicate-flux-pro'
   | 'replicate-sdxl-lora'
   | 'replicate-ideogram'
@@ -96,33 +98,19 @@ function briefForUrl(p: NanoPrompt, maxChars = 700): string {
 }
 
 // =====================================================================
-// FREE PROVIDERS — Pollinations.ai (no auth)
+// FREE PROVIDERS — Pollinations.ai (no auth, runtime URL)
 // =====================================================================
 const POLLINATIONS_BASE = 'https://image.pollinations.ai/prompt/';
 
-function buildPollinationsUrl(
-  p: NanoPrompt,
-  model: string,
-  enhance = false,
-): string {
+function buildPollinationsUrl(p: NanoPrompt, model: string): string {
   const briefShort = briefForUrl(p);
   const fullPrompt = briefShort + COMPRESSED_STYLE;
   const encoded = encodeURIComponent(fullPrompt);
   const w = Math.min(p.width * 4, 1024);
   const h = Math.min(p.height * 4, 1024);
-  const params = [
-    `width=${w}`,
-    `height=${h}`,
-    `seed=${p.seed}`,
-    `model=${model}`,
-    'nologo=true',
-  ];
-  if (enhance) params.push('enhance=true');
-  return `${POLLINATIONS_BASE}${encoded}?${params.join('&')}`;
+  return `${POLLINATIONS_BASE}${encoded}?width=${w}&height=${h}&seed=${p.seed}&model=${model}&nologo=true`;
 }
 
-// Per-model URL builders (used internally by imageUrl dispatcher and exported
-// for direct use if needed).
 export function pollinationsFluxUrl(p: NanoPrompt): string {
   return buildPollinationsUrl(p, 'flux');
 }
@@ -132,33 +120,37 @@ export function pollinationsRealismUrl(p: NanoPrompt): string {
 export function pollinationsTurboUrl(p: NanoPrompt): string {
   return buildPollinationsUrl(p, 'turbo');
 }
-/**
- * GPT-image-1 wrapper via Pollinations. Slower than FLUX but the ONLY
- * free option that reliably renders legible typography (newspaper
- * headlines, ticket text, signage). Use for text-heavy slots.
- */
 export function pollinationsGptImageUrl(p: NanoPrompt): string {
   return buildPollinationsUrl(p, 'gptimage');
 }
 
 // =====================================================================
-// PAID PROVIDERS — stubs for future API keys
+// PAID PROVIDERS — pre-generated, served from /public/void/<key>.jpg
 // =====================================================================
-function replicateFluxProUrl(_p: NanoPrompt): string {
-  throw new Error('replicate-flux-pro not yet wired. Add REPLICATE_API_TOKEN.');
+//
+// These return a LOCAL FILE PATH. The actual image must be generated
+// ahead of time via `pnpm regen-images` (see scripts/regen-void-images.mjs)
+// and committed to public/void/. If the file doesn't exist, the browser
+// will show a broken-image icon — fall back to pollinations until the
+// asset is committed.
+
+function replicateFluxProUrl(p: NanoPrompt): string {
+  return `/void/${p.key}.jpg`;
 }
-function replicateSdxlLoraUrl(_p: NanoPrompt): string {
-  throw new Error('replicate-sdxl-lora not yet wired. Pick a Civitai LoRA URL + add REPLICATE_API_TOKEN.');
+function replicateSdxlLoraUrl(p: NanoPrompt): string {
+  return `/void/${p.key}.jpg`;
 }
-function replicateIdeogramUrl(_p: NanoPrompt): string {
-  throw new Error('replicate-ideogram not yet wired. Add REPLICATE_API_TOKEN.');
+function replicateIdeogramUrl(p: NanoPrompt): string {
+  return `/void/${p.key}.jpg`;
 }
-function lumaDreamUrl(_p: NanoPrompt): string {
-  throw new Error('luma-dream not yet wired. Add LUMA_API_KEY.');
+function lumaDreamUrl(p: NanoPrompt): string {
+  // GIF served from public/. When wired, regen script will save .gif
+  // instead of .jpg — ext switch happens here.
+  return `/void/${p.key}.gif`;
 }
 
 // =====================================================================
-// MASTER DISPATCHER — page calls this, never has to know the backend
+// MASTER DISPATCHER
 // =====================================================================
 export function imageUrl(p: NanoPrompt): string {
   const provider = p.provider ?? 'pollinations-flux';
@@ -178,7 +170,6 @@ export function imageUrl(p: NanoPrompt): string {
  * Backwards-compat alias. /void/index.astro imports `pollinationsUrl` and
  * we want the page to honor each slot's `provider` field without touching
  * the page. Dispatch via imageUrl() so per-slot routing takes effect.
- * Prefer `imageUrl(p)` in new code — the alias may be removed later.
  */
 export function pollinationsUrl(p: NanoPrompt): string {
   return imageUrl(p);
@@ -192,7 +183,7 @@ export const NANO_PROMPTS: Record<string, NanoPrompt> = {
     key: 'mothie',
     subject: 'MOTHIE — VOID mascot',
     width: 140, height: 110, seed: 11, animated: true,
-    provider: 'pollinations-flux',
+    provider: 'pollinations-flux', // flip to 'replicate-flux-pro' after public/void/mothie.jpg is committed
     prompt: brief(`MOTHIE the recurring VOID mascot. A chubby kawaii moth, body roughly as tall as wide. Two big rounded eyes with a single shiny highlight dot in each (slightly off-center for hand-drawn feel). Two perky antennae with little curl tips, sticking straight up. Fluffy luna-moth-shaped wings spread (dusty pale-lavender wing tops with neon-cyan eye-spot patterns near the edges). One tiny hand raised in a small wave. Warm cream cheek-blush dots under the eyes. Personality: the friendly tired friend at 3am. Specific palette: dusty pink fur (#ffaad0), pale lavender wings (#c9a8ff), neon cyan eye-spots (#5ff0ff), warm cream cheek-blush. Background: soft cream oval. Composition: 3/4 front view, slight lean.`),
   },
   newsSwan: {
@@ -227,7 +218,7 @@ export const NANO_PROMPTS: Record<string, NanoPrompt> = {
     key: 'mothStreet',
     subject: 'Moth at streetlight',
     width: 220, height: 100, seed: 66,
-    provider: 'pollinations-flux-realism',
+    provider: 'pollinations-flux-realism', // flip to 'replicate-flux-pro' after public/void/mothStreet.jpg is committed
     prompt: brief(`Wide cinematic horizontal scene. A single wistful slim moth with half-closed eyes hovering in front of a glowing streetlight on a tall pole at the right side of frame, casting yellow cone of light onto dark empty asphalt parking lot. Stars in night sky. Faint silhouette of a parked car in distance on left. Mood: quieter cinematic atmospheric, like a still from a slow-pan shot in a 90s music video. Palette: night sky deep indigo to near-black gradient, streetlight halo electric yellow fading to warm orange, asphalt cool gray, moth body warm cream with magenta wing accents.`),
   },
   weatherSun: {
@@ -235,14 +226,14 @@ export const NANO_PROMPTS: Record<string, NanoPrompt> = {
     subject: 'Weather sun-with-shades',
     width: 56, height: 48, seed: 77,
     provider: 'pollinations-flux',
-    prompt: brief(`A round friendly sun face wearing thick black wayfarer sunglasses, slight asymmetric smile (one corner higher than the other for hand-drawn feel). Yellow body, 8 short triangle rays radiating outward. Single black mole on one cheek for character. Slight orange shadow on the lower face. Tiny icon, max 4 colors, simple shapes only.`),
+    prompt: brief(`A round friendly sun face wearing thick black wayfarer sunglasses, slight asymmetric smile. Yellow body, 8 short triangle rays radiating outward. Single black mole on one cheek for character. Slight orange shadow on the lower face. Tiny icon, max 4 colors, simple shapes only.`),
   },
   voidpoints: {
     key: 'voidpoints',
     subject: 'Coin stack with eyes',
     width: 56, height: 48, seed: 88,
     provider: 'pollinations-flux',
-    prompt: brief(`A small stack of 3 gold coins each with a "VP" stamp on the face. The middle coin has two big cute eyes peeking out of a horizontal slit, looking up and slightly off to one side. Top coin tilted at a lazy angle like about to slip off. Bottom coin sits flat. Palette: light gold body, darker amber edge shadow, eyes near-black with white highlights.`),
+    prompt: brief(`A small stack of 3 gold coins each with a "VP" stamp on the face. The middle coin has two big cute eyes peeking out of a horizontal slit. Top coin tilted at a lazy angle. Bottom coin sits flat. Palette: light gold body, darker amber edge shadow, eyes near-black with white highlights.`),
   },
   voideanTimes: {
     key: 'voideanTimes',
