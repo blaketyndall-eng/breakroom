@@ -38,6 +38,11 @@ export const WORLD_TICKS: WhatsNewLine[] = [
   { body: 'Radio 1:47 is broadcasting. The schedule is wrong on purpose.', tags: ['radio'] },
   { body: 'A door was filed where there was no door yesterday.', tags: ['doors'] },
   { body: 'The newsstand printed an issue dated tomorrow. We did not order this.', tags: ['newsstand'] },
+  { body: 'An anonymous note was filed. It only said: please wake up.', tags: ['anon'] },
+  { body: 'A man was filed under MISSING. Nobody can confirm he was ever here.', tags: ['anon'] },
+  { body: 'Two regulars tried to settle something like adults. The room watched.', tags: ['weather'] },
+  { body: 'Very Good Burger kitchen closed forever. Loyalty cards remain valid.', tags: ['stuff'] },
+  { body: 'The coupon printer is currently afraid.', tags: ['stuff'] },
 ];
 
 /** "Room noticed" cues — when a user has built any local state. */
