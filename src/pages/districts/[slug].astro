@@ -3,6 +3,11 @@ import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import AgentCommentBlock from '@/components/agents/AgentCommentBlock.tsx';
 import { SEEDED_DISTRICTS, getDistrictBySlug, getAdjacentDistricts } from '@/lib/districts';
 
+// Astro 6 SSR mode ignores getStaticPaths unless prerender is opted-in
+// per-route. SEEDED_DISTRICTS is fully static, so we prerender each detail
+// page at build time and serve them as static HTML from Cloudflare.
+export const prerender = true;
+
 export function getStaticPaths() {
   return SEEDED_DISTRICTS.filter((d) => d.status !== 'staff_only').map((district) => ({
     params: { slug: district.slug },

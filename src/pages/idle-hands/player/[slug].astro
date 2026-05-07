@@ -1,6 +1,11 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 const players = ['Nun Dog','Mugsy Late Again','The Driver','Miss September','Coffee','The Kid With The Mop','House Money','Motel 8','Gold Grill','Clock Dispute','Soft Break Steve','Applause Money'];
+
+// SSR mode requires explicit opt-in to prerender these detail pages —
+// without it, getStaticPaths is ignored and Astro.props.name is undefined.
+export const prerender = true;
+
 export function getStaticPaths() { return players.map((name) => ({ params: { slug: name.toLowerCase().replaceAll(' ','-') }, props: { name } })); }
 const { name } = Astro.props;
 ---
