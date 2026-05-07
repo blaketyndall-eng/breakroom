@@ -2,10 +2,89 @@
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 ---
 <OldWebLayout title="404 / Room Not Found" section="404">
-  <div style="text-align:center;padding:80px 0;">
-    <h1>404 / ROOM NOT FOUND</h1>
-    <p>The page left.</p>
-    <p>It did not clock out.</p>
-    <p><a href="/lost-found">Check Lost & Found</a></p>
+  <div class="not-found-frame">
+
+    <figure class="not-found-photo">
+      <img
+        src="/void/foundReptileCouch.jpg"
+        alt="Found photo. Date stamp: MAR 17 1997."
+        loading="eager"
+        decoding="async"
+      />
+      <figcaption>FILE COULD NOT BE LOCATED. DESK 4 RETURNED THIS PHOTOGRAPH INSTEAD.</figcaption>
+    </figure>
+
+    <div class="not-found-text">
+      <p class="not-found-mark">404 / ROOM NOT FOUND</p>
+      <h1>This page may have existed.</h1>
+      <p class="not-found-lede">
+        The page left. It did not clock out. Desk 4 cannot confirm whether
+        the page was ever filed. The photograph above was attached to your
+        request. We do not know who attached it.
+      </p>
+      <p class="not-found-options">
+        <a class="old-button" href="/lost-found">Check Lost &amp; Found</a>
+        <a class="old-button" href="/breakroom">Back to room</a>
+        <a class="old-button" href="/sign-the-wall">Sign the wall instead</a>
+      </p>
+    </div>
+
   </div>
 </OldWebLayout>
+
+<style>
+  .not-found-frame {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 28px;
+    align-items: center;
+    padding: 28px 0;
+  }
+  .not-found-photo {
+    margin: 0;
+    padding: 8px 8px 0;
+    background: #14110e;
+    border: 1px solid #14110e;
+  }
+  .not-found-photo img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+  }
+  .not-found-photo figcaption {
+    color: #f0e6cc;
+    background: #14110e;
+    padding: 8px 4px 6px;
+    font-family: var(--type-mono, monospace);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .not-found-mark {
+    font-family: var(--type-mono, monospace);
+    font-size: 11px;
+    letter-spacing: .14em;
+    color: var(--ink-fade, #5a513f);
+    margin: 0 0 6px;
+  }
+  .not-found-text h1 {
+    font-family: var(--type-paper, Georgia, serif);
+    font-size: clamp(34px, 5.5vw, 60px);
+    line-height: 1;
+    margin: 0 0 14px;
+  }
+  .not-found-lede {
+    font-family: var(--type-paper, Georgia, serif);
+    font-size: 17px;
+    line-height: 1.55;
+    max-width: 48ch;
+    margin: 0 0 18px;
+  }
+  .not-found-options { display: flex; gap: 10px; flex-wrap: wrap; }
+  @media (max-width: 800px) {
+    .not-found-frame { grid-template-columns: 1fr; }
+  }
+</style>

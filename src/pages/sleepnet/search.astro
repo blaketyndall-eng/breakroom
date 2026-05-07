@@ -62,9 +62,19 @@ const pageTitle = q ? `${q} — SleepNet` : 'SleepNet Search';
           Showing <b>1-{results.length}</b> of approximately <b>{approxTotal}</b> for <b>{q}</b>. Search took <b>{took}</b> seconds.
         </div>
         {results.length === 0 ? (
-          <div class="sn-no-results">
-            <p>The room does not have results for <b>"{q}"</b>.</p>
-            <p>Try <a href="/staff-only">asking the room directly</a>. It does not answer fast. That is different from not answering.</p>
+          <div class="sn-no-results sn-no-results-clerk">
+            <img
+              src="/void/sleepnetDirectoryClerk.jpg"
+              alt="SleepNet Directory Clerk — checking the index for you"
+              class="sn-no-results-clerk-img"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <p>The room does not have results for <b>"{q}"</b>.</p>
+              <p>The clerk has checked his folders. He is willing to check again.</p>
+              <p>Try <a href="/staff-only">asking the room directly</a>. It does not answer fast. That is different from not answering.</p>
+            </div>
           </div>
         ) : results.map((item) => (
           <article class="sn-result">

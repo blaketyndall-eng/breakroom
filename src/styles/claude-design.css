@@ -661,6 +661,30 @@ html[data-site-mode="CLOSED"] [data-mode-only="CLOSED"] {
   font-size: 14px;
   color: #555;
 }
+
+/* Empty-results state with the SleepNet Directory Clerk illustration on the
+ * left, friendly clerk-tone copy on the right. Aligns with PR-M's "the room
+ * has people in it" approach — failure feels like an interaction, not a 404. */
+.sn-no-results-clerk {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 18px;
+  align-items: start;
+  padding: 24px 4px;
+  border-top: 1px dashed #ccc4b0;
+  border-bottom: 1px dashed #ccc4b0;
+}
+.sn-no-results-clerk-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 1px solid #14110e;
+  background: #f0e6cc;
+  display: block;
+}
+@media (max-width: 700px) {
+  .sn-no-results-clerk { grid-template-columns: 1fr; }
+}
 .sn-no-results a {
   color: #1a0dab;
 }
