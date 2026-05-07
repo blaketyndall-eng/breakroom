@@ -1,4 +1,11 @@
 ---
+/**
+ * /locker — operator dashboard (V3 redesign).
+ *
+ * Reframed as a Hotmail-1999 + AOL-1999 portal: top banner + 3-column
+ * body (sidebar nav | main pane | aside info). All V2 islands are
+ * preserved — they just sit inside the new dpp-* shell.
+ */
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import RegularFileEditor from '@/components/regulars/RegularFileEditor';
 import SavedStuffDrawerPreview from '@/components/stuff/SavedStuffDrawerPreview';
@@ -9,33 +16,141 @@ import LockerPublicViewLink from '@/components/regulars/LockerPublicViewLink';
 import LockerRecentGuestbook from '@/components/regulars/LockerRecentGuestbook';
 ---
 <OldWebLayout title="Locker" section="locker">
-  <div class="status-strip"><span>locker</span><span>regular file</span><span>drawer</span><span>turf signals</span><span>top 8</span></div>
-  <h1>Locker</h1>
-  <p class="tagline-block">Your Regular File, local drawer, saved Stuff, turf signals, and anything the room has agreed to remember for now.</p>
-
-  <LockerPublicViewLink client:load />
-
-  <div class="grid-3">
-    <RegularFileEditor client:load />
-    <SavedStuffDrawerPreview client:load />
-    <FactionDriftPanel client:load />
-  </div>
-
-  <section class="old-shell locker-top8-section">
-    <div class="old-header">Top 8 / Seen Around</div>
-    <div class="old-body">
-      <TopEightEditor client:load />
-      <div class="seen-around-section">
-        <h3 class="seen-around-label">Seen Around</h3>
-        <SeenAroundBlock client:idle mode="global" limit={12} />
+  <section class="dpp-page dpp-page--portal">
+    <header class="dpp-banner">
+      <div>
+        <p class="dpp-banner-tag">your locker · regular file · drawer · turf signals</p>
+        <h1 class="dpp-banner-title">The Locker</h1>
+        <p class="dpp-banner-meta">whatever the room agreed to remember for now.</p>
       </div>
-    </div>
-  </section>
+      <div class="dpp-banner-actions">
+        <a class="dpp-banner-btn" href="/void">VOID</a>
+        <a class="dpp-banner-btn" href="/clock-in">log out</a>
+      </div>
+    </header>
 
-  <section class="old-shell">
-    <div class="old-header">Recent Signatures On Your Wall</div>
-    <div class="old-body">
-      <LockerRecentGuestbook client:idle />
+    <div class="dpp-subbar">
+      <span><b>logged in as</b> regular</span>
+      <span>last seen <b>just now</b></span>
+      <span>visitors today: <b>—</b></span>
+      <span><a href="/void">return to portal</a></span>
     </div>
+
+    <div style="padding: 12px 18px 0;">
+      <LockerPublicViewLink client:load />
+    </div>
+
+    <div class="dpp-body">
+      <aside class="dpp-col dpp-sidebar">
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">on this page</p>
+          <ul class="dpp-sidebar-list">
+            <li><a class="dpp-sidebar-link" href="#regular-file"><span class="dpp-sidebar-icon">☰</span>Regular File</a></li>
+            <li><a class="dpp-sidebar-link" href="#drawer"><span class="dpp-sidebar-icon">⊡</span>Drawer / Stuff</a></li>
+            <li><a class="dpp-sidebar-link" href="#turf"><span class="dpp-sidebar-icon">⌖</span>Turf Signals</a></li>
+            <li><a class="dpp-sidebar-link" href="#top-eight"><span class="dpp-sidebar-icon">★</span>Top 8 / Seen</a></li>
+            <li><a class="dpp-sidebar-link" href="#wall"><span class="dpp-sidebar-icon">✎</span>Your Wall</a></li>
+          </ul>
+        </div>
+
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">jump to</p>
+          <ul class="dpp-sidebar-list">
+            <li><a class="dpp-sidebar-link" href="/void"><span class="dpp-sidebar-icon">⌕</span>VOID Search</a></li>
+            <li><a class="dpp-sidebar-link" href="/factions"><span class="dpp-sidebar-icon">⊊</span>Crews / Factions</a></li>
+            <li><a class="dpp-sidebar-link" href="/districts"><span class="dpp-sidebar-icon">▥</span>Districts</a></li>
+            <li><a class="dpp-sidebar-link" href="/sign-the-wall"><span class="dpp-sidebar-icon">▤</span>Sign The Wall</a></li>
+            <li><a class="dpp-sidebar-link" href="/phone"><span class="dpp-sidebar-icon">☎</span>Phone</a></li>
+            <li><a class="dpp-sidebar-link" href="/radio"><span class="dpp-sidebar-icon">♪</span>Radio 1:47</a></li>
+          </ul>
+        </div>
+
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">trouble?</p>
+          <ul class="dpp-sidebar-list">
+            <li><a class="dpp-sidebar-link" href="/house-rules"><span class="dpp-sidebar-icon">?</span>House Rules</a></li>
+            <li><a class="dpp-sidebar-link" href="/void/about"><span class="dpp-sidebar-icon">i</span>About VOID</a></li>
+            <li><a class="dpp-sidebar-link" href="/void/flag"><span class="dpp-sidebar-icon">⚑</span>Flag a page</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="dpp-col dpp-main">
+        <h2 class="dpp-section-head" id="regular-file">
+          Regular File
+          <span class="dpp-section-head-tag">edit your public-facing file</span>
+        </h2>
+        <div class="dpp-card">
+          <RegularFileEditor client:load />
+        </div>
+
+        <h2 class="dpp-section-head" id="drawer">
+          Drawer / Stuff
+          <span class="dpp-section-head-tag">things you saved</span>
+        </h2>
+        <div class="dpp-card">
+          <SavedStuffDrawerPreview client:load />
+        </div>
+
+        <h2 class="dpp-section-head" id="turf">
+          Turf Signals
+          <span class="dpp-section-head-tag">faction drift</span>
+        </h2>
+        <div class="dpp-card">
+          <FactionDriftPanel client:load />
+        </div>
+
+        <h2 class="dpp-section-head" id="top-eight">
+          Top 8 / Seen Around
+          <span class="dpp-section-head-tag">crew + sightings</span>
+        </h2>
+        <div class="dpp-card">
+          <TopEightEditor client:load />
+          <div class="seen-around-section">
+            <h3 class="seen-around-label">Seen Around</h3>
+            <SeenAroundBlock client:idle mode="global" limit={12} />
+          </div>
+        </div>
+
+        <h2 class="dpp-section-head" id="wall">
+          Recent Signatures On Your Wall
+          <span class="dpp-section-head-tag">last 5</span>
+        </h2>
+        <div class="dpp-card">
+          <LockerRecentGuestbook client:idle />
+        </div>
+      </main>
+
+      <aside class="dpp-col dpp-aside">
+        <div class="dpp-aside-card">
+          <h3 class="dpp-aside-head">★ Reminders</h3>
+          <p>Set a turf in your file to claim a corner of a district.</p>
+          <p>Add 8 regulars to your Top 8 — the room watches who you stand near.</p>
+          <p>Sign other people's walls. They will sign yours.</p>
+        </div>
+
+        <div class="dpp-aside-card" style="background:#fff; color:var(--dpp-ink);">
+          <h3 class="dpp-aside-head">From The Wire Room</h3>
+          <p style="font-family:'Special Elite', monospace; font-size:11px; color:var(--dpp-ink-soft);">
+            "Files saved here are not verified. The room treats your handle as gossip until people sign for it."
+          </p>
+        </div>
+
+        <div class="dpp-aside-card" style="background:var(--dpp-paper-2); color:var(--dpp-ink);">
+          <h3 class="dpp-aside-head">Quick Links</h3>
+          <ul style="list-style:none; padding:0; margin:0; font-size:12px; line-height:1.8;">
+            <li>→ <a href="/void">VOID</a></li>
+            <li>→ <a href="/locker">refresh locker</a></li>
+            <li>→ <a href="/sign-the-wall">sign the wall</a></li>
+            <li>→ <a href="/clock-in">clock back in</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="dpp-foot">
+      <span>filed: your-locker · last write — local only</span>
+      <a href="/void">&larr; back to VOID portal</a>
+    </footer>
   </section>
 </OldWebLayout>

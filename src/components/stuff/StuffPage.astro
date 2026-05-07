@@ -1,4 +1,12 @@
 ---
+/**
+ * StuffPage — V3 redesign (Amazon 1999 product page layout).
+ *
+ * Detail surface for /stuff/[slug]. dpp-product 2-col layout:
+ *   left  — product image (or hatched placeholder)
+ *   right — status, title, kind, description, price, save button
+ * Below: meta-grid (Source, Commerce State, Tags) + FakeAdStrip.
+ */
 import FakeAdStrip from '@/components/ads/FakeAdStrip.astro';
 import SaveStuffButton from '@/components/stuff/SaveStuffButton';
 import { labelStuffStatus } from '@/lib/stuff';
@@ -7,50 +15,95 @@ import type { StuffItem } from '@/content/data/stuff';
 interface Props {
   item: StuffItem;
 }
-
 const { item } = Astro.props;
 ---
-<section class={`stuff-page status-${item.status}`}>
-  <div class="stuff-hero">
-    <p class="stuff-card-status">{labelStuffStatus(item.status)}</p>
-    <h1>{item.name}</h1>
-    <p class="stuff-kind">{item.kind.replaceAll('_', ' ')}</p>
-    <p>{item.description}</p>
-    <SaveStuffButton client:load item={item} />
+<section class={`dpp-page dpp-page--store status-${item.status}`}>
+  <header class="dpp-banner">
+    <div>
+      <p class="dpp-banner-tag">stuff file · {item.kind.replaceAll('_', ' ')}</p>
+      <h1 class="dpp-banner-title">{item.name}</h1>
+      <p class="dpp-banner-meta">{labelStuffStatus(item.status)}</p>
+    </div>
+    <div class="dpp-banner-actions">
+      <a class="dpp-banner-btn" href="/stuff">&larr; shelf</a>
+      <a class="dpp-banner-btn" href="/locker">drawer</a>
+    </div>
+  </header>
+
+  <div class="dpp-subbar">
+    <span><b>filed</b> as <code>{item.slug}</code></span>
+    <span>kind: <b>{item.kind.replaceAll('_', ' ')}</b></span>
+    <span>status: <b>{labelStuffStatus(item.status)}</b></span>
+    {item.priceLabel && <span>price: <b>{item.priceLabel}</b></span>}
   </div>
 
-  <FakeAdStrip stuffSlug={item.slug} tags={item.tags} limit={3} label="Ads Found In Same Drawer" />
-
-  <div class="stuff-detail-grid">
-    <article class="old-shell stuff-module">
-      <div class="old-header">Status</div>
-      <div class="old-body">
-        <p><span class="red-stamp">{labelStuffStatus(item.status)}</span></p>
-        {item.note && <p>{item.note}</p>}
+  <div class="dpp-body dpp-body--single">
+    <div class="dpp-product">
+      <div class="dpp-product-image">
+        <div class="dpp-product-image-placeholder">
+          {item.name}
+          <br />— no photo on file —
+        </div>
       </div>
-    </article>
 
-    <article class="old-shell stuff-module">
-      <div class="old-header">Source</div>
-      <div class="old-body">
-        <p>{item.sourceLabel ?? 'No source filed.'}</p>
-        {item.relatedSleepNetSlug && <p><a href={`/sleepnet/${item.relatedSleepNetSlug}`}>sleepnet://{item.relatedSleepNetSlug}</a></p>}
-      </div>
-    </article>
+      <div class="dpp-product-info">
+        <p class="dpp-product-status">{labelStuffStatus(item.status)}</p>
+        <h2 class="dpp-product-title">{item.name}</h2>
+        <p class="dpp-product-kind">{item.kind.replaceAll('_', ' ')}</p>
+        <p class="dpp-product-desc">{item.description}</p>
+        {item.priceLabel && (
+          <p class="dpp-product-price">{item.priceLabel}</p>
+        )}
+        {item.note && (
+          <p><span class="dpp-stamp">{item.note}</span></p>
+        )}
 
-    <article class="old-shell stuff-module">
-      <div class="old-header">Commerce State</div>
-      <div class="old-body">
-        <p>{item.status === 'available' ? 'This item may become purchasable later.' : 'No checkout is available for this item.'}</p>
-        <p>{item.priceLabel ?? 'Price not filed.'}</p>
-      </div>
-    </article>
+        <div style="margin-top: 8px;">
+          <SaveStuffButton client:load item={item} />
+        </div>
 
-    <article class="old-shell stuff-module span-2">
-      <div class="old-header">Tags</div>
-      <div class="old-body stuff-tag-list">
-        {item.tags.map((tag) => <span>{tag}</span>)}
+        <div class="dpp-product-meta-grid">
+          <span class="dpp-product-meta-label">Source:</span>
+          <span class="dpp-product-meta-value">{item.sourceLabel ?? 'No source filed.'}</span>
+
+          {item.relatedSleepNetSlug && (
+            <>
+              <span class="dpp-product-meta-label">SleepNet:</span>
+              <span class="dpp-product-meta-value">
+                <a href={`/sleepnet/${item.relatedSleepNetSlug}`}>sleepnet://{item.relatedSleepNetSlug}</a>
+              </span>
+            </>
+          )}
+
+          {item.relatedObjectSlug && (
+            <>
+              <span class="dpp-product-meta-label">Related Object:</span>
+              <span class="dpp-product-meta-value">{item.relatedObjectSlug.replaceAll('-', ' ')}</span>
+            </>
+          )}
+
+          <span class="dpp-product-meta-label">Tags:</span>
+          <span class="dpp-product-meta-value">
+            {item.tags.length > 0 ? item.tags.join(' · ') : <em>none filed</em>}
+          </span>
+
+          <span class="dpp-product-meta-label">Commerce:</span>
+          <span class="dpp-product-meta-value">
+            {item.status === 'available'
+              ? 'This item may become purchasable later.'
+              : 'No checkout is available for this item.'}
+          </span>
+        </div>
       </div>
-    </article>
+    </div>
+
+    <div style="margin-top: 14px;">
+      <FakeAdStrip stuffSlug={item.slug} tags={item.tags} limit={3} label="Ads Found In Same Drawer" />
+    </div>
   </div>
+
+  <footer class="dpp-foot">
+    <span>filed: {item.slug} · the rack does not endorse this listing</span>
+    <a href="/stuff">&larr; back to the shelf</a>
+  </footer>
 </section>

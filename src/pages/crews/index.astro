@@ -1,20 +1,107 @@
 ---
+/**
+ * /crews — V3 redesign (phpBB 2002 community board layout).
+ */
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import CrewCreator from '@/components/crews/CrewCreator';
 import CrewDirectory from '@/components/crews/CrewDirectory';
 ---
-<OldWebLayout title="Crews" section="crews">
-  <div class="status-strip"><span>crews</span><span>not official turf</span><span>user-created</span></div>
-  <section class="old-shell">
-    <div class="old-header">Crews / Unofficial Organizations</div>
-    <div class="old-body">
-      <p class="memo-box">
-        Crews are not official Turf. They are clubs, teams, locals, gangs, weird organizations, fake unions, and old-web fan clubs made by people who showed up. Management does not endorse them. Management barely acknowledges them.
-      </p>
+<OldWebLayout title="Crews / Unofficial Organizations" section="crews">
+  <section class="dpp-page dpp-page--community">
+    <header class="dpp-banner">
+      <div>
+        <p class="dpp-banner-tag">crews · clubs · teams · old-web fan clubs</p>
+        <h1 class="dpp-banner-title">The Boards</h1>
+        <p class="dpp-banner-meta">unofficial organizations · made by people who showed up</p>
+      </div>
+      <div class="dpp-banner-actions">
+        <a class="dpp-banner-btn" href="#start-a-crew">start a crew</a>
+        <a class="dpp-banner-btn" href="/factions">official turf →</a>
+      </div>
+    </header>
 
-      <CrewCreator client:load />
-
-      <CrewDirectory client:load />
+    <div class="dpp-subbar">
+      <span><b>not official turf</b></span>
+      <span>moderation: management barely acknowledges</span>
+      <span><a href="/factions">looking for factions?</a></span>
     </div>
+
+    <div class="dpp-body">
+      <aside class="dpp-col dpp-sidebar">
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">on this page</p>
+          <ul class="dpp-sidebar-list">
+            <li><a class="dpp-sidebar-link" href="#start-a-crew"><span class="dpp-sidebar-icon">+</span>Start a Crew</a></li>
+            <li><a class="dpp-sidebar-link" href="#directory"><span class="dpp-sidebar-icon">⊊</span>Browse Directory</a></li>
+          </ul>
+        </div>
+
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">jump to</p>
+          <ul class="dpp-sidebar-list">
+            <li><a class="dpp-sidebar-link" href="/factions"><span class="dpp-sidebar-icon">★</span>Factions</a></li>
+            <li><a class="dpp-sidebar-link" href="/districts"><span class="dpp-sidebar-icon">▥</span>Districts</a></li>
+            <li><a class="dpp-sidebar-link" href="/locker"><span class="dpp-sidebar-icon">☰</span>Your Locker</a></li>
+            <li><a class="dpp-sidebar-link" href="/sign-the-wall"><span class="dpp-sidebar-icon">✎</span>Sign the Wall</a></li>
+          </ul>
+        </div>
+
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">about crews</p>
+          <ul class="dpp-sidebar-list">
+            <li><a class="dpp-sidebar-link" href="/house-rules"><span class="dpp-sidebar-icon">?</span>House Rules</a></li>
+            <li><a class="dpp-sidebar-link" href="/void/about"><span class="dpp-sidebar-icon">i</span>About VOID</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="dpp-col dpp-main">
+        <h2 class="dpp-section-head" id="start-a-crew">
+          Start a Crew
+          <span class="dpp-section-head-tag">unofficial · low ceremony</span>
+        </h2>
+        <div class="dpp-card">
+          <p class="dpp-empty" style="margin-bottom: 10px;">
+            crews are not official turf. they are clubs, teams, locals, gangs, weird organizations,
+            fake unions, and old-web fan clubs made by people who showed up.
+            management does not endorse them. management barely acknowledges them.
+          </p>
+          <CrewCreator client:load />
+        </div>
+
+        <h2 class="dpp-section-head" id="directory">
+          Crew Directory
+          <span class="dpp-section-head-tag">browse all · filter · search</span>
+        </h2>
+        <div class="dpp-card">
+          <CrewDirectory client:load />
+        </div>
+      </main>
+
+      <aside class="dpp-col dpp-aside">
+        <div class="dpp-aside-card">
+          <h3 class="dpp-aside-head">★ Crew Rules</h3>
+          <p>Crews are user-made. The room does not vouch for them.</p>
+          <p>Anyone can start one. Anyone can leave.</p>
+          <p>Crews can become canonical Turf later. Most won't.</p>
+        </div>
+
+        <div class="dpp-aside-card" style="background:#fff;">
+          <h3 class="dpp-aside-head">Want Official Turf?</h3>
+          <p>The five canonical factions live at <a href="/factions">/factions</a>.</p>
+          <a class="dpp-cta" href="/factions">browse factions →</a>
+        </div>
+
+        <div class="dpp-aside-card" style="background:var(--dpp-paper-2); color:var(--dpp-ink);">
+          <h3 class="dpp-aside-head">Privacy</h3>
+          <p>Crews can be public, unlisted, or invite-only. Set the visibility when you create one.</p>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="dpp-foot">
+      <span>filed: crews-directory · user-created · not official turf</span>
+      <a href="/void">&larr; back to VOID portal</a>
+    </footer>
   </section>
 </OldWebLayout>

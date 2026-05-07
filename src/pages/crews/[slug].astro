@@ -1,10 +1,6 @@
 ---
 /**
- * Crew Detail Page — PR 63 (Crew Builder V2)
- *
- * Dynamic server-rendered route. The CrewDetail component
- * loads the crew from localStorage client-side, so both
- * seeded and user-created crews work.
+ * /crews/[slug] — V3 redesign (phpBB 2002 community detail page).
  */
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import CrewDetail from '@/components/crews/CrewDetail';
@@ -13,40 +9,107 @@ import AgentCommentBlock from '@/components/agents/AgentCommentBlock.tsx';
 const { slug } = Astro.params;
 ---
 <OldWebLayout title="Crew" section="crews">
-  <div class="status-strip"><span>crew</span><span>detail</span><span>not official turf</span></div>
-  <section class="old-shell crew-detail">
-    <div class="old-header" id="crew-header">Crew File</div>
-    <div class="old-body">
-      <CrewDetail client:load crewSlug={slug!} />
+  <section class="dpp-page dpp-page--community">
+    <header class="dpp-banner">
+      <div>
+        <p class="dpp-banner-tag">crew · community · unofficial</p>
+        <h1 class="dpp-banner-title" id="crew-header-name">Crew File</h1>
+        <p class="dpp-banner-meta" id="crew-header-tagline">filed under <code>{slug}</code> · not official turf</p>
+      </div>
+      <div class="dpp-banner-actions">
+        <a class="dpp-banner-btn" href="/crews">&larr; directory</a>
+        <a class="dpp-banner-btn" href="/factions">factions →</a>
+      </div>
+    </header>
 
-      <AgentCommentBlock
-        client:idle
-        targetType="crew"
-        targetSlug={slug!}
-        trigger="page_visit"
-        context={{}}
-      />
+    <div class="dpp-subbar">
+      <span><b>filed</b> as <code>{slug}</code></span>
+      <span>type: crew (user-made)</span>
+      <span><a href="/factions">vs official factions</a></span>
     </div>
-  </section>
 
-  <p class="back-link"><a href="/crews">&larr; back to crews</a></p>
+    <div class="dpp-body">
+      <aside class="dpp-col dpp-sidebar">
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">this crew</p>
+          <ul class="dpp-sidebar-list">
+            <li><a class="dpp-sidebar-link" href="#about"><span class="dpp-sidebar-icon">i</span>About</a></li>
+            <li><a class="dpp-sidebar-link" href="#agents"><span class="dpp-sidebar-icon">✉</span>Agent Comments</a></li>
+          </ul>
+        </div>
+
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">jump to</p>
+          <ul class="dpp-sidebar-list">
+            <li><a class="dpp-sidebar-link" href="/crews"><span class="dpp-sidebar-icon">⊡</span>All Crews</a></li>
+            <li><a class="dpp-sidebar-link" href="/factions"><span class="dpp-sidebar-icon">★</span>Factions</a></li>
+            <li><a class="dpp-sidebar-link" href="/locker"><span class="dpp-sidebar-icon">☰</span>Your Locker</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="dpp-col dpp-main">
+        <h2 class="dpp-section-head" id="about">
+          Crew File
+          <span class="dpp-section-head-tag">members noted but not verified</span>
+        </h2>
+        <div class="dpp-card">
+          <CrewDetail client:load crewSlug={slug!} />
+        </div>
+
+        <h2 class="dpp-section-head" id="agents">
+          Agent Comments
+          <span class="dpp-section-head-tag">npc commentary</span>
+        </h2>
+        <div class="dpp-card">
+          <AgentCommentBlock
+            client:idle
+            targetType="crew"
+            targetSlug={slug!}
+            trigger="page_visit"
+            context={{}}
+          />
+        </div>
+      </main>
+
+      <aside class="dpp-col dpp-aside">
+        <div class="dpp-aside-card">
+          <h3 class="dpp-aside-head">★ This Is A Crew</h3>
+          <p>Not official turf. Made by users. The room does not vouch for it.</p>
+          <p>Crews can later be promoted to faction status if the room approves.</p>
+        </div>
+
+        <div class="dpp-aside-card" style="background:#fff;">
+          <h3 class="dpp-aside-head">Cross-links</h3>
+          <p>Some crews align with a faction. Some claim a district. Look in the file above.</p>
+        </div>
+
+        <div class="dpp-aside-card" style="background:var(--dpp-paper-2); color:var(--dpp-ink);">
+          <h3 class="dpp-aside-head">Want In?</h3>
+          <p>Each crew sets its own visibility (public, unlisted, invite-only). Look for the join button if it's open.</p>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="dpp-foot">
+      <span>filed: {slug} · user-created · not official turf</span>
+      <a href="/crews">&larr; back to crew directory</a>
+    </footer>
+  </section>
 </OldWebLayout>
 
 <script define:vars={{ slug }}>
-  // Update the header with the crew name once loaded
   function updateHeader() {
     try {
       const raw = window.localStorage.getItem('breakroom.crews.v1');
       const userCrews = raw ? JSON.parse(raw) : [];
-      const seededSlugs = ['late-shift-locals', 'parking-lot-council', 'object-clerks-union',
-        'back-booth-regulars', 'dead-link-recovery-club', 'motel-row-watch', 'classified-readers'];
-
-      // Check user crews first, then we'll try to find by slug in any list
       const allCrews = userCrews;
       const crew = allCrews.find(c => c.slug === slug);
       if (crew) {
-        const header = document.getElementById('crew-header');
-        if (header) header.textContent = crew.name;
+        const name = document.getElementById('crew-header-name');
+        const tagline = document.getElementById('crew-header-tagline');
+        if (name) name.textContent = crew.name;
+        if (tagline && crew.tagline) tagline.textContent = crew.tagline;
       }
     } catch {}
   }

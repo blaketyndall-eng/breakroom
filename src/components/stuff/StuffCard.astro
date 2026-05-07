@@ -1,18 +1,29 @@
 ---
+/**
+ * StuffCard — V3 redesign tile.
+ *
+ * Used on /stuff index. Adopts dpp-tile pattern from dpp-redesign.css.
+ * The tile takes its status into the data-status / class so the
+ * "NOT FOR YOU" / "SOON" diagonal stamps fire from CSS.
+ */
 import { labelStuffStatus, makeStuffUrl } from '@/lib/stuff';
 import type { StuffItem } from '@/content/data/stuff';
 
 interface Props {
   item: StuffItem;
 }
-
 const { item } = Astro.props;
 ---
-<a class={`stuff-card status-${item.status}`} href={makeStuffUrl(item.slug)}>
-  <p class="stuff-card-status">{labelStuffStatus(item.status)}</p>
-  <h2>{item.name}</h2>
-  <p>{item.description}</p>
-  <div class="stuff-card-meta">
+<a
+  class={`dpp-tile status-${item.status}`}
+  href={makeStuffUrl(item.slug)}
+  data-stuff-kind={item.kind}
+  data-stuff-status={item.status}
+>
+  <p class="dpp-tile-status">{labelStuffStatus(item.status)}</p>
+  <h2 class="dpp-tile-name">{item.name}</h2>
+  <p class="dpp-tile-desc">{item.description}</p>
+  <div class="dpp-tile-meta">
     <span>{item.kind.replaceAll('_', ' ')}</span>
     {item.priceLabel && <span>{item.priceLabel}</span>}
     {item.sourceLabel && <span>{item.sourceLabel}</span>}

@@ -1,14 +1,129 @@
 ---
+/**
+ * /stuff — V3 redesign (Amazon 1999 catalog directory).
+ */
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import StuffCard from '@/components/stuff/StuffCard.astro';
-import { STUFF_ITEMS } from '@/content/data/stuff';
+import { STUFF_ITEMS, STUFF_STATUS_LABELS } from '@/content/data/stuff';
+
+const kindCounts = STUFF_ITEMS.reduce((acc, it) => {
+  acc[it.kind] = (acc[it.kind] ?? 0) + 1;
+  return acc;
+}, {} as Record<string, number>);
+
+const statusCounts = STUFF_ITEMS.reduce((acc, it) => {
+  acc[it.status] = (acc[it.status] ?? 0) + 1;
+  return acc;
+}, {} as Record<string, number>);
+
+const kinds = Object.keys(kindCounts).sort();
+const statuses = Object.keys(statusCounts).sort();
 ---
 <OldWebLayout title="Stuff Shelf" section="stuff">
-  <div class="status-strip"><span>stuff shelf</span><span>no checkout yet</span><span>removed items</span><span>future goods maybe</span></div>
-  <h1>Stuff</h1>
-  <p class="tagline-block">Objects, fake products, printable artifacts, denied merch, future uniforms, and things removed from the rack before anyone could explain them.</p>
+  <section class="dpp-page dpp-page--store">
+    <header class="dpp-banner">
+      <div>
+        <p class="dpp-banner-tag">objects · artifacts · uniforms · printables</p>
+        <h1 class="dpp-banner-title">The Stuff Shelf</h1>
+        <p class="dpp-banner-meta">things removed from the rack before anyone could explain them.</p>
+      </div>
+      <div class="dpp-banner-actions">
+        <a class="dpp-banner-btn" href="/locker">drawer</a>
+        <a class="dpp-banner-btn" href="/rack">the rack →</a>
+      </div>
+    </header>
 
-  <section class="stuff-grid">
-    {STUFF_ITEMS.map((item) => <StuffCard item={item} />)}
+    <div class="dpp-subbar">
+      <span><b>{STUFF_ITEMS.length}</b> items filed</span>
+      <span><b>{statusCounts.available ?? 0}</b> available</span>
+      <span><b>{statusCounts.removed_by_management ?? 0}</b> removed by management</span>
+      <span>online payment is broken — see counter</span>
+    </div>
+
+    <div class="dpp-body">
+      <aside class="dpp-col dpp-sidebar">
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">browse all</p>
+          <ul class="dpp-sidebar-list">
+            <li><a class="dpp-sidebar-link dpp-sidebar-link--active" href="#all">
+              <span class="dpp-sidebar-icon">▥</span>All Stuff
+              <span class="dpp-sidebar-count">{STUFF_ITEMS.length}</span>
+            </a></li>
+          </ul>
+        </div>
+
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">by kind</p>
+          <ul class="dpp-sidebar-list">
+            {kinds.map((kind) => (
+              <li><a class="dpp-sidebar-link" href={`#${kind}`}>
+                <span class="dpp-sidebar-icon">⊡</span>
+                {kind.replaceAll('_', ' ')}
+                <span class="dpp-sidebar-count">{kindCounts[kind]}</span>
+              </a></li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">by status</p>
+          <ul class="dpp-sidebar-list">
+            {statuses.map((status) => (
+              <li><a class="dpp-sidebar-link" href={`#status-${status}`}>
+                <span class="dpp-sidebar-icon">●</span>
+                {STUFF_STATUS_LABELS[status as keyof typeof STUFF_STATUS_LABELS] ?? status}
+                <span class="dpp-sidebar-count">{statusCounts[status]}</span>
+              </a></li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="dpp-sidebar-group">
+          <p class="dpp-sidebar-head">elsewhere</p>
+          <ul class="dpp-sidebar-list">
+            <li><a class="dpp-sidebar-link" href="/locker"><span class="dpp-sidebar-icon">☰</span>your drawer</a></li>
+            <li><a class="dpp-sidebar-link" href="/rack"><span class="dpp-sidebar-icon">▣</span>the rack</a></li>
+            <li><a class="dpp-sidebar-link" href="/lost-found"><span class="dpp-sidebar-icon">?</span>lost &amp; found</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="dpp-col dpp-main">
+        <h2 class="dpp-section-head">
+          The Shelf
+          <span class="dpp-section-head-tag">{STUFF_ITEMS.length} items · listing incomplete on purpose</span>
+        </h2>
+
+        <div class="dpp-tile-grid">
+          {STUFF_ITEMS.map((item) => <StuffCard item={item} />)}
+        </div>
+      </main>
+
+      <aside class="dpp-col dpp-aside">
+        <div class="dpp-aside-card">
+          <h3 class="dpp-aside-head">★ Online Payment</h3>
+          <p>ONLINE PAYMENT IS BROKEN.</p>
+          <p style="font-family:'Special Elite', monospace; font-size:11px;">
+            Insert quarters at counter. Exact change preferred. Machine does not give change. Machine may not exist.
+          </p>
+        </div>
+
+        <div class="dpp-aside-card" style="background:#fff;">
+          <h3 class="dpp-aside-head">Drawer Hint</h3>
+          <p>Save Stuff to your drawer. The room may notice. The drawer remembers.</p>
+          <a class="dpp-cta" href="/locker">open drawer →</a>
+        </div>
+
+        <div class="dpp-aside-card" style="background:var(--dpp-paper-2); color:var(--dpp-ink);">
+          <h3 class="dpp-aside-head">Notes</h3>
+          <p>Real money begins at <a href="/rack">the rack</a>. Everything else here is bit.</p>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="dpp-foot">
+      <span>{STUFF_ITEMS.length} items filed · the shelf does not own anything on it</span>
+      <a href="/void">&larr; back to VOID portal</a>
+    </footer>
   </section>
 </OldWebLayout>
