@@ -50,7 +50,7 @@ export const BREAKROOM_DATA = {
 
   // Curated search-result corpus. Each item types itself when SleeperNet returns hits.
   corpus: [
-    { kind: "Newsstand Clipping", url: "newsstand.html#room-clock", title: "ROOM CLOCK STILL WRONG, MANAGEMENT CALLS IT \"CULTURAL\"", blurb: "newsstand.sleeper.net › 3am-edition › corrections — Operations declined to comment on the persistent 1:47 a.m. reading, citing \"acoustic concerns.\"", tags: ["clock","1:47","room","cultural"] },
+    { kind: "Newsstand Clipping", url: "newsstand.html#room-clock", title: "ROOM CLOCK STILL WRONG, MANAGEMENT CALLS IT \"CULTURAL\"", blurb: "newsstand.sleeper.net › sleepnews › corrections — Operations declined to comment on the persistent 1:47 a.m. reading, citing \"acoustic concerns.\"", tags: ["clock","1:47","room","cultural"] },
     { kind: "Lost Object", url: "lost.html#key-8", title: "Motel Key No. 8", blurb: "lost.sleeper.net › archive › 008 — Found under bad lighting. Condition: warm. Meaning: access without belonging. Not returned.", tags: ["motel","key","chalk","tray","8"] },
     { kind: "Internal Memo", url: "portal.html#memo-031", title: "OMNISHIFT MEMO #031: The coffee is not fresh. It is active.", blurb: "portal.omnishift.work › memos › 031 — Employees observing unusual coffee behavior should not consume, photograph, or thank it.", tags: ["coffee","fresh","omnishift","memo"] },
     { kind: "Product Artifact", url: "rack.html#under-bad-lights", title: "Under Bad Lights Tee — Issued by Fluorescent Operations", url2: "the-rack", blurb: "rack.breakroom.local › uniforms › 03 — For rooms where the light tells the truth. Issued, not sold.", tags: ["tee","light","fluorescent","uniform"] },
