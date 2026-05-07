@@ -1,5 +1,14 @@
 ---
-import { factionStatusLabel } from '@/lib/factions';
+/**
+ * FactionCard — V3 redesign tile.
+ *
+ * Used on /factions to render each crew as a Cartoon Network bumper-
+ * style tile. Inherits the faction's colors via inline style vars so
+ * each tile paints itself with the faction's primary/secondary/accent.
+ *
+ * webHandle takes the prominent slot; the canonical `name` becomes a
+ * "filed as" subtitle. Falls through to `name` if webHandle absent.
+ */
 import type { BreakroomFaction } from '@/content/data/factions';
 
 interface Props {
@@ -7,20 +16,49 @@ interface Props {
 }
 
 const { faction } = Astro.props;
+
+// Cosmetic rank — deterministic per slug
+function hash(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+const seed = hash(faction.slug);
+const rankFilled = 2 + (seed % 4); // 2–5
+const memberCount = 47 + (seed % 213);
+
+const displayHandle = faction.webHandle ?? faction.name;
+const styleVars = `--faction-primary: ${faction.colors.primary}; --faction-secondary: ${faction.colors.secondary}; --faction-accent: ${faction.colors.accent ?? faction.colors.primary};`;
 ---
-<a class={`faction-card status-${faction.status}`} href={`/factions/${faction.slug}`} style={`--faction-primary: ${faction.colors.primary}; --faction-secondary: ${faction.colors.secondary}; --faction-accent: ${faction.colors.accent ?? faction.colors.primary};`}>
-  {faction.image && (
-    <div class="faction-card-mascot">
+<a
+  class={`fgp-tile status-${faction.status}`}
+  href={`/factions/${faction.slug}`}
+  style={styleVars}
+  data-faction={faction.slug}
+  aria-label={`${displayHandle} — ${faction.motto}`}
+>
+  {faction.image ? (
+    <div class="fgp-tile-mascot">
       <img src={faction.image} alt={`${faction.name} mascot`} loading="lazy" decoding="async" />
     </div>
+  ) : (
+    <div class="fgp-tile-mascot fgp-tile-mascot--placeholder" aria-hidden="true">
+      {faction.name.split(' ').map((w) => w[0]).join('').slice(0, 3).toUpperCase()}
+    </div>
   )}
-  <div class="faction-card-body">
-    <p class="faction-status">{factionStatusLabel(faction)}</p>
-    <h2>{faction.name}</h2>
-    <p class="faction-motto">{faction.motto}</p>
-    <p>{faction.description}</p>
-    <div class="faction-symbol-row">
-      {faction.symbols.slice(0, 5).map((symbol) => <span>{symbol}</span>)}
+
+  <div class="fgp-tile-body">
+    <p class="fgp-tile-tag">visit · webhandle</p>
+    <h2 class="fgp-tile-handle">{displayHandle}</h2>
+    <p class="fgp-tile-canonical">filed as: <b>{faction.name}</b></p>
+    <p class="fgp-tile-motto">"{faction.motto}"</p>
+    <p class="fgp-tile-desc">{faction.description}</p>
+
+    <div class="fgp-tile-foot">
+      <span class="fgp-tile-rank">
+        rank: <b>{'★'.repeat(rankFilled)}</b> · members <b>{memberCount}</b>
+      </span>
+      <span class="fgp-tile-enter" aria-hidden="true">enter &rarr;</span>
     </div>
   </div>
 </a>

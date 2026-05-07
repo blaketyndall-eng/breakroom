@@ -1,24 +1,46 @@
 ---
+/**
+ * /factions — "Pick Your Crew" directory.
+ *
+ * Redesigned to match the V3 fgp-* aesthetic on /factions/[slug]:
+ * Cartoon Network 2001 bumper banner + GeoCities web-ring vibe +
+ * tile grid where each tile inherits its faction's color palette.
+ *
+ * Active crews render first; rumored/staff_only ones live below
+ * under a quieter "rumored" section label.
+ */
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
 import FactionCard from '@/components/factions/FactionCard.astro';
 import { ACTIVE_FACTIONS, RUMORED_FACTIONS } from '@/content/data/factions';
 ---
-<OldWebLayout title="Factions / Turf Map" section="factions">
-  <div class="status-strip"><span>turf map</span><span>active crews</span><span>rumored factions</span><span>stand near the bad light</span></div>
-  <h1>Factions</h1>
-  <p class="tagline-block">Crews, clubs, tribes, lineages, rumors, and people who all keep standing near the same broken light. This is not a guild system. It is a room remembering where you stood.</p>
+<OldWebLayout title="Pick Your Crew / Factions" section="factions">
+  <section class="fgp-directory">
+    <header class="fgp-directory-banner">
+      <p class="fgp-directory-tag">welcome to</p>
+      <h1 class="fgp-directory-name">Pick Your Crew</h1>
+      <p class="fgp-directory-sub">~ {ACTIVE_FACTIONS.length} active webrings · {RUMORED_FACTIONS.length} not fully filed ~</p>
+    </header>
 
-  <section class="faction-index-section">
-    <p class="regular-kicker">Active turf</p>
-    <div class="faction-card-grid">
+    <p class="fgp-directory-meta">
+      crews, clubs, tribes, lineages, rumors, and people who all keep standing near
+      the same broken light. this is not a guild system. it is a room remembering
+      where you stood.
+    </p>
+
+    <span class="fgp-section-label">★ Active Webrings ★</span>
+    <div class="fgp-tile-grid">
       {ACTIVE_FACTIONS.map((faction) => <FactionCard faction={faction} />)}
     </div>
-  </section>
 
-  <section class="faction-index-section">
-    <p class="regular-kicker">Rumored / not fully filed</p>
-    <div class="faction-card-grid rumored-grid">
-      {RUMORED_FACTIONS.map((faction) => <FactionCard faction={faction} />)}
-    </div>
+    {RUMORED_FACTIONS.length > 0 && (
+      <>
+        <span class="fgp-section-label fgp-section-label--rumored">~ Rumored / Not Fully Filed ~</span>
+        <div class="fgp-tile-grid">
+          {RUMORED_FACTIONS.map((faction) => <FactionCard faction={faction} />)}
+        </div>
+      </>
+    )}
+
+    <p class="fgp-back"><a href="/void">&larr; back to VOID portal</a></p>
   </section>
 </OldWebLayout>

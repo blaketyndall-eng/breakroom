@@ -1,4 +1,23 @@
 ---
+/**
+ * FactionPage — V3 redesign.
+ *
+ * Aesthetic: 1996 GeoCities web ring + Cartoon Network 2001 bumper +
+ * light gamification (rank bars, member meter, XP-style cosmetic stats).
+ *
+ * Drives off the V2 dnp-* / rfp-* pattern but uses fgp-* (Faction Guild
+ * Page) tokens. The faction's `colors` field flows through inline style
+ * attrs into --fgp-primary / --fgp-secondary / --fgp-accent so each
+ * crew page paints itself.
+ *
+ * webHandle (V3 add) renders as the prominent display name; the
+ * canonical `name` becomes a "filed as" subtitle.
+ *
+ * Behavior unchanged from V2:
+ *   - TurfJoinRitual island still mounts for active factions
+ *   - AgentCommentBlock island still mounts
+ *   - FactionDriftPageMarker still emits the visit signal
+ */
 import { factionStatusLabel } from '@/lib/factions';
 import TurfJoinRitual from '@/components/factions/TurfJoinRitual.tsx';
 import AgentCommentBlock from '@/components/agents/AgentCommentBlock.tsx';
@@ -9,92 +28,148 @@ interface Props {
 }
 
 const { faction } = Astro.props;
+
+// Cosmetic gamification numbers — deterministic per slug so the page
+// reads consistently across reloads. These are flavor; no real backend.
+function hash(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+const seed = hash(faction.slug);
+const memberCount = 47 + (seed % 213); // 47–259
+const reps = 1147 + (seed % 9999); // 1147–11146
+const activeToday = 3 + (seed % 14); // 3–16
+const rankFilled = 2 + (seed % 4); // 2–5 of 5
+const rankBars = '▮'.repeat(rankFilled) + '▯'.repeat(5 - rankFilled);
+
+const displayHandle = faction.webHandle ?? faction.name;
+const styleVars = `--faction-primary: ${faction.colors.primary}; --faction-secondary: ${faction.colors.secondary}; --faction-accent: ${faction.colors.accent ?? faction.colors.primary};`;
 ---
-<section class={`faction-page status-${faction.status}`} style={`--faction-primary: ${faction.colors.primary}; --faction-secondary: ${faction.colors.secondary}; --faction-accent: ${faction.colors.accent ?? faction.colors.primary};`}>
-  <div class="faction-hero">
-    {faction.image && (
-      <div class="faction-hero-mascot">
+<section class={`fgp-page status-${faction.status}`} style={styleVars}>
+  {/* Bumper banner — Cartoon Network 2001 energy */}
+  <header class="fgp-banner">
+    {faction.image ? (
+      <div class="fgp-banner-mascot">
         <img src={faction.image} alt={`${faction.name} mascot`} loading="eager" decoding="async" />
       </div>
+    ) : (
+      <div class="fgp-banner-mascot fgp-banner-mascot--placeholder" aria-hidden="true">
+        {faction.name.split(' ').map((w) => w[0]).join('').slice(0, 3).toUpperCase()}
+      </div>
     )}
-    <div class="faction-hero-text">
-      <p class="faction-status">{factionStatusLabel(faction)}</p>
-      <h1>{faction.name}</h1>
-      <p class="faction-motto">{faction.motto}</p>
-      <p>{faction.description}</p>
+
+    <div class="fgp-banner-text">
+      <p class="fgp-banner-tag">webhandle</p>
+      <h1 class="fgp-banner-handle">{displayHandle}</h1>
+      <p class="fgp-banner-canonical">filed as: <b>{faction.name}</b> · turf: {faction.turf.replaceAll('_', ' ')}</p>
+      <p class="fgp-banner-motto">"{faction.motto}"</p>
+      <p class="fgp-banner-desc">{faction.description}</p>
+      <span class="fgp-banner-status">{factionStatusLabel(faction)}</span>
+    </div>
+  </header>
+
+  {/* Gamification strip — cosmetic stats */}
+  <div class="fgp-rank-strip">
+    <div class="fgp-rank-cell">
+      <span class="fgp-rank-label">Members</span>
+      <span class="fgp-rank-value">{memberCount}</span>
+    </div>
+    <div class="fgp-rank-cell">
+      <span class="fgp-rank-label">Active Today</span>
+      <span class="fgp-rank-value">{activeToday}</span>
+    </div>
+    <div class="fgp-rank-cell">
+      <span class="fgp-rank-label">Crew Rank</span>
+      <span class="fgp-rank-bars" aria-label={`Rank ${rankFilled} of 5`}>{rankBars}</span>
+    </div>
+    <div class="fgp-rank-cell">
+      <span class="fgp-rank-label">Reps</span>
+      <span class="fgp-rank-value">{reps.toLocaleString('en-US')}</span>
     </div>
   </div>
 
-  <div class="faction-detail-grid">
-    <article class="old-shell faction-module">
-      <div class="old-header">Turf</div>
-      <div class="old-body">
-        <p>{faction.turf.replaceAll('_', ' ')}</p>
-        <p><span class="red-stamp">{faction.joinLanguage}</span></p>
+  {/* Comic-panel detail grid */}
+  <div class="fgp-grid">
+    <article class="fgp-card">
+      <span class="fgp-card-head">Turf</span>
+      <p>{faction.turf.replaceAll('_', ' ')}</p>
+      <p><span class="fgp-stamp">{faction.joinLanguage}</span></p>
+    </article>
+
+    <article class="fgp-card">
+      <span class="fgp-card-head">Symbols</span>
+      <div class="fgp-chip-list">
+        {faction.symbols.map((symbol) => <span class="fgp-chip">{symbol}</span>)}
       </div>
     </article>
 
-    <article class="old-shell faction-module">
-      <div class="old-header">Symbols</div>
-      <div class="old-body faction-chip-list">
-        {faction.symbols.map((symbol) => <span>{symbol}</span>)}
+    <article class="fgp-card">
+      <span class="fgp-card-head">Known Objects</span>
+      <div class="fgp-chip-list">
+        {faction.objects.map((object) => (
+          <a class="fgp-chip" href={`/stuff/${object}`}>{object.replaceAll('-', ' ')}</a>
+        ))}
       </div>
     </article>
 
-    <article class="old-shell faction-module">
-      <div class="old-header">Known Objects</div>
-      <div class="old-body faction-chip-list">
-        {faction.objects.map((object) => <span>{object.replaceAll('-', ' ')}</span>)}
+    <article class="fgp-card">
+      <span class="fgp-card-head">Rivals</span>
+      <div class="fgp-chip-list">
+        {faction.rivals.length ? faction.rivals.map((rival) => (
+          <a class="fgp-chip" href={`/factions/${rival}`}>{rival.replaceAll('-', ' ')}</a>
+        )) : <p class="fgp-empty">No formal rivals filed.</p>}
       </div>
     </article>
 
-    <article class="old-shell faction-module">
-      <div class="old-header">Rivals</div>
-      <div class="old-body faction-chip-list">
-        {faction.rivals.length ? faction.rivals.map((rival) => <a href={`/factions/${rival}`}>{rival.replaceAll('-', ' ')}</a>) : <span>No formal rivals filed.</span>}
+    <article class="fgp-card">
+      <span class="fgp-card-head">Allies</span>
+      <div class="fgp-chip-list">
+        {(faction.allies ?? []).length > 0 ? (faction.allies ?? []).map((ally) => (
+          <a class="fgp-chip" href={`/factions/${ally}`}>{ally.replaceAll('-', ' ')}</a>
+        )) : <p class="fgp-empty">No alliances on file.</p>}
       </div>
     </article>
 
-    <article class="old-shell faction-module">
-      <div class="old-header">Related SleepNet Types</div>
-      <div class="old-body faction-chip-list">
-        {faction.preferredSiteTypes.map((type) => <span>{type.replaceAll('_', ' ')}</span>)}
+    <article class="fgp-card">
+      <span class="fgp-card-head">Agents</span>
+      <div class="fgp-chip-list">
+        {faction.agents.map((agent) => <span class="fgp-chip">{agent.replaceAll('-', ' ')}</span>)}
       </div>
     </article>
 
-    <article class="old-shell faction-module">
-      <div class="old-header">Agents</div>
-      <div class="old-body faction-chip-list">
-        {faction.agents.map((agent) => <span>{agent.replaceAll('-', ' ')}</span>)}
-      </div>
+    <article class="fgp-card fgp-card--span2">
+      <span class="fgp-card-head">Crew Style</span>
+      <p>{faction.productStyle}</p>
+      {faction.warning && <p><span class="fgp-stamp">{faction.warning}</span></p>}
     </article>
 
-    <article class="old-shell faction-module span-2">
-      <div class="old-header">Product Style</div>
-      <div class="old-body">
-        <p>{faction.productStyle}</p>
-        {faction.warning && <p>{faction.warning}</p>}
-      </div>
-    </article>
-
-    <article class="old-shell faction-module">
-      <div class="old-header">Be Seen</div>
-      <div class="old-body">
-        <p>{faction.noticedLanguage}</p>
-        <a class="old-button" href={`/sleepnet/create?type=faction_turf&faction=${faction.slug}`}>Create Turf Page</a>
-      </div>
+    <article class="fgp-card">
+      <span class="fgp-card-head">Be Seen</span>
+      <p>{faction.noticedLanguage}</p>
+      <a class="fgp-cta" href={`/sleepnet/create?type=faction_turf&faction=${faction.slug}`}>
+        + Make Crew Page
+      </a>
     </article>
   </div>
 
-  <AgentCommentBlock
-    client:idle
-    targetType="faction"
-    targetSlug={faction.slug}
-    trigger="page_visit"
-    context={{ factionSlug: faction.slug }}
-  />
+  {/* Footer with agent comments + back link */}
+  <div style="padding: 0 18px 12px;">
+    <AgentCommentBlock
+      client:idle
+      targetType="faction"
+      targetSlug={faction.slug}
+      trigger="page_visit"
+      context={{ factionSlug: faction.slug }}
+    />
+  </div>
+
+  <footer class="fgp-foot">
+    <span>filed: {faction.slug} · members noted but not verified</span>
+    <a href="/factions">&larr; back to crew directory</a>
+  </footer>
 
   {faction.status === 'active' && (
-    <TurfJoinRitual client:load factionSlug={faction.slug} factionName={faction.name} />
+    <TurfJoinRitual client:load factionSlug={faction.slug} factionName={displayHandle} />
   )}
 </section>
