@@ -48,7 +48,7 @@ export const BREAKROOM_DATA = {
     "house rules",
   ],
 
-  // Curated search-result corpus. Each item types itself when SleeperNet returns hits.
+  // Curated search-result corpus. Each item types itself when SleepNet returns hits.
   corpus: [
     { kind: "Newsstand Clipping", url: "newsstand.html#room-clock", title: "ROOM CLOCK STILL WRONG, MANAGEMENT CALLS IT \"CULTURAL\"", blurb: "newsstand.sleeper.net › sleepnews › corrections — Operations declined to comment on the persistent 1:47 a.m. reading, citing \"acoustic concerns.\"", tags: ["clock","1:47","room","cultural"] },
     { kind: "Lost Object", url: "lost.html#key-8", title: "Motel Key No. 8", blurb: "lost.sleeper.net › archive › 008 — Found under bad lighting. Condition: warm. Meaning: access without belonging. Not returned.", tags: ["motel","key","chalk","tray","8"] },
@@ -64,7 +64,7 @@ export const BREAKROOM_DATA = {
     { kind: "Lost Object", url: "lost.html#feather", title: "Swan Feather — Item 014", blurb: "lost.sleeper.net › archive › 014 — Found in passenger footwell. Condition: clean. Meaning: she was here. She is not here now.", tags: ["swan","feather","passenger","miss","september"] },
     { kind: "Classified", url: "newsstand.html#missed", title: "MISSED CONNECTION: you held the door at the bodega in the fur coat", blurb: "newsstand.sleeper.net › missed-connections › 22 — I had exact change. You said \"keep going.\" I have been.", tags: ["fur","coat","bodega","missed","connection","men"] },
     { kind: "Internal Memo", url: "portal.html#observed", title: "Employees may not opt out of being observed.", blurb: "portal.omnishift.work › memos › 052 — Observation is a benefit, not a condition. Consult HR for non-answers.", tags: ["observed","opt","out","hr"] },
-    { kind: "Newsstand Clipping", url: "newsstand.html#correction", title: "CORRECTION: THE SWAN WAS NOT DRIVING", blurb: "newsstand.sleeper.net › corrections › 03-09 — Sleepernet regrets the implication. The swan held the wheel only briefly and only at a stoplight.", tags: ["correction","swan","driving"] },
+    { kind: "Newsstand Clipping", url: "newsstand.html#correction", title: "CORRECTION: THE SWAN WAS NOT DRIVING", blurb: "newsstand.sleeper.net › corrections › 03-09 — SleepNet regrets the implication. The swan held the wheel only briefly and only at a stoplight.", tags: ["correction","swan","driving"] },
     { kind: "Room Note", url: "lost.html#leaving", title: "How to leave without going home", blurb: "lost.sleeper.net › room-notes › 19 — Step one: don't. Step two: keep not. Step three: see step one.", tags: ["leave","home","without","going"] },
     { kind: "Tournament Flyer", url: "idlehands.html", title: "IDLE HANDS INVITATIONAL — old school pool tournament page", blurb: "poolhall.sleeper.net › tournament › ihi — Race to 7. Cash only. Clock optional. Late registration accepted. Probably. Reality status: unresolved.", tags: ["idle","hands","invitational","pool","tournament","8-ball","9-ball","nun dog","the kid","miss september","clock","1:47"] },
     { kind: "Tournament Flyer", url: "idlehands.html", title: "Bracket: 16 announced, 19 actual.", blurb: "poolhall.sleeper.net › tournament › bracket — Mugsy late again. Table changed. Nun Dog vs Time, ongoing. No winner reported.", tags: ["bracket","pool","idle hands","nun dog","mugsy","the driver","clock dispute"] },
@@ -84,7 +84,7 @@ export const BREAKROOM_DATA = {
       { t: "HOT DOGS RULED UNTRUSTWORTHY BY LOCAL CLERK", k: "\"Been on there too long.\" Clerk did not specify what there was." },
     ],
     corrections: [
-      { t: "CORRECTION: THE SWAN WAS NOT DRIVING", k: "Held the wheel only briefly. Only at a stoplight. Sleepernet regrets the implication." },
+      { t: "CORRECTION: THE SWAN WAS NOT DRIVING", k: "Held the wheel only briefly. Only at a stoplight. SleepNet regrets the implication." },
       { t: "CORRECTION: APPLAUSE MONEY IS NOT TAXABLE", k: "It is also not money. Finance regrets nothing." },
       { t: "CORRECTION: THE ROOM IS NOT LISTENING TO YOU SPECIFICALLY", k: "It is listening to everyone. You are not unique here." },
     ],
