@@ -9,11 +9,18 @@ interface Props {
 const { faction } = Astro.props;
 ---
 <a class={`faction-card status-${faction.status}`} href={`/factions/${faction.slug}`} style={`--faction-primary: ${faction.colors.primary}; --faction-secondary: ${faction.colors.secondary}; --faction-accent: ${faction.colors.accent ?? faction.colors.primary};`}>
-  <p class="faction-status">{factionStatusLabel(faction)}</p>
-  <h2>{faction.name}</h2>
-  <p class="faction-motto">{faction.motto}</p>
-  <p>{faction.description}</p>
-  <div class="faction-symbol-row">
-    {faction.symbols.slice(0, 5).map((symbol) => <span>{symbol}</span>)}
+  {faction.image && (
+    <div class="faction-card-mascot">
+      <img src={faction.image} alt={`${faction.name} mascot`} loading="lazy" decoding="async" />
+    </div>
+  )}
+  <div class="faction-card-body">
+    <p class="faction-status">{factionStatusLabel(faction)}</p>
+    <h2>{faction.name}</h2>
+    <p class="faction-motto">{faction.motto}</p>
+    <p>{faction.description}</p>
+    <div class="faction-symbol-row">
+      {faction.symbols.slice(0, 5).map((symbol) => <span>{symbol}</span>)}
+    </div>
   </div>
 </a>

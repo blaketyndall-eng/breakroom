@@ -12,10 +12,17 @@ const { faction } = Astro.props;
 ---
 <section class={`faction-page status-${faction.status}`} style={`--faction-primary: ${faction.colors.primary}; --faction-secondary: ${faction.colors.secondary}; --faction-accent: ${faction.colors.accent ?? faction.colors.primary};`}>
   <div class="faction-hero">
-    <p class="faction-status">{factionStatusLabel(faction)}</p>
-    <h1>{faction.name}</h1>
-    <p class="faction-motto">{faction.motto}</p>
-    <p>{faction.description}</p>
+    {faction.image && (
+      <div class="faction-hero-mascot">
+        <img src={faction.image} alt={`${faction.name} mascot`} loading="eager" decoding="async" />
+      </div>
+    )}
+    <div class="faction-hero-text">
+      <p class="faction-status">{factionStatusLabel(faction)}</p>
+      <h1>{faction.name}</h1>
+      <p class="faction-motto">{faction.motto}</p>
+      <p>{faction.description}</p>
+    </div>
   </div>
 
   <div class="faction-detail-grid">

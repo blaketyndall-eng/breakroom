@@ -25,6 +25,9 @@ export type BreakroomFaction = {
   joinLanguage: string;
   noticedLanguage: string;
   warning?: string;
+  /** Public path to the faction mascot JPG (PR-M Kontext output). Optional —
+   * rumored factions have no mascot yet and degrade gracefully in the UI. */
+  image?: string;
 };
 
 export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
@@ -46,6 +49,7 @@ export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
     joinLanguage: 'You have been seen near the table.',
     noticedLanguage: 'The Players noticed where you stood.',
     warning: 'Do not explain a lucky break unless asked twice.',
+    image: '/void/factionPlayers.jpg',
   },
   {
     slug: 'lot-racers',
@@ -65,6 +69,7 @@ export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
     joinLanguage: 'Your file picked up exhaust.',
     noticedLanguage: 'Lot Racers heard your car before they saw your face.',
     warning: 'No one knows who owns the orange cones.',
+    image: '/void/factionLotRacers.jpg',
   },
   {
     slug: 'night-drinkers',
@@ -84,6 +89,7 @@ export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
     joinLanguage: 'You have been counted among the stools.',
     noticedLanguage: 'Night Drinkers remembered you incorrectly.',
     warning: 'The last story improves every time it is retold.',
+    image: '/void/factionNightDrinkers.jpg',
   },
   {
     slug: 'the-smokers',
@@ -103,6 +109,7 @@ export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
     joinLanguage: 'Fence talk has your name in it.',
     noticedLanguage: 'The Smokers saw you stand outside too long.',
     warning: 'Never ask who started the rumor while holding the lighter.',
+    image: '/void/factionSmokers.jpg',
   },
   {
     slug: 'cowboys',
@@ -122,6 +129,7 @@ export const BREAKROOM_FACTIONS: BreakroomFaction[] = [
     joinLanguage: 'Cooler opened. Hat noticed.',
     noticedLanguage: 'Cowboys saw the dust on your shoes.',
     warning: 'Do not touch the cooler unless invited by someone older than the song.',
+    image: '/void/factionCowboys.jpg',
   },
   {
     slug: 'arcade-kids',
