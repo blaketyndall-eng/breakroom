@@ -1,0 +1,165 @@
+---
+/**
+ * /void/search — VOID search results page.
+ *
+ * Searches across:
+ *   - VOID sites registry (voidSites.ts)
+ *   - Breakroom corpus (BREAKROOM_DATA via sleepnetSearch.findResults)
+ *
+ * Renders in-world results with cheap fake near-matches and a soft empty
+ * state ("Some pages are missing on purpose.") for unmatched queries.
+ */
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import { VOID_SITES } from '@/content/data/voidSites';
+import { findResults, getFakeNearMatches } from '@/lib/sleepnetSearch';
+import { toBreakroomRoute } from '@/lib/routes';
+
+export const prerender = false;
+
+const url = new URL(Astro.request.url);
+const rawQ = url.searchParams.get('q') ?? '';
+const q = rawQ.trim();
+
+type SiteHit = { kind: 'site'; slug: string; title: string; tagline: string; domain: string };
+type CorpusHit = { kind: 'corpus'; title: string; blurb: string; href: string };
+
+const siteHits: SiteHit[] = q
+  ? VOID_SITES.filter((s) => {
+      const hay = `${s.title} ${s.tagline} ${s.domain}`.toLowerCase();
+      return q.toLowerCase().split(/\s+/).every((part) => hay.includes(part));
+    }).map((s) => ({ kind: 'site' as const, slug: s.slug, title: s.title, tagline: s.tagline, domain: s.domain }))
+  : [];
+
+const corpusHits: CorpusHit[] = q
+  ? findResults(q, 6).map((item) => ({
+      kind: 'corpus' as const,
+      title: item.title,
+      blurb: item.blurb,
+      href: toBreakroomRoute(item.url, item.title),
+    }))
+  : [];
+
+const nearMatches = q ? getFakeNearMatches(q).slice(0, 2) : [];
+const totalReal = siteHits.length + corpusHits.length;
+---
+<OldWebLayout title={q ? `search: ${q}` : 'search'} section="voidshell">
+  <div class="status-strip">
+    <span>void</span>
+    <span>search</span>
+    <span>results approximate</span>
+    <span><a href="/void">return to portal</a></span>
+  </div>
+
+  <h1>VOID Search</h1>
+
+  <form class="vd-search-form" method="get" action="/void/search">
+    <label for="q">SEARCH VOID</label>
+    <input id="q" type="text" name="q" placeholder="anything..." value={rawQ} autofocus />
+    <button type="submit">Go!</button>
+  </form>
+
+  {!q && (
+    <p class="memo-box">
+      Type something. Or click <a href="/void">return to portal</a> and let the directory pick.
+    </p>
+  )}
+
+  {q && totalReal === 0 && (
+    <section class="old-shell">
+      <div class="old-header">No real results</div>
+      <div class="old-body">
+        <p>
+          Some pages are missing on purpose. Some are missing on accident. The directory
+          does not distinguish.
+        </p>
+        <p>
+          You could try: <a href="/districts">districts</a> ·
+          <a href="/sites/moths">moths.afterhours</a> ·
+          <a href="/sign-the-wall">the wall</a> ·
+          <a href="/stuff">stuff</a>.
+        </p>
+      </div>
+    </section>
+  )}
+
+  {siteHits.length > 0 && (
+    <section class="old-shell">
+      <div class="old-header">Sites in VOID ({siteHits.length})</div>
+      <div class="old-body">
+        <ul class="result-list">
+          {siteHits.map((hit) => (
+            <li>
+              <a href={`/sites/${hit.slug}`} class="result-title">{hit.title}</a>
+              <div class="result-url">voidsignal://sites/{hit.slug}</div>
+              <p class="result-blurb">{hit.tagline}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {corpusHits.length > 0 && (
+    <section class="old-shell">
+      <div class="old-header">Pages and Things ({corpusHits.length})</div>
+      <div class="old-body">
+        <ul class="result-list">
+          {corpusHits.map((hit) => (
+            <li>
+              <a href={hit.href} class="result-title">{hit.title}</a>
+              <div class="result-url">breakroom.local{hit.href}</div>
+              <p class="result-blurb">{hit.blurb}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {nearMatches.length > 0 && (
+    <section class="old-shell">
+      <div class="old-header">Near Matches (probably dead)</div>
+      <div class="old-body">
+        <ul class="result-list">
+          {nearMatches.map((m) => (
+            <li>
+              <span class="result-title result-dead">{m.title}</span>
+              <div class="result-url">{m.sleepnetUrl ?? '—'}</div>
+              <p class="result-blurb">{m.snippet}</p>
+              {m.reason && <p class="result-reason">{m.reason}</p>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</OldWebLayout>
+
+<style>
+  .vd-search-form {
+    background: #cc0099; border: 3px solid #1a0a2e; padding: 8px 10px;
+    margin-bottom: 14px; display: grid; grid-template-columns: auto 1fr auto; gap: 8px;
+    align-items: center;
+  }
+  .vd-search-form label {
+    color: #ffd700; font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 12px;
+  }
+  .vd-search-form input {
+    padding: 4px 6px; border: 1px inset #888; font-family: 'Courier New', monospace; font-size: 12px;
+  }
+  .vd-search-form button {
+    padding: 4px 12px; background: #ffd700; border: 2px outset #ffec80;
+    font-family: inherit; font-weight: 700; cursor: pointer;
+  }
+  .result-list { list-style: none; padding: 0; }
+  .result-list li { padding: 8px 0; border-bottom: 1px dashed #cc9900; }
+  .result-list li:last-child { border-bottom: none; }
+  .result-title { font-family: 'Comfortaa', sans-serif; font-weight: 700; font-size: 15px; }
+  .result-dead { color: #888; text-decoration: line-through; }
+  .result-url { font-family: var(--type-mono); font-size: 11px; color: #6b8c2d; margin: 2px 0; }
+  .result-blurb { font-size: 13px; color: #1a0a2e; margin-top: 4px; }
+  .result-reason {
+    font-family: var(--type-mono); font-size: 10px; color: #cc0099;
+    margin-top: 4px; letter-spacing: 0.5px;
+  }
+</style>

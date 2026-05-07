@@ -1,0 +1,56 @@
+---
+/**
+ * /sites/[slug] — canonical Void Signal site dynamic route.
+ *
+ * Per the dynamic-route SSR pattern (see feedback memory): runtime SSR
+ * with prerender = false. Looks up the slug in the voidSites registry
+ * and renders the matching template, or an in-world soft-404 if the
+ * slug is unknown.
+ *
+ * V1 ships only the placeholder template; V3 will add per-site templates.
+ */
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import { getVoidSiteBySlug } from '@/content/data/voidSites';
+import PlaceholderTemplate from '@/components/voidsites/PlaceholderTemplate.astro';
+
+export const prerender = false;
+
+const slug = (Astro.params.slug ?? '').toLowerCase();
+const site = getVoidSiteBySlug(slug);
+---
+{site ? (
+  <OldWebLayout title={site.title} section="sites">
+    <PlaceholderTemplate site={site} />
+  </OldWebLayout>
+) : (
+  <OldWebLayout title="page missing" section="sites">
+    <div class="status-strip">
+      <span>void</span>
+      <span>site not in registry</span>
+      <span>directory changed its mind</span>
+      <span><a href="/void">return to portal</a></span>
+    </div>
+
+    <h1>The directory does not have this site.</h1>
+
+    <p class="tagline-block">
+      <code>/sites/{slug}</code> is not in the VOID registry. It may have moved.
+      It may not have been a real page. It may exist in the room but not in the directory.
+    </p>
+
+    <section class="old-shell">
+      <div class="old-header">Sites the directory does have</div>
+      <div class="old-body">
+        <ul>
+          <li><a href="/sites/moths">moths.afterhours</a></li>
+          <li><a href="/sites/lostgloves">lostgloves.afterhours</a></li>
+          <li><a href="/sites/timing-slips">timing-slips.bible</a></li>
+          <li><a href="/sites/onenight">onenight.poolhall</a></li>
+          <li><a href="/sites/whoateit">whoateit.classifieds</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <p class="memo-box">A door moved.</p>
+  </OldWebLayout>
+)}
