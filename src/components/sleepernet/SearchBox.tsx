@@ -23,7 +23,7 @@ export default function SearchBox({ defaultQuery = '' }: Props) {
   const results = useMemo(() => findResults(query), [query]);
 
   return (
-    <div className="sn-search" aria-label="SleeperNet search module">
+    <div className="sn-search" aria-label="SleepNet search module">
       {/* Google Beta-style: input + two buttons */}
       <div className="sn-search-row">
         <input
@@ -31,12 +31,12 @@ export default function SearchBox({ defaultQuery = '' }: Props) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          aria-label="Search SleeperNet"
+          aria-label="Search SleepNet"
           autoComplete="off"
         />
       </div>
       <div className="sn-btn-row">
-        <button className="sn-btn" onClick={() => {}}>SleeperNet Search</button>
+        <button className="sn-btn" onClick={() => {}}>SleepNet Search</button>
         <button className="sn-btn" onClick={() => setQuery(quickSearches[Math.floor(Math.random() * quickSearches.length)])}>I Don't Know What I Want</button>
       </div>
 
