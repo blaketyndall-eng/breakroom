@@ -124,6 +124,24 @@
 
 /* --- Detail page --- */
 
+/* District hero image — sits between the old-header and the old-body in the
+ * detail shell. Aspect-locked so layout is consistent whether or not the
+ * district has a generated hero. Edge-to-edge inside the shell, with a
+ * dark border-bottom that ties it to the body content below. */
+.district-hero-image {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-bottom: 2px solid var(--ink, #14110e);
+  background: #14110e;
+}
+.district-hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .district-detail-meta {
   display: flex;
   gap: 0.5rem;

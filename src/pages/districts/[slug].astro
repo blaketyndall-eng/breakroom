@@ -17,6 +17,11 @@ const adjacent = getAdjacentDistricts(district.slug);
   <div class="status-strip"><span>district</span><span>{district.status.replaceAll('_', ' ')}</span><span>danger: {district.dangerLevel}/3</span></div>
   <section class={`old-shell district-detail district-status-${district.status}`}>
     <div class="old-header">{district.name}</div>
+    {district.image && (
+      <div class="district-hero-image">
+        <img src={district.image} alt={`${district.name} — exterior`} loading="eager" decoding="async" />
+      </div>
+    )}
     <div class="old-body">
       <div class="district-detail-meta">
         <span class="district-status-badge">{district.status.replaceAll('_', ' ')}</span>

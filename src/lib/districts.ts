@@ -16,6 +16,9 @@ export type District = {
   dangerLevel: 0 | 1 | 2 | 3; // 0 = safe, 3 = staff only territory
   adjacentDistricts: string[];
   sleepnetNeighborhood: string; // maps to SLEEPNET_NEIGHBORHOODS key
+  /** Public path to district hero JPG (PR-M FLUX Pro output). Optional —
+   * districts without imagery degrade gracefully to text-only header. */
+  image?: string;
 };
 
 export const SEEDED_DISTRICTS: District[] = [
@@ -48,6 +51,7 @@ export const SEEDED_DISTRICTS: District[] = [
     dangerLevel: 1,
     adjacentDistricts: ['corporate-ruins', 'motel-row', 'the-food-court-that-closed'],
     sleepnetNeighborhood: 'parking_lot_west',
+    image: '/void/districtParkingLotWest.jpg',
   },
   {
     slug: 'motel-row',
@@ -63,6 +67,7 @@ export const SEEDED_DISTRICTS: District[] = [
     dangerLevel: 0,
     adjacentDistricts: ['parking-lot-west', 'classified-alley'],
     sleepnetNeighborhood: 'motel_row',
+    image: '/void/districtMotelRow.jpg',
   },
   {
     slug: 'object-district',
@@ -92,6 +97,7 @@ export const SEEDED_DISTRICTS: District[] = [
     dangerLevel: 0,
     adjacentDistricts: ['object-district', 'back-booth'],
     sleepnetNeighborhood: 'pool_hall_county',
+    image: '/void/districtPoolHall.jpg',
   },
   {
     slug: 'classified-alley',
@@ -135,6 +141,7 @@ export const SEEDED_DISTRICTS: District[] = [
     dangerLevel: 0,
     adjacentDistricts: ['parking-lot-west', 'back-booth'],
     sleepnetNeighborhood: 'the_food_court_that_closed',
+    image: '/void/districtClosedFoodCourt.jpg',
   },
   {
     slug: 'back-booth',
