@@ -5,8 +5,13 @@
  * Reframed as a Hotmail-1999 + AOL-1999 portal: top banner + 3-column
  * body (sidebar nav | main pane | aside info). All V2 islands are
  * preserved — they just sit inside the new dpp-* shell.
+ *
+ * CLEAN-2 (2026-05-07): wraps in <ClockStateGate expects="voidsignal">
+ * so visitors who are on_shift or anonymous get a soft dialog steering
+ * them through the proper ritual (clock out / sign up).
  */
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import ClockStateGate from '@/components/system/ClockStateGate';
 import RegularFileEditor from '@/components/regulars/RegularFileEditor';
 import SavedStuffDrawerPreview from '@/components/stuff/SavedStuffDrawerPreview';
 import FactionDriftPanel from '@/components/factions/FactionDriftPanel';
@@ -16,6 +21,7 @@ import LockerPublicViewLink from '@/components/regulars/LockerPublicViewLink';
 import LockerRecentGuestbook from '@/components/regulars/LockerRecentGuestbook';
 ---
 <OldWebLayout title="Locker" section="locker">
+  <ClockStateGate client:load expects="voidsignal" />
   <section class="dpp-page dpp-page--portal">
     <header class="dpp-banner">
       <div>

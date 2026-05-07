@@ -1,8 +1,10 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import ClockStateGate from '@/components/system/ClockStateGate';
 import EmployeePortal from '@/components/auth/EmployeePortal';
 ---
 <OldWebLayout title="OmniShift Employee Portal" section="omnishift" level={4}>
+  <ClockStateGate client:load expects="omnishift" />
 
   <!-- Corporate header bar (IBM 2001 / SharePoint 2001) -->
   <div class="os-corp-header">
