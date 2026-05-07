@@ -24,7 +24,7 @@ const rest = allItems.slice(1);
   <div class="ns-masthead">
     <p class="ns-vol">VOL. 1 / ISSUE 47 / PRICE: ONE BAD MEMORY</p>
     <h1>Sleep<span class="ns-red">News</span></h1>
-    <p class="ns-tagline">An after-hours newspaper for true/fake stories, public notices, corrections, and whatever your brain found after midnight.</p>
+    <p class="ns-tagline">OmniShift Media Holdings. Reporting what the room allows. Corrections filed but not applied.</p>
   </div>
 
   <!-- BBC-style category tabs -->
@@ -33,7 +33,7 @@ const rest = allItems.slice(1);
     {groups.map(([group]) => (
       <a href={`#${group.toLowerCase().replace(/\s+/g, '-')}`}>{group}</a>
     ))}
-    <a href="/after-hours">BACK TO ROOM</a>
+    <a href="/void">BACK TO ROOM</a>
   </nav>
 
   {newsItems.error && <p class="ns-notice" style="padding:8px 16px;">Public news fallback active: {newsItems.error}</p>}
@@ -129,7 +129,7 @@ const rest = allItems.slice(1);
         <a href="/phone">Call log tips</a> — anonymous sources with bad service
       </div>
       <div class="ns-notice">
-        <a href="/after-hours">Back to room</a> — where most corrections begin
+        <a href="/void">Back to room</a> — where most corrections begin
       </div>
     </aside>
 
@@ -137,7 +137,7 @@ const rest = allItems.slice(1);
 
   <!-- Footer -->
   <div class="ns-footer">
-    <p>The newsstand sells papers, rumors, corrections, and things the room remembers as fact.</p>
+    <p>SleepNews reports what OmniShift allows. Corrections filed but not applied. Classifieds accepted from anyone with exact change.</p>
     <p>© SleepNews / OmniShift Media Holdings / All claims unverified / Printed on whatever was available</p>
   </div>
 

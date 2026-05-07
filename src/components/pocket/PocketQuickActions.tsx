@@ -37,7 +37,7 @@ export default function PocketQuickActions() {
       <button className="pocket-action-btn primary" onClick={handleGetLost}>
         Get Lost
       </button>
-      <a className="pocket-action-btn" href="/sleeper-net">
+      <a className="pocket-action-btn" href="/sleepnet">
         Search
       </a>
       <a className="pocket-action-btn" href="/pocket/code">

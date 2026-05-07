@@ -26,7 +26,7 @@ type Suggestion = {
 const STATIC_SUGGESTIONS: Suggestion[] = [
   { id: 'static-create', label: 'Create A Page', href: '/sleepnet/create', note: 'make something that should not have a website', source: 'static' },
   { id: 'static-lost', label: 'Lost & Found', href: '/lost-found', note: 'object archive, evidence locker', source: 'static' },
-  { id: 'static-news', label: '3AM Edition', href: '/newsstand', note: 'headlines filed after hours', source: 'static' },
+  { id: 'static-news', label: 'SleepNews', href: '/newsstand', note: 'headlines filed after hours', source: 'static' },
   { id: 'static-idle', label: 'Idle Hands Invitational', href: '/idle-hands', note: 'tournament of unclear status', source: 'static' },
   { id: 'static-ventures', label: 'OmniShift Ventures', href: '/ventures', note: 'AI investments nobody asked for', source: 'static' },
   { id: 'static-radio', label: 'Radio 1:47', href: '/radio', note: 'broadcast layer, mostly static', source: 'static' },
