@@ -67,6 +67,23 @@ html:not([data-clock-state="anonymous"]) .ab {
 }
 
 /* ------------------------------------------------------------
+   OldHeader bookmarks strip visibility.
+
+   The OldHeader is OmniShift-themed bookmarks (SleeperNet /
+   OmniShift Portal / The Rack / Newsstand / etc.) that acts as
+   the IE5/6 "Links" bar below the address bar on OmniShift pages.
+   Hidden on:
+     - Void Signal pages   → VS chrome already has VS bookmarks
+     - Pocket pages        → PocketSignalBar handles framing
+     - Suppressed pages    → full immersion (clock-out, 404)
+   ------------------------------------------------------------ */
+html[data-world="voidsignal"] .bookmarks-strip,
+html[data-chrome-mode="pocket"] .bookmarks-strip,
+html[data-chrome-mode="suppressed"] .bookmarks-strip {
+  display: none !important;
+}
+
+/* ------------------------------------------------------------
    Z-index stacking. Documentation here so future overlays know
    what they're competing with.
 
