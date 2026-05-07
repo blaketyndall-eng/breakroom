@@ -1,0 +1,15 @@
+---
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import QuizFrame from '@/components/quizzes/QuizFrame.astro';
+import QuizResult from '@/components/quizzes/QuizResult';
+import { EMPLOYEE_QUIZ } from '@/lib/quizzes/data/foundational/employee-quiz';
+---
+<OldWebLayout title="Employee File / Issued" section="omnishift" level={4}>
+  <QuizFrame
+    quiz={EMPLOYEE_QUIZ}
+    title="EMPLOYEE FILE — ISSUED"
+    footerLines={['ASSIGNMENT IS BINDING', 'THE ROOM HAS FILED YOU']}
+  >
+    <QuizResult client:load />
+  </QuizFrame>
+</OldWebLayout>
