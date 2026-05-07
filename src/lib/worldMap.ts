@@ -50,7 +50,8 @@ const SECTION_WORLD: Record<string, World> = {
   'auth-callback': 'omnishift', // OAuth/SSO landing
   breakroom:       'omnishift', // the fridge-door page (lives in OmniShift,
                                  //   functions as the doorway to Void Signal)
-  portal:          'omnishift', // legacy /portal/after-hours-profile route
+  portal:          'omnishift', // legacy — kept for the 308 redirect at
+                                 //   /portal/after-hours-profile (CLEAN-1)
   clockout:        'omnishift', // page initiates from the clocked-in state
                                  //   (chrome is suppressed during the transition)
 

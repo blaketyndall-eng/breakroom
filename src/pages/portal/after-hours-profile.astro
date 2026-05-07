@@ -1,10 +1,14 @@
 ---
-import OldWebLayout from '@/layouts/OldWebLayout.astro';
-import AfterHoursProfilePanel from '@/components/auth/AfterHoursProfilePanel';
+/**
+ * /portal/after-hours-profile — DEPRECATED (308 redirect).
+ *
+ * The structural orphan flagged in the world-coherence audit (CLEAN-1,
+ * 2026-05-07). "After Hours Persona" is a Void-side concept; living
+ * under /portal/* (OmniShift territory) was a world-bleed. The Regular
+ * File at /locker is now the canonical home for the Void persona.
+ *
+ * Route preserved as a 308 redirect so inbound bookmarks survive. New
+ * links should target /locker directly.
+ */
+return Astro.redirect('/locker', 308);
 ---
-<OldWebLayout title="After Hours Persona" section="portal" level={4}>
-  <a href="/portal">← Employee file</a>
-  <h1>After Hours Persona</h1>
-  <p>This profile is created after Idle Hands registration. Until then, the room makes an educated guess.</p>
-  <AfterHoursProfilePanel client:load />
-</OldWebLayout>
