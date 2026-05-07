@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { loadLocalProfile, markLocalClockedOut, saveLocalProfile } from '@/lib/localSession';
+import WorldTransition from './WorldTransition';
 
 const steps = [
   'Ending approved session...',
@@ -14,6 +15,7 @@ const steps = [
 export default function ClockOutGate() {
   const [idx, setIdx] = useState(0);
   const [status, setStatus] = useState('');
+  const [showTransition, setShowTransition] = useState(false);
 
   useEffect(() => {
     if (idx >= steps.length - 1) return;
@@ -51,14 +53,33 @@ export default function ClockOutGate() {
     clockOut().catch((error) => setStatus(error instanceof Error ? error.message : 'Clock-out failed quietly.'));
   }, [idx]);
 
+  const handleEnterAfterHours = useCallback(() => {
+    setShowTransition(true);
+  }, []);
+
+  const handleTransitionComplete = useCallback(() => {
+    window.location.href = '/after-hours';
+  }, []);
+
   return (
-    <div className="old-shell" style={{ maxWidth: 760, margin: '80px auto', background: '#050605', color: '#33ff66' }}>
-      <div className="old-header" style={{ background: '#111', color: '#33ff66' }}>Clock Out Gate</div>
-      <div className="old-body" style={{ fontFamily: 'var(--type-mono)', fontSize: 18, minHeight: 220 }}>
-        {steps.slice(0, idx + 1).map((step) => <p key={step} className="blink">{step}</p>)}
-        {status && <p>{status}</p>}
-        {idx === steps.length - 1 && <p><a className="old-button" href="/after-hours">Enter After Hours</a></p>}
+    <>
+      {showTransition && (
+        <WorldTransition cardCount={4} onComplete={handleTransitionComplete} />
+      )}
+      <div className="old-shell" style={{ maxWidth: 760, margin: '80px auto', background: '#050605', color: '#33ff66' }}>
+        <div className="old-header" style={{ background: '#111', color: '#33ff66' }}>Clock Out Gate</div>
+        <div className="old-body" style={{ fontFamily: 'var(--type-mono)', fontSize: 18, minHeight: 220 }}>
+          {steps.slice(0, idx + 1).map((step) => <p key={step} className="blink">{step}</p>)}
+          {status && <p>{status}</p>}
+          {idx === steps.length - 1 && (
+            <p>
+              <button className="old-button" type="button" onClick={handleEnterAfterHours}>
+                Enter After Hours
+              </button>
+            </p>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
