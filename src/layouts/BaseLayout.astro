@@ -1,22 +1,70 @@
 ---
 import '../styles/global.css';
 import OldHeader from '@/components/oldweb/OldHeader.astro';
+import { worldForSection, type World } from '@/lib/worldMap';
+
 interface Props {
   title?: string;
   section?: string;
   description?: string;
+  level?: 1 | 2 | 3 | 4;
+  /**
+   * Optional explicit world override. Most pages should leave this
+   * undefined and let `worldForSection(section)` decide. Use only when
+   * a page's visual section and its world citizenship intentionally
+   * diverge (rare).
+   */
+  world?: World;
 }
-const { title = 'The Breakroom', section = 'breakroom', description = 'After-hours internet hidden inside a fake company.' } = Astro.props;
+
+const {
+  title = 'The Breakroom',
+  section = 'breakroom',
+  description = 'After-hours internet hidden inside a fake company.',
+  level,
+  world: worldOverride,
+} = Astro.props;
+
+const world = worldOverride ?? worldForSection(section);
 ---
 <!doctype html>
-<html lang="en" data-site-mode="3AM">
+<html lang="en" data-site-mode="3AM" data-world={world} data-clock-state="anonymous">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <title>{title}</title>
+
+    <!--
+      Pre-paint hydrator. Reads shift_status from localStorage and rewrites
+      data-clock-state on <html> BEFORE first paint, so chrome CSS can key
+      off the attribute with zero flash.
+
+      Source of truth: src/lib/localSession.ts
+        LOCAL_PROFILE_KEY = 'breakroom.omnishift.profile'
+        LOCAL_SHIFT_KEY   = 'breakroom.omnishift.shift'
+        LocalShiftStatus  = 'on_shift' | 'clocked_out' | 'still_out'
+    -->
+    <script is:inline>
+      (function () {
+        try {
+          var profileRaw = localStorage.getItem('breakroom.omnishift.profile');
+          var shiftRaw = localStorage.getItem('breakroom.omnishift.shift');
+          var state = 'anonymous';
+          if (profileRaw) {
+            var m = profileRaw.match(/"shift_status":"(on_shift|clocked_out|still_out)"/);
+            if (m) state = m[1];
+          } else if (shiftRaw === 'on_shift' || shiftRaw === 'clocked_out' || shiftRaw === 'still_out') {
+            state = shiftRaw;
+          }
+          document.documentElement.setAttribute('data-clock-state', state);
+        } catch (_) {
+          /* leave default 'anonymous' */
+        }
+      })();
+    </script>
   </head>
-  <body class="scanlines grain" data-section={section}>
+  <body class="scanlines grain" data-section={section} {...(level ? { 'data-level': String(level) } : {})}>
     <OldHeader />
     <main>
       <slot />

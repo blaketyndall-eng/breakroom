@@ -1,8 +1,18 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-const { title, section = 'oldweb' } = Astro.props;
+import type { World } from '@/lib/worldMap';
+
+interface Props {
+  title?: string;
+  section?: string;
+  level?: 1 | 2 | 3 | 4;
+  /** Optional override of section→world auto-mapping. */
+  world?: World;
+}
+
+const { title, section = 'oldweb', level, world } = Astro.props;
 ---
-<BaseLayout title={title} section={section}>
+<BaseLayout title={title} section={section} level={level} world={world}>
   <div class="container page-pad">
     <slot />
   </div>
