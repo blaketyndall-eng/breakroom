@@ -2,47 +2,51 @@
 /**
  * VoidSignalBrowser.astro
  * --------------------------------------------------------------------------
- * Top browser-bar chrome for Void Signal world pages. Dark warm,
- * pixel-fonted, customized-personal-browser feel. Same height contract
- * as OmniShiftBrowser (50px) so layout doesn't shift between worlds.
+ * Top browser-bar chrome for Void Signal pages. Near-identical to the
+ * OmniShiftBrowser IE5/6 shell (cream Win9x, Tahoma 11px, beveled buttons)
+ * with three subtle Void-only differences so the world reads as "the same
+ * computer, slightly different mood":
  *
- * Mounted by BaseLayout (in F5) when:
- *   data-world="voidsignal" + chromeMode === "desktop" + data-clock-state !== "anonymous"
+ *   1. Title bar gradient is purpler (#2a3070→#5a6ca5) instead of
+ *      OmniShift's bluer (#0a246a→#3a6ea5).
+ *   2. Title text reads "<page title> — Void Net" instead of "— OmniShift
+ *      Internet".
+ *   3. Address shows voidsignal:// URLs (via inWorldUrlFor) which give
+ *      the slightly off feel of being on a different network.
  *
- * URL display: defers to inWorldUrlFor() in worldMap.ts. Returns a
- * voidsignal:// URL with semantic in-world structure (lot/west,
- * regulars/me/file, bar/phone, radio/1.47fm, etc.).
+ * Height: 22px title + 28px toolbar = 50px (matches OmniShiftBrowser so
+ * chrome.css body padding is shared across both worlds).
  */
 import { inWorldUrlFor } from '@/lib/worldMap';
 
 interface Props {
-  /** Current URL path, e.g. "/locker". Used to render the vs:/ URL. */
+  title?: string;
   currentPath?: string;
 }
 
-const { currentPath = '/' } = Astro.props;
+const { title = 'VOID', currentPath = '/' } = Astro.props;
 const inWorldUrl = inWorldUrlFor('voidsignal', currentPath);
 ---
 <div class="vsb" data-chrome-height="50">
-  <!-- Strip 1: address line -->
-  <div class="vsb-strip vsb-strip-addr">
-    <span class="vsb-scheme">vs:/</span>
-    <span class="vsb-addr">{inWorldUrl}</span>
-    <span class="vsb-spacer" aria-hidden="true"></span>
-    <span class="vsb-status">connection: warm</span>
+  <!-- Title bar -->
+  <div class="vsb-title">
+    <span class="vsb-title-icon" aria-hidden="true">⊞</span>
+    <span class="vsb-title-text">{title} — Void Net</span>
+    <span class="vsb-ctrls" aria-hidden="true">
+      <span>−</span><span>□</span><span>×</span>
+    </span>
   </div>
-  <!-- Strip 2: meta + bookmarks -->
-  <div class="vsb-strip vsb-strip-meta">
-    <span class="vsb-counter">visitor #18439</span>
-    <span class="vsb-time">1:47 a.m.</span>
-    <span class="vsb-spacer" aria-hidden="true"></span>
-    <nav class="vsb-bookmarks" aria-label="Void Signal navigation">
-      <a href="/void">home</a>
-      <a href="/locker">file</a>
-      <a href="/phone">phone</a>
-      <a href="/radio">radio</a>
-      <a href="/sign-the-wall">wall</a>
-    </nav>
+
+  <!-- Toolbar / address bar -->
+  <div class="vsb-toolbar">
+    <span class="vsb-nav" aria-hidden="true">◀</span>
+    <span class="vsb-nav" aria-hidden="true">▶</span>
+    <span class="vsb-nav" aria-hidden="true">✕</span>
+    <span class="vsb-nav" aria-hidden="true">↻</span>
+    <span class="vsb-nav" aria-hidden="true">⌂</span>
+    <span class="vsb-addr-label">Address</span>
+    <span class="vsb-addr-field">{inWorldUrl}</span>
+    <span class="vsb-go">Go</span>
   </div>
 </div>
 
@@ -51,95 +55,102 @@ const inWorldUrl = inWorldUrlFor('voidsignal', currentPath);
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 9100;
-    height: 50px;
-    background: #0e0a08;
-    color: #c4b8a0;
+    background: #d4d0c8;
+    border-bottom: 1px solid #808080;
+    font-family: 'Tahoma', 'MS Sans Serif', system-ui, sans-serif;
+    font-size: 11px;
+    color: #000;
     user-select: none;
   }
 
-  .vsb-strip {
+  /* Title bar — subtle Void diff: purpler navy gradient */
+  .vsb-title {
+    height: 22px;
+    background: linear-gradient(180deg, #2a3070 0%, #5a6ca5 100%);
+    color: #fff;
     display: flex;
     align-items: center;
-    box-sizing: border-box;
-    padding: 0 14px;
-  }
-
-  /* Strip 1 — address line */
-  .vsb-strip-addr {
-    height: 22px;
-    background: #14100c;
-    border-bottom: 1px solid #2a1f18;
-    font-family: 'VT323', 'JetBrains Mono', monospace;
-    font-size: 17px;
-    letter-spacing: 0.02em;
-    line-height: 1;
-  }
-  .vsb-scheme {
-    color: #ff5300;
+    padding: 0 6px;
+    gap: 6px;
     font-weight: 700;
-    margin-right: 6px;
-    text-shadow: 0 0 6px rgba(255, 83, 0, 0.4);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.35);
   }
-  .vsb-addr {
-    color: #e8c060;
-    text-shadow: 0 0 6px rgba(232, 192, 96, 0.18);
+  .vsb-title-icon { color: #ffd76b; font-size: 13px; flex-shrink: 0; }
+  .vsb-title-text {
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .vsb-spacer { flex: 1; }
-  .vsb-status {
-    color: #66cc66;
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    font-family: 'JetBrains Mono', monospace;
+  .vsb-ctrls { display: flex; gap: 2px; flex-shrink: 0; }
+  .vsb-ctrls span {
+    display: inline-block;
+    width: 16px; height: 14px;
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    color: #000;
+    font-size: 10px;
+    text-align: center;
+    line-height: 12px;
+    text-shadow: none;
   }
 
-  /* Strip 2 — meta + bookmarks */
-  .vsb-strip-meta {
+  /* Toolbar / address bar */
+  .vsb-toolbar {
     height: 28px;
-    background: #0e0a08;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: #857a65;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    gap: 14px;
+    display: flex;
+    align-items: center;
+    padding: 3px 6px;
+    gap: 6px;
+    background: #d4d0c8;
+    box-sizing: border-box;
   }
-  .vsb-counter, .vsb-time {
+  .vsb-nav {
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    width: 22px; height: 20px;
+    font-size: 11px;
+    text-align: center;
+    line-height: 18px;
     flex-shrink: 0;
   }
-  .vsb-time {
-    color: #d4a870;
-  }
-  .vsb-bookmarks {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-  }
-  .vsb-bookmarks a {
-    color: #d4a870;
-    text-decoration: none;
-    text-transform: lowercase;
-    letter-spacing: 0.04em;
-    font-family: 'JetBrains Mono', monospace;
+  .vsb-nav:hover { background: #c0bcb4; }
+  .vsb-addr-label { padding: 0 4px; flex-shrink: 0; }
+  .vsb-addr-field {
+    flex: 1;
+    background: #fff;
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    padding: 3px 6px;
+    font-family: 'Courier New', monospace;
     font-size: 11px;
+    color: #1a0a2e;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .vsb-bookmarks a:hover {
-    color: #ff5300;
-    text-decoration: underline;
-    background: transparent;
-    text-shadow: 0 0 4px rgba(255, 83, 0, 0.4);
+  .vsb-go {
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    padding: 2px 14px;
+    font-size: 11px;
+    flex-shrink: 0;
   }
-  .vsb-bookmarks a:visited {
-    color: #a88850;
-  }
+  .vsb-go:hover { background: #c0bcb4; }
 
   @media (max-width: 600px) {
-    .vsb-status { display: none; }
-    .vsb-counter { display: none; }
-    .vsb-bookmarks { gap: 10px; }
-    .vsb-bookmarks a:nth-child(n+4) { display: none; }
+    .vsb-addr-label { display: none; }
+    .vsb-nav:nth-child(n+4) { display: none; }
   }
 </style>

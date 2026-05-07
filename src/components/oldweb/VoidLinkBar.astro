@@ -1,0 +1,115 @@
+---
+/**
+ * VoidLinkBar.astro
+ * --------------------------------------------------------------------------
+ * IE5/6 Links bar for Void Signal pages. Same shape, padding, beveled
+ * separators, and hover behaviour as OldHeader (the OmniShift Links bar)
+ * — just different bookmarks and a magenta/purple accent palette.
+ *
+ * Mounted by BaseLayout when world === 'voidsignal'. Distinct class
+ * (.void-bookmarks-strip) from OldHeader's .bookmarks-strip so the
+ * existing chrome.css visibility rules don't accidentally hide it.
+ */
+---
+<nav class="void-bookmarks-strip" aria-label="Void Signal Links">
+  <span class="vbm-fav-mark" aria-hidden="true">★</span>
+  <span class="vbm-label">Sketchy Links</span>
+  <a href="/void" class="vbm-link"><span class="vbm-ico vbm-ico-search" aria-hidden="true">⌕</span>VOID Search</a>
+  <a href="/locker" class="vbm-link"><span class="vbm-ico vbm-ico-file" aria-hidden="true">☰</span>Regular File</a>
+  <a href="/stuff" class="vbm-link"><span class="vbm-ico vbm-ico-stuff" aria-hidden="true">⊡</span>Stuff Drawer</a>
+  <a href="/crews" class="vbm-link"><span class="vbm-ico vbm-ico-crews" aria-hidden="true">⊊</span>Crews</a>
+  <a href="/phone" class="vbm-link"><span class="vbm-ico vbm-ico-phone" aria-hidden="true">☎</span>Phone Behind Bar</a>
+  <a href="/radio" class="vbm-link"><span class="vbm-ico vbm-ico-radio" aria-hidden="true">♪</span>Radio 1:47</a>
+  <a href="/clock-in" class="vbm-link"><span class="vbm-ico vbm-ico-back" aria-hidden="true">↴</span>Back to OmniShift</a>
+  <span class="vbm-status" aria-hidden="true">load: stalled · 3:17 a.m.</span>
+</nav>
+
+<style>
+  .void-bookmarks-strip {
+    background: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-bottom: 1px solid #808080;
+    padding: 2px 8px;
+    height: 24px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-family: 'Tahoma', 'MS Sans Serif', system-ui, sans-serif;
+    font-size: 11px;
+    color: #000;
+    user-select: none;
+  }
+
+  .vbm-fav-mark {
+    color: #ffd76b;
+    font-size: 12px;
+    line-height: 1;
+    margin-right: 4px;
+    padding-left: 2px;
+  }
+
+  .vbm-label {
+    font-weight: 700;
+    color: #404040;
+    margin-right: 8px;
+    padding-right: 8px;
+    border-right: 1px solid #808080;
+    box-shadow: 1px 0 0 0 #ffffff;
+    line-height: 1;
+  }
+
+  .vbm-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 6px;
+    color: #000 !important;
+    text-decoration: none;
+    cursor: default;
+    border: 1px solid transparent;
+    line-height: 1.4;
+    box-sizing: border-box;
+  }
+  .vbm-link:hover {
+    background: #316ac5;
+    color: #ffffff !important;
+    border-top: 1px solid #608cd5;
+    border-left: 1px solid #608cd5;
+    border-right: 1px solid #1d3a7d;
+    border-bottom: 1px solid #1d3a7d;
+  }
+
+  .vbm-ico {
+    display: inline-block;
+    width: 14px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1;
+  }
+  /* Subtle Void diff: bookmark icons drift magenta/purple */
+  .vbm-ico-search { color: #cc0099; }
+  .vbm-ico-file   { color: #6b2d8c; }
+  .vbm-ico-stuff  { color: #cc0099; }
+  .vbm-ico-crews  { color: #6b2d8c; }
+  .vbm-ico-phone  { color: #cc0099; }
+  .vbm-ico-radio  { color: #6b2d8c; }
+  .vbm-ico-back   { color: #1d2891; } /* slight corporate hint on the way-back link */
+  .vbm-link:hover .vbm-ico { color: #ffd76b !important; }
+
+  .vbm-status {
+    margin-left: auto;
+    color: #5a3066;
+    font-family: 'Courier New', 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 720px) {
+    .vbm-label,
+    .vbm-status { display: none; }
+  }
+</style>

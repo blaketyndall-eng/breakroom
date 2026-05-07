@@ -55,6 +55,7 @@ const SECTION_WORLD: Record<string, World> = {
                                  //   (chrome is suppressed during the transition)
 
   // ---------- VOID SIGNAL (underground network, clocked out) ----------
+  void:        'voidsignal', // Void Signal homepage — the after-hours portal
   afterhours:  'voidsignal', // legacy /after-hours route + /sign-the-wall
   locker:      'voidsignal', // Regular File / profile hub
   regulars:    'voidsignal', // public profile view
@@ -90,23 +91,11 @@ const POCKET_SECTIONS = new Set<string>(['pocket']);
  */
 const SUPPRESSED_SECTIONS = new Set<string>(['clockout', '404']);
 
-/**
- * Map a section value to its world. Falls back to 'neutral' for unknown
- * sections, which means no world chrome will mount — safe default.
- */
 export function worldForSection(section: string | undefined | null): World {
   if (!section) return 'neutral';
   return SECTION_WORLD[section] ?? 'neutral';
 }
 
-/**
- * Map a section value to its chrome mode. Falls back to 'desktop'.
- *
- * Note: this is independent of auth state. An anonymous visitor on /portal
- * still gets `desktop` chrome — the *bar component* decides whether to
- * render the cryptic anonymous variant or the full employee bar based on
- * `data-clock-state`.
- */
 export function chromeFor(section: string | undefined | null): ChromeMode {
   if (!section) return 'desktop';
   if (POCKET_SECTIONS.has(section)) return 'pocket';
@@ -114,16 +103,6 @@ export function chromeFor(section: string | undefined | null): ChromeMode {
   return 'desktop';
 }
 
-/**
- * Resolve a page's world, allowing an explicit override prop to win over
- * the section-based mapping. Use the override sparingly — it exists for
- * edge cases where a page's visual section and its world citizenship
- * intentionally diverge.
- *
- * Most pages: just pass `section` and let the mapping speak.
- * Edge cases: pass `world="voidsignal"` explicitly on the page's layout
- * call.
- */
 export function resolveWorld(
   section: string | undefined | null,
   override?: World,
@@ -134,13 +113,7 @@ export function resolveWorld(
 // =====================================================================
 // In-world URL display
 // =====================================================================
-//
-// The top browser bars (OmniShiftBrowser, VoidSignalBrowser) display a
-// period-correct fake URL in their address fields. The mapping below is
-// the single source of truth — change it here and both worlds update.
-//
 
-/** Exact-match path overrides for the OmniShift world. */
 const OMNI_EXACT: Record<string, string> = {
   '/':           '/portal/index.asp',
   '/portal':     '/employees/file.htm',
@@ -156,14 +129,12 @@ const OMNI_EXACT: Record<string, string> = {
   '/dead-link-cemetery': '/archive/dead-links.htm',
 };
 
-/** Prefix overrides for OmniShift parameterized routes. */
 const OMNI_PREFIX: Array<[string, string]> = [
   ['/sleepnet/',  '/search.asp?id='],
   ['/newsstand/', '/news/article.cfm?id='],
   ['/rack/',      '/products/catalog.asp?sku='],
 ];
 
-/** Exact-match path overrides for the Void Signal world. */
 const VS_EXACT: Record<string, string> = {
   '/':              'lot/west',
   '/void':          'lot/west',
@@ -181,7 +152,6 @@ const VS_EXACT: Record<string, string> = {
   '/house-rules':   'pool-hall/rules',
 };
 
-/** Prefix overrides for Void Signal parameterized routes. */
 const VS_PREFIX: Array<[string, string]> = [
   ['/regulars/',    'regulars/'],
   ['/idle-hands/player/', 'pool-hall/players/'],
@@ -192,16 +162,6 @@ const VS_PREFIX: Array<[string, string]> = [
   ['/events/',      'wall/events/'],
 ];
 
-/**
- * Compute the in-world display URL for the top browser bar. Both worlds
- * return a complete user-facing string ready to drop into the address
- * field. OmniShift returns `omnishift.intranet:1147/<path>.asp`-style
- * URLs; Void Signal returns `voidsignal://<semantic>` URLs. Neutral
- * returns the raw pathname (browser bar isn't shown anyway).
- *
- * The :1147 port in OmniShift URLs is the foundation 1:47 motif hook —
- * present on every page without ever calling attention to itself.
- */
 export function inWorldUrlFor(
   world: World,
   pathname: string,
@@ -225,7 +185,6 @@ function remapOmniPath(pathname: string): string {
       return replacement + encodeURIComponent(slug);
     }
   }
-  // Fallback: append .asp to a normalized path.
   if (pathname === '/' || !pathname) return '/index.asp';
   return `${pathname.replace(/\/$/, '')}.asp`;
 }
@@ -238,21 +197,13 @@ function remapVsPath(pathname: string): string {
       return replacement + slug;
     }
   }
-  // Fallback: strip leading slash, no extension.
   return pathname.replace(/^\//, '') || 'lot/west';
 }
-
-// ---------- Iteration helpers ----------
-// Useful for tests, world-coverage assertions, and future tooling.
 
 export const ALL_SECTIONS: readonly string[] = Object.keys(SECTION_WORLD);
 export const ALL_WORLDS: readonly World[] = ['omnishift', 'voidsignal', 'neutral'];
 export const ALL_CHROME_MODES: readonly ChromeMode[] = ['desktop', 'pocket', 'suppressed'];
 
-/**
- * Returns all section values that map to a given world. Handy for
- * generating world-scoped fixtures or auditing coverage.
- */
 export function sectionsForWorld(world: World): string[] {
   return Object.entries(SECTION_WORLD)
     .filter(([, w]) => w === world)

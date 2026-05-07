@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import OldHeader from '@/components/oldweb/OldHeader.astro';
+import VoidLinkBar from '@/components/oldweb/VoidLinkBar.astro';
 import OmniShiftBrowser from '@/components/chrome/OmniShiftBrowser.astro';
 import OmniShiftTaskbar from '@/components/chrome/OmniShiftTaskbar.astro';
 import VoidSignalBrowser from '@/components/chrome/VoidSignalBrowser.astro';
@@ -13,12 +14,6 @@ interface Props {
   section?: string;
   description?: string;
   level?: 1 | 2 | 3 | 4;
-  /**
-   * Optional explicit world override. Most pages should leave this
-   * undefined and let `worldForSection(section)` decide. Use only when
-   * a page's visual section and its world citizenship intentionally
-   * diverge (rare).
-   */
   world?: World;
 }
 
@@ -48,17 +43,6 @@ const currentPath = Astro.url.pathname;
     <meta name="description" content={description} />
     <title>{title}</title>
 
-    <!--
-      Pre-paint hydrator. Reads shift_status from localStorage and rewrites
-      data-clock-state on <html> BEFORE first paint, so chrome CSS can key
-      off the attribute with zero flash. Must stay inline (an external
-      script can't run synchronously before parser-blocked stylesheets).
-
-      Source of truth: src/lib/localSession.ts
-        LOCAL_PROFILE_KEY = 'breakroom.omnishift.profile'
-        LOCAL_SHIFT_KEY   = 'breakroom.omnishift.shift'
-        LocalShiftStatus  = 'on_shift' | 'clocked_out' | 'still_out'
-    -->
     <script is:inline>
       (function () {
         try {
@@ -72,9 +56,7 @@ const currentPath = Astro.url.pathname;
             state = shiftRaw;
           }
           document.documentElement.setAttribute('data-clock-state', state);
-        } catch (_) {
-          /* leave default 'anonymous' */
-        }
+        } catch (_) { /* leave default 'anonymous' */ }
       })();
     </script>
   </head>
@@ -88,8 +70,8 @@ const currentPath = Astro.url.pathname;
     )}
     {chromeMode === 'desktop' && world === 'voidsignal' && (
       <>
-        <VoidSignalBrowser currentPath={currentPath} />
-        <VoidSignalTaskbar />
+        <VoidSignalBrowser title={title} currentPath={currentPath} />
+        <VoidSignalTaskbar title={title} />
         <AnonymousBar />
       </>
     )}
@@ -97,7 +79,12 @@ const currentPath = Astro.url.pathname;
       <AnonymousBar />
     )}
 
+    {/* Links bar below the chrome — world-specific.
+        OldHeader uses .bookmarks-strip (hidden on VS via chrome.css);
+        VoidLinkBar uses .void-bookmarks-strip and only mounts on VS. */}
     <OldHeader />
+    {world === 'voidsignal' && <VoidLinkBar />}
+
     <main>
       <slot />
     </main>
