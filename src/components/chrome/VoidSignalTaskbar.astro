@@ -1,0 +1,97 @@
+---
+/**
+ * VoidSignalTaskbar.astro
+ * --------------------------------------------------------------------------
+ * Bottom OS chrome for Void Signal world. NOT a Win2K replica — VS chrome
+ * should feel like your own computer at 2AM. Single thin warm strip with
+ * visitor count, radio-status line, clock, and Clock In button.
+ *
+ * Mounted by BaseLayout (in F5) when:
+ *   data-world="voidsignal" + chromeMode === "desktop" + data-clock-state !== "anonymous"
+ *
+ * Height: 32px (matches OmniShiftTaskbar so layout is stable across worlds).
+ */
+---
+<div class="vst" data-chrome-height="32">
+  <span class="vst-counter">visitor <b>#18439</b>, mostly</span>
+  <span class="vst-sep" aria-hidden="true">·</span>
+  <span class="vst-radio">now on the air: 1:47 fm — late slot</span>
+  <span class="vst-spacer" aria-hidden="true"></span>
+  <span class="vst-clock">1:47 a.m.</span>
+  <a href="/clock-in" class="vst-action vst-clock-in">[ clock in ]</a>
+  <a href="/clock-out" class="vst-action vst-clock-out">[ clock out ]</a>
+</div>
+
+<style>
+  .vst {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 9100;
+    height: 32px;
+    background: #0e0a08;
+    border-top: 1px solid #2a1f18;
+    color: #857a65;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    box-sizing: border-box;
+    gap: 12px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    user-select: none;
+  }
+  .vst-counter b {
+    color: #d4a870;
+    font-weight: 700;
+  }
+  .vst-sep { color: #2a1f18; }
+  .vst-radio {
+    color: #c4b8a0;
+    font-family: 'VT323', 'JetBrains Mono', monospace;
+    font-size: 14px;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .vst-spacer { flex: 1; }
+  .vst-clock {
+    color: #ff5300;
+    font-family: 'VT323', monospace;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+    text-shadow: 0 0 6px rgba(255, 83, 0, 0.3);
+  }
+  .vst-action {
+    color: #c8bfa6;
+    text-decoration: none;
+    letter-spacing: 0.14em;
+    padding: 4px 8px;
+    border: 1px dashed #2a1f18;
+    background: transparent;
+    font-family: inherit;
+    font-size: 10px;
+    transition: color 0.12s, border-color 0.12s;
+  }
+  .vst-action:visited { color: #c8bfa6; }
+  .vst-action:hover {
+    color: #ff5300;
+    border-color: #ff5300;
+    background: transparent;
+    text-shadow: 0 0 4px rgba(255, 83, 0, 0.4);
+  }
+
+  /* Show only the action that matches the user's current shift state */
+  html[data-clock-state="on_shift"]   .vst-clock-in  { display: none !important; }
+  html[data-clock-state="clocked_out"] .vst-clock-out { display: none !important; }
+  html[data-clock-state="still_out"]  .vst-clock-out { display: none !important; }
+  html[data-clock-state="anonymous"]  .vst-clock-in,
+  html[data-clock-state="anonymous"]  .vst-clock-out { display: none !important; }
+
+  @media (max-width: 600px) {
+    .vst-counter { display: none; }
+    .vst-radio { font-size: 12px; }
+    .vst-action { padding: 4px 6px; font-size: 9px; }
+  }
+</style>
