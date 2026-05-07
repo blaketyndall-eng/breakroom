@@ -1,16 +1,55 @@
+import { useEffect, useState } from 'react';
 import { ARTIFACTS } from '@/lib/artifacts';
 import RegularFileShare from '@/components/regulars/RegularFileShare';
 import TopEightGrid from '@/components/regulars/TopEightGrid';
 import AddToTopEightButton from '@/components/regulars/AddToTopEightButton';
+import ProfileGuestbook from '@/components/regulars/ProfileGuestbook';
+import { isInTopEight, recordSeenAround } from '@/lib/topEight';
+import { getProfileGuestbookCount } from '@/lib/profileGuestbook';
 import type { RegularFile } from '@/lib/regularFiles';
 
 function themeLabel(theme: string) {
   return theme.replaceAll('_', ' ');
 }
 
+const VIEWER_KEY = 'breakroom.regular-file.v1';
+
+function readViewerHandle(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem(VIEWER_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return typeof parsed?.handle === 'string' ? parsed.handle : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function RegularFileView({ file }: { file: RegularFile }) {
   const pinned = ARTIFACTS.filter((artifact) => file.pinned_artifacts?.includes(artifact.slug));
   const handle = file.handle;
+
+  const [inTop8, setInTop8] = useState(false);
+  const [signatureCount, setSignatureCount] = useState(0);
+
+  // On mount: record visit (Seen Around) if this isn't the viewer's own file,
+  // and check Top-8 reciprocity for the in-Top-8 badge.
+  useEffect(() => {
+    const me = readViewerHandle();
+    setSignatureCount(getProfileGuestbookCount(handle));
+    if (me && me !== handle) {
+      // Mark THIS handle as "seen around" location 'locker' — surfaces the
+      // visited handle in the global SeenAroundBlock.
+      recordSeenAround({
+        handle,
+        displayName: file.display_name,
+        location: handle,
+        locationType: 'locker',
+      });
+      setInTop8(isInTopEight(handle));
+    }
+  }, [handle, file.display_name]);
 
   return (
     <section className={`regular-file regular-theme-${file.theme}`}>
@@ -19,6 +58,7 @@ export default function RegularFileView({ file }: { file: RegularFile }) {
           <p className="regular-kicker">Regular File / Public Locker</p>
           <h1>{file.display_name}</h1>
           <p>{file.fake_title}</p>
+          {inTop8 && <p className="regular-in-top8">★ in your Top 8</p>}
         </div>
         <div className="regular-badge">{file.is_public ? 'ON THE WALL' : 'STAFF ONLY'}</div>
       </div>
@@ -36,8 +76,15 @@ export default function RegularFileView({ file }: { file: RegularFile }) {
         <article className="old-shell regular-module">
           <div className="old-header">Visitor Counter</div>
           <div className="old-body">
-            <p className="visitor-counter">000{String(handle.length * 47).padStart(3, '0')}</p>
-            <p>Count is approximate. The counter lies when watched.</p>
+            <p className="visitor-counter">
+              000{String(handle.length * 47 + signatureCount * 13).padStart(3, '0')}
+            </p>
+            <p>
+              {signatureCount > 0
+                ? `${signatureCount} signature${signatureCount === 1 ? '' : 's'} on the wall.`
+                : 'No signatures yet.'}
+              {' '}Count is approximate. The counter lies when watched.
+            </p>
           </div>
         </article>
 
@@ -87,12 +134,14 @@ export default function RegularFileView({ file }: { file: RegularFile }) {
           </div>
         </article>
 
-        <article className="old-shell regular-module">
+        <article className="old-shell regular-module span-2">
           <div className="old-header">Guestbook</div>
           <div className="old-body">
-            <p><b>Room Hand:</b> nice file. bad lighting. correct.</p>
-            <p><b>Unknown:</b> sign mine after midnight.</p>
-            <button className="old-button" type="button">Guestbook soon</button>
+            <ProfileGuestbook
+              targetKey={handle}
+              contextLabel={`@${handle}'s file`}
+              selfHandle={handle}
+            />
           </div>
         </article>
 
