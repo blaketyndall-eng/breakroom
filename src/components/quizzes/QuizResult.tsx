@@ -124,7 +124,24 @@ export default function QuizResult() {
         <button type="button" className="qres-action-secondary" onClick={handleDispute}>
           DISPUTE ASSIGNMENT
         </button>
-        <a href="/portal/interview" className="qres-action-secondary" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
+        <a
+          href="/portal/interview"
+          className="qres-action-secondary"
+          style={{
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            // <a> tags default to the OldWebLayout link color (#003399), which
+            // is invisible against the dark-blue qres panel. Force the link to
+            // inherit the cream button color/typography from .qres so it reads
+            // like the DISPUTE button next to it.
+            color: 'inherit',
+            fontFamily: 'inherit',
+            fontWeight: 'inherit',
+            fontSize: 'inherit',
+            letterSpacing: 'inherit',
+          }}
+        >
           RETAKE
         </a>
       </div>
