@@ -68,6 +68,24 @@ const STYLE_ANCHORS = {
 // Update this in lockstep with NANO_PROMPTS in nanoPrompts.ts. Static-asset
 // slots are intentionally omitted here — they don't need regeneration.
 //
+// SKIN_NEGATIVES is mirrored here too — Kontext ignores the `negative` field,
+// so the no-skin-showing clause must live inline in the prompt.
+//
+const SKIN_NEGATIVES = [
+  'The character is fully clothed in flat white fabric with absolutely no skin tone or flesh color visible anywhere on the body —',
+  'no bare legs between shorts and boots, no bare wrists between sleeves and gloves, no bare neck between mask and hoodie,',
+  'no visible knees, no visible shins, no visible forearms, no exposed human anatomy of any kind.',
+].join(' ');
+
+// TEXTURE_FINISH (mirror of src/lib/nanoPrompts.ts) — subtle paper-and-ink polish.
+const TEXTURE_FINISH = [
+  'Subtle hand-drawn paper finish — the entire image rendered as if drawn on a sheet of slightly textured cream-toned cartridge paper.',
+  'A very faint barely-visible paper grain runs across the flat color fills.',
+  'Where the thick black ink outlines meet the paper, there is the gentlest hint of ink bleed and a trace of irregularity in line weight (extremely subtle — just enough to feel hand-drawn, not enough to break the flat fill).',
+  'A trace of matte grit across the whole surface, like a real-world drawing photographed flat.',
+  'The texture is a finish layer, not a filter — flat colors must still read as flat fills, the linework must still be confident, the cartoon clarity is preserved.',
+].join(' ');
+
 const SLOTS = [
   {
     key: 'theRegularSeated',
@@ -97,7 +115,232 @@ const SLOTS = [
       'Same chunky white cartoon mitten gloves and same Mickey-style bulbous shoes as the reference (just black/dark instead of white).',
     ].join(' '),
   },
+  {
+    key: 'theRegularAtTheTable',
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    width: 1152,
+    height: 864,
+    seed: 5101,
+    prompt: [
+      'Same exact character from the reference image — black knit balaclava with the elongated horizontal red eye-slot and visible vertical knit ribbing, same baggy white pullover hoodie, same baggy white shorts, same chunky bulbous white Mickey-style boots, same big rounded white mitten gloves with no finger separation.',
+      'Now leaning forward over a green felt pool table with both gloved hands resting on a wooden pool cue held horizontally across the table edge, head tilted down slightly as if lining up a shot, weight shifted onto the front foot with the back leg slightly extended.',
+      'A small cube of blue chalk visible on the felt next to his hand. The wooden bumper rail of the pool table cropped at the bottom edge of the frame.',
+      'Same flat 2D Markus Magnusson Sneaky cartoon style — same thick chunky black ink outlines with heavy line weight, same flat fill colors with zero shading, same saturated purple background visible above the pool table edge, same 3 to 5 small dark grey oval dot shadows scattered loosely on the floor beneath his feet.',
+      SKIN_NEGATIVES,
+    ].join(' '),
+  },
+  {
+    key: 'theRegularInTheBooth',
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    width: 1152,
+    height: 864,
+    seed: 5102,
+    prompt: [
+      'Same exact character from the reference image — black knit balaclava with the elongated horizontal red eye-slot and visible vertical knit ribbing, same baggy white pullover hoodie, same baggy white shorts, same chunky bulbous white Mickey-style boots, same big rounded white mitten gloves with no finger separation.',
+      'Now seated and slumped backward in a deep red vinyl diner-booth bench, one gloved arm draped lazily along the top edge of the booth backrest, the other hand resting on a formica table holding a half-crushed white paper food wrapper.',
+      'A sweating silver-grey beer can on the table next to the wrapper. Visible vertical seams on the booth vinyl. The formica tabletop edge cropped along the bottom of the frame.',
+      'Same flat 2D Markus Magnusson Sneaky cartoon style — same thick chunky black ink outlines, same flat fill colors with zero shading, same saturated purple background visible above the booth, same dotted floor shadows.',
+      SKIN_NEGATIVES,
+    ].join(' '),
+  },
+  {
+    key: 'theRegularOnThePhone',
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    width: 1152,
+    height: 864,
+    seed: 5103,
+    prompt: [
+      'Same exact character from the reference image — black knit balaclava with the elongated horizontal red eye-slot and visible vertical knit ribbing, same baggy white pullover hoodie, same baggy white shorts, same chunky bulbous white Mickey-style boots, same big rounded white mitten gloves with no finger separation.',
+      'Now standing in a slight three-quarter side stance at a metal silver-grey payphone booth housing, with a black phone receiver pressed flat against the side of the balaclava held by his right gloved hand, the curly black phone cord coiling down from the receiver in loose loops.',
+      'His left gloved hand rests flat against the silver metal phone box face. The payphone unit is visible from the waist up, mounted on a wall.',
+      'Same flat 2D Markus Magnusson Sneaky cartoon style — same thick chunky black ink outlines, same flat fill colors with zero shading, same saturated purple background, same dotted floor shadows beneath his feet.',
+      SKIN_NEGATIVES,
+    ].join(' '),
+  },
+  {
+    key: 'theRegularJumper',
+    provider: 'replicate-flux-kontext-pro',
+    anchorKey: 'theRegularBlack',
+    width: 1152,
+    height: 864,
+    seed: 5104,
+    prompt: [
+      'Same exact character head from the reference image — black knit balaclava with the elongated horizontal red eye-slot, two glowing solid red eyes side by side, fully covered mouth and chin, visible vertical knit ribbing texture on the mask.',
+      'Same chunky bulbous white Mickey-Mouse-style boots with rounded almost-spherical toes and no laces, same big rounded white cartoon mitten gloves with no finger separation.',
+      'But the body is now wearing a single-piece baggy white pullover jumpsuit — ONE continuous unbroken white garment from below the mask all the way down to the boot tops, with NO waistband, NO belt, NO separation between top and bottom, NO visible hem at the waist, NO shorts. The white fabric runs straight from neckline to ankle in one piece, like a coverall or boiler suit, with a slight bunching at the wrists where the sleeves meet the gloves and at the ankles where the legs meet the boots.',
+      'Same standing wide-stance pose from the reference. Same flat 2D Markus Magnusson Sneaky cartoon style — same thick chunky black ink outlines, same flat fill white with zero gradients and zero shading, same saturated purple background, same 3 to 5 small dark grey oval dot shadows on the floor.',
+      "The character's entire body from neck to ankles is fully covered in unbroken flat white fabric. No skin tone, no bare wrists, no bare ankles, no flesh visible anywhere.",
+    ].join(' '),
+  },
+
+  // =========================================================================
+  // PR-L PROPERTY REGISTERS — mirror of nanoPrompts.ts (kept inline)
+  // =========================================================================
 ];
+
+// Property registers (mirrored from src/lib/nanoPrompts.ts)
+const OMNISHIFT_REGISTER = [
+  'Period-correct early-2000s corporate stock photography — IBM 2001 / Oracle 2002 / SharePoint 2001 register.',
+  'Low-saturation corporate palette: muted IBM navy (#003F7F base), cool secondary cyan (#5C9BD5), cream-white background (#F4F4F4), flat black sans-serif Helvetica/Arial type, beveled chrome buttons.',
+  'Shot on a 2-megapixel consumer CCD digital camera circa 2001: mild JPEG compression artifacts at the corners, slight purple chromatic aberration on dark edges, the photographic flatness of stock-corporate-catalog imagery, no bokeh, deep depth of field.',
+  'Fluorescent ceiling-tube lighting casting cool slightly-greenish skin tones, minimal contrast, no rim light, no cinematic grading.',
+  'Bureaucratic and lightly sinister tone — every smile is just slightly held too long, every gesture is rehearsed, the room feels like training video.',
+].join(' ');
+
+const SLEEPNET_PORTAL_REGISTER = [
+  '1998-2001 web portal directory illustration aesthetic — Yahoo 1998 / GeoCities 1999 / AltaVista era.',
+  'Hand-drawn cartoon illustration in early-Macromedia-Flash 4 register: thick black outlines, flat 4-color GIF-palette fills, mild dithering at color edges, no gradients, no anti-aliasing on inner shapes.',
+  'Vibrant primary color palette — Yahoo purple (#7B0099), saturated GIF reds, GIF greens, GIF yellows, white background with no shadows.',
+  'Mascot characters drawn in a friendly clip-art register — round eyes, simple smile lines, oversized hands with three fingers, slight rubberhose-cartoon flexibility but cheaper than Disney.',
+  'NEVER photographic, NEVER modern vector — must look hand-traced into Photoshop 6 with the bucket-fill tool circa 1999.',
+].join(' ');
+
+const VGB_REGISTER = [
+  "Period-correct 1999-2003 fast-food chain marketing photography — McDonald's 2000 / Burger King 2000-2003 register.",
+  'Oversaturated red and yellow palette (signage red #DA291C, sun-yellow #FFC72C), glamour-shot food photography with visible steam, blue-sky-clear-day backgrounds with cumulus clouds, harsh on-camera flash.',
+  'Family demographic stock photography — multi-ethnic mom and dad and two kids in branded paper hats, smiling too widely at the camera, photographed in a chain-restaurant interior with red vinyl booths and yellow walls.',
+  'CRITICAL OFF-NESS RULE: every image has exactly ONE subtly-wrong element — wilted brown lettuce edges on the burger, a child with a slightly too-wide smile, the tomato slice is grey instead of red, the bun is slightly asymmetric. Bake one off-ness signal into the prompt.',
+  'Captured on consumer-grade flash photography circa 2001, slight overexposure on highlights, JPEG sharpening visible at the edges of fries.',
+].join(' ');
+
+const SLEEPNEWS_REGISTER = [
+  '1998-2002 online newspaper press photography aesthetic — BBC News 2000 / CNN 1998 / ABC News 1997 register.',
+  'Low-resolution AP-wire press photo: grainy 35mm film grain or early digital sensor noise, slightly underexposed, color balance off (warm orange streetlight cast or cool blue fluorescent cast), natural newsprint feel.',
+  'Compressed-JPEG artifacts in the dark areas, slight motion blur, news-photographer flash bouncing off surfaces, no Photoshop retouching.',
+  'Subjects captured in candid pose mid-action, never posed for the camera. Composition slightly off-center, a stray lamppost or No Parking sign cropping the edge of the frame.',
+  'The kind of photo that ran on B5 of a regional paper on a Tuesday morning. Caption-worthy but not memorable.',
+].join(' ');
+
+// Append PR-L property slots
+SLOTS.push(
+  // OmniShift
+  {
+    key: 'omnishiftHeroBoardroom',
+    provider: 'replicate-flux-pro',
+    width: 1280, height: 720, seed: 6001,
+    prompt: [
+      'Four multi-ethnic business professionals in their thirties seated around a faux-mahogany oval conference table in a corporate office, taken from a slight low-angle three-quarter view.',
+      'Three of them have eyes turned attentively toward an unseen speaker at the head of the table; ONE of them — the woman in the navy blazer — is looking directly at the camera with a held smile that is just slightly too long.',
+      'They wear early-2000s business-casual: collared oxford shirts in white and pale blue, navy blazers, one striped tie. A beige Dell PC tower with a green LED is barely visible in the background corner. A laser-printed memo and a Styrofoam coffee cup sit on the table.',
+      OMNISHIFT_REGISTER,
+    ].join(' '),
+  },
+  {
+    key: 'omnishiftHeroHandshake',
+    provider: 'replicate-flux-pro',
+    width: 1280, height: 720, seed: 6002,
+    prompt: [
+      'Tight close-up photograph of a business handshake between two pairs of hands. The left hand wears a starched white oxford-shirt cuff with a silver wristwatch; the right hand wears a pale-blue oxford cuff with a gold pinky ring. Their palms are joined firmly, fingers wrapping.',
+      'Slightly out of focus in the upper-left edge of the frame, a THIRD hand is just entering the shot — only the fingertips visible, palm-up, as if waiting its turn or interrupting.',
+      'Background is an out-of-focus navy-to-cyan corporate gradient with a faint OmniShift logo bug ghosted in the lower-right corner — just a dimensional sans-serif "OmniShift" wordmark in muted IBM-blue.',
+      OMNISHIFT_REGISTER,
+    ].join(' '),
+  },
+  {
+    key: 'omnishiftEmployeePortraitDefault',
+    provider: 'replicate-recraft-v3',
+    recraftStyle: 'vector_illustration/cartoon',
+    width: 1024, height: 1024, seed: 6003,
+    prompt: [
+      'A generic clip-art-style vector illustration of a business professional from the chest up, facing forward with a neutral pleasant expression.',
+      'Wearing a white collared shirt with a navy IBM-blue tie. Short brown hair, ambiguous gender, ambiguous ethnicity — the kind of "everyperson" placeholder figure used in stock corporate clip-art collections from 2001.',
+      'Flat 2D vector illustration with a thin black outline and limited color palette (5 to 6 colors maximum). Background is a flat cream-white. No gradients, no shading except a single flat shadow on the neck.',
+      'Cheap clip-art register — this is the kind of figure that appears in a Microsoft Office 2001 ClipArt Gallery search for "businessperson". Friendly but generic, slightly stiff, suitable for a placeholder.',
+    ].join(' '),
+  },
+  // SleepNet portal
+  {
+    key: 'sleepnetDirectoryClerk',
+    provider: 'replicate-recraft-v3',
+    recraftStyle: 'digital_illustration/2d_art_poster',
+    width: 1024, height: 1024, seed: 6101,
+    prompt: [
+      'A bored cartoon clerk character seated at a beige CRT computer terminal, viewed from a three-quarter angle. The clerk wears a green plastic visor on his forehead, black arm garters on his rolled-up white shirt sleeves, and round wire-frame glasses. He has a thin moustache and tired half-closed eyes.',
+      'Stacks of manila file folders are piled high on either side of the terminal, each labeled with a small handwritten tag. The CRT screen glows green with cryptic text. A single naked fluorescent tube hangs above him.',
+      'A small enamel pin on his shirt collar reads "SleepNet · Indexing Division".',
+      SLEEPNET_PORTAL_REGISTER,
+    ].join(' '),
+  },
+  {
+    key: 'sleepnetWebRingBadge',
+    provider: 'replicate-recraft-v3',
+    recraftStyle: 'vector_illustration/flat_2',
+    width: 1024, height: 360, seed: 6102,
+    prompt: [
+      'A horizontal banner-ad-shaped graphic in the exact style of a 1999 Geocities web ring banner — proportioned roughly 1024 by 360 pixels but rendered in the visual register of the original 88x31 GIF banner ads of that era.',
+      'Left third: a small cartoon moon-and-stars icon in saturated GIF yellow on black. Center third: chunky pixelated bitmap text reading "JOIN THE CIRCLE" in alternating Yahoo purple and saturated red, with a slight 1-pixel drop shadow. Right third: small triangular "← PREV / NEXT →" navigation arrows in white on a deep blue panel.',
+      'Hard edges, no anti-aliasing, no gradients — pure 4-color GIF palette (purple, red, yellow, white) on a black background with a 2-pixel beveled outer border in dark grey.',
+      SLEEPNET_PORTAL_REGISTER,
+    ].join(' '),
+  },
+  // Very Good Burger
+  {
+    key: 'vgbMascotBilly',
+    provider: 'replicate-recraft-v3',
+    recraftStyle: 'digital_illustration/hand_drawn',
+    width: 1024, height: 1280, seed: 6201,
+    prompt: [
+      'A friendly anthropomorphic cartoon hamburger mascot character standing facing the camera with one tiny white-gloved hand raised in a wave.',
+      "The character's body is a single sesame-seed bun with cartoon eyes (large, white, with small black pupils and one off-center) on the top bun half, a wide friendly mouth across the middle (the burger patty layer), and a thin layer of melted cheese drooping at the corners.",
+      'The sesame seeds on the top bun are arranged in a slightly off-symmetric pattern — they look like freckles. Tiny white-gloved hands, tiny white-booted feet, no visible legs or arms beyond the gloves and boots (rubber hose limbs implied).',
+      'A small red banner above his head reads "VERY GOOD!" in bold uppercase marker text with a slight drop shadow.',
+      "Standing on a flat yellow background with a single pencil-shadow at his feet. Drawn in the register of a 1999 regional fast-food chain mascot — friendlier than McDonald's, cheaper than Disney, the kind of mascot that appeared on the side of a Styrofoam cup in a mall food court.",
+      'Ink outlines, flat fill, no gradients. Sized for use as a hero illustration on a "Welcome to Very Good Burger" page.',
+    ].join(' '),
+  },
+  {
+    key: 'vgbHeroBurger',
+    provider: 'replicate-flux-pro',
+    width: 1280, height: 960, seed: 6202,
+    prompt: [
+      'A single hamburger photographed dead-center on a plain white plate, viewed from a low three-quarter angle. The bun is a sesame-seed top bun, slightly asymmetric (one side a touch taller than the other). A beef patty is visible with a thin layer of melted American cheese drooping over one edge in a frozen mid-drip.',
+      'Below the cheese, a layer of green-leaf lettuce — and CRITICALLY, the visible edges of the lettuce are slightly wilted and turning brown at the very tips, which is the off-ness signal for this image. Below the lettuce, a single ring of red onion and a thick slice of tomato.',
+      'A faint wisp of steam rises from the patty. The plate sits on a red-and-yellow checked paper liner. Background is out-of-focus warm yellow chain-restaurant interior with a hint of red vinyl booth.',
+      VGB_REGISTER,
+    ].join(' '),
+  },
+  {
+    key: 'vgbDriveThruFamily',
+    provider: 'replicate-flux-pro',
+    width: 1280, height: 720, seed: 6203,
+    prompt: [
+      'A multi-ethnic family of four (a man and woman in their mid-30s in the front seats, a boy around 8 and a girl around 6 in the back seat) seated in a beige minivan at a fast-food drive-thru pickup window. The window is glowing with warm yellow fluorescent light from inside the restaurant. A masked employee\'s gloved hand is just visible passing a brown paper bag stamped with the red "Very Good Burger" wordmark.',
+      'The mother is paying with a credit card; the father is smiling and giving a thumbs-up to the camera; the daughter is reaching for the bag.',
+      'CRITICAL OFF-NESS: the BOY in the back seat has a smile that is just slightly too wide for his face — about 15% wider than natural — but otherwise looks normal.',
+      'Sun-drenched suburban parking lot, mid-afternoon, slight lens flare. Photograph style: stock-photo cheerfulness, slightly too-bright on highlights.',
+      VGB_REGISTER,
+    ].join(' '),
+  },
+  // SleepNews
+  {
+    key: 'slpnewsHeroIncident',
+    provider: 'replicate-flux-pro',
+    width: 1280, height: 854, seed: 6301,
+    prompt: [
+      'A nighttime press photograph of an empty motel parking lot, taken with a flash. Two distant figure silhouettes are barely visible standing near a cone of light beneath a tall sodium-vapor streetlamp at the far end of the lot, their faces obscured by shadow.',
+      'In the upper-left edge of the frame, a partially cut-off motel sign with neon tube letters reads "MOT", the rest cropped out — only "MOT" is visible. A No Parking sign on a rust-streaked metal post pokes into the lower-right edge of the frame.',
+      'A single Pepsi can lies on its side in the foreground asphalt. The asphalt has irregular puddles reflecting the orange streetlamp light.',
+      "Captured on a 35mm camera with on-camera flash bouncing off a row of parked cars in the middle distance — the flash creates a hot spot on one car's rear windshield. The ground in the foreground is darker than the background due to the inverse-square falloff.",
+      SLEEPNEWS_REGISTER,
+    ].join(' '),
+  },
+  {
+    key: 'slpnewsCorrectionStamp',
+    provider: 'replicate-recraft-v3',
+    recraftStyle: 'digital_illustration/grain',
+    width: 1024, height: 768, seed: 6302,
+    prompt: [
+      'A close-up illustration of a small piece of off-white newsprint paper with three lines of typewritten text in black IBM Selectric typeface reading "CORRECTION:" on line one, then "FILED BUT" on line two, then "NOT APPLIED" on line three.',
+      'A bold red rubber-stamp impression has been pressed diagonally across the top-right corner of the paper, the stamp reading "RECEIVED · SLEEPNEWS · DESK 4" in an irregular cracked-ink texture (some letters faded, some over-saturated).',
+      'The paper has subtle horizontal newsprint dot pattern visible across its surface, plus a faint single coffee-cup-ring stain in the lower-left.',
+      'The paper is slightly rotated counterclockwise about 4 degrees, casting a soft shadow on a dark wood desk surface beneath it. A typewriter ribbon spool sits out of focus in the upper edge of the frame.',
+      SLEEPNEWS_REGISTER,
+    ].join(' '),
+  },
+);
 
 // ---------------------------------------------------------------------------
 // 4. CLI args
