@@ -26,6 +26,7 @@ export default function EmployeePortal() {
   const [state, setState] = useState<PortalState>('loading');
   const [profile, setProfile] = useState<LocalEmployeeProfile | null>(null);
   const [status, setStatus] = useState('');
+  const [quizCompletedAt, setQuizCompletedAt] = useState<string | null>(null);
 
   async function loadProfile(options: { preferRemote?: boolean } = {}) {
     setStatus('');
@@ -34,7 +35,6 @@ export default function EmployeePortal() {
     if (local && !options.preferRemote) {
       setProfile(local);
       setState('ready');
-      return;
     }
 
     if (!supabase) {
@@ -42,6 +42,16 @@ export default function EmployeePortal() {
       saveLocalProfile(preview);
       setProfile(preview);
       setState('ready');
+      // Local mode: read quiz outcome from localStorage if present
+      try {
+        const localQuiz = window.localStorage.getItem('breakroom.quiz.employee_outcome');
+        if (localQuiz) {
+          const parsed = JSON.parse(localQuiz) as { finalized_at?: string } | null;
+          setQuizCompletedAt(parsed?.finalized_at ?? null);
+        }
+      } catch {
+        /* ignore */
+      }
       setStatus(isSupabaseConfigured ? '' : 'Local preview mode. Supabase memory is not connected in this browser.');
       return;
     }
@@ -78,6 +88,7 @@ export default function EmployeePortal() {
       await supabase.from('user_profiles').upsert({ id: user.id, ...next });
       saveLocalProfile(next);
       setProfile(next);
+      setQuizCompletedAt(null); // Provisional — no quiz yet.
       setState('ready');
       setStatus('New employee file issued. HR denies involvement.');
       return;
@@ -99,6 +110,7 @@ export default function EmployeePortal() {
     };
     saveLocalProfile(next);
     setProfile(next);
+    setQuizCompletedAt(data.quiz_completed_at ?? null);
     setState('ready');
     if (options.preferRemote) setStatus('Employee file refreshed from OmniShift memory.');
   }
@@ -114,6 +126,7 @@ export default function EmployeePortal() {
     window.localStorage.removeItem('breakroom.omnishift.profile');
     window.localStorage.removeItem('breakroom.omnishift.shift');
     window.localStorage.removeItem('breakroom.afterhours.profile');
+    window.localStorage.removeItem('breakroom.quiz.employee_outcome');
     if (supabase) await supabase.auth.signOut();
     window.location.href = '/breakroom';
   }
@@ -136,6 +149,30 @@ export default function EmployeePortal() {
 
   return (
     <div className="os-file-grid">
+      {!quizCompletedAt && (
+        <div
+          className="os-file-notice"
+          style={{
+            background: '#fff3cd',
+            borderColor: '#d4a300',
+            color: '#664d03',
+            padding: '10px 12px',
+            lineHeight: 1.5,
+          }}
+        >
+          <strong>PROVISIONAL FILE.</strong> OmniShift filed you with the available data.
+          The room would prefer you confirm.
+          <br />
+          <a
+            className="os-btn"
+            href="/portal/interview"
+            style={{ marginTop: 8, display: 'inline-block' }}
+          >
+            ► REFINE YOUR FILE
+          </a>
+        </div>
+      )}
+
       {status && <div className="os-file-notice">{status}</div>}
 
       <div className="os-file-section">
@@ -167,6 +204,9 @@ export default function EmployeePortal() {
       <div className="os-file-actions">
         <a className="os-btn" href="/clock-out">Clock Out</a>
         <a className="os-btn os-btn-secondary" href="/idle-hands">After Hours Profile</a>
+        {quizCompletedAt && (
+          <a className="os-btn os-btn-secondary" href="/portal/interview">Re-take Intake</a>
+        )}
         <button className="os-btn os-btn-secondary" type="button" onClick={() => loadProfile({ preferRemote: true })}>Refresh File</button>
         <button className="os-btn os-btn-danger" type="button" onClick={signOut}>Sign Out / Leave Badge</button>
       </div>
