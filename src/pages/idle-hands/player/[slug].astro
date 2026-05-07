@@ -1,25 +1,40 @@
 ---
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
+
 const players = ['Nun Dog','Mugsy Late Again','The Driver','Miss September','Coffee','The Kid With The Mop','House Money','Motel 8','Gold Grill','Clock Dispute','Soft Break Steve','Applause Money'];
 
-// SSR mode requires explicit opt-in to prerender these detail pages —
-// without it, getStaticPaths is ignored and Astro.props.name is undefined.
-export const prerender = true;
+// Runtime SSR pattern matching the rest of the app's dynamic routes.
+// We look the player up at request time from the slug rather than relying on
+// getStaticPaths (which is silently ignored without prerender = true, and
+// prerender = true caused build failures in this SSR config).
+export const prerender = false;
 
-export function getStaticPaths() { return players.map((name) => ({ params: { slug: name.toLowerCase().replaceAll(' ','-') }, props: { name } })); }
-const { name } = Astro.props;
+const slug = Astro.params.slug ?? '';
+const name = players.find((p) => p.toLowerCase().replaceAll(' ', '-') === slug);
 ---
-<OldWebLayout title={`${name} / Player Bio`} section="idlehands">
-  <a href="/idle-hands">← Back to Idle Hands</a>
-  <article class="old-shell" style="max-width:720px;margin:24px auto;">
-    <div class="old-header">Player Bio / Regular's rundown</div>
-    <div class="old-body">
-      <h1>{name}</h1>
-      <p><b>Known for:</b> Playing better after the first bad call.</p>
-      <p><b>Last seen:</b> Near the table light, refusing to explain the score.</p>
-      <p><b>Signature object:</b> Cue chalk in a jewelry box.</p>
-      <p><b>Regular's note:</b> Has a face people remember. Especially after the room gets quiet.</p>
-      <p><span class="red-stamp">RISK / UNVERIFIED</span></p>
-    </div>
-  </article>
-</OldWebLayout>
+{name ? (
+  <OldWebLayout title={`${name} / Player Bio`} section="idlehands">
+    <a href="/idle-hands">← Back to Idle Hands</a>
+    <article class="old-shell" style="max-width:720px;margin:24px auto;">
+      <div class="old-header">Player Bio / Regular's rundown</div>
+      <div class="old-body">
+        <h1>{name}</h1>
+        <p><b>Known for:</b> Playing better after the first bad call.</p>
+        <p><b>Last seen:</b> Near the table light, refusing to explain the score.</p>
+        <p><b>Signature object:</b> Cue chalk in a jewelry box.</p>
+        <p><b>Regular's note:</b> Has a face people remember. Especially after the room gets quiet.</p>
+        <p><span class="red-stamp">RISK / UNVERIFIED</span></p>
+      </div>
+    </article>
+  </OldWebLayout>
+) : (
+  <OldWebLayout title="Unknown Player / Idle Hands" section="idlehands">
+    <a href="/idle-hands">← Back to Idle Hands</a>
+    <article class="old-shell" style="max-width:720px;margin:24px auto;">
+      <div class="old-header">Player Bio / Not on the wall</div>
+      <div class="old-body">
+        <p class="memo-box">No player named "{slug}" appears in the regulars' rundown. Names get filed wrong sometimes.</p>
+      </div>
+    </article>
+  </OldWebLayout>
+)}
