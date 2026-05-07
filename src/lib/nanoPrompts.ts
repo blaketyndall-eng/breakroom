@@ -34,8 +34,26 @@ export type Provider =
   | 'replicate-imagen'
   // Paid image-to-image (Replicate) — requires anchorKey
   | 'replicate-flux-kontext-pro'
+  // Custom Breakroom-style LoRA fine-tune (Replicate)
+  // — requires BRKRM trigger word in prompt; baked-in style (no anchor needed)
+  // — model: blaketyndall-eng/breakroom-style (trained on 20-img canonical set)
+  | 'replicate-flux-lora-breakroom'
   // Locked binary committed to /public/void/<key>.jpg — no generation
   | 'static-asset';
+
+/**
+ * Trained LoRA model address. Update the `version` hash after each retraining
+ * round. The dispatcher uses these to route `replicate-flux-lora-breakroom`
+ * slot calls to the right Replicate model+version.
+ */
+export const BREAKROOM_LORA = {
+  model: 'blaketyndall-eng/breakroom-style',
+  // version hash from the latest training run — populate after first
+  // successful training. Until then, slots using this provider should fall
+  // back to Kontext or be deferred.
+  version: '' as string,
+  trigger: 'BRKRM',
+};
 
 /**
  * Recraft V3 style modes. Recraft's prior is purpose-built for flat
@@ -91,7 +109,7 @@ export const STYLE_ANCHORS: Record<string, StyleAnchor> = {
     diskPath: 'public/void/refs/the-regular-black.jpg',
     publicPath: '/void/refs/the-regular-black.jpg',
     description:
-      'THE REGULAR — canonical pose, black knit balaclava + white hoodie + white shorts + Mickey-style chunky white boots/gloves, glowing red eye-slot, on saturated purple background with dotted floor shadows. Locked from ChatGPT reference.',
+      'THE REGULAR — canonical pose, black knit balaclava + white hoodie + white shorts + Mickey-style chunky white boots/gloves, glowing red eye-slot, on saturated purple background with dotted floor shadows. Locked from ChatGPT reference. Clean digital — no paper texture.',
   },
   theRegularWhite: {
     diskPath: 'public/void/refs/the-regular-white.jpg',
@@ -99,10 +117,16 @@ export const STYLE_ANCHORS: Record<string, StyleAnchor> = {
     description:
       'THE REGULAR — alt "stealth" variant, all-white knit balaclava + white hoodie + white shorts on saturated purple background. Same character family as theRegularBlack, different mask color. Locked from ChatGPT reference.',
   },
+  theRegularBlackTextured: {
+    diskPath: 'public/void/refs/the-regular-black-textured.jpg',
+    publicPath: '/void/refs/the-regular-black-textured.jpg',
+    description:
+      'THE REGULAR — TEXTURED canonical (v2). Same character + pose as theRegularBlack, but rendered with visible warm cream paper grain across all flat fills, hand-drawn ink-edge irregularity, and a saturated purple field. This is the production anchor for all NPC/object/vehicle/building Kontext slots — its image-conditioning carries the paper finish and discipline forward to every derived render. Use this anchor for new content; keep theRegularBlack for the original digital register.',
+  },
 };
 
 export interface NanoPrompt {
-  /** Stable slot key. Becomes filename for replicate-*/static-asset providers: /public/void/<key>.jpg */
+  /** Stable slot key. Becomes filename for replicate-x and static-asset providers: /public/void/<key>.jpg */
   key: string;
   /** One-line subject summary, used for alt text and admin tooling */
   subject: string;
@@ -288,6 +312,133 @@ const SLEEPNEWS_REGISTER = [
   'Subjects captured in candid pose mid-action, never posed for the camera. Composition slightly off-center, a stray lamppost or No Parking sign cropping the edge of the frame.',
   'The kind of photo that ran on B5 of a regional paper on a Tuesday morning. Caption-worthy but not memorable.',
 ].join(' ');
+
+// ---------------------------------------------------------------------------
+// LOCKED CAST VOCABULARY (post-experimentation, May 2026)
+// ---------------------------------------------------------------------------
+// These clauses were earned through ~50 generations of iteration this session.
+// Compose them into NPC / object / vehicle / building slot prompts that
+// reference theRegularBlackTextured anchor. The vocabulary stack proven to
+// produce on-style, on-palette, on-register output:
+//
+//   prompt = [
+//     SAME_ARTIST_LOCK,
+//     TEXTURE_HERO_MATCH,
+//     <character/object/scene-specific delta>,
+//     EYE_NORMAL (or EYE_SLEEPY/STONED/MAD/HAPPY),
+//     FACE_DISCIPLINE,
+//     SKIN_RETRO_FADED,
+//     HAND_DISCIPLINE,
+//     SHADOW_DOTS_ONLY,
+//     STYLE_CONTRACT,
+//   ].join(' ')
+//
+// Open issues: drop shadows under figures persist (model default, accept or
+// post-process); texture sometimes attenuates on long prompts (front-load
+// TEXTURE_HERO_MATCH to mitigate).
+
+export const SAME_ARTIST_LOCK =
+  'CRITICAL FRAMING: this image was drawn BY THE SAME ARTIST, IN THE SAME SKETCHBOOK, WITH THE SAME INK, ON THE SAME PAPER as the reference Regular character. The output and reference must look like consecutive pages from one animator\'s model sheet — same hand, same brush, same paper texture, same palette saturation. A viewer should never doubt these characters belong in the same animated short.';
+
+export const TEXTURE_HERO_MATCH =
+  'TEXTURE EQUIVALENCE (REQUIRED): match the EXACT visual texture intensity of the reference image. CLEARLY VISIBLE warm cream-toned paper grain across every flat color fill. Heavy black ink outlines with visible hand-drawn irregularity — slight wobble, faint occasional ink-bleed marks at corners. If placed side-by-side with the reference, the output looks like a sibling page from the same sketchbook. If the output looks digitally cleaner or smoother than the reference, the texture has FAILED.';
+
+export const SHADOW_DOTS_ONLY =
+  'SHADOW RULE: render the subject as a flat 2D ink-on-paper drawing pressed flat onto the saturated purple paper background. The ONLY shadow indication is exactly 3-5 SMALL DARK GREY DISCRETE DOT SHADOWS scattered loosely on the floor near the subject base — tiny separated oval dots, never connected, never an oval cast shadow.';
+
+export const SKIN_RETRO_FADED =
+  'CHARACTER SKIN TONE — RETRO FADED: exposed skin in a SLIGHTLY DESATURATED WARM CREAM-PEACH tone, target hex range #EAC9A0 to #F0D5B0 — washed-out beige with faint pink undertone, never bright, never modern-saturated. Single FLAT FILL — no shading, no gradients, period-printed feel.';
+
+export const FACE_DISCIPLINE =
+  'FACE STYLE: ZERO interior face shading, ZERO under-eye bags, ZERO realistic feature rendering. Mustaches/eyebrows/beards if present are SINGLE FLAT BLACK INK BLOB SHAPES, NEVER rendered hair-stroke detail. Optional: small flat round pink/coral blush circles on the cheeks (canonical rubberhose). Mouth: small calm flat ink line. Nose: minimal single small ink curve.';
+
+export const HAND_DISCIPLINE =
+  'Hands are chunky bulbous CARTOON MITTEN gloves — NO finger separation, NO five-finger anatomy, NO visible thumbs as separate fingers. Single rounded glove shape with one curved cuff line at the wrist.';
+
+export const STYLE_CONTRACT =
+  'STRICT STYLE: heavy chunky black ink outlines (10-pixel-equivalent line weight), flat fill colors with zero gradients/shading/gloss, saturated purple background, hand-drawn paper finish. 1920s-1930s rubberhose animation lineage rendered with a modern motion-design flat finish.';
+
+// ---------------------------------------------------------------------------
+// EYE PALETTE — drop-in expression clauses (only the eye SHAPE changes)
+// ---------------------------------------------------------------------------
+// Use any one of these in a slot prompt to set the character's expression.
+// All five share the same face/skin/hand stack — the cast looks coherent
+// across emotional states because everything *but* the eye geometry holds.
+
+export const EYE_NORMAL =
+  'EYES — NEUTRAL CALM: small flat white ovals with small solid black DOT pupils centered. Eyebrows are SHORT FLAT HORIZONTAL BLACK LINES, completely level — parallel to each other, parallel to the ground. NO arched, NO raised, NO worry-curve. Mouth: small calm flat ink line.';
+
+export const EYE_SLEEPY =
+  'EYES — SLEEPY HALF-LIDDED: small flat white ovals. A THICK STRAIGHT BLACK HORIZONTAL LINE crosses the upper portion of each eye-white, covering the top 40% — the heavy drooping eyelid. A small black DOT pupil sits LOW in the visible white below the eyelid. Eyebrows are short flat horizontal lines, level. Mouth: small calm flat line, slightly downturned.';
+
+export const EYE_STONED =
+  'EYES — STONED HEAVILY-LIDDED: small flat white shapes mostly covered by a thick black upper eyelid line that covers the top 65-70% of each eye-white, leaving only a small visible white sliver. A tiny black DOT pupil in the sliver. Eyebrows are flat short lines, level. Mouth: small upward curve at the corners, relaxed lazy half-smile, slightly open or with a tiny snaggletooth.';
+
+export const EYE_MAD =
+  'EYES — MAD ANGRY: small flat white ovals with small solid black DOT pupils, eyes slightly NARROWED. Eyebrows are SHARP V-SHAPED ANGRY BROWS — short thick black ink shapes pointing DOWN at their inner edges (toward the bridge of the nose) and UP at their outer edges, forming a clear downward V over the eyes. Mouth: tight flat line or small downturned scowl.';
+
+export const EYE_HAPPY =
+  'EYES — HAPPY CLOSED-EYE LAUGHING: each eye is a SHORT UPWARD-CURVING BLACK INK ARC, like a smile shape (^_^). NO eye-whites visible — both eyes are CLOSED. NO pupils. Just two short upward curves. Mouth: a wide upward-curving open smile, possibly with two small flat white tooth shapes visible.';
+
+// ---------------------------------------------------------------------------
+// PROMPT BUILDERS — compose slot prompts from the locked vocabulary
+// ---------------------------------------------------------------------------
+
+/**
+ * `breakroomLoraPrompt(subject, [tail])` — short-form prompt for the trained
+ * LoRA. The trigger word handles 90% of the style discipline; the subject is
+ * the only thing that needs describing. Optional tail can add scene props or
+ * pose hints.
+ *
+ * Example:
+ *   breakroomLoraPrompt('a masked character in a green flannel shirt holding a thermos')
+ *   → 'BRKRM, a masked character in a green flannel shirt holding a thermos, on saturated purple background with paper grain texture'
+ */
+export function breakroomLoraPrompt(subject: string, tail?: string): string {
+  const parts = [
+    `${BREAKROOM_LORA.trigger},`,
+    subject.trim().replace(/\.$/, '') + ',',
+    'on saturated purple background with paper grain texture',
+  ];
+  if (tail) parts.splice(parts.length - 1, 0, tail.trim() + ',');
+  return parts.join(' ');
+}
+
+/**
+ * `kontextNpcPrompt({subject, body, wardrobe, prop, eye})` — long-form prompt
+ * for the Kontext path (anchor-driven). Composes from the full locked
+ * vocabulary stack. Use this when a slot needs the discipline crutches that
+ * Kontext + the vocabulary provides — typically as a fallback before the
+ * LoRA is trained or when the LoRA result needs to be tightened.
+ *
+ * Designed for character slots; for objects/buildings/vehicles, build the
+ * prompt directly using the exported clauses.
+ */
+export interface KontextNpcInput {
+  subject: string;
+  body: string;
+  wardrobe: string;
+  prop?: string;
+  extras?: string;
+  eye?: string; // pass one of the EYE_* constants; defaults to EYE_NORMAL
+}
+export function kontextNpcPrompt(input: KontextNpcInput): string {
+  return [
+    SAME_ARTIST_LOCK,
+    TEXTURE_HERO_MATCH,
+    `The character in the reference image is REPLACED by a different character: ${input.subject}. Single character standing alone on the saturated purple background of the reference, NO ENVIRONMENT, NO SCENERY.`,
+    `Body: ${input.body}.`,
+    `Wardrobe: ${input.wardrobe}.`,
+    input.extras ? `Extras: ${input.extras}.` : '',
+    input.prop ? `Prop: ${input.prop}.` : '',
+    input.eye ?? EYE_NORMAL,
+    FACE_DISCIPLINE,
+    SKIN_RETRO_FADED,
+    HAND_DISCIPLINE,
+    SHADOW_DOTS_ONLY,
+    STYLE_CONTRACT,
+  ].filter(Boolean).join(' ');
+}
 
 // ---------------------------------------------------------------------------
 // SLOTS — exported map keyed by slot id
@@ -958,3 +1109,11 @@ export function getNanoPrompt(key: string): NanoPrompt {
   if (!p) throw new Error(`[nanoPrompts] Unknown slot key: ${key}`);
   return p;
 }
+
+/**
+ * Backward-compat alias for the pre-PR-G single-function pollinationsUrl().
+ * Now routes through `imageUrl()` so existing call-sites in /void/index.astro
+ * continue to render correctly while picking up the new multi-provider
+ * dispatch (each slot's `provider` field decides which path it gets).
+ */
+export const pollinationsUrl = imageUrl;

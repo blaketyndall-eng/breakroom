@@ -20,7 +20,8 @@
     "@supabase/supabase-js": "2.105.3",
     "astro": "6.2.2",
     "react": "19.2.5",
-    "react-dom": "19.2.5"
+    "react-dom": "19.2.5",
+    "wrangler": "^4.88.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.2.4",
