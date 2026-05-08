@@ -236,7 +236,6 @@ body[data-section="radio"] .bm-foot--voidsignal .visitor-counter { color: var(--
   background: #000;
   margin-top: 8px;
 }
-/* P2: in-world fallback when no stream URL is configured. */
 .r147-winamp-fallback {
   height: 60px;
   display: flex; align-items: center; justify-content: center;
@@ -722,3 +721,46 @@ body[data-section="radio"] .bm-foot--voidsignal .visitor-counter { color: var(--
   font-size: 14px;
   letter-spacing: 0.04em;
 }
+
+/* ====================================================================== */
+/*  POLISH-2: F1/F2 leakage fixes + EB Garamond italic prose tier         */
+/*                                                                         */
+/*  These overrides come AFTER the original rules so source-order wins.   */
+/*  Every selector is prefixed .r147-page for higher specificity than the */
+/*  legacy .radio-* rules in radio.css and the bare-class rules above.    */
+/* ====================================================================== */
+
+/* Prose tier — EB Garamond italic (was Times New Roman). Period-correct
+   Garamond italic for everything that reads as "spoken aloud" or italic
+   running prose. Times New Roman remains the fallback if EB Garamond
+   fails to load. */
+.r147-page .r147-sponsor,
+.r147-page .r147-schedule-row-note,
+.r147-page .r147-schedule-note,
+.r147-page .r147-fcc-sig,
+.r147-page .r147-carl-msg,
+.r147-page .r147-bumper-track,
+.r147-page .r147-switchboard-note,
+.r147-page .r147-switchboard-note-line,
+.r147-page .radio-request-notice,
+/* F1/F2: also re-route the previously-leaking elements to EB Garamond. */
+.r147-page .radio-np-text,
+.r147-page .radio-entry-body,
+.r147-page .radio-log-empty,
+.r147-page .radio-request-feedback {
+  font-family: 'EB Garamond', 'Times New Roman', Times, serif;
+  font-style: italic;
+}
+
+/* Mono tier completion — entry timestamp was leaking Courier New via
+   --type-mono. Move to Special Elite to match the typewriter tier. */
+.r147-page .radio-entry-time {
+  font-family: 'Special Elite', 'Courier New', monospace;
+}
+
+/* EB Garamond italic in radio context wants slightly tighter line-height
+   to match the body's overall density (Garamond's italic runs taller
+   than Times by default at the same font-size). */
+.r147-page .r147-carl-msg,
+.r147-page .radio-np-text,
+.r147-page .radio-entry-body { line-height: 1.5; }
