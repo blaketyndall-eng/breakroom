@@ -4,52 +4,171 @@ import RadioPlayer from '@/components/radio/RadioPlayer';
 import RadioNowPlaying from '@/components/radio/RadioNowPlaying';
 import RadioLogWidget from '@/components/radio/RadioLogWidget';
 import RadioRequestForm from '@/components/radio/RadioRequestForm';
-import TableBox from '@/components/oldweb/TableBox.astro';
-import LinkMaze from '@/components/oldweb/LinkMaze.astro';
 import SecretTrigger from '@/components/breakroom/SecretTrigger';
 import { getPublicRadioLogs } from '@/lib/publicContent';
+import {
+  STATION_IDENTITY,
+  WORDMARK,
+  RADIO_SCHEDULE,
+  SCHEDULE_NOTE,
+  SHOW_TYPE_LABEL,
+  BUMPERS,
+  CARL_TRANSMISSION,
+  pickFccLetter,
+  pickSponsorSlot,
+} from '@/content/data/radioBrand';
 
 const radioLogs = await getPublicRadioLogs();
+
+// Server-side picks. Deterministic seeds keep SSR matched to first paint.
+const now = Date.now();
+const sponsor = pickSponsorSlot(now);
+const fcc = pickFccLetter(now);
+
+const switchboardLinks = [
+  { href: '/phone',      label: 'Phone logs',      note: 'where most transmissions begin', stamp: 'SOURCE'  },
+  { href: '/newsstand',  label: 'Station notices', note: 'misreported after airing',       stamp: '3AM'     },
+  { href: '/idle-hands', label: 'Bracket break',   note: 'pool reports, table disputes',   stamp: 'SPORTS'  },
+  { href: '/factions',   label: 'Faction beef',    note: 'disputes the station won’t resolve' },
+  { href: '/lost-found', label: 'Cue room objects',note: 'chalk, timing slips, keys, receipts' },
+  { href: '/after-hours',label: 'Back to room',    note: 'the booth is probably behind the bar' },
+];
 ---
 <OldWebLayout title="Breakroom Radio / Channel 1:47" section="radio">
   <SecretTrigger client:load trigger="visit:/radio" path="/radio" label="radio 1:47" />
-  <div class="status-strip"><span>CHANNEL 1:47</span><span>broadcast origin: behind the bar</span><span>dead air: approved</span><span>source: {radioLogs.source}</span><span><a href="/artifacts">evidence drawer</a></span></div>
-  <h1>Breakroom Radio</h1>
-  <p class="tagline-block">Channel 1:47. Broadcasting from somewhere behind the bar. Music, station IDs, lot weather, fake ads, and messages that probably came through the phone first.</p>
-  {radioLogs.error && <p class="memo-box">Public radio fallback active: {radioLogs.error}</p>}
 
-  <!-- Now Playing + Stream -->
-  <RadioNowPlaying client:load />
-  <RadioPlayer client:load />
+  <section class="r147-page">
+    {/* ---------- BANNER ---------- */}
+    <header class="r147-banner">
+      <h1 class="r147-banner-title">{WORDMARK.primary}</h1>
+      <p class="r147-banner-sub">{WORDMARK.subline}</p>
+      <p class="r147-banner-tagline">{WORDMARK.tagline}</p>
+      <div class="r147-tower" aria-hidden="true">
+        ▲<span class="r147-tower-light"></span>
+        ▴
+        ▲<span class="r147-tower-light" style="animation-delay: -1.2s;"></span>
+        ▴
+        ▲<span class="r147-tower-light" style="animation-delay: -0.6s;"></span>
+      </div>
+    </header>
 
-  <section class="grid-2" style="margin-top:16px;">
-    <!-- Transmission Log V2 — full radio feed with types -->
-    <div>
-      <RadioLogWidget client:idle limit={15} />
+    {/* ---------- STATUS STRIP ---------- */}
+    <div class="r147-status-strip">
+      <span><span class="r147-status-dot" aria-hidden="true"></span><b class="r147-status-onair">ON AIR</b></span>
+      <span>callsign: <b>{STATION_IDENTITY.callsign}</b></span>
+      <span>signal: cigarette-yellow</span>
+      <span>weather: dim</span>
+      <span>next: lot weather (1:47)</span>
+      <span>phone: 7 holding</span>
+      <span>source: {radioLogs.source}</span>
     </div>
 
-    <div>
-      <TableBox title="Schedule">
-        <table class="table-box">
-          <tbody>
-            <tr><th>Time</th><th>Show</th><th>Host</th></tr>
-            <tr><td>1:47</td><td>Lot Weather</td><td>The Driver</td></tr>
-            <tr><td>2:13</td><td>Phone Behind The Bar</td><td>Room Admin</td></tr>
-            <tr><td>3:00</td><td>OmniShift Compliance Hour</td><td>System Voice</td></tr>
-            <tr><td>4:11</td><td>Back Booth Mix</td><td>Coffee</td></tr>
-          </tbody>
-        </table>
-      </TableBox>
+    {radioLogs.error && (
+      <p class="r147-sponsor">Public radio fallback active: {radioLogs.error}</p>
+    )}
 
-      <!-- Request form -->
-      <RadioRequestForm client:idle />
+    {/* ---------- PLAYER + NOW PLAYING ---------- */}
+    <div class="r147-grid-top">
+      <RadioPlayer client:load />
+
+      <div class="r147-np-card">
+        <RadioNowPlaying client:load />
+      </div>
     </div>
+
+    <p class="r147-sponsor">{sponsor}</p>
+
+    {/* ---------- SCHEDULE ---------- */}
+    <section class="r147-schedule">
+      <h2 class="r147-schedule-head">The Schedule</h2>
+      <table class="r147-schedule-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Show</th>
+            <th>Host</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {RADIO_SCHEDULE.map((slot) => (
+            <tr>
+              <td class="r147-schedule-time">{slot.time}</td>
+              <td>
+                <div class="r147-schedule-show">{slot.show}</div>
+                {slot.note && <span class="r147-schedule-row-note">{slot.note}</span>}
+              </td>
+              <td class="r147-schedule-host">{slot.host}</td>
+              <td>
+                <span class={`r147-schedule-chip r147-chip-${slot.type}`}>
+                  {SHOW_TYPE_LABEL[slot.type]}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="r147-schedule-note">{SCHEDULE_NOTE}</p>
+    </section>
+
+    {/* ---------- TRANSMISSION LOG + SIDEBAR ---------- */}
+    <div class="r147-grid-bottom">
+      <div class="r147-log">
+        <RadioLogWidget client:idle limit={15} />
+      </div>
+
+      <aside class="r147-side">
+        <div class="r147-request">
+          <RadioRequestForm client:idle />
+        </div>
+
+        {/* Carl card — always-on canonical voicemail */}
+        <div class="r147-carl">
+          <p class="r147-carl-label">Caller: {CARL_TRANSMISSION.caller} · {CARL_TRANSMISSION.duration}</p>
+          <p class="r147-carl-msg">{CARL_TRANSMISSION.message}</p>
+          <span class="r147-carl-file">{CARL_TRANSMISSION.fileLabel}</span>
+        </div>
+
+        {/* FCC letter — pinned to wall, rotates by daypart */}
+        <article class="r147-fcc">
+          <span class="r147-fcc-stamp">Read on Air</span>
+          <p class="r147-fcc-from">{fcc.fromOffice}</p>
+          <p class="r147-fcc-meta">Date: <b>{fcc.date}</b></p>
+          <p class="r147-fcc-meta">To: <b>{fcc.addressedTo}</b></p>
+          <p class="r147-fcc-subject">Re: {fcc.subject}</p>
+          <p class="r147-fcc-body">{fcc.body}</p>
+          <p class="r147-fcc-sig">{fcc.signature}</p>
+        </article>
+      </aside>
+    </div>
+
+    {/* ---------- BUMPER MARQUEE ---------- */}
+    <div class="r147-bumper" aria-hidden="true">
+      <div class="r147-bumper-track">
+        {[...BUMPERS, ...BUMPERS].map((line) => <span>{line}</span>)}
+      </div>
+    </div>
+
+    {/* ---------- SWITCHBOARD ---------- */}
+    <nav class="r147-switchboard">
+      <h3 class="r147-switchboard-head">Radio Switchboard</h3>
+      <p class="r147-switchboard-note">The station does not take requests. It takes evidence and calls it programming.</p>
+      <ul class="r147-switchboard-list">
+        {switchboardLinks.map((link) => (
+          <li class="r147-switchboard-item">
+            {link.stamp && <span class="r147-switchboard-stamp">{link.stamp}</span>}
+            <a class="r147-switchboard-link" href={link.href}>{link.label}</a>
+            <span class="r147-switchboard-note-line">— {link.note}</span>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    {/* ---------- FOOTER ---------- */}
+    <footer class="r147-foot">
+      <span><span class="r147-foot-callsign">{STATION_IDENTITY.callsign}</span> · {STATION_IDENTITY.frequency}</span>
+      <span>{STATION_IDENTITY.broadcastOrigin}</span>
+      <a href="/void">&larr; back to VOID portal</a>
+    </footer>
   </section>
-
-  <LinkMaze title="Radio switchboard" notice="The station does not take requests. It takes evidence and calls it programming." links={[
-    { href: '/phone', label: 'Phone logs', note: 'where most transmissions begin', stamp: 'SOURCE' },
-    { href: '/newsstand', label: 'Station notices', note: 'misreported after airing' },
-    { href: '/idle-hands', label: 'Bracket break', note: 'pool reports, table disputes, late players', stamp: 'SPORTS' },
-    { href: '/after-hours', label: 'Back to room', note: 'the booth is probably behind the bar' }
-  ]} />
 </OldWebLayout>
