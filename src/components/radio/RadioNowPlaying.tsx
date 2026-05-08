@@ -11,6 +11,9 @@ import type { RadioEntry } from '@/lib/radio';
  * getRadioStatus() is SSR-safe: loadUserEntries() in @/lib/radio guards
  * typeof window === 'undefined' and returns []; signal/nextUp pickers
  * use Date.now() only.
+ *
+ * POLISH-3 A: title is <h2> (was <h3>) so document order is
+ * h1 banner > h2 NowPlaying > h2 Schedule > h3 log entries.
  */
 export default function RadioNowPlaying() {
   const [status, setStatus] = useState<{
@@ -21,8 +24,6 @@ export default function RadioNowPlaying() {
   } | null>(() => getRadioStatus());
 
   useEffect(() => {
-    // Refresh every 60s for "live" feel. Initial value already loaded
-    // synchronously by useState's lazy initializer above.
     const interval = setInterval(() => setStatus(getRadioStatus()), 60000);
     return () => clearInterval(interval);
   }, []);
@@ -41,7 +42,7 @@ export default function RadioNowPlaying() {
           <span className="radio-np-type">
             {RADIO_TYPE_LABELS[status.nowPlaying.type] || status.nowPlaying.type}
           </span>
-          <h3 className="radio-np-title">{status.nowPlaying.title}</h3>
+          <h2 className="radio-np-title">{status.nowPlaying.title}</h2>
           <p className="radio-np-text">{status.nowPlaying.body}</p>
           {status.nowPlaying.host && (
             <span className="radio-np-host">host: {status.nowPlaying.host}</span>

@@ -1,0 +1,61 @@
+/* ====================================================================== */
+/*  RADIO-POLISH-3                                                          */
+/*  Five UI/UX fixes loaded as a separate file so the radio-redesign.css   */
+/*  base file stays uncluttered. Imported AFTER radio-redesign.css in       */
+/*  global.css so source-order specificity wins.                            */
+/* ====================================================================== */
+
+/* B — New banner-meta line under the subtitle. Tiny mono-typewriter
+   register. Holds the callsign + frequency that used to live in the
+   status strip. */
+.r147-page .r147-banner-meta {
+  margin: 6px 0 0;
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--r147-amber-dim);
+  text-transform: uppercase;
+}
+.r147-page .r147-banner-meta span:first-child { color: var(--r147-amber); font-weight: 700; }
+
+/* D — Equal card heights in the main 2-col grid. WinAmp is fixed-height,
+   NowPlaying card now stretches to match. */
+.r147-page .r147-grid-top { align-items: stretch; }
+.r147-page .r147-np-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.r147-page .r147-np-card > .radio-now-playing { flex: 1 1 auto; }
+
+/* E — Section rhythm bump. Major sections now have ~36px gap so the page
+   reads as distinct chapters, not one continuous strip. */
+.r147-page .r147-status-strip { margin-bottom: 32px; }
+.r147-page .r147-grid-top      { margin-bottom: 26px; }
+.r147-page .r147-sponsor       { margin-bottom: 36px; }
+.r147-page .r147-schedule      { margin: 36px 0; }
+.r147-page .r147-grid-bottom   { margin: 28px 0 36px; }
+.r147-page .r147-bumper        { margin: 36px 0; }
+.r147-page .r147-switchboard   { margin-top: 36px; }
+.r147-page .r147-foot          { margin-top: 36px; }
+
+/* F — Keyboard focus visibility. Amber dashed outline, 2px offset.
+   Period-correct: dashed instead of solid for the slightly-broken feel. */
+.r147-page a:focus-visible,
+.r147-page button:focus-visible,
+.r147-page input:focus-visible,
+.r147-page textarea:focus-visible,
+.r147-page select:focus-visible {
+  outline: 2px dashed var(--r147-amber);
+  outline-offset: 2px;
+}
+.r147-page .old-button:focus-visible {
+  outline: 2px dashed var(--r147-night);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--r147-amber);
+}
+.r147-page .radio-request-label input:focus-visible,
+.r147-page .radio-request-label textarea:focus-visible {
+  outline: 2px solid var(--r147-lime);
+  outline-offset: 0;
+}

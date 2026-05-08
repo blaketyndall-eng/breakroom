@@ -7,13 +7,13 @@ import type { RadioEntry } from '@/lib/radio';
  * HTML already contains the seeded entries. After hydration, useEffect
  * re-runs to pick up any user-submitted entries from localStorage.
  *
- * getRadioFeed is SSR-safe (loadUserEntries guards window check).
+ * POLISH-3 A: entry titles are <h3> (was <h4>) so they sit one level
+ * below the schedule's <h2>, restoring monotonic heading order.
  */
 export default function RadioLogWidget({ limit = 15 }: { limit?: number }) {
   const [entries, setEntries] = useState<RadioEntry[]>(() => getRadioFeed(limit));
 
   useEffect(() => {
-    // Pick up user entries from localStorage now that we're on the client.
     setEntries(getRadioFeed(limit));
   }, [limit]);
 
@@ -49,7 +49,7 @@ function RadioEntryCard({ entry }: { entry: RadioEntry }) {
         <span className={`radio-entry-type radio-type-${entry.type}`}>{typeLabel}</span>
         <span className="radio-entry-time">{timeStr}</span>
       </div>
-      <h4 className="radio-entry-title">{entry.title}</h4>
+      <h3 className="radio-entry-title">{entry.title}</h3>
       <p className="radio-entry-body">{entry.body}</p>
       {entry.host && (
         <span className="radio-entry-host">{entry.host}</span>

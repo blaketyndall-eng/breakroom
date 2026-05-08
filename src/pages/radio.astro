@@ -40,9 +40,11 @@ const switchboardLinks = [
   <SecretTrigger client:load trigger="visit:/radio" path="/radio" label="radio 1:47" />
 
   <section class="r147-page">
+    {/* ---------- BANNER (POLISH-3 B: callsign moved into banner-meta line) ---------- */}
     <header class="r147-banner">
       <h1 class="r147-banner-title">{WORDMARK.primary}</h1>
       <p class="r147-banner-sub">{WORDMARK.subline}</p>
+      <p class="r147-banner-meta"><span>{STATION_IDENTITY.callsign}</span> · <span>{STATION_IDENTITY.frequency}</span></p>
       <p class="r147-banner-tagline">{WORDMARK.tagline}</p>
       <div class="r147-tower" aria-hidden="true">
         ▲<span class="r147-tower-light"></span>
@@ -53,20 +55,20 @@ const switchboardLinks = [
       </div>
     </header>
 
+    {/* ---------- STATUS STRIP (POLISH-3 B: 7 → 5 items) ---------- */}
     <div class="r147-status-strip">
       <span><span class="r147-status-dot" aria-hidden="true"></span><b class="r147-status-onair">ON AIR</b></span>
-      <span>callsign: <b>{STATION_IDENTITY.callsign}</b></span>
       <span>signal: cigarette-yellow</span>
       <span>weather: dim</span>
       <span>next: lot weather (1:47)</span>
       <span>{phoneLine}</span>
-      <span>source: {radioLogs.source}</span>
     </div>
 
     {radioLogs.error && (
       <p class="r147-sponsor">Public radio fallback active: {radioLogs.error}</p>
     )}
 
+    {/* ---------- PLAYER + NOW PLAYING (POLISH-3 D: equal heights) ---------- */}
     <div class="r147-grid-top">
       <RadioPlayer client:load />
       <div class="r147-np-card">
