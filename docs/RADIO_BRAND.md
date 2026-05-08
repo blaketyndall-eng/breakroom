@@ -1,6 +1,6 @@
 # Breakroom Radio — Brand Bible v1
 
-Status: **LOCKED 2026-05-08.** Visual redesign of `/radio` reads from `src/content/data/radioBrand.ts`, which mirrors this doc. Update both together.
+Status: **LOCKED 2026-05-08.** Updated 2026-05-08 with evolution pass (Carl's call, FCC letters, sponsor slots, wordmark spec). Visual redesign of `/radio` reads from `src/content/data/radioBrand.ts`, which mirrors this doc. Update both together.
 
 ---
 
@@ -23,6 +23,19 @@ Status: **LOCKED 2026-05-08.** Visual redesign of `/radio` reads from `src/conte
 > Dead air is approved.
 
 **License status:** None. Several cease-and-desist letters from the FCC, all read on air as bedtime stories. The most recent compliance memo from OmniShift said *"your station does not exist according to our records — please cease broadcasting"* — read on air, station did not stop.
+
+---
+
+## Wordmark
+
+The banner mark is type, not a logo image. Coast-to-Coast AM (1999–2002) banner register.
+
+- **Primary:** `BREAKROOM RADIO` — Times New Roman serif, weight 700, letter-spacing 0.18em, color `#f5d135` (amber)
+- **Subline:** `channel 1:47` — italic Times Roman, smaller, color `#a8923b` (amber-dim)
+- **Tagline below:** `broadcasting from somewhere behind the bar`
+- **Decorative rule:** double-thin amber, beneath the wordmark
+
+No logo graphic in V1. The wordmark IS the type.
 
 ---
 
@@ -67,6 +80,16 @@ Each is an existing NPC in the world, except where noted.
 **Phil Behind The Bar** *(new NPC)* — *Sign-off / Static Until 1:47 (6:00).* Doesn't usually say anything. Plays a shortwave-style tone test for forty seconds and then static.
 
 **Night Manager** — Does occasional station IDs between shows. Reads FCC cease-and-desist letters as bedtime stories. Will, without warning, do a 30-second monologue about a person he met in 1996.
+
+---
+
+## Carl
+
+Carl is a caller. He has been calling every night for three months. Same call every time.
+
+> Yeah hi this is Carl. I'm just checking back to see if anyone’s seen my hoodies — the gray ones with the logo, I left like nine of them at the bar in March. Call me back if anything turns up. You have the number.
+
+File label: `CALL_CARL.WAV`. Renders on /radio (Phone Behind The Bar segment) and on /phone (same artifact, both surfaces). Carl is also the subject of the BPC `adFreeHoodies` popup ("HEY, CARL! / FREE HOODIES / (none claimed)") — same person, three surfaces.
 
 ---
 
@@ -123,16 +146,77 @@ These play between shows, on a tape that's been wearing out for years.
 
 ---
 
+## Sponsor slots
+
+*"This hour brought to you by..."* pre-roll lines. Different content category from bumpers — each sponsor slot names a specific in-world non-sponsor. The station has no real sponsors. This is the joke.
+
+> This hour brought to you by The Coffee Pot, in studio.
+
+> This hour brought to you by the back booth, currently occupied.
+
+> This hour brought to you by nobody, again.
+
+> This hour brought to you by an object we found in the lot.
+
+> This hour brought to you by the receipt with no total.
+
+> This hour brought to you by Lot 7, where the asphalt is sticky.
+
+> This hour brought to you by an envelope with someone's name crossed out.
+
+> This hour brought to you by The Rack, when The Rack remembers it has product.
+
+---
+
+## FCC cease-and-desist letters
+
+Read on air by Night Manager as bedtime stories. The redesign renders one as a "pinned to the studio wall" sidebar artifact, rotated by daypart.
+
+### Letter 1 — First Notice (November 14, 2023)
+
+> **Federal Communications Commission · Field Office, Eastern Division**
+>
+> **To:** Operator, KLOT-147 (callsign not on record)
+> **Re:** Notice of Apparent Liability for Forfeiture
+>
+> Our records indicate broadcasting at 147 megacycles. This frequency is not allocated for civilian broadcast. Please cease operations within thirty (30) days of this notice.
+>
+> Failure to comply may result in fines, equipment seizure, or both. Forfeit penalty: USD 7,000.
+>
+> This is your first formal notice. Please respond in writing.
+>
+> *— D. Halverson, Field Inspector*
+
+### Letter 2 — Third Notice (August 2, 2025)
+
+> **Federal Communications Commission · Field Office, Inland Region**
+>
+> **To:** KLOT-147 / WBRK / K147 (callsign as variously broadcast)
+> **Re:** Third Notice — Continued Unauthorized Operation
+>
+> Multiple notices have been issued and ignored. Please be advised that continued operation will result in further enforcement action up to and including criminal referral.
+>
+> Additionally: signal interference reports we have received describe broadcasts heard at 4:00 PM in the afternoon, on devices that were unplugged. We require an explanation.
+>
+> A response is mandatory. None is expected.
+>
+> *— M. Reyes, Senior Field Inspector*
+
+*The second letter explicitly notices the same receiver-anomaly the station won't address. The FCC and the listeners agree on what they hear; the station does not comment.*
+
+---
+
 ## Connection to the rest of the world (the radio's edges)
 
-- **Phone Behind The Bar (`/phone`)** — voicemails left at the bar feed directly into Phone Behind The Bar at 2:13 AM. What's in `/phone` becomes the show.
+- **Phone Behind The Bar (`/phone`)** — voicemails feed directly into Phone Behind The Bar at 2:13 AM. Carl's call lives at both surfaces.
 - **Districts (`/districts`)** — Pool Hall County submits dispute reports. Motel Row submits noise complaints. Parking Lot West submits the lot weather raw feed.
-- **Factions (`/factions`)** — Faction Beef Hour resolves (or refuses to resolve) disputes. The Players and Lot Racers historically called in the most.
+- **Factions (`/factions`)** — Faction Beef Hour resolves (or refuses to resolve) disputes. The Players and Lot Racers historically called in the most. Cowboys' line is currently dropping.
 - **Newsstand / 3AM Edition (`/newsstand`)** — radio reports get re-reported the next morning, badly. *"WBRK reportedly aired"* is the standard hedge.
 - **Lost & Found (`/lost-found`)** — objects found in the lot get added to the Lot Weather report.
 - **Idle Hands (`/idle-hands`)** — the Bracket Break (sports segment, embedded in Faction Beef Hour) reports table disputes from the tournament.
 - **The Rack (`/rack`)** — the only "sponsor" the station has. Bumpers occasionally end with: *"If you've enjoyed this broadcast, look in the Rack."*
 - **OmniShift (`/portal`)** — quarterly compliance memos. System Voice reads them. Station ignores them.
+- **BPC popups** — the `adFreeHoodies` popup ("HEY, CARL!") IS the radio noticing Carl. Same person across surfaces.
 
 ---
 
@@ -163,5 +247,7 @@ Reference websites:
 
 - **Hosts and schedule are stable.** Don't change them without confirming the world-coherence implications first (each host appears in other surfaces).
 - **The arc rotates.** Update `CURRENT_ARC` in the data file independently of the rest. Old arcs can be archived in this doc as historical context if useful.
-- **Bumpers can be added.** Try not to subtract — they're cheap detail and the marquee benefits from a longer pool.
+- **Bumpers and sponsor slots can be added.** Try not to subtract — they're cheap detail and the marquee benefits from a longer pool.
+- **FCC letters can grow.** Add new ones to the array; the picker rotates by daypart.
+- **Carl's call is canon.** It does not change. He calls about hoodies. The hoodies do not turn up.
 - **The deliberate non-explanations are not bugs.** Don't add explanations to satisfy completeness.

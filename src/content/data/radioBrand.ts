@@ -61,6 +61,48 @@ export const STATION_IDENTITY: StationIdentity = {
 };
 
 /* ----------------------------------------------------------------------- */
+/*  WORDMARK                                                                */
+/* ----------------------------------------------------------------------- */
+
+/**
+ * Typographic wordmark spec for the /radio banner. No logo image in V1 —
+ * the wordmark IS the type. The redesign CSS reads these tokens directly.
+ *
+ * Reference register: Coast-to-Coast AM (1999–2002) banner type.
+ */
+export interface RadioWordmark {
+  /** Primary text — the on-air name in caps. */
+  primary: string;
+  /** Subline beneath the primary, italic. */
+  subline: string;
+  /** Tagline rendered below or beside the wordmark. */
+  tagline: string;
+  /** Font stack for the primary text. Times New Roman serif. */
+  primaryFont: string;
+  /** Font stack for the subline. */
+  sublineFont: string;
+  /** Letter-spacing for the primary text. */
+  primaryTracking: string;
+  /** Color tokens. */
+  primaryColor: string;
+  sublineColor: string;
+  /** Optional decorative rule beneath the wordmark. */
+  rule: 'double-thin' | 'single-amber' | 'none';
+}
+
+export const WORDMARK: RadioWordmark = {
+  primary: 'BREAKROOM RADIO',
+  subline: 'channel 1:47',
+  tagline: 'broadcasting from somewhere behind the bar',
+  primaryFont: '"Times New Roman", Times, serif',
+  sublineFont: '"Times New Roman", Times, serif',
+  primaryTracking: '0.18em',
+  primaryColor: '#f5d135', // r147-amber
+  sublineColor: '#a8923b', // r147-amber-dim
+  rule: 'double-thin',
+};
+
+/* ----------------------------------------------------------------------- */
 /*  HOSTS                                                                  */
 /* ----------------------------------------------------------------------- */
 
@@ -239,6 +281,29 @@ export const BUMPERS: string[] = [
 ];
 
 /* ----------------------------------------------------------------------- */
+/*  SPONSOR SLOTS                                                           */
+/* ----------------------------------------------------------------------- */
+
+/**
+ * "This hour brought to you by..." pre-roll lines. Different from bumpers:
+ * sponsor slots always name a specific in-world non-sponsor (a coffee pot,
+ * a receipt with no total, an object found in the lot). The station has
+ * no real sponsors — this is the joke.
+ *
+ * Renders client-side as a slow-rotating tag below the Now Playing card.
+ */
+export const SPONSOR_SLOTS: string[] = [
+  'This hour brought to you by The Coffee Pot, in studio.',
+  'This hour brought to you by the back booth, currently occupied.',
+  'This hour brought to you by nobody, again.',
+  'This hour brought to you by an object we found in the lot.',
+  'This hour brought to you by the receipt with no total.',
+  'This hour brought to you by Lot 7, where the asphalt is sticky.',
+  'This hour brought to you by an envelope with someone’s name crossed out.',
+  'This hour brought to you by The Rack, when The Rack remembers it has product.',
+];
+
+/* ----------------------------------------------------------------------- */
 /*  CURRENT ARC (rolling — rotate independently of the rest)               */
 /* ----------------------------------------------------------------------- */
 
@@ -293,6 +358,88 @@ export const CURRENT_ARC: RadioArcThread[] = [
 ];
 
 /* ----------------------------------------------------------------------- */
+/*  CARL                                                                    */
+/* ----------------------------------------------------------------------- */
+
+/**
+ * Carl's actual recurring voicemail. Three sentences, in voice. The same
+ * call every night for three months. Stable canon — does NOT rotate.
+ *
+ * Renders on /radio (Phone Behind The Bar segment, 2:13) AND on /phone
+ * (the same artifact, both surfaces). Same person, same call.
+ */
+export interface CarlTransmission {
+  /** Caller display name. */
+  caller: string;
+  /** When he started calling, in voice. "Three months" is canon. */
+  duration: string;
+  /** The actual voicemail. Read by Room Admin without interpretation. */
+  message: string;
+  /** A small file label — "NIGHT 87 OF 87" updates over time but lower precision is fine. */
+  fileLabel: string;
+}
+
+export const CARL_TRANSMISSION: CarlTransmission = {
+  caller: 'Carl',
+  duration: 'three months, every night',
+  message:
+    "Yeah hi this is Carl. I'm just checking back to see if anyone’s seen my hoodies — the gray ones with the logo, I left like nine of them at the bar in March. Call me back if anything turns up. You have the number.",
+  fileLabel: 'CALL_CARL.WAV',
+};
+
+/* ----------------------------------------------------------------------- */
+/*  FCC CEASE-AND-DESIST LETTERS                                            */
+/* ----------------------------------------------------------------------- */
+
+/**
+ * Sample cease-and-desist letters that Night Manager reads on air as
+ * bedtime stories. Two are canon now. New letters can be added to the
+ * pool over time — the station has "several" by the brand bible.
+ *
+ * The redesign renders one as a "pinned to the studio wall" sidebar
+ * artifact. Picker rotates by daypart so different visits surface
+ * different letters.
+ */
+export interface FccLetter {
+  id: string;
+  /** Date the letter is dated. Real-looking, in-world. */
+  date: string;
+  /** Issuing field office — a town that may or may not exist. */
+  fromOffice: string;
+  /** Addressed-to line. Acknowledges the callsign drift. */
+  addressedTo: string;
+  /** Subject line. */
+  subject: string;
+  /** Body. Multi-paragraph, but tight. */
+  body: string;
+  /** Signature line. */
+  signature: string;
+}
+
+export const FCC_LETTERS: FccLetter[] = [
+  {
+    id: 'fcc-2023-first-notice',
+    date: 'November 14, 2023',
+    fromOffice: 'Federal Communications Commission · Field Office, Eastern Division',
+    addressedTo: 'Operator, KLOT-147 (callsign not on record)',
+    subject: 'Notice of Apparent Liability for Forfeiture',
+    body:
+      'Our records indicate broadcasting at 147 megacycles. This frequency is not allocated for civilian broadcast. Please cease operations within thirty (30) days of this notice.\n\nFailure to comply may result in fines, equipment seizure, or both. Forfeit penalty: USD 7,000.\n\nThis is your first formal notice. Please respond in writing.',
+    signature: 'D. Halverson, Field Inspector',
+  },
+  {
+    id: 'fcc-2025-third-notice',
+    date: 'August 2, 2025',
+    fromOffice: 'Federal Communications Commission · Field Office, Inland Region',
+    addressedTo: 'KLOT-147 / WBRK / K147 (callsign as variously broadcast)',
+    subject: 'Third Notice — Continued Unauthorized Operation',
+    body:
+      'Multiple notices have been issued and ignored. Please be advised that continued operation will result in further enforcement action up to and including criminal referral.\n\nAdditionally: signal interference reports we have received describe broadcasts heard at 4:00 PM in the afternoon, on devices that were unplugged. We require an explanation.\n\nA response is mandatory. None is expected.',
+    signature: 'M. Reyes, Senior Field Inspector',
+  },
+];
+
+/* ----------------------------------------------------------------------- */
 /*  Helpers                                                                 */
 /* ----------------------------------------------------------------------- */
 
@@ -306,6 +453,24 @@ export function pickSlogan(seed: number = Date.now()): string {
   return STATION_IDENTITY.slogans[
     Math.floor(seed / 60_000) % STATION_IDENTITY.slogans.length
   ];
+}
+
+/**
+ * Pick one FCC letter by daypart. Rotates roughly every 6 hours so different
+ * visits surface different letters but the same letter is stable within a
+ * session.
+ */
+export function pickFccLetter(seed: number = Date.now()): FccLetter {
+  const idx = Math.floor(seed / (6 * 60 * 60 * 1000)) % FCC_LETTERS.length;
+  return FCC_LETTERS[idx];
+}
+
+/**
+ * Pick one sponsor slot by minute. Slow-rotating client-side so the line
+ * below the Now Playing card stays stable for a beat then changes.
+ */
+export function pickSponsorSlot(seed: number = Date.now()): string {
+  return SPONSOR_SLOTS[Math.floor(seed / 90_000) % SPONSOR_SLOTS.length];
 }
 
 /** Color tag for schedule type chips. The /radio redesign uses these. */
