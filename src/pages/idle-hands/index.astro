@@ -1,50 +1,190 @@
 ---
+/**
+ * /idle-hands — Idle Hands Invitational pool tournament page (V3 redesign).
+ *
+ * 2003 pool-hall fan site chrome (`ihp-*` prefix). The page is maintained
+ * by one obsessive regular for 15 years. Page never legally re-registered.
+ *
+ * Functional content preserved:
+ *   - IdleHandsRegistration React island (unchanged)
+ *   - Tournament Status 6-row table
+ *   - BracketBoard component (reframed in .ihp-bracket-frame)
+ *   - 12-player roster with /idle-hands/player/<slug> links
+ *   - Tournament Office links
+ *   - House Rules
+ */
 import OldWebLayout from '@/layouts/OldWebLayout.astro';
-import TableBox from '@/components/oldweb/TableBox.astro';
 import BracketBoard from '@/components/oldweb/BracketBoard.astro';
-import LinkMaze from '@/components/oldweb/LinkMaze.astro';
 import IdleHandsRegistration from '@/components/idle-hands/IdleHandsRegistration';
-const players = ['Nun Dog','Mugsy Late Again','The Driver','Miss September','Coffee','The Kid With The Mop','House Money','Motel 8','Gold Grill','Clock Dispute','Soft Break Steve','Applause Money'];
+
+const players = [
+  'Nun Dog','Mugsy Late Again','The Driver','Miss September',
+  'Coffee','The Kid With The Mop','House Money','Motel 8',
+  'Gold Grill','Clock Dispute','Soft Break Steve','Applause Money',
+];
+
+interface PlayerMeta {
+  handicap: number;
+  table: number;
+  note: string;
+}
+function metaFor(p: string, i: number): PlayerMeta {
+  return {
+    handicap: (i % 7) + 2,
+    table: (i % 8) + 1,
+    note: 'Known for showing up when the light gets bad.',
+  };
+}
+
+const officeLinks = [
+  { href: '/locker',     label: 'Regular file',         note: 'your table assignment and regular note', stamp: 'PLAYER' },
+  { href: '/phone',      label: 'Call the bar',         note: 'rideshare, courier, and bad invite logs', stamp: 'CALL' },
+  { href: '/lost-found', label: 'Cue room objects',     note: 'chalk, timing slips, keys, receipts',     stamp: 'STUFF' },
+  { href: '/after-hours',label: 'Back to After Hours',  note: 'where the bracket was probably printed',  stamp: 'EXIT' },
+];
+
+const houseRules = [
+  'House rules apply.',
+  'No soft hands.',
+  'Call your own fouls.',
+  'If you argue a call, we laugh.',
+  'Tip the bartender.',
+  'Don’t be an ass.',
+];
 ---
 <OldWebLayout title="Idle Hands Invitational" section="idlehands">
-  <div class="status-strip"><span>poolhall.sleeper.net</span><span>Race to 7</span><span>Cash only</span><span>Clock optional</span><span>bracket disputed</span></div>
-  <h1>IDLE HANDS INVITATIONAL</h1>
-  <p class="tagline-block">Old school pool tournament page. It may be real, old, upcoming, AI-generated, recurring, or a ritual. Late registration accepted. Probably.</p>
+  <section class="ihp-page">
 
-  <div class="grid-2">
-    <TableBox title="Tournament Status">
-      <table class="table-box">
-        <tbody>
-          <tr><th>Status</th><td>Unresolved</td></tr>
-          <tr><th>Doors</th><td>If they exist, open at 7:30 PM</td></tr>
-          <tr><th>Pot</th><td>$20 cash / no cards / applause not accepted</td></tr>
-          <tr><th>Current time</th><td>1:47 AM</td></tr>
-          <tr><th>Dress code</th><td>Whatever you wore after the shift ended</td></tr>
-          <tr><th>Prize</th><td>Title unclear / respect unlikely</td></tr>
-        </tbody>
-      </table>
-    </TableBox>
-    <IdleHandsRegistration client:load />
-  </div>
+    <header class="ihp-banner">
+      <p class="ihp-banner-eyebrow">poolhall.sleeper.net · race to 7 · cash only</p>
+      <h1 class="ihp-banner-title">Idle Hands Invitational</h1>
+      <p class="ihp-banner-tagline">
+        Old school pool tournament page. It may be real, old, upcoming, AI-generated,
+        recurring, or a ritual. Late registration accepted. Probably.
+      </p>
+    </header>
 
-  <BracketBoard players={players} />
-
-  <TableBox title="Roster / Long-time regular rundown">
-    <div class="grid-3">
-      {players.map((p, i) => <article class="memo-box"><h2><a href={`/idle-hands/player/${p.toLowerCase().replaceAll(' ','-')}`}>{p}</a></h2><p><b>Handicap:</b> {i % 7 + 2}. Known for showing up when the light gets bad.</p><p><span class="red-stamp">TABLE {(i % 8) + 1}</span></p></article>)}
+    <div class="ihp-status-strip">
+      <span>poolhall.sleeper.net</span>
+      <span>Race to 7</span>
+      <span>Cash only</span>
+      <span>Clock optional</span>
+      <span>Bracket disputed</span>
     </div>
-  </TableBox>
 
-  <LinkMaze title="Tournament office / old pool site links" notice="The site was last updated by someone who says they never touched a computer." links={[
-    { href: '/locker', label: 'Regular file', note: 'your table assignment and regular note', stamp: 'PLAYER' },
-    { href: '/phone', label: 'Call the bar', note: 'rideshare, courier, and bad invite logs' },
-    { href: '/lost-found', label: 'Cue room objects', note: 'chalk, timing slips, keys, receipts' },
-    { href: '/after-hours', label: 'Back to After Hours', note: 'where the bracket was probably printed' }
-  ]} />
+    <!-- Top row: tournament status + registration -->
+    <div class="ihp-grid-top">
 
-  <TableBox title="House Rules">
-    <ol>
-      <li>House rules apply.</li><li>No soft hands.</li><li>Call your own fouls.</li><li>If you argue a call, we laugh.</li><li>Tip the bartender.</li><li>Don’t be an ass.</li>
-    </ol>
-  </TableBox>
+      <div class="ihp-section">
+        <h2 class="ihp-section-head">
+          Tournament Status
+          <span class="ihp-section-head-tag">filed by The Cue</span>
+        </h2>
+        <table class="ihp-status-table">
+          <tbody>
+            <tr><th>Status</th>      <td>Unresolved</td></tr>
+            <tr><th>Doors</th>       <td>If they exist, open at 7:30 PM</td></tr>
+            <tr><th>Pot</th>         <td><b>$20 cash</b> · no cards · applause not accepted</td></tr>
+            <tr><th>Current time</th><td>1:47 AM</td></tr>
+            <tr><th>Dress code</th>  <td>Whatever you wore after the shift ended</td></tr>
+            <tr><th>Prize</th>       <td>Title unclear / respect unlikely</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ihp-section ihp-reg-frame">
+        <h2 class="ihp-section-head">
+          Registration
+          <span class="ihp-section-head-tag">walk-ins welcome</span>
+        </h2>
+        <IdleHandsRegistration client:load />
+      </div>
+
+    </div>
+
+    <!-- 8-ball divider -->
+    <div class="ihp-divider" aria-hidden="true">
+      <span class="ihp-divider-ball"><span class="ihp-divider-ball-num">8</span></span>
+    </div>
+
+    <!-- Bracket frame wraps existing BracketBoard component -->
+    <div class="ihp-bracket-frame">
+      <BracketBoard players={players} />
+    </div>
+
+    <!-- 8-ball divider -->
+    <div class="ihp-divider" aria-hidden="true">
+      <span class="ihp-divider-ball"><span class="ihp-divider-ball-num">8</span></span>
+    </div>
+
+    <!-- Roster grid -->
+    <div class="ihp-roster">
+      <h2 class="ihp-roster-head">
+        Roster
+        <span class="ihp-roster-head-tag">long-time regular rundown</span>
+      </h2>
+      <div class="ihp-roster-grid">
+        {players.map((p, i) => {
+          const m = metaFor(p, i);
+          const slug = p.toLowerCase().replaceAll(' ', '-');
+          return (
+            <article class="ihp-roster-tile">
+              <h3 class="ihp-roster-name"><a href={`/idle-hands/player/${slug}`}>{p}</a></h3>
+              <p class="ihp-roster-meta"><b>Handicap:</b> {m.handicap}. {m.note}</p>
+              <span class="ihp-roster-stamp">TABLE {m.table}</span>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+
+    <!-- Bottom row: tournament office links + house rules -->
+    <div class="ihp-grid-bottom">
+
+      <div class="ihp-section">
+        <h2 class="ihp-section-head">
+          Tournament Office
+          <span class="ihp-section-head-tag">last updated by someone who says they never touched a computer</span>
+        </h2>
+        <ul class="ihp-link-list">
+          {officeLinks.map((l) => (
+            <li class="ihp-link-item">
+              <span>
+                <a href={l.href} class="ihp-link-item-title">{l.label}</a>
+                <span class="ihp-link-item-note">{l.note}</span>
+              </span>
+              <span class="ihp-link-item-stamp">{l.stamp}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="ihp-section">
+        <h2 class="ihp-section-head">
+          House Rules
+          <span class="ihp-section-head-tag">non-binding · binding</span>
+        </h2>
+        <ol class="ihp-house-rules">
+          {houseRules.map((r) => <li>{r}</li>)}
+        </ol>
+      </div>
+
+    </div>
+
+    <!-- Footer: hit counter + badges + last-updated -->
+    <footer class="ihp-footer">
+      <div>visitors who probably shouldn’t be here:</div>
+      <div class="ihp-counter">000000147</div>
+      <p class="ihp-footer-meta">Last Updated: AUG 14, 2003 · by The Cue · questions: ask the bartender</p>
+      <div class="ihp-footer-badges">
+        <span class="ihp-badge ihp-badge--bca">BCA Member (lapsed)</span>
+        <span class="ihp-badge ihp-badge--netscape">Best Viewed in Netscape</span>
+        <span class="ihp-badge">800 × 600</span>
+        <span class="ihp-badge">No Frames</span>
+        <span class="ihp-badge">Sign The Wall</span>
+      </div>
+      <a class="ihp-footer-back" href="/after-hours">&larr; back to After Hours</a>
+    </footer>
+
+  </section>
 </OldWebLayout>
