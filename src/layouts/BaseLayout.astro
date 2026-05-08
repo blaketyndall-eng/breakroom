@@ -28,6 +28,24 @@ const {
 const world = worldOverride ?? worldForSection(section);
 const chromeMode = chromeFor(section);
 const currentPath = Astro.url.pathname;
+
+/* ----------------------------------------------------------------------- */
+/*  Footer helpers                                                         */
+/*                                                                         */
+/*  Visitor counter and session-hex are deterministic from pathname so     */
+/*  every reload of the same page shows the same lie. Counters always end  */
+/*  in 147 — same 1:47 anchor as Radio 1:47, the boot dialog, the chaos    */
+/*  popups. Hex IDs use the same hash, formatted differently.              */
+/* ----------------------------------------------------------------------- */
+function djb2(s: string): number {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+const pathHash = djb2(currentPath || '/');
+const visitorCounter = String((pathHash % 900) + 100) + '147'; // 6 digits, ends in 147
+const sessionHex = pathHash.toString(16).padStart(8, '0').slice(0, 8).toUpperCase();
+const isBreakroom = section === 'breakroom';
 ---
 <!doctype html>
 <html
@@ -88,13 +106,82 @@ const currentPath = Astro.url.pathname;
     <main>
       <slot />
     </main>
-    <footer class="container" style="padding: 24px 0 48px; font-family: var(--type-mono); font-size: 11px; color: #5a513f;">
+
+    {/* ---------------------------------------------------------------- */}
+    {/*  Global footer — world-aware                                     */}
+    {/* ---------------------------------------------------------------- */}
+    <footer class={`bm-foot bm-foot--${world}${isBreakroom ? ' bm-foot--cracked' : ''}`}>
       <div class="status-strip">
-        <span>best viewed after work</span>
-        <span>clock stuck at 1:47</span>
-        <span>visitor <b class="visitor-counter">18439</b></span>
-        <span><a href="/staff-only">staff only</a></span>
+        {world === 'omnishift' && !isBreakroom && (
+          <>
+            <span>OmniShift Industries · Internal Use Only</span>
+            <span>shift status: logged</span>
+            <span>session <b>0x{sessionHex}</b></span>
+            <span>visitor #<b class="visitor-counter">{visitorCounter}</b></span>
+            <span><a href="/clock-out">clock out</a></span>
+          </>
+        )}
+        {isBreakroom && (
+          <>
+            <span>OmniShift Industries · <s>Internal Use Only</s></span>
+            <span>shift status: <s>logged</s> <span class="bm-foot-redact">unknown</span></span>
+            <span>session <b>0x????????</b></span>
+            <span>visitor #<b class="visitor-counter">{visitorCounter}</b></span>
+            <span class="bm-foot-edit">Last Edit by ████████</span>
+          </>
+        )}
+        {world === 'voidsignal' && (
+          <>
+            <span>best viewed after work</span>
+            <span>clock stuck at 1:47</span>
+            <span>visitor <b class="visitor-counter">{visitorCounter}</b></span>
+            <span><a href="/staff-only">staff only</a></span>
+          </>
+        )}
+        {world === 'neutral' && (
+          <>
+            <span>filed but not displayed</span>
+            <span>visitor <b class="visitor-counter">{visitorCounter}</b></span>
+            <span><a href="/staff-only">staff only</a></span>
+          </>
+        )}
       </div>
     </footer>
+
+    <style is:global>
+      /* World-aware global footer — small, scoped to .bm-foot */
+      .bm-foot {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 0 48px;
+        font-family: var(--type-mono);
+        font-size: 11px;
+      }
+      .bm-foot--voidsignal { color: #5a513f; }
+      .bm-foot--omnishift  { color: #2a3a52; }
+      .bm-foot--neutral    { color: #5a513f; }
+      .bm-foot--cracked    { color: #4a2222; }
+      .bm-foot--omnishift .status-strip a { color: #2a3a52; }
+      .bm-foot--cracked .status-strip a   { color: #6a3030; }
+      .bm-foot-redact {
+        display: inline-block;
+        background: #1a1a1a;
+        color: #f5d135;
+        padding: 0 4px;
+        font-weight: bold;
+        letter-spacing: 0.05em;
+      }
+      .bm-foot-edit {
+        font-style: italic;
+        opacity: 0.65;
+      }
+      /* Strikethroughs in cracked footer should look like a real pen, not
+         a clean line-through. Doubled-up shadow + slight rotation. */
+      .bm-foot--cracked s {
+        text-decoration: line-through;
+        text-decoration-thickness: 1.5px;
+        text-decoration-color: #6a3030;
+      }
+    </style>
   </body>
 </html>
