@@ -2,17 +2,27 @@ import { useState, useEffect } from 'react';
 import { getRadioStatus, RADIO_TYPE_LABELS } from '@/lib/radio';
 import type { RadioEntry } from '@/lib/radio';
 
+/**
+ * RadioNowPlaying — lazy-initializes state via getRadioStatus() so the
+ * server-rendered HTML already contains real Now Playing content. This
+ * eliminates the first-paint flash that the previous useState(null)
+ * + useEffect pattern caused.
+ *
+ * getRadioStatus() is SSR-safe: loadUserEntries() in @/lib/radio guards
+ * typeof window === 'undefined' and returns []; signal/nextUp pickers
+ * use Date.now() only.
+ */
 export default function RadioNowPlaying() {
   const [status, setStatus] = useState<{
     nowPlaying: RadioEntry | null;
     signalStrength: string;
     deadAir: boolean;
     nextUp: string;
-  } | null>(null);
+  } | null>(() => getRadioStatus());
 
   useEffect(() => {
-    setStatus(getRadioStatus());
-    // Refresh every 60s for "live" feel
+    // Refresh every 60s for "live" feel. Initial value already loaded
+    // synchronously by useState's lazy initializer above.
     const interval = setInterval(() => setStatus(getRadioStatus()), 60000);
     return () => clearInterval(interval);
   }, []);

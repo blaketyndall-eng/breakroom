@@ -1,8 +1,10 @@
 /**
  * RadioPlayer — renders inside the .r147-winamp chrome (defined in
- * radio-redesign.css). The component itself just supplies the LED readout
- * + iframe slot; the visual chrome is owned by CSS so the player can be
- * dropped into the page tree without an outer wrapper.
+ * radio-redesign.css). Component supplies LED readout + iframe slot;
+ * visual chrome is owned by CSS so the player can drop into any tree.
+ *
+ * Fallback copy reads as period-correct radio downtime instead of dev
+ * placeholder when no stream URL is configured.
  */
 export default function RadioPlayer() {
   const stream =
@@ -40,7 +42,11 @@ export default function RadioPlayer() {
             className="r147-winamp-iframe"
           />
         ) : (
-          <div className="r147-winamp-fallback">[ stream URL pending ]</div>
+          <div className="r147-winamp-fallback" aria-label="dead air, tone test, carrier wave">
+            <span className="r147-winamp-fallback-text">
+              DEAD AIR · TONE TEST · CARRIER WAVE
+            </span>
+          </div>
         )}
       </div>
     </div>

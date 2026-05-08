@@ -16,6 +16,7 @@ import {
   CARL_TRANSMISSION,
   pickFccLetter,
   pickSponsorSlot,
+  pickPhoneCount,
 } from '@/content/data/radioBrand';
 
 const radioLogs = await getPublicRadioLogs();
@@ -24,6 +25,7 @@ const radioLogs = await getPublicRadioLogs();
 const now = Date.now();
 const sponsor = pickSponsorSlot(now);
 const fcc = pickFccLetter(now);
+const phoneLine = pickPhoneCount(now);
 
 const switchboardLinks = [
   { href: '/phone',      label: 'Phone logs',      note: 'where most transmissions begin', stamp: 'SOURCE'  },
@@ -38,7 +40,6 @@ const switchboardLinks = [
   <SecretTrigger client:load trigger="visit:/radio" path="/radio" label="radio 1:47" />
 
   <section class="r147-page">
-    {/* ---------- BANNER ---------- */}
     <header class="r147-banner">
       <h1 class="r147-banner-title">{WORDMARK.primary}</h1>
       <p class="r147-banner-sub">{WORDMARK.subline}</p>
@@ -52,14 +53,13 @@ const switchboardLinks = [
       </div>
     </header>
 
-    {/* ---------- STATUS STRIP ---------- */}
     <div class="r147-status-strip">
       <span><span class="r147-status-dot" aria-hidden="true"></span><b class="r147-status-onair">ON AIR</b></span>
       <span>callsign: <b>{STATION_IDENTITY.callsign}</b></span>
       <span>signal: cigarette-yellow</span>
       <span>weather: dim</span>
       <span>next: lot weather (1:47)</span>
-      <span>phone: 7 holding</span>
+      <span>{phoneLine}</span>
       <span>source: {radioLogs.source}</span>
     </div>
 
@@ -67,10 +67,8 @@ const switchboardLinks = [
       <p class="r147-sponsor">Public radio fallback active: {radioLogs.error}</p>
     )}
 
-    {/* ---------- PLAYER + NOW PLAYING ---------- */}
     <div class="r147-grid-top">
       <RadioPlayer client:load />
-
       <div class="r147-np-card">
         <RadioNowPlaying client:load />
       </div>
@@ -78,7 +76,6 @@ const switchboardLinks = [
 
     <p class="r147-sponsor">{sponsor}</p>
 
-    {/* ---------- SCHEDULE ---------- */}
     <section class="r147-schedule">
       <h2 class="r147-schedule-head">The Schedule</h2>
       <table class="r147-schedule-table">
@@ -111,7 +108,6 @@ const switchboardLinks = [
       <p class="r147-schedule-note">{SCHEDULE_NOTE}</p>
     </section>
 
-    {/* ---------- TRANSMISSION LOG + SIDEBAR ---------- */}
     <div class="r147-grid-bottom">
       <div class="r147-log">
         <RadioLogWidget client:idle limit={15} />
@@ -122,14 +118,12 @@ const switchboardLinks = [
           <RadioRequestForm client:idle />
         </div>
 
-        {/* Carl card — always-on canonical voicemail */}
         <div class="r147-carl">
           <p class="r147-carl-label">Caller: {CARL_TRANSMISSION.caller} · {CARL_TRANSMISSION.duration}</p>
           <p class="r147-carl-msg">{CARL_TRANSMISSION.message}</p>
           <span class="r147-carl-file">{CARL_TRANSMISSION.fileLabel}</span>
         </div>
 
-        {/* FCC letter — pinned to wall, rotates by daypart */}
         <article class="r147-fcc">
           <span class="r147-fcc-stamp">Read on Air</span>
           <p class="r147-fcc-from">{fcc.fromOffice}</p>
@@ -142,14 +136,12 @@ const switchboardLinks = [
       </aside>
     </div>
 
-    {/* ---------- BUMPER MARQUEE ---------- */}
     <div class="r147-bumper" aria-hidden="true">
       <div class="r147-bumper-track">
         {[...BUMPERS, ...BUMPERS].map((line) => <span>{line}</span>)}
       </div>
     </div>
 
-    {/* ---------- SWITCHBOARD ---------- */}
     <nav class="r147-switchboard">
       <h3 class="r147-switchboard-head">Radio Switchboard</h3>
       <p class="r147-switchboard-note">The station does not take requests. It takes evidence and calls it programming.</p>
@@ -164,7 +156,6 @@ const switchboardLinks = [
       </ul>
     </nav>
 
-    {/* ---------- FOOTER ---------- */}
     <footer class="r147-foot">
       <span><span class="r147-foot-callsign">{STATION_IDENTITY.callsign}</span> · {STATION_IDENTITY.frequency}</span>
       <span>{STATION_IDENTITY.broadcastOrigin}</span>

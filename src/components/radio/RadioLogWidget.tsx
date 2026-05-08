@@ -2,10 +2,18 @@ import { useState, useEffect } from 'react';
 import { getRadioFeed, RADIO_TYPE_LABELS } from '@/lib/radio';
 import type { RadioEntry } from '@/lib/radio';
 
+/**
+ * RadioLogWidget — lazy-initializes via getRadioFeed(limit) so the SSR'd
+ * HTML already contains the seeded entries. After hydration, useEffect
+ * re-runs to pick up any user-submitted entries from localStorage.
+ *
+ * getRadioFeed is SSR-safe (loadUserEntries guards window check).
+ */
 export default function RadioLogWidget({ limit = 15 }: { limit?: number }) {
-  const [entries, setEntries] = useState<RadioEntry[]>([]);
+  const [entries, setEntries] = useState<RadioEntry[]>(() => getRadioFeed(limit));
 
   useEffect(() => {
+    // Pick up user entries from localStorage now that we're on the client.
     setEntries(getRadioFeed(limit));
   }, [limit]);
 
