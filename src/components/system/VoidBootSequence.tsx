@@ -21,6 +21,12 @@
  *   - SSR renders the strip-only fallback (no boot, no dialog) so the
  *     page is functional before hydration.
  *   - prefers-reduced-motion: collapses boot to instant, dialog still shows.
+ *
+ * VOID-WS polish (2026-05-07):
+ *   - Anonymous default name rotates through a 5-entry pool instead of
+ *     the static "frogs" — gives the strip personality across sessions.
+ *   - New 2nd row "on the wire: <tick>" pulls from WORLD_TICKS so the
+ *     resting state feels alive between boot rituals.
  */
 import { useEffect, useMemo, useState } from 'react';
 import OsDialog from './OsDialog';
@@ -38,6 +44,19 @@ const REGULAR_FILE_KEY = 'breakroom.regular-file.v1';
 const SAVED_STUFF_KEY = 'breakroom.saved-stuff.v1';
 const TOP_EIGHT_KEY = 'breakroom.top-eight.v1';
 const FACTION_SIGNALS_KEY = 'breakroom.faction-signals.v1';
+
+/**
+ * Anonymous default-name pool. The strip rotates through these for visitors
+ * without a Regular File. All five read as "the room's polite shorthand for
+ * someone whose name it has not bothered to learn."
+ */
+const ANONYMOUS_NAMES: readonly string[] = [
+  'frogs',
+  'walk-in',
+  'no-file',
+  'stranger',
+  'late shift',
+];
 
 /** Boot animation duration (matches CSS @keyframes timing). */
 const BOOT_VISIBLE_MS = 2400;
@@ -185,9 +204,32 @@ export default function VoidBootSequence() {
 
   const greeting = useMemo(() => pickRandom(GREETINGS), []);
 
+  /**
+   * Anonymous-default name pick — random from ANONYMOUS_NAMES per mount.
+   * Stable across re-renders within a single VoidBootSequence instance.
+   */
+  const anonymousName = useMemo(
+    () => pickRandom(ANONYMOUS_NAMES as unknown as string[]),
+    [],
+  );
+
+  /**
+   * "On the wire" world-tick ticker — single random pull from WORLD_TICKS.
+   * Surfaced as the 2nd row of the welcome strip. Stable across re-renders.
+   */
+  const wireTick = useMemo<WhatsNewLine>(() => pickRandom(WORLD_TICKS), []);
+
   // SSR / first paint — render the strip immediately so the page is never empty.
   if (phase === 'idle') {
-    return <WelcomeStrip name="frogs" stuff={null} applause={1847} signedIn={false} />;
+    return (
+      <WelcomeStrip
+        name="frogs"
+        stuff={null}
+        applause={1847}
+        signedIn={false}
+        wireTick={wireTick.body}
+      />
+    );
   }
 
   return (
@@ -230,10 +272,11 @@ export default function VoidBootSequence() {
 
       {/* The calm yellow strip — always visible after boot/dialog. */}
       <WelcomeStrip
-        name={regular ? regular.handle : 'frogs'}
+        name={regular ? regular.handle : anonymousName}
         stuff={regular ? stuff : null}
         applause={applause}
         signedIn={!!regular}
+        wireTick={wireTick.body}
       />
     </>
   );
@@ -283,8 +326,13 @@ function BootSplash({ exiting }: { exiting: boolean }) {
 }
 
 /* ------------------------------------------------------------------------- */
-/*  WelcomeStrip — the existing yellow strip (kept identical to V2 behavior). */
-/*  Inlined here so the boot island owns all post-boot rendering.             */
+/*  WelcomeStrip — the calm yellow strip below the marquee on /void.          */
+/*                                                                            */
+/*  VOID-WS polish: now renders 2 rows. Top row is the original welcome line  */
+/*  (Welcome / Stuff / Applause Money / time). Bottom row is a small italic   */
+/*  "on the wire: <world-tick>" pulled from WORLD_TICKS. The base .vd-welcome */
+/*  CSS stays inline-flex-row for the noscript fallback; we add a modifier    */
+/*  .vd-welcome--multi that flips to flex-column when this component mounts.  */
 /* ------------------------------------------------------------------------- */
 
 function WelcomeStrip({
@@ -292,39 +340,48 @@ function WelcomeStrip({
   stuff,
   applause,
   signedIn,
+  wireTick,
 }: {
   name: string;
   stuff: number | null;
   applause: number;
   signedIn: boolean;
+  wireTick: string;
 }) {
   const stuffLabel = stuff === null ? '0' : String(stuff);
   const applauseLabel = applause.toLocaleString('en-US');
   return (
-    <div className="vd-welcome">
-      <span>
-        Welcome,{' '}
-        {signedIn ? (
-          <a href="/locker" className="vd-welcome-link">
+    <div className="vd-welcome vd-welcome--multi">
+      <div className="vd-welcome-row">
+        <span>
+          Welcome,{' '}
+          {signedIn ? (
+            <a href="/locker" className="vd-welcome-link">
+              <b>{name}</b>
+            </a>
+          ) : (
             <b>{name}</b>
-          </a>
-        ) : (
-          <b>{name}</b>
-        )}
-        &nbsp;|&nbsp; Stuff:{' '}
-        {signedIn && stuff !== null && stuff > 0 ? (
-          <a href="/stuff" className="vd-welcome-link">
+          )}
+          &nbsp;|&nbsp; Stuff:{' '}
+          {signedIn && stuff !== null && stuff > 0 ? (
+            <a href="/stuff" className="vd-welcome-link">
+              <b>{stuffLabel}</b>
+            </a>
+          ) : (
             <b>{stuffLabel}</b>
-          </a>
-        ) : (
-          <b>{stuffLabel}</b>
-        )}
-        &nbsp;|&nbsp; Applause Money: <b>{applauseLabel}</b>
-      </span>
-      <span className="vd-welcome-time">
-        it is <b>1:47 a.m.</b> NST{' '}
-        <span className="vd-tiny">(Not Standard Time)</span>
-      </span>
+          )}
+          &nbsp;|&nbsp; Applause Money: <b>{applauseLabel}</b>
+        </span>
+        <span className="vd-welcome-time">
+          it is <b>1:47 a.m.</b> NST{' '}
+          <span className="vd-tiny">(Not Standard Time)</span>
+        </span>
+      </div>
+
+      <div className="vd-welcome-tick">
+        <span className="vd-welcome-tick-label">on the wire:</span>{' '}
+        <i>{wireTick}</i>
+      </div>
 
       <style>{`
         .vd-welcome-link {
@@ -335,6 +392,39 @@ function WelcomeStrip({
         .vd-welcome-link:hover {
           background: #ff3d8a !important;
           color: #fff !important;
+        }
+        /* VOID-WS polish: flip the strip to a 2-row column layout. */
+        .vd-welcome--multi {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 2px;
+          padding: 4px 14px 6px !important;
+        }
+        .vd-welcome-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+        }
+        .vd-welcome-tick {
+          font-family: 'Special Elite', 'Courier New', monospace;
+          font-size: 10px;
+          color: #5a3066;
+          letter-spacing: 0.02em;
+          line-height: 1.4;
+          border-top: 1px dotted #cc9900;
+          padding-top: 3px;
+          margin-top: 1px;
+        }
+        .vd-welcome-tick-label {
+          color: #cc0099;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          font-size: 9px;
+        }
+        .vd-welcome-tick i {
+          color: #1a0a2e;
         }
       `}</style>
     </div>
