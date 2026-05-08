@@ -9,6 +9,10 @@ import type { RadioEntry } from '@/lib/radio';
  *
  * POLISH-3 A: entry titles are <h3> (was <h4>) so they sit one level
  * below the schedule's <h2>, restoring monotonic heading order.
+ *
+ * POLISH-4 T4-B: the topmost entry (index 0) is tagged data-just-aired
+ * and gets a tiny "(just aired)" suffix — visually differentiates the
+ * duplicate Now-Playing/most-recent-entry pair.
  */
 export default function RadioLogWidget({ limit = 15 }: { limit?: number }) {
   const [entries, setEntries] = useState<RadioEntry[]>(() => getRadioFeed(limit));
@@ -29,27 +33,33 @@ export default function RadioLogWidget({ limit = 15 }: { limit?: number }) {
       )}
 
       <div className="radio-log-feed">
-        {entries.map((entry) => (
-          <RadioEntryCard key={entry.id} entry={entry} />
+        {entries.map((entry, idx) => (
+          <RadioEntryCard key={entry.id} entry={entry} justAired={idx === 0} />
         ))}
       </div>
     </div>
   );
 }
 
-function RadioEntryCard({ entry }: { entry: RadioEntry }) {
+function RadioEntryCard({ entry, justAired }: { entry: RadioEntry; justAired?: boolean }) {
   const typeLabel = RADIO_TYPE_LABELS[entry.type] || entry.type;
   const timeStr = new Date(entry.timestamp).toLocaleString(undefined, {
     month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
   });
 
   return (
-    <article className={`radio-entry radio-entry-${entry.type}`}>
+    <article
+      className={`radio-entry radio-entry-${entry.type}`}
+      {...(justAired ? { 'data-just-aired': 'true' } : {})}
+    >
       <div className="radio-entry-topline">
         <span className={`radio-entry-type radio-type-${entry.type}`}>{typeLabel}</span>
         <span className="radio-entry-time">{timeStr}</span>
       </div>
-      <h3 className="radio-entry-title">{entry.title}</h3>
+      <h3 className="radio-entry-title">
+        {entry.title}
+        {justAired && <span className="radio-entry-just-aired"> (just aired)</span>}
+      </h3>
       <p className="radio-entry-body">{entry.body}</p>
       {entry.host && (
         <span className="radio-entry-host">{entry.host}</span>

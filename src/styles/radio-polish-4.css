@@ -1,0 +1,124 @@
+/* ====================================================================== */
+/*  RADIO-POLISH-4 — 8 tier-4 fixes                                        */
+/*  Loaded after radio-polish-3.css. Selectors use higher specificity      */
+/*  (.r147-page prefix or attribute selectors) to win over earlier rules. */
+/* ====================================================================== */
+
+/* ----- T4-A: Carl card NIGHT counter is now data-driven --------------- */
+/* The original .r147-carl::before sets static "NIGHT 87". This rule
+   wins via [data-night] specificity. Falls back to original if the attr
+   ever gets dropped. */
+.r147-page .r147-carl[data-night]::before {
+  content: "· ON LOOP · NIGHT " attr(data-night);
+}
+
+/* ----- T4-B: Most-recent log entry distinguished from NowPlaying ------ */
+.r147-page .radio-entry[data-just-aired="true"] .radio-entry-title {
+  color: var(--r147-amber-dim);
+}
+.r147-page .radio-entry[data-just-aired="true"] .radio-entry-just-aired {
+  font-family: 'EB Garamond', 'Times New Roman', Times, serif;
+  font-style: italic;
+  font-weight: normal;
+  color: var(--r147-static);
+  font-size: 0.7em;
+  margin-left: 6px;
+  letter-spacing: 0.02em;
+}
+
+/* ----- T4-C: Bumper marquee pause-on-hover --------------------------- */
+.r147-page .r147-bumper:hover .r147-bumper-track,
+.r147-page .r147-bumper:focus-within .r147-bumper-track {
+  animation-play-state: paused;
+}
+
+/* ----- T4-D: Mobile schedule — stacked card layout under 600px -------- */
+@media (max-width: 600px) {
+  .r147-page .r147-schedule-table thead { display: none; }
+  .r147-page .r147-schedule-table,
+  .r147-page .r147-schedule-table tbody {
+    display: block;
+    width: 100%;
+  }
+  .r147-page .r147-schedule-table tr {
+    display: block;
+    position: relative;
+    padding: 14px 16px 14px 16px;
+    border-bottom: 1px dotted var(--r147-rule);
+  }
+  .r147-page .r147-schedule-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+  .r147-page .r147-schedule-table tr[data-current="true"] {
+    padding-left: 13px; /* 16 - 3 (border) */
+  }
+  .r147-page .r147-schedule-table td {
+    display: block;
+    padding: 2px 0;
+    border-bottom: 0;
+  }
+  .r147-page .r147-schedule-time {
+    width: auto;
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .r147-page .r147-schedule-show {
+    font-size: 16px;
+    line-height: 1.25;
+    padding-right: 90px; /* leave room for absolute-positioned chip */
+  }
+  .r147-page .r147-schedule-host {
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+  }
+  /* Move the type chip cell to top-right of the card */
+  .r147-page .r147-schedule-table td:last-child {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    padding: 0;
+  }
+}
+
+/* ----- T4-H: Current-show highlight ---------------------------------- */
+.r147-page .r147-schedule-table tr[data-current="true"] {
+  background: rgba(245, 209, 53, 0.05);
+}
+.r147-page .r147-schedule-table tr[data-current="true"] td:first-child {
+  border-left: 3px solid var(--r147-amber);
+  padding-left: 11px; /* 14 - 3 */
+}
+.r147-page .r147-schedule-table tr[data-current="true"] .r147-schedule-time {
+  color: var(--r147-amber);
+  font-weight: 700;
+  text-shadow: 0 0 4px rgba(245, 209, 53, 0.3);
+}
+.r147-page .r147-schedule-table tr[data-current="true"] .r147-schedule-show::after {
+  content: " · NOW";
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  background: var(--r147-onair);
+  color: var(--r147-night);
+  padding: 1px 5px;
+  margin-left: 8px;
+  vertical-align: middle;
+  font-weight: 700;
+  border-radius: 1px;
+  box-shadow: 0 0 6px rgba(255, 58, 58, 0.4);
+  animation: r147-now-pulse 1.6s ease-in-out infinite;
+}
+@keyframes r147-now-pulse {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1.0;  }
+}
+
+/* Mobile: NOW badge moves into the show-name area cleanly */
+@media (max-width: 600px) {
+  .r147-page .r147-schedule-table tr[data-current="true"] .r147-schedule-show::after {
+    margin-left: 6px;
+    font-size: 8px;
+  }
+}

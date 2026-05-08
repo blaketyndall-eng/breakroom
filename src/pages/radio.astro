@@ -27,6 +27,28 @@ const sponsor = pickSponsorSlot(now);
 const fcc = pickFccLetter(now);
 const phoneLine = pickPhoneCount(now);
 
+// T4-A: Carl's NIGHT counter is days since 2026-02-08 (three months back).
+// Stable canon: he started calling "three months, every night." The number
+// drifts with real time; doesn't reset.
+const CARL_CUTOFF = Date.UTC(2026, 1, 8); // Feb 8 2026 00:00 UTC (month is 0-indexed)
+const carlNight = Math.max(1, Math.floor((now - CARL_CUTOFF) / (24 * 60 * 60 * 1000)));
+
+// T4-H: Compute which schedule slot is "now" based on local server time.
+// Slot start times in minutes since midnight: 1:47, 2:13, 3:00, 4:11, 4:47, 5:30, 6:00.
+// Any time >= 6:00 falls into the sign-off slot (last index) since the station
+// broadcasts static through the day. Times before 1:47am map to null.
+const slotMins = [107, 133, 180, 251, 287, 330, 360];
+function currentSlotIdx(t: number): number | null {
+  if (t < slotMins[0]) return null;
+  for (let i = slotMins.length - 1; i >= 0; i--) {
+    if (t >= slotMins[i]) return i;
+  }
+  return null;
+}
+const dt = new Date(now);
+const totalMin = dt.getHours() * 60 + dt.getMinutes();
+const currentSlot = currentSlotIdx(totalMin);
+
 const switchboardLinks = [
   { href: '/phone',      label: 'Phone logs',      note: 'where most transmissions begin', stamp: 'SOURCE'  },
   { href: '/newsstand',  label: 'Station notices', note: 'misreported after airing',       stamp: '3AM'     },
@@ -37,10 +59,10 @@ const switchboardLinks = [
 ];
 ---
 <OldWebLayout title="Breakroom Radio / Channel 1:47" section="radio">
-  <SecretTrigger client:load trigger="visit:/radio" path="/radio" label="radio 1:47" />
+  {/* T4-G: SecretTrigger wrapped to keep its initial "checking" text out of the a11y tree. */}
+  <span aria-hidden="true"><SecretTrigger client:load trigger="visit:/radio" path="/radio" label="radio 1:47" /></span>
 
   <section class="r147-page">
-    {/* ---------- BANNER (POLISH-3 B: callsign moved into banner-meta line) ---------- */}
     <header class="r147-banner">
       <h1 class="r147-banner-title">{WORDMARK.primary}</h1>
       <p class="r147-banner-sub">{WORDMARK.subline}</p>
@@ -55,7 +77,6 @@ const switchboardLinks = [
       </div>
     </header>
 
-    {/* ---------- STATUS STRIP (POLISH-3 B: 7 → 5 items) ---------- */}
     <div class="r147-status-strip">
       <span><span class="r147-status-dot" aria-hidden="true"></span><b class="r147-status-onair">ON AIR</b></span>
       <span>signal: cigarette-yellow</span>
@@ -68,7 +89,6 @@ const switchboardLinks = [
       <p class="r147-sponsor">Public radio fallback active: {radioLogs.error}</p>
     )}
 
-    {/* ---------- PLAYER + NOW PLAYING (POLISH-3 D: equal heights) ---------- */}
     <div class="r147-grid-top">
       <RadioPlayer client:load />
       <div class="r147-np-card">
@@ -78,20 +98,22 @@ const switchboardLinks = [
 
     <p class="r147-sponsor">{sponsor}</p>
 
+    {/* T4-H: data-current marks the live row.
+        T4-F: <th scope="col"> on each header so screen readers announce them. */}
     <section class="r147-schedule">
       <h2 class="r147-schedule-head">The Schedule</h2>
       <table class="r147-schedule-table">
         <thead>
           <tr>
-            <th>Time</th>
-            <th>Show</th>
-            <th>Host</th>
-            <th>Type</th>
+            <th scope="col">Time</th>
+            <th scope="col">Show</th>
+            <th scope="col">Host</th>
+            <th scope="col">Type</th>
           </tr>
         </thead>
         <tbody>
-          {RADIO_SCHEDULE.map((slot) => (
-            <tr>
+          {RADIO_SCHEDULE.map((slot, idx) => (
+            <tr {...(idx === currentSlot ? { 'data-current': 'true' } : {})}>
               <td class="r147-schedule-time">{slot.time}</td>
               <td>
                 <div class="r147-schedule-show">{slot.show}</div>
@@ -120,7 +142,8 @@ const switchboardLinks = [
           <RadioRequestForm client:idle />
         </div>
 
-        <div class="r147-carl">
+        {/* T4-A: data-night drives the dynamic NIGHT counter via CSS attr(). */}
+        <div class="r147-carl" data-night={carlNight}>
           <p class="r147-carl-label">Caller: {CARL_TRANSMISSION.caller} · {CARL_TRANSMISSION.duration}</p>
           <p class="r147-carl-msg">{CARL_TRANSMISSION.message}</p>
           <span class="r147-carl-file">{CARL_TRANSMISSION.fileLabel}</span>
@@ -158,10 +181,12 @@ const switchboardLinks = [
       </ul>
     </nav>
 
-    <footer class="r147-foot">
+    {/* T4-E: Inner footer demoted to <div> so the global bm-foot keeps the
+        sole contentinfo landmark on the page. */}
+    <div class="r147-foot">
       <span><span class="r147-foot-callsign">{STATION_IDENTITY.callsign}</span> · {STATION_IDENTITY.frequency}</span>
       <span>{STATION_IDENTITY.broadcastOrigin}</span>
       <a href="/void">&larr; back to VOID portal</a>
-    </footer>
+    </div>
   </section>
 </OldWebLayout>
