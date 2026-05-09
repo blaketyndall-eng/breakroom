@@ -5,6 +5,8 @@
  * Door rewards can include real external URLs, internal pages, objects, or messages.
  */
 
+import { emitDoorUnlocked } from './ledgerEmitters';
+
 export type DoorTriggerType = 'search_phrase' | 'object_combination' | 'behaviour' | 'guestbook_phrase' | 'page_visit_count';
 
 export type DoorRewardType = 'page' | 'message' | 'object' | 'url' | 'search_result' | 'radio_segment';
@@ -164,6 +166,14 @@ export function unlockDoor(doorSlug: string): { isNew: boolean; door: HiddenDoor
   // Dispatch event so other components can react
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent(DOOR_EVENT, { detail: { door, unlock: newUnlock } }));
+  }
+
+  // PR 72: emit redacted ledger event. Pocket Slips, /ledger, and the
+  // phone listener all read from this. Defensive try/catch.
+  try {
+    emitDoorUnlocked({ doorSlug, district: door.district });
+  } catch {
+    /* emitter errors are swallowed; unlock state is already persisted */
   }
 
   return { isNew: true, door };

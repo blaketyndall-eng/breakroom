@@ -31,6 +31,8 @@ export type LedgerEventType =
   | 'faction_drift'
   | 'faction_joined'
   | 'crew_formed'
+  | 'crew_joined'
+  | 'crew_left'
   | 'crew_disbanded'
   | 'door_unlocked'
   | 'door_moved'

@@ -17,6 +17,8 @@
  * key opaque here means we can reuse without forking the lib.
  */
 
+import { emitGuestbookSigned } from './ledgerEmitters';
+
 const STORAGE_KEY = 'breakroom.profile-guestbook.v1';
 const MAX_ENTRIES_PER_TARGET = 100;
 const MAX_BODY_LENGTH = 280;
@@ -104,6 +106,18 @@ export function signProfileGuestbook(
   const next = [entry, ...list].slice(0, MAX_ENTRIES_PER_TARGET);
   store[targetKey] = next;
   saveStore(store);
+
+  // PR 72: emit ledger event so the room remembers the signature.
+  // `targetKey` doubles as `pageSlug` here (the lib is opaque about
+  // whether it's a profile handle or a site slug). Defensive try/catch.
+  try {
+    emitGuestbookSigned({
+      pageSlug: targetKey,
+      actor: signerHandle,
+    });
+  } catch {
+    /* emitter errors are swallowed; entry is already persisted */
+  }
 
   return entry;
 }

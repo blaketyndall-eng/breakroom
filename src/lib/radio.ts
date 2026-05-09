@@ -7,6 +7,7 @@
 
 import { SEEDED_RADIO_ENTRIES } from '@/content/data/radio';
 import type { RadioEntry, RadioEntryType } from '@/content/data/radio';
+import { emitRadioBroadcast } from './ledgerEmitters';
 
 export type { RadioEntry, RadioEntryType } from '@/content/data/radio';
 
@@ -115,6 +116,17 @@ export function submitRadioRequest(message: string, handle?: string): RadioReque
     const idx = updatedRequests.findIndex((r) => r.id === request.id);
     if (idx >= 0) updatedRequests[idx] = request;
     saveRequests(updatedRequests);
+
+    // PR 72: emit a `radio_broadcast` ledger event so the room records
+    // the on-air moment. Only the aired branch emits — pending requests
+    // aren't broadcasts.
+    try {
+      emitRadioBroadcast({
+        description: `Aired request: "${entry.title}"`,
+      });
+    } catch {
+      /* emitter errors are swallowed */
+    }
   }
 
   return request;

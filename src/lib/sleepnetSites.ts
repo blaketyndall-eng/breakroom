@@ -3,6 +3,7 @@ import type { SleepNetComponent } from '@/lib/sleepnetComponents';
 import { createFauxCompanyComponents } from '@/lib/sleepnetComponents';
 import { generateSleepNetDraft } from '@/lib/sleepnetGenerators';
 import { supabase } from '@/lib/supabaseClient';
+import { emitPagePublished, emitPageHidden } from './ledgerEmitters';
 
 export type SleepNetSection = {
   title: string;
@@ -212,7 +213,23 @@ export async function saveMySleepNetSite(site: SleepNetSite): Promise<SleepNetMu
     .single();
 
   if (error) throw error;
-  return { source: 'supabase', site: ensureSleepNetComponents(data as SleepNetSite) };
+  const persistedSite = ensureSleepNetComponents(data as SleepNetSite);
+
+  // PR 72: emit ledger event when a site reaches `published` status.
+  // Drafts and hidden states get separate signals.
+  if (persistedSite.status === 'published') {
+    try {
+      emitPagePublished({
+        slug: persistedSite.slug,
+        title: persistedSite.title,
+        district: persistedSite.neighborhood,
+      });
+    } catch {
+      /* emitter errors are swallowed */
+    }
+  }
+
+  return { source: 'supabase', site: persistedSite };
 }
 
 export async function getMySleepNetSites() {
@@ -252,7 +269,28 @@ export async function updateMySleepNetSiteStatus(slug: string, status: 'draft' |
     .single();
 
   if (error) throw error;
-  return { source: 'supabase', site: ensureSleepNetComponents(data as SleepNetSite) };
+  const updatedSite = ensureSleepNetComponents(data as SleepNetSite);
+
+  // PR 72: emit when a site changes status. Published→indexed; hidden→
+  // removed-from-index. Drafts don't emit (they're private).
+  try {
+    if (status === 'published') {
+      emitPagePublished({
+        slug: updatedSite.slug,
+        title: updatedSite.title,
+        district: updatedSite.neighborhood,
+      });
+    } else if (status === 'hidden') {
+      emitPageHidden({
+        slug: updatedSite.slug,
+        reason: 'Author hid the site from the directory.',
+      });
+    }
+  } catch {
+    /* emitter errors are swallowed */
+  }
+
+  return { source: 'supabase', site: updatedSite };
 }
 
 export async function removeMySleepNetSite(slug: string): Promise<SleepNetMutationResult> {

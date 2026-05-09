@@ -11,7 +11,7 @@
  * Local-first with future Supabase path.
  */
 
-import { emitCrewFormed, emitCrewDisbanded } from './ledgerEmitters';
+import { emitCrewFormed, emitCrewJoined, emitCrewLeft, emitCrewDisbanded } from './ledgerEmitters';
 
 // --- Types ---
 
@@ -287,6 +287,18 @@ export function joinCrew(slug: string, handle: string, displayName: string): boo
     writeMyCrews([...myCrews, slug]);
   }
 
+  // PR 72: emit ledger event so /ledger and the phone listener see it.
+  try {
+    emitCrewJoined({
+      slug: crew.slug,
+      name: crew.name,
+      actor: handle,
+      district: crew.district,
+    });
+  } catch {
+    /* emitter errors are swallowed */
+  }
+
   notifySubscribers(crew, 'joined');
   return true;
 }
@@ -307,6 +319,18 @@ export function leaveCrew(slug: string, handle: string): boolean {
 
   const myCrews = readMyCrews().filter((s) => s !== slug);
   writeMyCrews(myCrews);
+
+  // PR 72: emit redacted ledger event. Public sees only "A roster lost
+  // one"; admins see the full slug + actor.
+  try {
+    emitCrewLeft({
+      slug: crew.slug,
+      name: crew.name,
+      actor: handle,
+    });
+  } catch {
+    /* emitter errors are swallowed */
+  }
 
   notifySubscribers(crew, 'left');
   return true;

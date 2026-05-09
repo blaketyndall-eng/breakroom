@@ -1,4 +1,5 @@
 import type { StuffItem, StuffItemStatus } from '@/content/data/stuff';
+import { emitStuffClaimed } from './ledgerEmitters';
 
 export type SavedStuffVisibility = 'private' | 'public' | 'pinned';
 
@@ -121,6 +122,15 @@ export function saveStuffItem(item: SaveableStuffItem | StuffItem, options: Save
   };
 
   safeWrite([saved, ...existing]);
+
+  // PR 72: emit ledger event so the room remembers.
+  // Defensive try/catch — emit failure must never block the user save.
+  try {
+    emitStuffClaimed({ slug, name: item.name });
+  } catch {
+    /* emitter errors are swallowed; storage is the source of truth */
+  }
+
   return saved;
 }
 

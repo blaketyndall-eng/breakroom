@@ -1,4 +1,6 @@
 import { supabase } from '@/lib/supabaseClient';
+import { getFactionBySlug } from '@/content/data/factions';
+import { emitFactionDrift } from './ledgerEmitters';
 
 export type FactionSignalSource =
   | 'visit_turf_page'
@@ -94,6 +96,21 @@ export function recordFactionSignal(input: {
 
   const next = duplicate ? existing : [signal, ...existing].slice(0, 200);
   writeSignals(next);
+
+  // PR 72: emit a redacted ledger event for fresh signals only (not the
+  // dedup-suppressed ones). The room "noticed" rather than "filed twice".
+  if (!duplicate) {
+    try {
+      const faction = getFactionBySlug(input.factionSlug);
+      emitFactionDrift({
+        factionSlug: input.factionSlug,
+        factionName: faction?.name ?? input.factionSlug,
+      });
+    } catch {
+      /* emitter errors are swallowed */
+    }
+  }
+
   return signal;
 }
 

@@ -6,7 +6,14 @@
  * Design: slips accumulate between visits but cap at 5 visible.
  * Old slips fade ("The room forgot this one.") rather than stacking infinitely.
  * No guilt. No badge count. Just: "2 slips waiting" or "nothing new. that's fine."
+ *
+ * PR 72: also derives slips from real ledger entries (door_unlocked,
+ * faction_drift, guestbook_signed, stuff_claimed, crew_joined,
+ * radio_broadcast, page_published). Templates remain as fallback for
+ * cold-start days when nothing has happened.
  */
+
+import { getLedgerEntries, type LedgerEntry, type LedgerEventType } from './worldLedger';
 
 export type SlipType = 'phone' | 'door' | 'guestbook' | 'faction' | 'drawer' | 'radio' | 'world_tick';
 
@@ -101,11 +108,77 @@ export function clearSlips(): void {
   localStorage.removeItem(SLIPS_KEY);
 }
 
+// --- Ledger-derived slips (PR 72) ---
+
+/**
+ * Map a ledger event type to the closest pocket slip type. Unknown
+ * types fall through to `world_tick` so they still surface as
+ * "something happened" without being filtered out.
+ */
+function ledgerTypeToSlipType(type: LedgerEventType): SlipType {
+  switch (type) {
+    case 'door_unlocked':
+    case 'door_moved':
+      return 'door';
+    case 'faction_drift':
+    case 'faction_joined':
+      return 'faction';
+    case 'guestbook_signed':
+      return 'guestbook';
+    case 'stuff_claimed':
+    case 'stuff_moved':
+    case 'stuff_appeared':
+      return 'drawer';
+    case 'radio_broadcast':
+      return 'radio';
+    default:
+      return 'world_tick';
+  }
+}
+
+/**
+ * Convert a ledger entry into a slip. Uses the entry's redactedLine
+ * (or headline) as the slip headline so the public-facing voice stays
+ * intact. Pocket honors the same visibility tier as /ledger.
+ */
+function ledgerEntryToSlip(entry: LedgerEntry, today: string, idx: number): PocketSlip {
+  // Skip admin-only entries — pocket reads at the public/redacted tier.
+  const headline =
+    entry.visibility === 'redacted'
+      ? entry.redactedLine ?? entry.headline
+      : entry.headline;
+
+  // Reasonable default href: route to the relevant section by target type.
+  const hrefByTarget: Record<string, string> = {
+    door: '/sleepnet',
+    faction: `/factions/${entry.targetSlug ?? ''}`,
+    crew: `/crews/${entry.targetSlug ?? ''}`,
+    page: `/sleepnet/${entry.targetSlug ?? ''}`,
+    stuff: `/stuff/${entry.targetSlug ?? ''}`,
+    radio: '/radio',
+  };
+  const href = entry.targetType ? hrefByTarget[entry.targetType] : undefined;
+
+  return {
+    id: `slip-${today}-ledger-${entry.id}-${idx}`,
+    type: ledgerTypeToSlipType(entry.type),
+    headline,
+    body: entry.detail && entry.visibility !== 'redacted' ? entry.detail : undefined,
+    href,
+    timestamp: new Date(entry.timestamp).toISOString(),
+    read: false,
+  };
+}
+
 // --- Slip Generation (seeded daily content) ---
 
 /**
  * Generate slips based on world state since last visit.
  * Called on Pocket page load. Idempotent per day — won't double-generate.
+ *
+ * PR 72: real ledger entries (since last visit) take priority. Templates
+ * fill the gap when the ledger is quiet — so a brand-new visitor's
+ * first day still feels populated.
  */
 export function generateDailySlips(): PocketSlip[] {
   const lastVisit = getLastVisit();
@@ -164,11 +237,31 @@ export function generateDailySlips(): PocketSlip[] {
   const seed = dayOfYear % dailySlipPool.length;
 
   // Pick 2-3 slips for today based on seed
-  const count = (seed % 3) + 1; // 1-3 slips
+  const targetCount = (seed % 3) + 1; // 1-3 slips
   const existing = getStoredSlips();
   const newSlips: PocketSlip[] = [];
 
-  for (let i = 0; i < count; i++) {
+  // PR 72: prefer real ledger entries since last visit. Cap at
+  // targetCount so the daily-cadence vibe holds; templates fill any gap.
+  let ledgerSlipsCount = 0;
+  try {
+    const sinceTs = lastVisit ? Date.parse(lastVisit) : 0;
+    const recent = getLedgerEntries({ visibility: 'public', since: sinceTs, limit: 20 })
+      .filter((e) => e.visibility !== 'admin_only');
+    for (const entry of recent) {
+      if (ledgerSlipsCount >= targetCount) break;
+      const slip = ledgerEntryToSlip(entry, today, ledgerSlipsCount);
+      if (!existing.find((e) => e.id === slip.id)) {
+        newSlips.push(slip);
+        ledgerSlipsCount += 1;
+      }
+    }
+  } catch {
+    /* ledger read failure is non-fatal — fall through to templates */
+  }
+
+  // Fill remaining slots with seeded templates (cold-start fallback).
+  for (let i = ledgerSlipsCount; i < targetCount; i++) {
     const poolIndex = (seed + i * 5) % dailySlipPool.length;
     const template = dailySlipPool[poolIndex];
     const slip: PocketSlip = {
@@ -177,7 +270,6 @@ export function generateDailySlips(): PocketSlip[] {
       read: false,
       timestamp: now.toISOString(),
     };
-    // Don't add if same id already exists
     if (!existing.find(e => e.id === slip.id)) {
       newSlips.push(slip);
     }

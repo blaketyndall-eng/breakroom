@@ -176,6 +176,43 @@ export function emitCrewFormed(opts: {
   });
 }
 
+export function emitCrewJoined(opts: {
+  slug: string;
+  name: string;
+  actor: string;
+  district?: string;
+}): LedgerEntry {
+  return recordLedgerEvent({
+    type: 'crew_joined',
+    headline: `Someone joined ${opts.name}.`,
+    detail: `Crew ${opts.slug}. New member: ${opts.actor}.`,
+    redactedLine: 'A roster grew by one.',
+    targetType: 'crew',
+    targetSlug: opts.slug,
+    district: opts.district,
+    actor: opts.actor,
+    tags: ['crew', opts.slug],
+  });
+}
+
+export function emitCrewLeft(opts: {
+  slug: string;
+  name: string;
+  actor: string;
+}): LedgerEntry {
+  return recordLedgerEvent({
+    type: 'crew_left',
+    headline: `Someone left ${opts.name}.`,
+    detail: `Crew ${opts.slug}. Departed member: ${opts.actor}.`,
+    redactedLine: 'A roster lost one.',
+    targetType: 'crew',
+    targetSlug: opts.slug,
+    actor: opts.actor,
+    visibility: 'redacted',
+    tags: ['crew', opts.slug],
+  });
+}
+
 export function emitCrewDisbanded(opts: {
   slug: string;
   name: string;

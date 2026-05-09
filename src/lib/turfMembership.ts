@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabaseClient';
 import { getFactionSignalTotal } from '@/lib/factionDrift';
 import { getFactionBySlug } from '@/content/data/factions';
+import { emitFactionJoined } from './ledgerEmitters';
 
 export type JoinMethod = 'ritual' | 'drift_promotion' | 'admin';
 
@@ -141,6 +142,18 @@ export async function joinTurf(factionSlug: string): Promise<TurfMembership | nu
           updatedAt: data.updated_at,
         };
         writeLocalMembership(persisted);
+
+        // PR 72: emit `faction_joined` for the persisted path.
+        try {
+          emitFactionJoined({
+            factionSlug,
+            factionName: faction.name,
+            actor: persisted.userId,
+          });
+        } catch {
+          /* emitter errors are swallowed */
+        }
+
         return persisted;
       }
     }
@@ -148,6 +161,20 @@ export async function joinTurf(factionSlug: string): Promise<TurfMembership | nu
 
   // Local-only fallback
   writeLocalMembership(membership);
+
+  // PR 72: emit `faction_joined` for both the persisted (Supabase) and
+  // local-only paths. The persisted path returns earlier above; emit
+  // there too. A single helper keeps the call symmetric.
+  try {
+    emitFactionJoined({
+      factionSlug,
+      factionName: faction.name,
+      actor: membership.userId || 'local',
+    });
+  } catch {
+    /* emitter errors are swallowed */
+  }
+
   return membership;
 }
 
