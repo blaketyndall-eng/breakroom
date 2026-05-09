@@ -1,5 +1,6 @@
 import type { StuffItem, StuffItemStatus } from '@/content/data/stuff';
 import { emitStuffClaimed } from './ledgerEmitters';
+import { recordFactionSignal } from './factionDrift';
 
 export type SavedStuffVisibility = 'private' | 'public' | 'pinned';
 
@@ -129,6 +130,29 @@ export function saveStuffItem(item: SaveableStuffItem | StuffItem, options: Save
     emitStuffClaimed({ slug, name: item.name });
   } catch {
     /* emitter errors are swallowed; storage is the source of truth */
+  }
+
+  // PR 73: fire faction drift signals for any relatedFactionSlugs the
+  // canonical StuffItem declared. The save_faction_stuff source already
+  // exists in factionDrift.ts. Each signal goes through the 30-min
+  // dedupe so repeated saves of the same key don't double-count.
+  // Feature-detected so SaveableStuffItem (lighter shape) still works.
+  const factionSlugs = 'relatedFactionSlugs' in item && Array.isArray(item.relatedFactionSlugs)
+    ? item.relatedFactionSlugs
+    : [];
+  if (factionSlugs.length > 0) {
+    try {
+      for (const factionSlug of factionSlugs) {
+        recordFactionSignal({
+          factionSlug,
+          source: 'save_faction_stuff',
+          weight: 1,
+          metadata: { stuffSlug: slug, stuffName: item.name },
+        });
+      }
+    } catch {
+      /* drift signal failures are swallowed; the save itself succeeded */
+    }
   }
 
   return saved;

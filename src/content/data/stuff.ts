@@ -30,6 +30,13 @@ export type StuffItem = {
   relatedSleepNetSlug?: string;
   relatedObjectSlug?: string;
   relatedProductSlug?: string;
+  /**
+   * PR 73: faction slugs this object resonates with.
+   * Saving an item with `relatedFactionSlugs` fires a `save_faction_stuff`
+   * drift signal for each faction (handled in `savedStuff.ts:saveStuffItem`).
+   * Use sparingly — most objects don't have explicit faction lean.
+   */
+  relatedFactionSlugs?: string[];
   tags: string[];
 };
 
@@ -137,6 +144,29 @@ export const STUFF_ITEMS: StuffItem[] = [
     sourceLabel: 'Night Drinkers',
     relatedObjectSlug: 'jukebox-quarter',
     tags: ['jukebox', 'quarter', 'night drinkers'],
+  },
+  {
+    // PR 73: The Motel Key Loop.
+    // Cross-linked to the canonical Lost & Found row at id "008" via
+    // `relatedObjectSlug: 'motel-key-no-8'` (slugified from
+    // BREAKROOM_DATA.objects[0].name in `breakroom.ts`). After PR 71,
+    // that slug resolves to /newsstand/classifieds/motel-key-no-8 in
+    // SleepNews chrome.
+    //
+    // Faction relations: Cowboys (open road / wandering / motel as
+    // crossroads) and Night Drinkers (motel key as bar regular's
+    // evidence — the matchbook's cousin). Saving this item fires drift
+    // signals for both via `save_faction_stuff`.
+    slug: 'motel-key-no-8',
+    name: 'Motel Key No. 8',
+    status: 'not_for_you_yet',
+    kind: 'object',
+    description: 'A motel key with a brass tag reading "8". Found under bad lighting. Condition: warm. Meaning: access without belonging. The key has been seen. Room 8 is not available. Room 8 was never available. The front desk remembers you anyway.',
+    note: 'Saved key triggers a question worth asking on SleepNet.',
+    sourceLabel: 'Motel Row counter',
+    relatedObjectSlug: 'motel-key-no-8',
+    relatedFactionSlugs: ['cowboys', 'night-drinkers'],
+    tags: ['motel', 'key', 'room 8', 'wandering', 'night drinkers', 'cowboys'],
   },
 ];
 

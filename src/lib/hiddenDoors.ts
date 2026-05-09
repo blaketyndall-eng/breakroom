@@ -26,6 +26,13 @@ export type HiddenDoor = {
     realityStatus?: 'real' | 'fictional' | 'unverified';
   };
   hint?: string;
+  /**
+   * PR 73: object slugs whose presence in the user's drawer should
+   * surface a hint that this door exists. Decoupled from `triggerValue`
+   * so search-phrase doors can also surface hints when the user holds
+   * a related object. Match is presence-of-any, not all.
+   */
+  objectHints?: string[];
   district?: string;
   isActive: boolean;
 };
@@ -66,6 +73,7 @@ const DOOR_REGISTRY: HiddenDoor[] = [
       body: 'The key has been seen. Room 8 is not available. Room 8 was never available. The front desk remembers you anyway.',
     },
     hint: 'Search for what you already have.',
+    objectHints: ['motel-key-no-8'],
     district: 'motel_row',
     isActive: true,
   },
@@ -121,6 +129,7 @@ const DOOR_REGISTRY: HiddenDoor[] = [
       body: 'Fuzzy dice and a timing slip. You came prepared or you came lucky. The lot knows the difference.',
     },
     hint: 'Pair the right objects.',
+    objectHints: ['fuzzy-dice', 'timing-slip'],
     district: 'parking_lot_west',
     isActive: true,
   },
@@ -238,6 +247,28 @@ export function getUnlockedCount(): number {
  */
 export function getDoorBySlug(slug: string): HiddenDoor | null {
   return DOOR_REGISTRY.find((d) => d.slug === slug) ?? null;
+}
+
+/**
+ * PR 73: return doors whose `objectHints` intersect with the supplied
+ * saved-stuff slugs AND that the user hasn't already unlocked. The
+ * intent is "you have something in your drawer that suggests this door
+ * exists" — a soft nudge, not the full unlock.
+ *
+ * The empty array short-circuits both for performance and so that
+ * cold-start visitors with no saved stuff don't see hints.
+ */
+export function getHintedDoors(savedStuffSlugs: string[]): HiddenDoor[] {
+  if (!savedStuffSlugs || savedStuffSlugs.length === 0) return [];
+  const slugSet = new Set(savedStuffSlugs);
+  const unlockedSet = new Set(readUnlocks().map((u) => u.doorSlug));
+
+  return DOOR_REGISTRY.filter((door) => {
+    if (!door.isActive) return false;
+    if (unlockedSet.has(door.slug)) return false;
+    if (!door.objectHints || door.objectHints.length === 0) return false;
+    return door.objectHints.some((slug) => slugSet.has(slug));
+  });
 }
 
 /**
