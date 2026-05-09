@@ -1,41 +1,11 @@
 ---
-import ArchiveLayout from '@/layouts/ArchiveLayout.astro';
-import ObjectEvidenceGrid from '@/components/oldweb/ObjectEvidenceGrid.astro';
-import LinkMaze from '@/components/oldweb/LinkMaze.astro';
-import { getPublicLostObjects } from '@/lib/publicContent';
-
-const lostObjects = await getPublicLostObjects();
-const evidenceItems = lostObjects.items.slice(0, 4).map((object) => ({
-  name: object.name,
-  detail: object.meaning,
-  href: `/lost-found/${object.slug}`,
-  code: `ITEM-${object.itemNumber}`,
-}));
+/**
+ * /lost-found — DEPRECATED (308 redirect to /newsstand/classifieds).
+ *
+ * Per SITE-ARCHITECTURE.md, Lost & Found folds into SleepNews as a
+ * Classifieds section — same data via getPublicLostObjects(),
+ * SleepNews chrome wrapping the police-blotter format.
+ * PR 71 retires this route.
+ */
+return Astro.redirect('/newsstand/classifieds', 308);
 ---
-<ArchiveLayout title="Lost & Found" eyebrow="Lost & Found / Object Archive">
-  <div class="status-strip"><span>object archive</span><span>drawer: unlocked</span><span>receipts without totals</span><span>cataloged after close</span><span>source: {lostObjects.source}</span></div>
-  <p class="tagline-block">Real objects, culturally funny objects, digital objects, and things that keep showing up in the wrong drawer.</p>
-  {lostObjects.error && <p class="memo-box">Public object fallback active: {lostObjects.error}</p>}
-
-  <ObjectEvidenceGrid title="Evidence drawer / recently handled" items={evidenceItems} />
-
-  <div class="grid-3" style="margin-top:16px;">
-    {lostObjects.items.map((object) => (
-      <article class="object-card" data-item={`ITEM ${object.itemNumber}`}>
-        <h2><a href={`/lost-found/${object.slug}`}>{object.name}</a></h2>
-        <p><b>Type:</b> {object.objectType}</p>
-        <p><b>Found:</b> {object.found}</p>
-        <p><b>Condition:</b> {object.condition}</p>
-        <p><b>Meaning:</b> {object.meaning}</p>
-        <p><span class="red-stamp">{object.status}</span></p>
-      </article>
-    ))}
-  </div>
-
-  <LinkMaze title="Cross-referenced drawer notes" notice="Every object points somewhere. Some point back." links={[
-    { href: '/phone', label: 'Phone evidence', note: 'missed calls from objects that should not call', stamp: 'CALL' },
-    { href: '/newsstand', label: 'Public notices', note: 'objects named in corrections and rumors' },
-    { href: '/rack', label: 'Product sightings', note: 'things that became inventory by mistake' },
-    { href: '/after-hours', label: 'Return to counter', note: 'where most items are found twice', stamp: 'BACK' }
-  ]} />
-</ArchiveLayout>

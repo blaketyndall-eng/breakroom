@@ -19,6 +19,7 @@ import TopEightEditor from '@/components/regulars/TopEightEditor';
 import SeenAroundBlock from '@/components/regulars/SeenAroundBlock';
 import LockerPublicViewLink from '@/components/regulars/LockerPublicViewLink';
 import LockerRecentGuestbook from '@/components/regulars/LockerRecentGuestbook';
+import ArtifactGrid from '@/components/breakroom/ArtifactGrid';
 ---
 <OldWebLayout title="Locker" section="locker">
   <ClockStateGate client:load expects="voidsignal" />
@@ -55,6 +56,7 @@ import LockerRecentGuestbook from '@/components/regulars/LockerRecentGuestbook';
             <li><a class="dpp-sidebar-link" href="#drawer"><span class="dpp-sidebar-icon">⊡</span>Drawer / Stuff</a></li>
             <li><a class="dpp-sidebar-link" href="#turf"><span class="dpp-sidebar-icon">⌖</span>Turf Signals</a></li>
             <li><a class="dpp-sidebar-link" href="#top-eight"><span class="dpp-sidebar-icon">★</span>Top 8 / Seen</a></li>
+            <li><a class="dpp-sidebar-link" href="#artifacts"><span class="dpp-sidebar-icon">▣</span>Evidence Drawer</a></li>
             <li><a class="dpp-sidebar-link" href="#wall"><span class="dpp-sidebar-icon">✎</span>Your Wall</a></li>
           </ul>
         </div>
@@ -116,6 +118,18 @@ import LockerRecentGuestbook from '@/components/regulars/LockerRecentGuestbook';
             <h3 class="seen-around-label">Seen Around</h3>
             <SeenAroundBlock client:idle mode="global" limit={12} />
           </div>
+        </div>
+
+        <h2 class="dpp-section-head" id="artifacts">
+          Evidence Drawer
+          <span class="dpp-section-head-tag">badges, receipts, station IDs, marker slips</span>
+        </h2>
+        <div class="dpp-card">
+          <p style="font-family:'Special Elite', monospace; font-size:12px; color:var(--dpp-ink-soft); margin:0 0 12px;">
+            Proof that the room noticed you. Some files are yours. Some
+            are still hiding.
+          </p>
+          <ArtifactGrid client:load />
         </div>
 
         <h2 class="dpp-section-head" id="wall">

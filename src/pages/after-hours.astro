@@ -1,49 +1,15 @@
 ---
-import OldWebLayout from '@/layouts/OldWebLayout.astro';
-import TableBox from '@/components/oldweb/TableBox.astro';
-import LinkMaze from '@/components/oldweb/LinkMaze.astro';
-import ObjectEvidenceGrid from '@/components/oldweb/ObjectEvidenceGrid.astro';
-import AfterHoursGate from '@/components/auth/AfterHoursGate';
-import SecretTrigger from '@/components/breakroom/SecretTrigger';
-import { BREAKROOM_DATA } from '@/content/data/breakroom';
+/**
+ * /after-hours — DEPRECATED (308 redirect to /void).
+ *
+ * The legacy After Hours page predates the Void Signal homepage at
+ * /void. SITE-ARCHITECTURE.md flagged it for replacement; PR 71 retires
+ * it. The `afterhours` section is preserved in worldMap.ts because
+ * /sign-the-wall still uses it — only this page retires.
+ *
+ * 308 preserves request method semantics. The original module's
+ * SecretTrigger fired on `visit:/after-hours`; that trigger is now
+ * dead — the Void homepage's own visit triggers replace it.
+ */
+return Astro.redirect('/void', 308);
 ---
-<OldWebLayout title="After Hours" section="afterhours">
-  <AfterHoursGate client:load />
-  <SecretTrigger client:load trigger="visit:/after-hours" path="/after-hours" label="after hours entry" />
-  <div class="status-strip"><span>CLOCKED OUT</span><span>1:47 AM</span><span>Supervisor connection lost</span><span>The room is active</span><span><a href="/artifacts">evidence drawer</a></span></div>
-  <h1>After Hours</h1>
-  <p class="tagline-block">The lights are wrong. The clock is right. The corporate page is still functioning, but the room has taken over.</p>
-
-  <ObjectEvidenceGrid title="Back bar evidence / sacred and stupid" items={[
-    { name: 'Motel key under the tip jar', detail: 'Key tag says 147. Bartender says every key says that eventually.', href: '/lost-found', code: 'KEY-147' },
-    { name: 'Title belt beside takeout', detail: 'No champion listed. Grease on the brass. Prayer card tucked under the strap.', href: '/lost-found', code: 'BELT-000' },
-    { name: 'White dog below the counter', detail: 'Asleep under amber case light. Refuses to be part of inventory.', href: '/after-hours', code: 'DOG-WHT' },
-    { name: 'Cash drawer saint card', detail: 'Tape on the corners. Somebody wrote DON’T COUNT TWICE on the back.', href: '/newsstand', code: 'SAINT-CASH' }
-  ]} />
-
-  <div class="grid-3">
-    <TableBox title="Phone Behind The Bar">
-      {BREAKROOM_DATA.voicemails.slice(0, 3).map((v) => <p><b>{v.from}</b><br/><span style="font-family:var(--type-mono);font-size:11px;">{v.time}</span><br/>{v.body}</p>)}
-      <a href="/phone">Open phone log</a>
-    </TableBox>
-    <TableBox title="Back Bar Issue">
-      {BREAKROOM_DATA.products.slice(0, 3).map((p) => <p><b>{p.name}</b><br/>{p.reason}</p>)}
-      <a href="/rack">View The Rack</a>
-    </TableBox>
-    <TableBox title="Things Found After Close">
-      {BREAKROOM_DATA.objects.slice(0, 3).map((o) => <p><b>{o.name}</b><br/>{o.meaning}</p>)}
-      <a href="/lost-found">Open archive</a>
-    </TableBox>
-  </div>
-
-  <LinkMaze title="Pages the company did not approve" notice="After Hours is not a page. It is the room underneath the page." links={[
-    { href: '/idle-hands', label: 'Idle Hands Invitational', note: 'bracket, aliases, fake handicap, bad felt', stamp: 'RACE 7' },
-    { href: '/sign-the-wall', label: 'Sign The Wall', note: 'bathroom marker archive, not fully supervised', stamp: 'WET PAINT' },
-    { href: '/radio', label: 'Radio 1:47', note: 'stream, logs, dead air with confidence', stamp: 'ON AIR' },
-    { href: '/ventures', label: 'OmniShift Ventures', note: 'AI business ideas nobody stopped', stamp: 'FUNDED' },
-    { href: '/phone', label: 'Phone Behind Bar', note: 'rides, delivery, voicemails, invites' },
-    { href: '/newsstand', label: '3AM Edition', note: 'public notices from private rooms' },
-    { href: '/rack', label: 'The Rack', note: 'blanked-out product listings' },
-    { href: '/lost-found', label: 'Lost & Found', note: 'objects cataloged like witnesses' }
-  ]} />
-</OldWebLayout>

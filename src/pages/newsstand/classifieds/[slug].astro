@@ -1,0 +1,84 @@
+---
+/**
+ * /newsstand/classifieds/[slug] — Individual classified filing.
+ *
+ * Per dynamic-route doctrine (memory: feedback_dynamic_routes_pattern):
+ * runtime SSR with prerender=false + Astro.params.slug lookup.
+ *
+ * Sources the canonical Lost & Found object via
+ * getPublicLostObjectBySlug(). After PR 73 (Motel Key Loop) lands,
+ * Stuff items reference these slugs via relatedObjectSlug — meaning
+ * the Stuff page's "more about this object" link resolves here, into
+ * the SleepNews chrome.
+ */
+export const prerender = false;
+
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import { getPublicLostObjectBySlug } from '@/lib/publicContent';
+
+const { slug } = Astro.params;
+const result = await getPublicLostObjectBySlug(slug ?? '');
+const object = result.item;
+
+if (!object) {
+  return Astro.redirect('/newsstand/classifieds', 308);
+}
+---
+<OldWebLayout title={`${object.name} / Classifieds`} section="newsstand">
+
+  <!-- Ticker -->
+  <div class="ns-ticker">
+    <span class="ns-ticker-alert">CLASSIFIED</span>
+    <span>SLEEPNEWS</span>
+    <span>FILED ITEM {object.itemNumber}</span>
+    <span>source: {result.source}</span>
+  </div>
+
+  <!-- Compact masthead -->
+  <div class="ns-masthead" style="padding:10px 0 8px;">
+    <h1 style="font-size:clamp(28px,6vw,48px);"><a href="/newsstand" style="color:var(--ink);text-decoration:none;">Sleep<span class="ns-red">News</span></a></h1>
+    <p class="ns-tagline" style="font-size:12px;">Classifieds Desk · Item Reports · Filed at the counter</p>
+  </div>
+
+  <!-- Back link -->
+  <a class="ns-back" href="/newsstand/classifieds">← Back to Classifieds</a>
+
+  <!-- Article -->
+  <article class="ns-article">
+    <div class="ns-article-meta">
+      CLASSIFIED / {object.objectType ?? 'physical'} / Item {object.itemNumber} / source: {result.source}
+    </div>
+    {result.error && <p class="ns-notice" style="padding:6px 0;">Public classified detail fallback active: {result.error}</p>}
+
+    <h1>{object.name}</h1>
+
+    <p class="ns-body" style="font-style:italic;">
+      Filed at the counter. {object.meaning ?? 'No further explanation was offered.'}
+    </p>
+
+    <table class="table-box" style="margin-top:14px;">
+      <tbody>
+        <tr><th>Type</th><td>{object.objectType ?? 'physical'}</td></tr>
+        <tr><th>Found</th><td>{object.found ?? 'undisclosed'}</td></tr>
+        <tr><th>Condition</th><td>{object.condition ?? 'unstated'}</td></tr>
+        <tr><th>Description</th><td>{object.description ?? '—'}</td></tr>
+        <tr><th>Meaning</th><td>{object.meaning ?? '—'}</td></tr>
+        {object.relatedUniform && <tr><th>Related Uniform</th><td>{object.relatedUniform}</td></tr>}
+        {object.relatedClipping && <tr><th>Related Clipping</th><td>{object.relatedClipping}</td></tr>}
+        <tr><th>Status</th><td>{object.status ?? 'unfiled'}</td></tr>
+        <tr><th>Drawer</th><td><a href="/locker#artifacts">Open evidence drawer</a></td></tr>
+      </tbody>
+    </table>
+
+    <p class="ns-note" style="margin-top:14px;">
+      The counter declined to comment. The item declined to comment. The
+      filing remains open.
+    </p>
+  </article>
+
+  <!-- Footer -->
+  <div class="ns-footer">
+    <p><a href="/newsstand/classifieds">← Return to Classifieds</a> / <a href="/newsstand">SleepNews Front</a> / <a href="/void">Back to room</a></p>
+  </div>
+
+</OldWebLayout>

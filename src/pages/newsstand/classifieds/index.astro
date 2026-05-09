@@ -1,0 +1,150 @@
+---
+/**
+ * /newsstand/classifieds — Classifieds index (SleepNews chrome).
+ *
+ * The Lost & Found archive folded into SleepNews per
+ * SITE-ARCHITECTURE.md. Same data via getPublicLostObjects(),
+ * SleepNews chrome wrapping a police-blotter layout.
+ *
+ * Voice rule: classifieds read like the items themselves filed the
+ * report. "Item reported missing from counter. Item denies being
+ * missing." — see project brief copy guardrails.
+ */
+import OldWebLayout from '@/layouts/OldWebLayout.astro';
+import { getPublicLostObjects } from '@/lib/publicContent';
+
+const lostObjects = await getPublicLostObjects();
+const items = lostObjects.items;
+const lead = items[0];
+const rest = items.slice(1);
+---
+<OldWebLayout title="SleepNews / Classifieds" section="newsstand">
+
+  <!-- ABC '97 dark ticker bar -->
+  <div class="ns-ticker">
+    <span class="ns-ticker-alert">CLASSIFIEDS</span>
+    <span>SLEEPNEWS</span>
+    <span>object reports desk</span>
+    <span>filings since close</span>
+    <span>source: {lostObjects.source}</span>
+  </div>
+
+  <!-- Newspaper masthead -->
+  <div class="ns-masthead">
+    <p class="ns-vol">VOL. 1 / ISSUE 47 / CLASSIFIEDS / EXACT CHANGE PREFERRED</p>
+    <h1>Sleep<span class="ns-red">News</span></h1>
+    <p class="ns-tagline">Classifieds desk. Items reported missing from the counter. The items declined to comment.</p>
+  </div>
+
+  <!-- Subnav -->
+  <nav class="ns-subnav">
+    <a href="/newsstand">FRONT PAGE</a>
+    <a href="/newsstand/classifieds" class="active">CLASSIFIEDS</a>
+    <a href="/ventures">BUSINESS</a>
+    <a href="/void">BACK TO ROOM</a>
+  </nav>
+
+  {lostObjects.error && <p class="ns-notice" style="padding:8px 16px;">Public classifieds fallback active: {lostObjects.error}</p>}
+
+  <div class="ns-layout">
+
+    <!-- Left nav sidebar -->
+    <nav class="ns-nav">
+      <p class="ns-nav-label">Filing Categories</p>
+      <a href="#missing">Missing</a>
+      <a href="#held">Held at Counter</a>
+      <a href="#evidence">Evidence</a>
+      <a href="#archived">Archived</a>
+      <p class="ns-nav-label">Also</p>
+      <a href="/newsstand">SleepNews Front</a>
+      <a href="/ventures">Business Notices</a>
+      <a href="/phone">Call Log</a>
+      <a href="/radio">Radio 1:47</a>
+    </nav>
+
+    <!-- Main content -->
+    <main class="ns-main">
+
+      <div class="ns-section-bar">CLASSIFIEDS / OBJECT REPORTS DESK</div>
+
+      {items.length === 0 && (
+        <p class="ns-notice" style="padding:14px 0;">
+          DRAWER EMPTY. Items reported missing have either been claimed or were never missing. The counter is unattended.
+        </p>
+      )}
+
+      {/* Lead listing */}
+      {lead && (
+        <div class="ns-lead">
+          <p class="ns-byline">CLASSIFIED / Counter Desk / Item {lead.itemNumber}</p>
+          <h2><a href={`/newsstand/classifieds/${lead.slug}`}>{lead.name}</a></h2>
+          <p>{lead.meaning} <em>Found:</em> {lead.found ?? 'undisclosed'}.</p>
+          {rest.length > 0 && (
+            <div class="ns-also">
+              <b>Also filed:</b>
+              {rest.slice(0, 3).map((item) => (
+                <a href={`/newsstand/classifieds/${item.slug}`}>{item.name}</a>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <!-- Headline grid as classified blotter -->
+      <div class="ns-section-bar">FILED THIS WEEK</div>
+      <div class="ns-headline-grid">
+        {rest.map((item) => (
+          <article class="ns-story">
+            <p class="ns-byline">CLASSIFIED / {item.objectType ?? 'physical'} / Item {item.itemNumber}</p>
+            <h3><a href={`/newsstand/classifieds/${item.slug}`}>{item.name}</a></h3>
+            <p>{item.meaning}</p>
+            <p class="ns-byline" style="margin-top:6px;">
+              <em>Status:</em> {item.status ?? 'unfiled'}
+            </p>
+          </article>
+        ))}
+      </div>
+
+    </main>
+
+    <!-- Right sidebar -->
+    <aside class="ns-aside">
+      <div class="ns-aside-bar">CORRECTIONS / ITEMS FOUND TWICE</div>
+
+      <div class="ns-correction">
+        <b>Correction:</b> Last week's "missing" cue chalk has been located. The cue chalk denies it was ever missing.
+      </div>
+
+      <div class="ns-classified">
+        <strong>NOTICE:</strong> Items filed at the counter are not held against their will. The counter holds nothing it has not been given.
+      </div>
+
+      <div class="ns-classified">
+        <strong>NOTICE:</strong> Lost & Found has not used the term "lost" since 2003. Please refer to all items as "filed."
+      </div>
+
+      <div class="ns-aside-bar">ARCHIVE LINKS</div>
+
+      <div class="ns-notice">
+        <a href="/newsstand">Front page</a> — what made the news
+      </div>
+      <div class="ns-notice">
+        <a href="/ventures">Business notices</a> — AI ventures nobody requested
+      </div>
+      <div class="ns-notice">
+        <a href="/phone">Call log tips</a> — anonymous sources with bad service
+      </div>
+      <div class="ns-notice">
+        <a href="/void">Back to room</a> — where most filings begin
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="ns-footer">
+    <p>SleepNews Classifieds. Items filed are not held against their will. The counter holds nothing it has not been given.</p>
+    <p>© SleepNews / OmniShift Media Holdings / All claims unverified / Printed on whatever was available</p>
+  </div>
+
+</OldWebLayout>
