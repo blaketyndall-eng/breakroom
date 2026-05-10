@@ -4,7 +4,17 @@
  *
  * Open-Meteo API: https://open-meteo.com/en/docs
  * No API key required. Rate limit: generous (600 req/min).
+ *
+ * PR 75 (Reality Bridge):
+ *   - sessionStorage cache so SleepNet portal + Pocket + future Radio
+ *     surfaces share one fetch per session.
+ *   - `realConditionsToBreakroomVoice()` exposed as a single composed
+ *     pure function over the existing helpers (testable in isolation).
+ *   - One `weather_shift` ledger entry per local calendar day (real
+ *     fetches only — generated fiction doesn't emit).
  */
+
+import { emitWeatherShift } from './ledgerEmitters';
 
 export type LotConditions = {
   source: 'real' | 'generated';
@@ -175,17 +185,131 @@ function generateFictionWeather(): LotConditions {
 }
 
 /**
+ * PR 75: Composed voice translator. Maps a real-conditions tuple into
+ * Breakroom voice in one call. The individual helpers (getSkyDescription
+ * etc.) stay private; this is the public composition surface, so the
+ * voice translation has one entry point that can be unit-tested or
+ * reused by other surfaces (e.g. the future Radio segment, share cards)
+ * without going through the full fetch path.
+ *
+ * Pure function — same input always returns same output.
+ */
+export function realConditionsToBreakroomVoice(real: {
+  tempF: number;
+  weatherCode: number;
+  pressureHpa: number | null;
+}): {
+  hoodieStatus: string;
+  badDecisionPressure: string;
+  sky: string;
+  neonVisibility: string;
+  lotAdvisory: string;
+} {
+  return {
+    hoodieStatus: getHoodieStatus(real.tempF),
+    badDecisionPressure: getBadDecisionPressure(real.pressureHpa),
+    sky: getSkyDescription(real.weatherCode),
+    neonVisibility: getNeonVisibility(real.weatherCode),
+    lotAdvisory: getLotAdvisory(real.tempF, real.weatherCode),
+  };
+}
+
+// --- PR 75: session cache + daily ledger emit ---
+
+const CACHE_KEY = 'breakroom.lot-weather.cache.v1';
+const LAST_EMIT_DAY_KEY = 'breakroom.lot-weather.last-emit-day.v1';
+const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes — weather doesn't move that fast.
+
+type CachedConditions = {
+  conditions: LotConditions;
+  fetchedAt: number;
+};
+
+function readCache(): CachedConditions | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.sessionStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as CachedConditions;
+    if (!parsed || typeof parsed.fetchedAt !== 'number') return null;
+    // Stale → force refetch.
+    if (Date.now() - parsed.fetchedAt > CACHE_TTL_MS) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(conditions: LotConditions): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem(
+      CACHE_KEY,
+      JSON.stringify({ conditions, fetchedAt: Date.now() } satisfies CachedConditions),
+    );
+  } catch {
+    /* swallow quota errors */
+  }
+}
+
+/**
+ * PR 75: fire `weather_shift` ledger event at most once per local
+ * calendar day, and only for real fetches (generated fiction doesn't
+ * count as a "shift" — the room shouldn't pretend to have noticed
+ * weather it made up). Uses localStorage as the day-sentinel so the
+ * idempotency survives session boundaries on the same calendar date.
+ */
+function maybeEmitDailyWeatherShift(conditions: LotConditions): void {
+  if (typeof window === 'undefined') return;
+  if (conditions.source !== 'real') return;
+
+  try {
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const lastEmitDay = window.localStorage.getItem(LAST_EMIT_DAY_KEY);
+    if (lastEmitDay === today) return;
+
+    emitWeatherShift({
+      district: conditions.location_label || 'parking-lot-west',
+      conditions: `${conditions.temperature_f}F · ${conditions.sky}`,
+    });
+    window.localStorage.setItem(LAST_EMIT_DAY_KEY, today);
+  } catch {
+    /* emitter / storage failures are swallowed — the cache write is the source of truth */
+  }
+}
+
+/**
  * Get lot conditions. Attempts real weather if coordinates provided.
  * Always returns a result (real or generated).
+ *
+ * PR 75: transparent sessionStorage cache — repeat calls within the
+ * same session (and within 30 minutes) return the cached real result
+ * without re-fetching. Generated fiction is NOT cached so a later call
+ * with coords can still upgrade to real conditions. The first real
+ * fetch of each local day also emits `weather_shift` to the ledger.
  */
 export async function getLotConditions(coords?: { lat: number; lon: number }): Promise<LotConditions> {
+  // Cache hit: return immediately. Re-emit is a no-op after the first
+  // emit-of-the-day thanks to the localStorage sentinel.
+  const cached = readCache();
+  if (cached) {
+    maybeEmitDailyWeatherShift(cached.conditions);
+    return cached.conditions;
+  }
+
+  // Cache miss: fetch real if we have coords; otherwise fall back.
   if (coords) {
     const real = await fetchRealWeather(coords.lat, coords.lon);
     if (real) {
       real.location_label = `${coords.lat.toFixed(2)}, ${coords.lon.toFixed(2)}`;
+      writeCache(real);
+      maybeEmitDailyWeatherShift(real);
       return real;
     }
   }
+
+  // Generated fiction: don't cache. Cheap to recompute, and not caching
+  // means a later call with coords can still upgrade to real.
   return generateFictionWeather();
 }
 
