@@ -59,6 +59,7 @@ const DOOR_REGISTRY: HiddenDoor[] = [
       body: 'The clock is not stuck. The clock is correct. Everything else moved.',
     },
     hint: 'Ask the right question about time.',
+    objectHints: ['wall-clock-stuck-1-47'],
     district: 'corporate_ruins',
     isActive: true,
   },
@@ -129,8 +130,57 @@ const DOOR_REGISTRY: HiddenDoor[] = [
       body: 'Fuzzy dice and a timing slip. You came prepared or you came lucky. The lot knows the difference.',
     },
     hint: 'Pair the right objects.',
-    objectHints: ['fuzzy-dice', 'timing-slip'],
+    // PR 76: include the canonical Stuff slug `fuzzy-dice-red` (the
+    // actual saved item) alongside the legacy speculative slugs.
+    // Either presence in the drawer triggers the hint banner.
+    objectHints: ['fuzzy-dice-red', 'fuzzy-dice', 'timing-slip'],
     district: 'parking_lot_west',
+    isActive: true,
+  },
+  // --- PR 76: doors paired with the four new canonical objects ---
+  {
+    slug: 'cue-chalk-search',
+    name: 'The Chalk Color',
+    triggerType: 'search_phrase',
+    triggerValue: 'what color is the chalk',
+    rewardType: 'message',
+    reward: {
+      title: 'Chalk Acknowledged',
+      body: 'The chalk is blue. Other colors have been reported. The other colors were lying. The chalk is blue or it is not chalk.',
+    },
+    hint: 'Ask the table about its tools.',
+    objectHints: ['cue-chalk-block-blue'],
+    district: 'pool_hall_county',
+    isActive: true,
+  },
+  {
+    slug: 'matchbook-search',
+    name: 'The Three Matches',
+    triggerType: 'search_phrase',
+    triggerValue: 'three matches left',
+    rewardType: 'message',
+    reward: {
+      title: 'Matchbook Confirmed',
+      body: 'Three. There are always three matches left. The matchbook does not run out. The matchbook is never new. Three is the answer the matchbook accepts.',
+    },
+    hint: 'Count what does not need counting.',
+    objectHints: ['matchbook'],
+    district: 'classified_alley',
+    isActive: true,
+  },
+  {
+    slug: 'receipt-no-total-search',
+    name: 'The Missing Total',
+    triggerType: 'search_phrase',
+    triggerValue: 'receipt without total',
+    rewardType: 'message',
+    reward: {
+      title: 'Filing Acknowledged',
+      body: 'The total has been omitted. The total was never agreed to. Filing without a total is permissible. Receipts without totals are not refundable. The receipt is the night, not the cost.',
+    },
+    hint: 'Search for what the paper would not say.',
+    objectHints: ['receipt-with-no-total'],
+    district: 'corporate_ruins',
     isActive: true,
   },
 ];

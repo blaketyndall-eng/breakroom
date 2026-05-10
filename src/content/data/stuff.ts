@@ -109,7 +109,14 @@ export const STUFF_ITEMS: StuffItem[] = [
     note: 'Found under the counter. Still warm.',
     priceLabel: '$?.??',
     sourceLabel: 'Back Office',
-    relatedObjectSlug: 'receipt-with-no-total',
+    // PR 76: cross-link points at the canonical Lost & Found row at id "037"
+    // (slug `receipt` via slugify). The previous value `'receipt-with-no-total'`
+    // was a speculative slug that didn't resolve — fixing it now that PR 71's
+    // classifieds chrome makes the cross-link consequential.
+    relatedObjectSlug: 'receipt',
+    // PR 76: receipt as bar regular's evidence — what the night looked like
+    // when it was over but the math hadn't been done.
+    relatedFactionSlugs: ['night-drinkers'],
     tags: ['receipt', 'artifact', 'counter'],
   },
   {
@@ -167,6 +174,70 @@ export const STUFF_ITEMS: StuffItem[] = [
     relatedObjectSlug: 'motel-key-no-8',
     relatedFactionSlugs: ['cowboys', 'night-drinkers'],
     tags: ['motel', 'key', 'room 8', 'wandering', 'night drinkers', 'cowboys'],
+  },
+  {
+    // PR 76: Cue Chalk (½ block, blue) — Lost & Found id 002.
+    // Faction: The Players (table-side aim, the hand that prepares
+    // before impact). Saving fires drift toward The Players.
+    slug: 'cue-chalk-block-blue',
+    name: 'Cue Chalk (½ block, blue)',
+    status: 'found',
+    kind: 'object',
+    description: 'A half-block of pool cue chalk. Blue. Damp at one corner. Recovered from the tray at the felt table. Aim is a kind of hope — the chalk is what hope leaves on your fingers.',
+    note: 'In rotation. The Players noticed.',
+    sourceLabel: 'Pool Hall County / Table 4',
+    relatedObjectSlug: 'cue-chalk-block-blue',
+    relatedFactionSlugs: ['the-players'],
+    tags: ['chalk', 'pool', 'players', 'table', 'blue'],
+  },
+  {
+    // PR 76: Fuzzy Dice (red) — Lost & Found id 021.
+    // Factions: Lot Racers (lowrider iconography) + Cowboys (open
+    // road / luck assigned not earned). The existing
+    // `fuzzy-dice-object` hidden door's objectHints array is updated
+    // in PR 76 to reference this slug so the DoorHintBanner lights up
+    // when this is saved.
+    slug: 'fuzzy-dice-red',
+    name: 'Fuzzy Dice (red)',
+    status: 'not_for_you_yet',
+    kind: 'object',
+    description: 'A pair of red fuzzy dice. Static-charged. Always hanging — never in a hand, never on the dash, never in storage, but somehow always hanging. Luck assigned, not earned.',
+    note: 'Filed but not removed. The dice file themselves.',
+    sourceLabel: 'Parking Lot West',
+    relatedObjectSlug: 'fuzzy-dice-red',
+    relatedFactionSlugs: ['lot-racers', 'cowboys'],
+    tags: ['dice', 'fuzzy', 'red', 'lowrider', 'lot racers', 'cowboys', 'luck'],
+  },
+  {
+    // PR 76: Matchbook — Lost & Found id 041.
+    // Factions: The Smokers (matchbook's primary register) and Night
+    // Drinkers (the bar venues matchbooks come from). "Three left" —
+    // matchbooks in this room never run out and are never new.
+    slug: 'matchbook',
+    name: 'Matchbook',
+    status: 'available',
+    kind: 'paper_good',
+    description: 'A matchbook from a venue that may or may not still operate. Three matches remaining. There are always three matches remaining. The matchbook does not run out. The matchbook is never new.',
+    note: 'Coat pocket. Wrong coat. Three more reasons.',
+    sourceLabel: 'Classified Alley',
+    relatedObjectSlug: 'matchbook',
+    relatedFactionSlugs: ['the-smokers', 'night-drinkers'],
+    tags: ['matchbook', 'fire', 'three', 'smokers', 'night drinkers', 'venue'],
+  },
+  {
+    // PR 76: Wall Clock (stuck 1:47) — Lost & Found id 001.
+    // No faction relation — the clock is universal canon, the room's
+    // anchor object. The existing `clock-search` hidden door's
+    // objectHints array is updated in PR 76 to reference this slug.
+    slug: 'wall-clock-stuck-1-47',
+    name: 'Wall Clock (stuck 1:47)',
+    status: 'available',
+    kind: 'object',
+    description: 'A wall clock. The hour hand is at 1. The minute hand is at the 9-position. It has been this way longer than anyone has been at the counter. The clock is not stuck. The clock is correct. Everything else moved.',
+    note: 'Displayed. Above the door. Honest.',
+    sourceLabel: 'The Room',
+    relatedObjectSlug: 'wall-clock-stuck-1-47',
+    tags: ['clock', '1:47', 'wall', 'time', 'displayed', 'anchor'],
   },
 ];
 
