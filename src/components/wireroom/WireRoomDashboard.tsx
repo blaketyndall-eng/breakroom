@@ -6,8 +6,8 @@ import {
   getActionLog,
   getOpenFlags,
   reviewFlag,
+  removeFlaggedTarget,
   deauthenticateWireRoom,
-  logAction,
 } from '@/lib/wireRoom';
 import type { SystemStatus, WireRoomAction, ContentFlag } from '@/lib/wireRoom';
 
@@ -26,15 +26,10 @@ export default function WireRoomDashboard() {
   }, []);
 
   function toggleSystem(key: keyof SystemStatus) {
+    // PR 74: setSystemStatus now logs internally for any actual change.
+    // The previous logAction call here was duplicate.
     const updated = setSystemStatus({ [key]: !status[key] });
     setStatus(updated);
-    logAction({
-      type: updated[key] ? 'unlock' : 'lock',
-      targetType: 'site',
-      targetSlug: key,
-      reason: `System ${key} ${updated[key] ? 'enabled' : 'disabled'}`,
-      actor: 'wire-room-admin',
-    });
     setLog(getActionLog(30));
     setStats(getWireRoomStats());
   }
@@ -42,6 +37,18 @@ export default function WireRoomDashboard() {
   function handleReviewFlag(flagId: string, dismiss: boolean) {
     reviewFlag(flagId, 'wire-room-admin', dismiss ? 'Dismissed from Wire Room' : 'Reviewed from Wire Room', dismiss);
     setFlags(getOpenFlags());
+    setLog(getActionLog(30));
+    setStats(getWireRoomStats());
+  }
+
+  // PR 74: third decision option — Remove. Soft-removes the underlying
+  // target (where supported, e.g. guestbook entries) and clears the
+  // flag from the queue. Logs a 'remove' action that emits to the
+  // admin-only ledger.
+  function handleRemoveFlag(flagId: string) {
+    removeFlaggedTarget(flagId, 'wire-room-admin');
+    setFlags(getOpenFlags());
+    setLog(getActionLog(30));
     setStats(getWireRoomStats());
   }
 
@@ -124,6 +131,7 @@ export default function WireRoomDashboard() {
               <div className="wire-flag-actions">
                 <button className="old-button" type="button" onClick={() => handleReviewFlag(flag.id, false)}>Mark Reviewed</button>
                 <button className="old-button" type="button" onClick={() => handleReviewFlag(flag.id, true)}>Dismiss</button>
+                <button className="old-button" type="button" onClick={() => handleRemoveFlag(flag.id)} title="Soft-remove the underlying target where supported (e.g. guestbook entries).">Remove</button>
               </div>
             </div>
           ))}

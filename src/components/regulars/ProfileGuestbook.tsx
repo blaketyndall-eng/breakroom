@@ -24,6 +24,7 @@ import {
   signProfileGuestbook,
   type ProfileGuestbookEntry,
 } from '@/lib/profileGuestbook';
+import FlagButton from '@/components/wireroom/FlagButton';
 
 interface Props {
   targetKey: string;
@@ -155,7 +156,25 @@ export default function ProfileGuestbook({ targetKey, contextLabel, selfHandle }
                   <b>{e.signerDisplayName}</b>
                   <span className="pgb-entry-handle">@{e.signerHandle}</span>
                 </span>
-                <span className="pgb-entry-time">{timeAgo(e.signedAt)}</span>
+                <span className="pgb-entry-time">
+                  {timeAgo(e.signedAt)}
+                  {/* PR 74: per-entry flag affordance. Don't show on
+                       your own entries; you have to remove your own
+                       via the Regular File editor. The targetSlug
+                       encoding `${targetKey}::${entryId}` is what
+                       wireRoom.removeFlaggedTarget parses. */}
+                  {viewer?.handle !== e.signerHandle && (
+                    <>
+                      {' · '}
+                      <FlagButton
+                        targetType="guestbook_entry"
+                        targetSlug={`${targetKey}::${e.id}`}
+                        flaggedBy={viewer?.handle ?? 'anonymous'}
+                        reason={`Flagged guestbook entry on ${contextLabel}`}
+                      />
+                    </>
+                  )}
+                </span>
               </div>
               <p className="pgb-entry-body">{e.body}</p>
             </div>
